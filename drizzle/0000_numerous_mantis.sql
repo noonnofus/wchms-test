@@ -1,0 +1,20 @@
+CREATE TABLE `users` (
+	`id` serial AUTO_INCREMENT NOT NULL,
+	`first_name` varchar(255) NOT NULL,
+	`last_name` varchar(255) NOT NULL,
+	`email` varchar(255) NOT NULL,
+	`birth_date` date,
+	`gender` enum('male','female','other') NOT NULL,
+	`building` varchar(255),
+	`street` varchar(255),
+	`city` varchar(255) NOT NULL,
+	`province` varchar(255) NOT NULL,
+	`country` varchar(255) NOT NULL,
+	`postal_code` varchar(255),
+	`timezone` varchar(255) DEFAULT 'America/Vancouver',
+	`lang` varchar(255) DEFAULT 'en',
+	`role` enum('client','staff','admin') DEFAULT 'client',
+	`status` enum('active','inactive') DEFAULT 'active',
+	`course_id` varchar(255),
+	CONSTRAINT `users_id` PRIMARY KEY(`id`)
+);
