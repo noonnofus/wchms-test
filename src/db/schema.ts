@@ -18,7 +18,7 @@ const userRoleEnumValues = [
     UserRole.admin,
 ] as const;
 
-enum UserGender {
+export enum UserGender {
     male = "male",
     female = "female",
     other = "other",
