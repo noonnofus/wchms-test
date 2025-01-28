@@ -1,8 +1,6 @@
 "use client";
-import { Button } from "@/components/ui/button";
+import TabsMenu from "@/components/shared/tabs-menu";
 
 export default function Home() {
-    return (
-        <div className="flex flex-col px-6 gap-4 w-full h-full justify-center overflow-y-auto"></div>
-    );
+    return <TabsMenu leftLabel="Course Home" rightLabel="Course Exercises" />;
 }
