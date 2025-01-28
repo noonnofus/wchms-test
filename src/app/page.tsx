@@ -3,14 +3,14 @@ import { Button } from "@/components/ui/button";
 
 export default function Home() {
     return (
-        <div className="pt-6 flex flex-col px-6 gap-4 w-full h-full">
-            <div className="min-h-14 border-2 border-primary-green rounded-[8px] flex items-center justify-center">
-                <p className="text-primary-green text-base">
+        <div className="flex flex-col px-6 gap-4 w-full h-full justify-center">
+            <div className="min-h-[7vh] border-2 border-primary-green rounded-lg flex items-center justify-center">
+                <p className="text-primary-green text-xl md:text-2xl lg:text-3xl">
                     Next Session in <strong>3 Days</strong>
                 </p>
             </div>
             <div className="flex flex-col gap-4">
-                <Button className="min-h-32 rounded-[8px] bg-courses-blue hover:bg-[#004F8A]">
+                <Button className="min-h-[16vh] rounded-lg bg-courses-blue hover:bg-[#004F8A]">
                     <div className="flex flex-col items-center justify-center">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -28,10 +28,10 @@ export default function Home() {
                                 strokeLinejoin="round"
                             />
                         </svg>
-                        <p className="text-2xl">Courses</p>
+                        <p className="text-2xl md:text-3xl">Courses</p>
                     </div>
                 </Button>
-                <Button className="min-h-32 rounded-[8px] bg-activities-purple hover:bg-[#5F2480]">
+                <Button className="min-h-[16vh] rounded-lg bg-activities-purple hover:bg-[#5F2480]">
                     <div className="flex flex-col items-center justify-center">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -49,10 +49,10 @@ export default function Home() {
                                 strokeLinejoin="round"
                             />
                         </svg>
-                        <p className="text-2xl">Activities</p>
+                        <p className="text-2xl md:text-3xl">Activities</p>
                     </div>
                 </Button>
-                <Button className="min-h-32 rounded-[8px] bg-primary-green hover:bg-[#045B47]">
+                <Button className="min-h-[16vh] rounded-lg bg-primary-green hover:bg-[#045B47]">
                     <div className="flex flex-col items-center justify-center">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -77,10 +77,10 @@ export default function Home() {
                                 strokeLinejoin="round"
                             />
                         </svg>
-                        <p className="text-2xl">Progress</p>
+                        <p className="text-2xl md:text-3xl">Progress</p>
                     </div>
                 </Button>
-                <Button className="min-h-32 rounded-[8px] bg-discussion-pink hover:bg-[#9B0049]">
+                <Button className="min-h-[16vh] rounded-lg bg-discussion-pink hover:bg-[#9B0049]">
                     <div className="flex flex-col items-center justify-center">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -98,7 +98,7 @@ export default function Home() {
                                 strokeLinejoin="round"
                             />
                         </svg>
-                        <p className="text-2xl">Discussion</p>
+                        <p className="text-2xl md:text-3xl">Discussion</p>
                     </div>
                 </Button>
             </div>
