@@ -9,7 +9,7 @@ export default function TabsMenu(props: {
     return (
         <Tabs
             defaultValue="leftLabel"
-            className="flex flex-col px-6 pb-6 gap-4 w-full h-full items-center overflow-y-auto"
+            className="flex flex-col pb-6 gap-4 w-full h-full items-center overflow-y-auto"
         >
             <TabsList>
                 <TabsTrigger value="leftLabel">{props.leftLabel}</TabsTrigger>
