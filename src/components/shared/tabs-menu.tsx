@@ -19,7 +19,7 @@ export default function TabsMenu(props: {
                 {props.leftChildren}
             </TabsContent>
             <TabsContent value="rightLabel" className="w-full h-full">
-                {props.leftChildren}
+                {props.rightChildren}
             </TabsContent>
         </Tabs>
     );
