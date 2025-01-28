@@ -62,7 +62,7 @@ const CardContent = React.forwardRef<
 >(({ className, ...props }, ref) => (
     <div
         ref={ref}
-        className={cn("text-base font-medium p-2", className)}
+        className={cn("text-base font-medium px-2 py-4", className)}
         {...props}
     />
 ));

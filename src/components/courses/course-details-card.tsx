@@ -7,6 +7,7 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import { Button } from "../ui/button";
+import Image from "next/image";
 
 export default function CourseDetailsCard(props: {
     name: string;
@@ -18,6 +19,13 @@ export default function CourseDetailsCard(props: {
                 <CardHeader>
                     <CardTitle>{props.name}</CardTitle>
                 </CardHeader>
+                <Image
+                    src="/course-image.png"
+                    width={200}
+                    height={200}
+                    alt="Picture of snake"
+                    className="mb-2"
+                />
                 <Button className="bg-primary-green text-white rounded-lg min-w-[312px] w-full font-semibold text-base">
                     Start Session
                 </Button>
