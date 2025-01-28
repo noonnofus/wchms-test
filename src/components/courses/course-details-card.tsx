@@ -1,3 +1,4 @@
+"use client";
 import {
     Card,
     CardContent,
@@ -26,7 +27,7 @@ export default function CourseDetailsCard(props: {
                     alt="Picture of snake"
                     className="mb-2"
                 />
-                <Button className="bg-primary-green text-white rounded-lg min-w-[312px] w-full font-semibold text-base">
+                <Button className="bg-primary-green text-white rounded-lg w-full font-semibold text-base">
                     Start Session
                 </Button>
                 <CardContent>
