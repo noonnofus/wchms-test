@@ -1,7 +1,8 @@
 "use client";
+import { useParams } from "next/navigation";
 import TabsMenu from "@/components/shared/tabs-menu";
 import CourseDetailsCard from "@/components/courses/course-details-card";
-import { useParams } from "next/navigation";
+import ExerciseCard from "@/components/shared/exercise-card";
 
 export default function Home() {
     const { id } = useParams();
@@ -40,7 +41,13 @@ export default function Home() {
                         description={course?.description}
                     />
                 }
-                rightChildren={<></>}
+                rightChildren={
+                    <div className="flex flex-col gap-4">
+                        <ExerciseCard name="Physical" />
+                        <ExerciseCard name="Reading Aloud" />
+                        <ExerciseCard name="Simple Arithmetic" />
+                    </div>
+                }
             />
         </div>
     );
