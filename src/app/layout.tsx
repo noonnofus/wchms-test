@@ -24,12 +24,12 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en" className="h-full w-full">
+        <html lang="en" className="h-full w-full overflow-hidden">
             <body
                 className={`${geistSans.variable} ${geistMono.variable} antialiased min-w-[360px] w-full h-full flex flex-col`}
             >
                 <TopNav />
-                <div className="flex-1">{children}</div>
+                <div className="flex-1 px-6 overflow-y-auto">{children}</div>
             </body>
         </html>
     );
