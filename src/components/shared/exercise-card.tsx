@@ -10,7 +10,7 @@ export default function ExerciseCard(props: { name: string }) {
                         {props.name} Exercise
                     </CardTitle>
                 </CardHeader>
-                <Button className="bg-primary-green text-white rounded-lg w-full font-semibold text-base mb-2">
+                <Button className="bg-primary-green hover:bg-[#045B47] rounded-full text-white w-full font-semibold text-base mb-2">
                     Start Exercise
                 </Button>
             </Card>

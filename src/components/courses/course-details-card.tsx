@@ -20,7 +20,7 @@ export default function CourseDetailsCard(props: {
                     alt="Picture of snake"
                     className="mb-2"
                 />
-                <Button className="bg-primary-green text-white rounded-lg w-full font-semibold text-base">
+                <Button className="bg-primary-green text-white rounded-full w-full font-semibold text-base hover:bg-[#045B47]">
                     Start Session
                 </Button>
                 <CardContent>
