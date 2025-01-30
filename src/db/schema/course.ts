@@ -14,6 +14,8 @@ export const Course = mysqlTable("courses", {
     categoryId: int("category_id"),
     uploadId: int("upload_id"),
     roomId: int("room_id"),
+    forumId: int("forum_id"),
+
 });
 
 export const CourseParticipant = mysqlTable("course_participants", {
