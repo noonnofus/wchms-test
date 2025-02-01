@@ -1,9 +1,9 @@
 import {
-    serial,
-    varchar,
     date,
     mysqlEnum,
     mysqlTable,
+    serial,
+    varchar,
 } from "drizzle-orm/mysql-core";
 
 enum UserRole {
