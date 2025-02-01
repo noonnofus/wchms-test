@@ -1,70 +1,67 @@
-"use client";
-import CourseCard from "@/components/courses/course-card";
-import TabsMenu from "@/components/shared/tabs-menu";
+import { Button } from "@/components/ui/button"
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import {
+    Tabs,
+    TabsContent,
+    TabsList,
+    TabsTrigger,
+} from "@/components/ui/tabs"
 
 export default function Courses() {
-    const myCourses = [
-        {
-            id: "1",
-            name: "Course 122",
-            image: "/course-image.png",
-            imgAlt: "A Snake",
-        },
-        {
-            id: "2",
-            name: "Course 123",
-            image: "/course-image.png",
-            imgAlt: "A Snake",
-        },
-    ];
-    const allCourses = [
-        {
-            id: "3",
-            name: "第19期：脳の運動教室(シン 脳の運動教室)",
-            image: "/course-image.png",
-            imgAlt: "A Snake",
-        },
-        {
-            id: "4",
-            name: "第20期：脳の運動教室(シン 脳の運動教室)",
-            image: "/course-image.png",
-            imgAlt: "A Snake",
-        },
-    ];
     return (
-        <div className="">
-            <TabsMenu
-                leftLabel="My Courses"
-                rightLabel="All Courses"
-                leftChildren={
-                    <div className="flex flex-col gap-4">
-                        {myCourses.map((course) => (
-                            <CourseCard
-                                key={course.id}
-                                id={course.id}
-                                name={course.name}
-                                image={course.image}
-                                imageAlt={course.imgAlt}
-                                enrolled={true}
-                            />
-                        ))}
-                    </div>
-                }
-                rightChildren={
-                    <div className="flex flex-col gap-4">
-                        {allCourses.map((course) => (
-                            <CourseCard
-                                key={course.id}
-                                id={course.id}
-                                name={course.name}
-                                image={course.image}
-                                imageAlt={course.imgAlt}
-                                enrolled={false}
-                            />
-                        ))}
-                    </div>
-                }
-            />
-        </div>
+        <Tabs defaultValue="account" className="w-full">
+            <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="account">Account</TabsTrigger>
+                <TabsTrigger value="password">Password</TabsTrigger>
+            </TabsList>
+            <TabsContent value="account">
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Account</CardTitle>
+                        <CardDescription>
+                            Make changes to your account here. Click save when you're done.
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+
+                    </CardContent>
+                    <CardFooter>
+                        <Button>Save changes</Button>
+                    </CardFooter>
+                </Card>
+            </TabsContent>
+            <TabsContent value="password">
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Password</CardTitle>
+                        <CardDescription>
+                            Change your password here. After saving, you'll be logged out.
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                        <div className="space-y-1">
+                            <Label htmlFor="current">Current password</Label>
+                            <Input id="current" type="password" />
+                        </div>
+                        <div className="space-y-1">
+                            <Label htmlFor="new">New password</Label>
+                            <Input id="new" type="password" />
+                        </div>
+                    </CardContent>
+                    <CardFooter>
+                        <Button>Save password</Button>
+                    </CardFooter>
+                </Card>
+            </TabsContent>
+        </Tabs>
     );
 }
