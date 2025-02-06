@@ -13,17 +13,17 @@ export default function MaterialCard({ material }: { material: Material }) {
     return (
         <div className="flex flex-col items-center">
             <Card>
-                <CardHeader>
+                <CardHeader className="py-0 pt-6">
                     <CardTitle className="text-center">
                         {material.title}
                     </CardTitle>
                 </CardHeader>
-                <CardContent className="text-left w-full">
-                    <p>{material.content}</p>
+                <CardContent className="text-left w-full flex flex-col gap-4">
+                    {material.content && <p>{material.content}</p>}
                     {material.file && (
                         <Button
                             asChild
-                            className="bg-primary-green hover:bg-[#045B47] rounded-full text-white w-full font-semibold text-base mb-2"
+                            className="bg-primary-green hover:bg-[#045B47] rounded-full text-white w-full font-semibold text-base min-h-[45px]"
                         >
                             <a href={material.file} download={material.file}>
                                 {/* File type needs to dynamically rendered when files are implemented */}
