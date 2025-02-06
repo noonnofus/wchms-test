@@ -54,6 +54,9 @@ export default {
                 "courses-blue": "#006BB8",
                 "activities-purple": "#8836AB",
                 "discussion-pink": "#C00C5D",
+                "destructive-text": "#FF0004",
+                "destructive-red": "rgba(255, 43, 46, 0.20)",
+                "destructive-hover": "rgba(255, 43, 46, 0.35)",
             },
             borderRadius: {
                 lg: "var(--radius)",
