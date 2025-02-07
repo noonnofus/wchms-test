@@ -54,6 +54,7 @@ export default {
                 "courses-blue": "#006BB8",
                 "activities-purple": "#8836AB",
                 "discussion-pink": "#C00C5D",
+                "secondary-hover": "rgb(6, 137, 115, 0.3)",
             },
             borderRadius: {
                 lg: "var(--radius)",
