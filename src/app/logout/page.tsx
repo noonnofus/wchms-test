@@ -2,9 +2,10 @@
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function Logout() {
+    const router = useRouter();
     return (
         <div className="flex flex-col items-center gap-8 h-full">
             <h1 className="mt-4 text-[32px] font-semibold">Logout</h1>
@@ -31,11 +32,11 @@ export default function Logout() {
                     </Button>
                 </form>
                 <Button
-                    asChild
+                    onClick={() => router.back()}
                     variant="outline"
                     className="border-primary-green hover:bg-primary-green text-primary-green rounded-full w-full font-semibold text-base hover:text-white min-h-[45px]"
                 >
-                    <Link href="/">Cancel</Link>
+                    Cancel
                 </Button>
             </div>
         </div>
