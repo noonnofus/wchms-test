@@ -57,6 +57,7 @@ export default {
                 "destructive-text": "#FF0004",
                 "destructive-red": "rgba(255, 43, 46, 0.20)",
                 "destructive-hover": "rgba(255, 43, 46, 0.35)",
+                "secondary-hover": "rgb(6, 137, 115, 0.3)",
             },
             borderRadius: {
                 lg: "var(--radius)",
