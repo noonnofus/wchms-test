@@ -21,7 +21,7 @@ export default function CourseDetailsCard(props: {
                     className="mb-2"
                 />
                 <Button className="bg-primary-green text-white rounded-full w-full font-semibold text-base hover:bg-[#045B47]">
-                    Start Session
+                    Join Session
                 </Button>
                 <CardContent>
                     <p>{props.description}</p>
