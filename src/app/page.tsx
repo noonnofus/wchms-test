@@ -70,6 +70,7 @@ export default function ParticipantLogin() {
                     <div className="w-full grid grid-cols-2 grid-rows-4 gap-4 h-full">
                         {participants.map((participant, index) => (
                             <Button
+                                asChild
                                 key={index}
                                 className="h-full bg-primary-green hover:bg-[#045B47] font-semibold text-xl py-4"
                             >

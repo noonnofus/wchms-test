@@ -20,10 +20,17 @@ export default function ParticipantConfirmation() {
                 ></Input>
             </div>
             <div className="flex flex-row gap-4 w-full justify-between">
-                <Button className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold text-xl py-4">
+                <Button
+                    asChild
+                    className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold text-xl py-4"
+                >
                     <Link href="/landing">Enter Site</Link>
                 </Button>
-                <Button className="w-full h-full rounded-full bg-transparent border-2 border-primary-green text-primary-green hover:bg-secondary-hover font-semibold text-xl py-4">
+                <Button
+                    asChild
+                    variant="outline"
+                    className="w-full h-full rounded-full bg-transparent border-primary-green text-primary-green hover:bg-primary-green hover:text-white font-semibold text-xl py-4"
+                >
                     <Link href="/">Back to Login</Link>
                 </Button>
             </div>
