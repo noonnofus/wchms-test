@@ -19,7 +19,7 @@ export default function SignUp() {
         setError("");
 
         try {
-            const res = await fetch("/api/auth/register", {
+            const res = await fetch("/api/admin/register", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(form),
@@ -38,7 +38,7 @@ export default function SignUp() {
                 return;
             }
 
-            window.location.href = "/admin/logIn";
+            window.location.href = "/admin/login";
         } catch (err) {
             console.error("Signup error:", err);
             setError("Something went wrong. Please try again.");
