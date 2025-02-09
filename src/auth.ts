@@ -71,6 +71,14 @@ export const authConfig: AuthOptions = {
     //     return true;
     // },
     //},
+    callbacks: {
+        async session({ session, user }) {
+            if (user) {
+                session.user.id = user.id;
+            }
+            return session;
+        },
+    },
 
     pages: {
         signIn: "/admin/logIn",
