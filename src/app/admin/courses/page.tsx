@@ -12,7 +12,7 @@ export default function Courses() {
     };
 
     return (
-        <div className="relative min-h-screen w-full">
+        <div className="relative min-h-full w-full">
             {showAddPopup && (
                 <div
                     className="absolute inset-0 bg-black opacity-50"
@@ -40,8 +40,10 @@ export default function Courses() {
                 </svg>
             </button>
             {showAddPopup && (
-                <div className="absolute inset-0 flex justify-center items-center">
-                    <AddCourse />
+                <div className="absolute inset-0 flex justify-center items-center z-10">
+                    <div className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-white rounded-lg p-6">
+                        <AddCourse />
+                    </div>
                 </div>
             )}
         </div>

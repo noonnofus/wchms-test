@@ -50,9 +50,9 @@ export default function AddCourse() {
     };
 
     return (
-        <div className="flex flex-col gap-20 min-w-[80lvw] min-h-[80lvh] py-8 px-6 rounded-lg bg-white items-center justify-center">
+        <div className="flex flex-col gap-20 min-w-[360px] overflow-y-auto py-8 px-6 rounded-lg bg-white items-center justify-center">
             <h1 className="font-semibold text-4xl">Add New Course</h1>
-            <form className="flex flex-col gap-4 w-full h-full text-2xl">
+            <form className="flex flex-col gap-4 w-full h-full md:text-2xl">
                 <div className="flex flex-row gap-2 w-full">
                     <div className="flex flex-col flex-1 gap-2">
                         <label htmlFor="courseName">Course Name</label>
