@@ -3,13 +3,22 @@ import AddCourse from "@/components/courses/add-course";
 import { useState } from "react";
 
 export default function Courses() {
-    const [showAddModal, setShowAddModal] = useState(false);
+    const [showAddPopup, setShowAddPopup] = useState(false);
     const handleAddButtonClick = () => {
-        setShowAddModal(true);
+        setShowAddPopup(true);
+    };
+    const handleClosePopup = () => {
+        setShowAddPopup(false);
     };
 
     return (
-        <div>
+        <div className="relative min-h-screen w-full">
+            {showAddPopup && (
+                <div
+                    className="absolute inset-0 bg-black opacity-50"
+                    onClick={handleClosePopup}
+                />
+            )}
             <button
                 className="flex h-[72px] w-[72px] bg-primary-green shadow-lg border-4 border-white rounded-full justify-center items-center"
                 onClick={handleAddButtonClick}
@@ -30,7 +39,11 @@ export default function Courses() {
                     />
                 </svg>
             </button>
-            {showAddModal && <AddCourse />}
+            {showAddPopup && (
+                <div className="absolute inset-0 flex justify-center items-center">
+                    <AddCourse />
+                </div>
+            )}
         </div>
     );
 }
