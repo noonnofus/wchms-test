@@ -29,7 +29,7 @@ export default function RootLayout({
                 className={`${geistSans.variable} ${geistMono.variable} antialiased min-w-[360px] w-full h-full flex flex-col`}
             >
                 <TopNav />
-                <div className="flex-1 px-6">{children}</div>
+                <div className="flex-1 px-6 overflow-y-auto">{children}</div>
             </body>
         </html>
     );

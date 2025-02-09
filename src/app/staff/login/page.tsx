@@ -5,9 +5,9 @@ import { Button } from "@/components/ui/button";
 
 export default function LogIn() {
     return (
-        <div className="h-screen flex items-center justify-center">
-            <div className="w-full max-w-4xl relative -translate-y-28">
-                <Card className="p-6 py-16">
+        <div className="fixed inset-0 h-screen flex items-center justify-center mt-20">
+            <div className="w-full max-w-4xl relative -translate-y-28 p-6 mt-16">
+                <Card className="py-14">
                     <CardHeader className="space-y-1">
                         <CardTitle className="text-black text-2xl font-bold">Staff Login</CardTitle>
                     </CardHeader>
