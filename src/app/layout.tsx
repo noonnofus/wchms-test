@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import TopNav from "@/components/shared/top-nav";
+import AdminNav from "@/components/shared/admin-nav";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -30,6 +31,7 @@ export default function RootLayout({
             >
                 <TopNav />
                 <div className="flex-1 px-6 overflow-y-auto">{children}</div>
+                <AdminNav />
             </body>
         </html>
     );

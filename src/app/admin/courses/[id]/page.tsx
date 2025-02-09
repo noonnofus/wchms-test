@@ -4,12 +4,12 @@ import TabsMenu from "@/components/shared/tabs-menu";
 import CourseDetailsCard from "@/components/courses/course-details-card";
 import MaterialCard from "@/components/shared/material-card";
 
-export default function Home() {
+export default function AdminCourses() {
     const { id } = useParams();
 
-    const myCourses = [
+    const courses = [
         {
-            id: "1",
+            id: "4",
             name: "Course 122",
             image: "/course-image.png",
             imgAlt: "A Snake",
@@ -44,7 +44,7 @@ export default function Home() {
             ],
         },
         {
-            id: "2",
+            id: "3",
             name: "Course 123",
             image: "/course-image.png",
             imgAlt: "A Snake",
@@ -53,7 +53,7 @@ export default function Home() {
         },
     ];
 
-    const course = myCourses.find((course) => course.id === id); // find course based on course id
+    const course = courses.find((course) => course.id === id); // find course based on course id
     if (!course) {
         return <div>No course found</div>;
     }
@@ -67,7 +67,7 @@ export default function Home() {
                     <CourseDetailsCard
                         name={course.name}
                         description={course?.description}
-                        variant="client"
+                        variant="admin"
                     />
                 }
                 rightChildren={

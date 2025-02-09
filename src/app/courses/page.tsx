@@ -45,6 +45,7 @@ export default function Courses() {
                                 name={course.name}
                                 image={course.image}
                                 imageAlt={course.imgAlt}
+                                variant="client"
                                 enrolled={true}
                             />
                         ))}
@@ -59,6 +60,7 @@ export default function Courses() {
                                 name={course.name}
                                 image={course.image}
                                 imageAlt={course.imgAlt}
+                                variant="client"
                                 enrolled={false}
                             />
                         ))}

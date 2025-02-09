@@ -1,5 +1,6 @@
 "use client";
 import AddCourse from "@/components/courses/add-course";
+import CourseCard from "@/components/courses/course-card";
 import { useState } from "react";
 
 export default function Courses() {
@@ -11,16 +12,61 @@ export default function Courses() {
         setShowAddPopup(false);
     };
 
+    const allCourses = [
+        {
+            id: "4",
+            name: "第20期：脳の運動教室(シン 脳の運動教室)",
+            image: "/course-image.png",
+            imgAlt: "A Snake",
+            description: "20th class",
+        },
+        {
+            id: "3",
+            name: "第19期：脳の運動教室(シン 脳の運動教室)",
+            image: "/course-image.png",
+            imgAlt: "A Snake",
+            description:
+                "2025年は、60年に一度巡ってくる「乙巳（きのと・み）」の年。乙巳の年は、新しいものが生まれ、成長していく年と言われています。第19期となる脳の運動教室も、今年は「シン 脳の運動教室」としてブラッシュアップしていきます！皆さま、本年もよろしくお願いいたします。",
+        },
+        {
+            id: "2",
+            name: "Course 123",
+            image: "/course-image.png",
+            imgAlt: "A Snake",
+            description:
+                "2025年は、60年に一度巡ってくる「乙巳（きのと・み）」の年。乙巳の年は、新しいものが生まれ、成長していく年と言われています。第19期となる脳の運動教室も、今年は「シン 脳の運動教室」としてブラッシュアップしていきます！皆さま、本年もよろしくお願いいたします。",
+        },
+        {
+            id: "1",
+            name: "Course 122",
+            image: "/course-image.png",
+            imgAlt: "A Snake",
+            description:
+                "2025年は、60年に一度巡ってくる「乙巳（きのと・み）」の年。乙巳の年は、新しいものが生まれ、成長していく年と言われています。第19期となる脳の運動教室も、今年は「シン 脳の運動教室」としてブラッシュアップしていきます！皆さま、本年もよろしくお願いいたします。",
+        },
+    ];
+
     return (
-        <div className="relative min-h-full w-full">
+        <>
             {showAddPopup && (
-                <div
-                    className="absolute inset-0 bg-black opacity-50"
-                    onClick={handleClosePopup}
-                />
+                <div className="absolute min-h-full w-full top-0 left-0">
+                    {showAddPopup && (
+                        <div
+                            className="absolute inset-0 bg-black opacity-50"
+                            onClick={handleClosePopup}
+                        />
+                    )}
+                    {showAddPopup && (
+                        <div className="absolute inset-0 flex justify-center items-center z-10">
+                            <div className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-white rounded-lg p-6">
+                                <AddCourse />
+                            </div>
+                        </div>
+                    )}
+                </div>
             )}
             <button
-                className="flex h-[72px] w-[72px] bg-primary-green shadow-lg border-4 border-white rounded-full justify-center items-center"
+                className="absolute bottom-24 right-2 md:bottom-24 md:right-6 flex h-[72px] w-[72px] bg-primary-green shadow-lg border-4 border-white rounded-full justify-center items-center z-[1]"
                 onClick={handleAddButtonClick}
             >
                 <svg
@@ -39,13 +85,19 @@ export default function Courses() {
                     />
                 </svg>
             </button>
-            {showAddPopup && (
-                <div className="absolute inset-0 flex justify-center items-center z-10">
-                    <div className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-white rounded-lg p-6">
-                        <AddCourse />
-                    </div>
-                </div>
-            )}
-        </div>
+            <div className="flex flex-col gap-4 pb-10 md:pb-12">
+                {allCourses.map((course) => (
+                    <CourseCard
+                        key={course.id}
+                        id={course.id}
+                        name={course.name}
+                        image={course.image}
+                        imageAlt={course.imgAlt}
+                        description={course.description}
+                        variant="admin"
+                    />
+                ))}
+            </div>
+        </>
     );
 }
