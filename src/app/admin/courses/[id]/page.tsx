@@ -3,6 +3,8 @@ import { useParams } from "next/navigation";
 import TabsMenu from "@/components/shared/tabs-menu";
 import CourseDetailsCard from "@/components/courses/course-details-card";
 import MaterialCard from "@/components/shared/material-card";
+import { useState } from "react";
+import ParticipantList from "@/components/courses/participant-list";
 
 export default function AdminCourses() {
     const { id } = useParams();
@@ -42,6 +44,32 @@ export default function AdminCourses() {
                     file: "Week1.pdf",
                 },
             ],
+            participants: [
+                {
+                    id: "1",
+                    firstName: "Annabelle",
+                    lastName: "Chen",
+                    city: "Vancouver",
+                },
+                {
+                    id: "2",
+                    firstName: "Kevin",
+                    lastName: "So",
+                    city: "Vancouver",
+                },
+                {
+                    id: "3",
+                    firstName: "Armaan",
+                    lastName: "Brar",
+                    city: "Surrey",
+                },
+                {
+                    id: "4",
+                    firstName: "Angus",
+                    lastName: "Ng",
+                    city: "Vancouver",
+                },
+            ],
         },
         {
             id: "3",
@@ -64,11 +92,16 @@ export default function AdminCourses() {
                 leftLabel="Course Home"
                 rightLabel="Course Materials"
                 leftChildren={
-                    <CourseDetailsCard
-                        name={course.name}
-                        description={course?.description}
-                        variant="admin"
-                    />
+                    <div className="flex flex-col gap-4">
+                        <CourseDetailsCard
+                            name={course.name}
+                            description={course?.description}
+                            variant="admin"
+                        />
+                        <ParticipantList
+                            participants={course.participants || []}
+                        />
+                    </div>
                 }
                 rightChildren={
                     <div className="flex flex-col gap-4">
@@ -86,6 +119,23 @@ export default function AdminCourses() {
                         ) : (
                             <p>No course materials available.</p>
                         )}
+                        <button className="absolute bottom-24 right-2 md:bottom-24 md:right-6 flex h-[72px] w-[72px] bg-primary-green shadow-lg border-4 border-white rounded-full justify-center items-center z-[1]">
+                            <svg
+                                width="32"
+                                height="32"
+                                viewBox="0 0 32 32"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                                <path
+                                    d="M16 5.33334V26.6667M26.6667 16L5.33334 16"
+                                    stroke="white"
+                                    strokeWidth="4"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                />
+                            </svg>
+                        </button>
                     </div>
                 }
             />
