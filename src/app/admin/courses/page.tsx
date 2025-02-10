@@ -11,7 +11,6 @@ export default function Courses() {
     const handleClosePopup = () => {
         setShowAddPopup(false);
     };
-
     const allCourses = [
         {
             id: "4",
@@ -48,6 +47,7 @@ export default function Courses() {
 
     return (
         <>
+            <h1 className="font-semibold text-4xl text-center mb-6">Courses</h1>
             {showAddPopup && (
                 <div className="absolute min-h-full w-full top-0 left-0">
                     {showAddPopup && (
@@ -86,17 +86,19 @@ export default function Courses() {
                 </svg>
             </button>
             <div className="flex flex-col gap-4 pb-10 md:pb-12">
-                {allCourses.map((course) => (
-                    <CourseCard
-                        key={course.id}
-                        id={course.id}
-                        name={course.name}
-                        image={course.image}
-                        imageAlt={course.imgAlt}
-                        description={course.description}
-                        variant="admin"
-                    />
-                ))}
+                {allCourses.length
+                    ? allCourses.map((course) => (
+                          <CourseCard
+                              key={course.id}
+                              id={course.id}
+                              name={course.name}
+                              image={course.image}
+                              imageAlt={course.imgAlt}
+                              description={course.description}
+                              variant="admin"
+                          />
+                      ))
+                    : "No courses found."}
             </div>
         </>
     );
