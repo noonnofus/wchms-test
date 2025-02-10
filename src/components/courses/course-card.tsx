@@ -41,7 +41,15 @@ export default function CourseCard(
                 )}
             >
                 <CardHeader>
-                    <CardTitle>{props.name}</CardTitle>
+                    <CardTitle
+                        className={twMerge(
+                            props.variant === "admin"
+                                ? "px-6 sm:px-4 md:px-4"
+                                : ""
+                        )}
+                    >
+                        {props.name}
+                    </CardTitle>
                 </CardHeader>
                 {props.image && (
                     <Image
@@ -92,6 +100,24 @@ export default function CourseCard(
                         <CardContent>
                             <p>{props.description}</p>
                         </CardContent>
+                        <Link href="">
+                            <svg
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="absolute right-[2%] top-[8%]"
+                            >
+                                <path
+                                    d="M15.2322 5.23223L18.7677 8.76777M16.7322 3.73223C17.7085 2.75592 19.2914 2.75592 20.2677 3.73223C21.244 4.70854 21.244 6.29146 20.2677 7.26777L6.5 21.0355H3V17.4644L16.7322 3.73223Z"
+                                    stroke="black"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                />
+                            </svg>
+                        </Link>
                         <Link href={`/admin/courses/${props.id}`}>
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
