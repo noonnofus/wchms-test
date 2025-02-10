@@ -1,17 +1,23 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { twMerge } from "tailwind-merge";
 
 export default function TabsMenu(props: {
     leftLabel: string;
     rightLabel: string;
     leftChildren: React.ReactNode;
     rightChildren: React.ReactNode;
+    className?: string;
+    tabsListClassName?: string;
 }) {
     return (
         <Tabs
             defaultValue="leftLabel"
-            className="flex flex-col pb-6 gap-4 w-full h-full items-center"
+            className={twMerge(
+                "flex flex-col pb-6 gap-4 w-full h-full items-center",
+                props.className
+            )}
         >
-            <TabsList>
+            <TabsList className={props.tabsListClassName || undefined}>
                 <TabsTrigger value="leftLabel">{props.leftLabel}</TabsTrigger>
                 <TabsTrigger value="rightLabel">{props.rightLabel}</TabsTrigger>
             </TabsList>

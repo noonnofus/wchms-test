@@ -5,6 +5,7 @@ import CourseDetailsCard from "@/components/courses/course-details-card";
 import MaterialCard from "@/components/shared/material-card";
 import { useState } from "react";
 import ParticipantList from "@/components/courses/participant-list";
+import AddMaterial from "@/components/courses/add-material";
 
 export default function AdminCourses() {
     const { id } = useParams();
@@ -86,6 +87,14 @@ export default function AdminCourses() {
         return <div>No course found</div>;
     }
 
+    const [showAddPopup, setShowAddPopup] = useState(false);
+    const handleAddButtonClick = () => {
+        setShowAddPopup(true);
+    };
+    const handleClosePopup = () => {
+        setShowAddPopup(false);
+    };
+
     return (
         <div>
             <TabsMenu
@@ -119,7 +128,10 @@ export default function AdminCourses() {
                         ) : (
                             <p>No course materials available.</p>
                         )}
-                        <button className="absolute bottom-24 right-2 md:bottom-24 md:right-6 flex h-[72px] w-[72px] bg-primary-green shadow-lg border-4 border-white rounded-full justify-center items-center z-[1]">
+                        <button
+                            onClick={handleAddButtonClick}
+                            className="absolute bottom-24 right-2 md:bottom-24 md:right-6 flex h-[72px] w-[72px] bg-primary-green shadow-lg border-4 border-white rounded-full justify-center items-center z-[1]"
+                        >
                             <svg
                                 width="32"
                                 height="32"
@@ -136,6 +148,22 @@ export default function AdminCourses() {
                                 />
                             </svg>
                         </button>
+                        {showAddPopup && (
+                            <div className="absolute min-h-full w-full top-0 left-0">
+                                <div
+                                    className="absolute inset-0 bg-black opacity-50 z-10"
+                                    onClick={handleClosePopup}
+                                />
+
+                                <div className="absolute inset-0 flex justify-center items-center z-10 max-h-[90vh] top-1/2 -translate-y-1/2">
+                                    <div className="relative w-full max-w-[95vw] lg:max-w-4xl max-h-[90vh] overflow-y-auto bg-white rounded-lg p-3 md:p-6">
+                                        <AddMaterial
+                                            handleClosePopup={handleClosePopup}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 }
             />

@@ -31,7 +31,7 @@ export default function ParticipantList(props: {
                         </Link>
                     </div>
                 </CardHeader>
-                <CardContent className="overflow-x-scroll w-full">
+                <CardContent className="overflow-x-auto w-full">
                     <div className="flex overflow-x-auto min-w-max space-x-4">
                         {props.participants.length
                             ? props.participants.map((participant) => {

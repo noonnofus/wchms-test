@@ -50,19 +50,16 @@ export default function Courses() {
             <h1 className="font-semibold text-4xl text-center mb-6">Courses</h1>
             {showAddPopup && (
                 <div className="absolute min-h-full w-full top-0 left-0">
-                    {showAddPopup && (
-                        <div
-                            className="absolute inset-0 bg-black opacity-50"
-                            onClick={handleClosePopup}
-                        />
-                    )}
-                    {showAddPopup && (
-                        <div className="absolute inset-0 flex justify-center items-center z-10">
-                            <div className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-white rounded-lg p-6">
-                                <AddCourse />
-                            </div>
+                    <div
+                        className="absolute inset-0 bg-black opacity-50 z-10"
+                        onClick={handleClosePopup}
+                    />
+
+                    <div className="absolute inset-0 flex justify-center items-center z-10 max-h-[90vh] top-1/2 -translate-y-1/2">
+                        <div className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-white rounded-lg p-6">
+                            <AddCourse />
                         </div>
-                    )}
+                    </div>
                 </div>
             )}
             <button
