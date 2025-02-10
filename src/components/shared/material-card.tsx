@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import EditIcon from "../icons/edit-icon";
 
 interface Material {
     title: string;
@@ -9,12 +10,18 @@ interface Material {
     file: string | null;
 }
 
-export default function MaterialCard({ material }: { material: Material }) {
+export default function MaterialCard({
+    material,
+    handleEditButtonClick,
+}: {
+    material: Material;
+    handleEditButtonClick: () => void;
+}) {
     return (
         <div className="flex flex-col items-center">
-            <Card>
+            <Card className="relative z-0">
                 <CardHeader className="py-0 pt-6">
-                    <CardTitle className="text-center">
+                    <CardTitle className="text-center px-6 sm:px-4 md:px-4">
                         {material.title}
                     </CardTitle>
                 </CardHeader>
@@ -32,6 +39,9 @@ export default function MaterialCard({ material }: { material: Material }) {
                         </Button>
                     )}
                 </CardContent>
+                <button onClick={handleEditButtonClick}>
+                    <EditIcon className="absolute right-[2%] top-[8%]" />
+                </button>
             </Card>
         </div>
     );

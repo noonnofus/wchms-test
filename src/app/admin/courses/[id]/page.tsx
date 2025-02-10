@@ -6,6 +6,7 @@ import MaterialCard from "@/components/shared/material-card";
 import { useState } from "react";
 import ParticipantList from "@/components/courses/participant-list";
 import AddMaterial from "@/components/courses/add-material";
+import EditMaterial from "@/components/courses/edit-material";
 
 export default function AdminCourses() {
     const { id } = useParams();
@@ -27,18 +28,27 @@ export default function AdminCourses() {
             status: "Available",
             materials: [
                 {
+                    id: "4",
+                    type: "Simple Arithmetic" as const,
+                    difficulty: "Basic" as const,
                     title: "Week 4: Just a file",
                     content: null,
                     createdAt: new Date(1738859550),
                     file: "Week4.pdf",
                 },
                 {
+                    id: "3",
+                    type: "Physical Exercise" as const,
+                    difficulty: "Basic" as const,
                     title: "Week 3",
                     content: "No review materials this week",
                     createdAt: new Date(1738859550),
                     file: null,
                 },
                 {
+                    id: "2",
+                    type: "Reading Aloud" as const,
+                    difficulty: "Intermediate" as const,
                     title: "Week 2",
                     content:
                         "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam id enim eget sem maximus accumsan. Pellentesque id varius mi, non sollicitudin orci. Donec eu condimentum justo. Donec vel sapien arcu. Quisque dapibus ligula non imperdiet malesuada.",
@@ -46,6 +56,9 @@ export default function AdminCourses() {
                     file: "Week2.pdf",
                 },
                 {
+                    id: "1",
+                    type: "Reading Aloud" as const,
+                    difficulty: "Intermediate" as const,
                     title: "Week 1: A really long title to see how it would look with multiple lines",
                     content: "Some description",
                     createdAt: new Date(1738859540),
@@ -101,10 +114,21 @@ export default function AdminCourses() {
     const handleClosePopup = () => {
         setShowAddPopup(false);
     };
+    const [showEditMaterialPopup, setShowEditMaterialPopup] = useState(false);
+    const [editMaterialId, setMaterialId] = useState("");
+    const handleEditButtonClick = (id: string) => {
+        setMaterialId(id);
+        setShowEditMaterialPopup(true);
+    };
+    const handleCloseEditPopup = () => {
+        setMaterialId("");
+        setShowEditMaterialPopup(false);
+    };
 
     return (
         <div>
             <TabsMenu
+                tabsListClassName="z-[1]"
                 leftLabel="Course Home"
                 rightLabel="Course Materials"
                 leftChildren={
@@ -129,6 +153,9 @@ export default function AdminCourses() {
                                             material.title + material.createdAt
                                         }
                                         material={material}
+                                        handleEditButtonClick={() =>
+                                            handleEditButtonClick(material.id)
+                                        }
                                     />
                                 );
                             })
@@ -166,6 +193,31 @@ export default function AdminCourses() {
                                     <div className="relative w-full max-w-[95vw] lg:max-w-4xl max-h-[90vh] overflow-y-auto bg-white rounded-lg p-3 md:p-6">
                                         <AddMaterial
                                             handleClosePopup={handleClosePopup}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                        {showEditMaterialPopup && (
+                            <div className="absolute min-h-full w-full top-0 left-0">
+                                <div
+                                    className="absolute inset-0 bg-black opacity-50 z-10"
+                                    onClick={handleCloseEditPopup}
+                                />
+
+                                <div className="absolute inset-0 flex justify-center items-center z-10 max-h-[90vh] top-1/2 -translate-y-1/2">
+                                    <div className="relative w-full max-w-[95vw] lg:max-w-4xl max-h-[90vh] overflow-y-auto bg-white rounded-lg p-3 md:p-6">
+                                        <EditMaterial
+                                            handleClosePopup={
+                                                handleCloseEditPopup
+                                            }
+                                            material={
+                                                course.materials.filter(
+                                                    (material) =>
+                                                        material.id ===
+                                                        editMaterialId
+                                                )[0]
+                                            }
                                         />
                                     </div>
                                 </div>
