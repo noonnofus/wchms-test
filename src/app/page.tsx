@@ -42,7 +42,7 @@ export default function ParticipantLogin() {
     };
 
     return (
-        <div className="flex flex-col gap-20 w-full h-full items-center justify-center">
+        <div className="flex flex-col gap-20 w-full h-full items-center">
             <h1 className="font-semibold text-4xl">Participants List</h1>
             <div className="flex flex-col w-full items-center gap-10">
                 <div className="flex flex-col w-full items-center gap-4">

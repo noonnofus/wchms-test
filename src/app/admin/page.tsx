@@ -6,14 +6,14 @@ import Link from "next/link";
 
 export default function AdminLanding() {
     return (
-        <div className="flex flex-col gap-10 w-full h-full items-center justify-center">
+        <div className="flex flex-col gap-10 w-full h-full items-center">
             <h1 className="font-semibold text-4xl text-center">
                 Instructor Overview
             </h1>
             <div className="w-full flex flex-col gap-4">
                 <Button
                     asChild
-                    className="min-h-[16vh] rounded-lg bg-courses-blue hover:bg-[#004F8A]"
+                    className="min-h-[16vh] rounded-lg bg-primary-green hover:bg-[#045B47]"
                 >
                     <Link href="/admin/courses">
                         <div className="flex flex-col items-center justify-center">
@@ -24,7 +24,7 @@ export default function AdminLanding() {
                 </Button>
                 <Button
                     asChild
-                    className="min-h-[16vh] rounded-lg bg-primary-green hover:bg-[#045B47]"
+                    className="min-h-[16vh] rounded-lg bg-homework-yellow hover:bg-[#E0A800]"
                 >
                     <Link href="#">
                         <div className="flex flex-col items-center justify-center">
@@ -58,7 +58,7 @@ export default function AdminLanding() {
                 </Button>
                 <Button
                     asChild
-                    className="min-h-[16vh] rounded-lg bg-discussion-pink hover:bg-[#9B0049]"
+                    className="min-h-[16vh] rounded-lg bg-manage-red hover:bg-[#8B182A]"
                 >
                     <Link href="#">
                         <div className="flex flex-col items-center justify-center">
