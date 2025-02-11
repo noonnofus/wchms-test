@@ -2,10 +2,14 @@
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 export default function Logout() {
     const router = useRouter();
+    const handleLogout = async () => {
+        await signOut({ callbackUrl: "/login" });
+    };
     return (
         <div className="flex flex-col items-center gap-8 h-full">
             <h1 className="mt-4 text-[32px] font-semibold">Logout</h1>
@@ -19,18 +23,14 @@ export default function Logout() {
                 </p>
             </Card>
             <div className="w-full flex flex-col gap-4">
-                <form
-                    method="POST"
-                    action="/api/auth/logout"
-                    className="w-full"
+                <Button
+                    type="submit"
+                    onClick={handleLogout}
+                    className="bg-destructive-red hover:bg-destructive-hover text-destructive-text rounded-full w-full font-semibold text-base min-h-[45px]"
                 >
-                    <Button
-                        type="submit"
-                        className="bg-destructive-red hover:bg-destructive-hover text-destructive-text rounded-full w-full font-semibold text-base min-h-[45px]"
-                    >
-                        Logout
-                    </Button>
-                </form>
+                    Logout
+                </Button>
+
                 <Button
                     onClick={() => router.back()}
                     variant="outline"
