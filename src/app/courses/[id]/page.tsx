@@ -67,6 +67,7 @@ export default function Home() {
                     <CourseDetailsCard
                         name={course.name}
                         description={course?.description}
+                        variant="client"
                     />
                 }
                 rightChildren={
