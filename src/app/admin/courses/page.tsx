@@ -85,16 +85,16 @@ export default function Courses() {
             <div className="flex flex-col gap-4 pb-10 md:pb-12">
                 {allCourses.length
                     ? allCourses.map((course) => (
-                          <CourseCard
-                              key={course.id}
-                              id={course.id}
-                              name={course.name}
-                              image={course.image}
-                              imageAlt={course.imgAlt}
-                              description={course.description}
-                              variant="admin"
-                          />
-                      ))
+                        <CourseCard
+                            key={course.id}
+                            id={course.id}
+                            name={course.name}
+                            image={course.image}
+                            imageAlt={course.imgAlt}
+                            description={course.description}
+                            variant="admin"
+                        />
+                    ))
                     : "No courses found."}
             </div>
         </>
