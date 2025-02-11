@@ -1,11 +1,16 @@
 "use client";
 import { signIn } from "next-auth/react";
 import { useState } from "react";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardDescription,
+    CardContent,
+} from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-// Exmaple log in, change in future, localhost:3000/admin/login
 
 export default function LoginPage() {
     const [email, setEmail] = useState("");
@@ -25,7 +30,7 @@ export default function LoginPage() {
         if (res?.error) {
             setError("Invalid email or password");
         } else {
-            window.location.href = "/dashboard"; // rn dosnt exist but should redirecct to /staff/dashboard
+            window.location.href = "/admin";
         }
     };
 
@@ -34,10 +39,15 @@ export default function LoginPage() {
             <div className="w-full max-w-4xl relative -translate-y-28 p-6 mt-16">
                 <Card className="py-14">
                     <CardHeader className="space-y-1">
-                        <CardTitle className="text-black text-2xl font-bold">Staff Login</CardTitle>
+                        <CardTitle className="text-black text-2xl font-bold">
+                            Staff Login
+                        </CardTitle>
                     </CardHeader>
                     <CardContent className="w-full">
-                        <CardDescription>Enter your email and password to login to your account</CardDescription>
+                        <CardDescription>
+                            Enter your email and password to login to your
+                            account
+                        </CardDescription>
                         <form className="space-y-4">
                             <div className="space-y-2">
                                 <Label htmlFor="email">Email</Label>
@@ -56,12 +66,18 @@ export default function LoginPage() {
                                     id="password"
                                     type="password"
                                     className="w-full"
-                                    onChange={(e) => setPassword(e.target.value)}
+                                    onChange={(e) =>
+                                        setPassword(e.target.value)
+                                    }
                                     required
                                 />
                             </div>
                             <div>
-                                {error && <p className="text-sm text-red-500">{error}</p>}
+                                {error && (
+                                    <p className="text-sm text-red-500">
+                                        {error}
+                                    </p>
+                                )}
                             </div>
                             <Button
                                 className="w-full rounded-xl bg-primary-green mt-4 hover:bg-[#046e5b]"
