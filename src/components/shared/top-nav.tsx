@@ -49,7 +49,7 @@ export default function TopNav() {
                                 className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm px-4 py-2 h-9 border-destructive-hover text-destructive-text hover:bg-destructive-hover hover:text-destructive-text"
                             >
                                 <Link
-                                    href={`/logout?redirect=${path === "/admin" ? path : "/"}`}
+                                    href={`/logout?redirect=${path === "/admin" ? `${path}/login` : "/"}`}
                                 >
                                     Logout
                                 </Link>
