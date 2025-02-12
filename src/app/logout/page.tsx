@@ -4,11 +4,17 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
 export default function Logout() {
     const router = useRouter();
+    const searchParams = useSearchParams();
+
     const handleLogout = async () => {
-        await signOut({ callbackUrl: "/login" });
+        await signOut({ callbackUrl: "/login", redirect: false });
+        const redirect = searchParams.get("redirect") || "/";
+
+        window.location.replace(redirect);
     };
     return (
         <div className="flex flex-col items-center gap-8 h-full">
