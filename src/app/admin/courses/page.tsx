@@ -2,6 +2,7 @@
 import AddCourse from "@/components/courses/add-course";
 import CourseCard from "@/components/courses/course-card";
 import { useState } from "react";
+import DeleteConfirmation from "@/components/shared/delete-confirmation";
 
 export default function Courses() {
     const [showAddPopup, setShowAddPopup] = useState(false);
@@ -57,7 +58,8 @@ export default function Courses() {
 
                     <div className="absolute inset-0 flex justify-center items-center z-10 max-h-[90vh] top-1/2 -translate-y-1/2">
                         <div className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-white rounded-lg p-6">
-                            <AddCourse />
+                            {/* <AddCourse /> */}
+                            <DeleteConfirmation body={"hi"} />
                         </div>
                     </div>
                 </div>
