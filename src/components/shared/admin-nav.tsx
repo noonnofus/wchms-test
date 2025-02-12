@@ -8,7 +8,8 @@ import HomeIcon from "../icons/home-icon";
 export default function AdminNav() {
     const path = usePathname();
     return (
-        path.startsWith("/admin/") && (
+        path.startsWith("/admin/") &&
+        path !== "/admin/landing" && (
             <div className="p-6 min-w-[360px] max-h-20 md:max-h-24 flex justify-center items-center">
                 <div className="flex justify-center items-center w-full gap-12 md:gap-32 text-[#545F71] text-base font-semibold">
                     <Link href="/admin/landing">
