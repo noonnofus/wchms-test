@@ -12,70 +12,92 @@ import { Textarea } from "../ui/textarea";
 import { DatePicker } from "../ui/date-picker";
 import { Button } from "../ui/button";
 
-const categories = ["Category 1", "Category 2"];
-const rooms = ["Online via Zoom", "Burnaby"];
-const languages = ["Japanese", "English"];
-const types = ["Group", "Individual"];
-const statuses = ["Available", "Archived", "Completed"];
+const [rooms, languages, types, statuses] = [
+    ["Online via Zoom", "Burnaby"], //Change values here to change available select options
+    ["English", "Japanese"],
+    ["Group", "Individual"],
+    ["Available", "Completed"],
+];
 
 export default function AddCourse() {
-    const [selectedCategory, setSelectedCategory] = useState<string | null>(
-        null
-    );
-    const [selectedRoom, setSelectedRoom] = useState<string | null>(null);
-    const [selectedLanguage, setSelectedLanguage] = useState<string | null>(
-        null
-    );
-    const [selectedType, setSelectedType] = useState<string | null>(null);
-    const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
-
-    const handleCourseSelect = (categoryName: string) => {
-        setSelectedCategory(categoryName);
+    const [formData, setFormData] = useState({
+        courseName: "",
+        courseImage: null as File | null,
+        courseDescription: "",
+        courseStartDate: undefined,
+        courseEndDate: undefined,
+        courseRoom: "Online via Zoom",
+        courseLanguage: "Japanese",
+        courseType: "Group",
+        courseStatus: "Available",
+        courseParticipants: "",
+    });
+    const handleChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    ) => {
+        const { name, value } = e.target;
+        setFormData({
+            ...formData,
+            [name]: value,
+        });
+    };
+    const handleSelectChange = (name: string, value: string) => {
+        setFormData({
+            ...formData,
+            [name]: value,
+        });
     };
 
-    const handleRoomSelect = (courseRoom: string) => {
-        setSelectedRoom(courseRoom);
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files ? e.target.files[0] : null;
+        setFormData({
+            ...formData,
+            courseImage: file,
+        });
+    };
+    const handleDateChange = (name: string, date: Date | undefined) => {
+        setFormData({
+            ...formData,
+            [name]: date,
+        });
     };
 
-    const handleLanguageSelect = (courseLangauge: string) => {
-        setSelectedLanguage(courseLangauge);
-    };
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        console.log(formData);
+        const res = await fetch("/api/courses/create", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formData),
+        });
 
-    const handleTypeSelect = (courseType: string) => {
-        setSelectedType(courseType);
-    };
-
-    const handleStatusSelect = (courseStatus: string) => {
-        setSelectedStatus(courseStatus);
+        if (res.ok) {
+            console.log("Form submitted successfully");
+        } else {
+            console.error("Form submission failed");
+        }
     };
 
     return (
         <div className="flex flex-col gap-20 min-w-[360px] overflow-y-auto py-8 px-6 rounded-lg bg-white items-center justify-center">
             <h1 className="font-semibold text-4xl">Add New Course</h1>
-            <form className="flex flex-col gap-4 w-full h-full md:text-2xl">
+            <form
+                className="flex flex-col gap-4 w-full h-full md:text-2xl"
+                onSubmit={handleSubmit}
+            >
                 <div className="flex flex-row gap-2 w-full">
                     <div className="flex flex-col flex-1 gap-2">
                         <label htmlFor="courseName">Course Name</label>
                         <Input
                             id="courseName"
+                            name="courseName"
                             type="text"
                             placeholder="Course Name"
+                            value={formData.courseName}
+                            onChange={handleChange}
                         />
-                    </div>
-                    <div className="flex flex-col flex-1 gap-2">
-                        <label htmlFor="courseCategory">Course Category</label>
-                        <Select onValueChange={handleCourseSelect}>
-                            <SelectTrigger>
-                                <SelectValue placeholder="Course Category" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {categories.map((category, index) => (
-                                    <SelectItem key={index} value={category}>
-                                        {category}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
                     </div>
                 </div>
                 <div className="flex flex-col flex-1 gap-2">
@@ -103,14 +125,10 @@ export default function AddCourse() {
                     <Input
                         type="file"
                         id="courseImage"
+                        name="courseImage"
                         className="hidden"
                         accept="image/*"
-                        onChange={(e) => {
-                            const file = e.target.files
-                                ? e.target.files[0]
-                                : null;
-                            console.log(file);
-                        }}
+                        onChange={handleFileChange}
                     ></Input>
                 </div>
                 <div className="flex flex-col flex-1 gap-2">
@@ -119,7 +137,9 @@ export default function AddCourse() {
                     </label>
                     <Textarea
                         id="courseDescription"
+                        name="courseDescription"
                         placeholder="Course Description"
+                        onChange={handleChange}
                     />
                 </div>
                 <div className="w-full flex flex-row gap-2">
@@ -127,17 +147,31 @@ export default function AddCourse() {
                         <label htmlFor="courseStartDate">
                             Course Start Date
                         </label>
-                        <DatePicker />
+                        <DatePicker
+                            value={formData.courseStartDate}
+                            onChange={(date) =>
+                                handleDateChange("courseStartDate", date)
+                            }
+                        />
                     </div>
                     <div className="flex flex-col flex-1 gap-2">
                         <label htmlFor="courseEndDate">Course End Date</label>
-                        <DatePicker />
+                        <DatePicker
+                            value={formData.courseEndDate}
+                            onChange={(date) =>
+                                handleDateChange("courseEndDate", date)
+                            }
+                        />
                     </div>
                 </div>
                 <div className="w-full flex flex-row gap-2">
                     <div className="flex flex-col flex-1 gap-2">
                         <label htmlFor="courseRoom">Course Room</label>
-                        <Select onValueChange={handleRoomSelect}>
+                        <Select
+                            onValueChange={(value) =>
+                                handleSelectChange("courseRoom", value)
+                            }
+                        >
                             <SelectTrigger>
                                 <SelectValue placeholder="Online via Zoom" />
                             </SelectTrigger>
@@ -152,7 +186,11 @@ export default function AddCourse() {
                     </div>
                     <div className="flex flex-col flex-1 gap-2">
                         <label htmlFor="courseLanguage">Course Language</label>
-                        <Select onValueChange={handleLanguageSelect}>
+                        <Select
+                            onValueChange={(value) =>
+                                handleSelectChange("courseLanguage", value)
+                            }
+                        >
                             <SelectTrigger>
                                 <SelectValue placeholder="Japanese" />
                             </SelectTrigger>
@@ -168,8 +206,12 @@ export default function AddCourse() {
                 </div>
                 <div className="w-full flex flex-row gap-2">
                     <div className="flex flex-col flex-1 gap-2">
-                        <label htmlFor="coursetype">Course Type</label>
-                        <Select onValueChange={handleTypeSelect}>
+                        <label htmlFor="courseType">Course Type</label>
+                        <Select
+                            onValueChange={(value) =>
+                                handleSelectChange("courseType", value)
+                            }
+                        >
                             <SelectTrigger>
                                 <SelectValue placeholder="Group" />
                             </SelectTrigger>
@@ -183,8 +225,12 @@ export default function AddCourse() {
                         </Select>
                     </div>
                     <div className="flex flex-col flex-1 gap-2">
-                        <label htmlFor="courseLanguage">Course Status</label>
-                        <Select onValueChange={handleStatusSelect}>
+                        <label htmlFor="courseStatus">Course Status</label>
+                        <Select
+                            onValueChange={(value) =>
+                                handleSelectChange("courseStatus", value)
+                            }
+                        >
                             <SelectTrigger>
                                 <SelectValue placeholder="Available" />
                             </SelectTrigger>
@@ -201,7 +247,10 @@ export default function AddCourse() {
                 <div className="flex flex-col flex-1 gap-2">
                     <label htmlFor="courseParticipants">Participants</label>
                     <Textarea
-                        id="courseParticipant"
+                        id="courseParticipants"
+                        name="courseParticipants"
+                        value={formData.courseParticipants}
+                        onChange={handleChange}
                         placeholder="Enter participants' full names, ex. Kevin So, Annabelle Chen"
                     />
                 </div>
