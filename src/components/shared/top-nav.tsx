@@ -13,10 +13,10 @@ export default function TopNav() {
         <div className="p-6 min-w-[360px] min-h-28 flex items-center">
             <div className="flex justify-between items-center w-full">
                 <div className="flex-1">
-                    {/* If its not the root page render a button */}
-                    {path !== "/" ? (
-                        // if its not the landing page render a back button, else render a logout button
-                        path !== "/landing" && path !== "/admin" ? (
+                    {/* If its not the root page, and admin login page render a button */}
+                    {path !== "/" && path !== "/admin" ? (
+                        // if its a landing page render a logout page
+                        path !== "/landing" && path !== "/admin/landing" ? (
                             <Button
                                 onClick={() => router.back()}
                                 variant="outline"
@@ -49,7 +49,7 @@ export default function TopNav() {
                                 className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm px-4 py-2 h-9 border-destructive-hover text-destructive-text hover:bg-destructive-hover hover:text-destructive-text"
                             >
                                 <Link
-                                    href={`/logout?redirect=${path === "/admin" ? `${path}/login` : "/"}`}
+                                    href={`/logout?redirect=${path === "/admin/landing" ? `/admin` : "/"}`}
                                 >
                                     Logout
                                 </Link>

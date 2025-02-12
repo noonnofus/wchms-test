@@ -1,73 +1,132 @@
 "use client";
-import BookIcon from "@/components/icons/book-icon";
-import GearIcon from "@/components/icons/gear-icon";
+import { signIn } from "next-auth/react";
+import { useState } from "react";
+import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardDescription,
+    CardContent,
+} from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
 
-export default function AdminLanding() {
+export default function LoginPage() {
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
+
+    const handleLogin = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setError("");
+
+        const res = await signIn("credentials", {
+            email,
+            password,
+            redirect: false,
+        });
+
+        if (res?.error) {
+            setError("Invalid email or password");
+        } else {
+            window.location.href = "/admin/landing";
+        }
+    };
+
     return (
-        <div className="flex flex-col gap-10 w-full h-full items-center">
-            <h1 className="font-semibold text-4xl text-center">
-                Instructor Overview
-            </h1>
-            <div className="w-full flex flex-col gap-4">
-                <Button
-                    asChild
-                    className="min-h-[16vh] rounded-lg bg-primary-green hover:bg-[#045B47]"
-                >
-                    <Link href="/admin/courses">
-                        <div className="flex flex-col items-center justify-center">
-                            <BookIcon className="min-w-12 min-h-12" />
-                            <p className="text-2xl md:text-3xl">Courses</p>
-                        </div>
-                    </Link>
-                </Button>
-                <Button
-                    asChild
-                    className="min-h-[16vh] rounded-lg bg-homework-yellow hover:bg-[#E0A800]"
-                >
-                    <Link href="#">
-                        <div className="flex flex-col items-center justify-center">
-                            <svg
-                                width="48"
-                                height="48"
-                                viewBox="0 0 48 48"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="min-w-12 min-h-12"
+        <div className="fixed inset-0 h-screen flex items-center justify-center mt-20">
+            <div className="w-full max-w-4xl relative -translate-y-28 p-6 mt-16">
+                <Card className="py-14">
+                    <CardHeader className="space-y-1">
+                        <CardTitle className="text-black text-2xl font-bold">
+                            Staff Login
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent className="w-full">
+                        <CardDescription>
+                            Enter your email and password to login to your
+                            account
+                        </CardDescription>
+                        <form className="space-y-4">
+                            <div className="space-y-2">
+                                <Label htmlFor="email">Email</Label>
+                                <Input
+                                    id="email"
+                                    type="email"
+                                    placeholder="wchms@example.com"
+                                    className="w-full"
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    required
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="password">Password</Label>
+                                <Input
+                                    id="password"
+                                    type="password"
+                                    className="w-full"
+                                    onChange={(e) =>
+                                        setPassword(e.target.value)
+                                    }
+                                    required
+                                />
+                            </div>
+                            <div>
+                                {error && (
+                                    <p className="text-sm text-red-500">
+                                        {error}
+                                    </p>
+                                )}
+                            </div>
+                            <Button
+                                className="w-full rounded-xl bg-primary-green mt-4 hover:bg-[#046e5b]"
+                                onClick={handleLogin}
                             >
-                                <path
-                                    d="M32 14C32 18.4183 28.4183 22 24 22C19.5817 22 16 18.4183 16 14C16 9.58172 19.5817 6 24 6C28.4183 6 32 9.58172 32 14Z"
-                                    stroke="white"
-                                    strokeWidth="3"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                />
-                                <path
-                                    d="M24 28C16.268 28 10 34.268 10 42H38C38 34.268 31.732 28 24 28Z"
-                                    stroke="white"
-                                    strokeWidth="3"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                />
-                            </svg>
-
-                            <p className="text-2xl md:text-3xl">Participants</p>
-                        </div>
-                    </Link>
-                </Button>
-                <Button
-                    asChild
-                    className="min-h-[16vh] rounded-lg bg-manage-red hover:bg-[#8B182A]"
-                >
-                    <Link href="#">
-                        <div className="flex flex-col items-center justify-center">
-                            <GearIcon className="min-w-12 min-h-12" />
-                            <p className="text-2xl md:text-3xl">Manage</p>
-                        </div>
-                    </Link>
-                </Button>
+                                Login
+                            </Button>
+                        </form>
+                    </CardContent>
+                </Card>
             </div>
         </div>
+
+        // <div
+        //     style={{
+        //         display: "flex",
+        //         flexDirection: "column",
+        //         gap: "10px",
+        //         maxWidth: "300px",
+        //         margin: "50px auto",
+        //     }}
+        // >
+        //     <h2>Login</h2>
+        //     {error && <p style={{ color: "red" }}>{error}</p>}
+        //     <input
+        //         type="email"
+        //         placeholder="Email"
+        //         value={email}
+        //         onChange={(e) => setEmail(e.target.value)}
+        //         required
+        //     />
+        //     <input
+        //         type="password"
+        //         placeholder="Password"
+        //         value={password}
+        //         onChange={(e) => setPassword(e.target.value)}
+        //         required
+        //     />
+        //     <button
+        //         onClick={handleLogin}
+        //         style={{
+        //             cursor: "pointer",
+        //             padding: "10px",
+        //             background: "#0070f3",
+        //             color: "white",
+        //         }}
+        //     >
+        //         Log In
+        //     </button>
+        // </div>
     );
 }

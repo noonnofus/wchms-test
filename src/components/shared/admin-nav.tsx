@@ -11,7 +11,7 @@ export default function AdminNav() {
         path.startsWith("/admin/") && (
             <div className="p-6 min-w-[360px] max-h-20 md:max-h-24 flex justify-center items-center">
                 <div className="flex justify-center items-center w-full gap-12 md:gap-32 text-[#545F71] text-base font-semibold">
-                    <Link href="/admin">
+                    <Link href="/admin/landing">
                         <div className="flex flex-col items-center justify-center">
                             <HomeIcon className="stroke-2 max-h-6 max-w-6" />
                             Home
