@@ -1,4 +1,3 @@
-"use client";
 import { useState } from "react";
 import { Input } from "../ui/input";
 import {
@@ -13,7 +12,7 @@ import { DatePicker } from "../ui/date-picker";
 import { Button } from "../ui/button";
 
 const [rooms, languages, types, statuses] = [
-    ["Online via Zoom", "Burnaby"], //Change values here to change available select options
+    ["Online via Zoom", "Burnaby"], // Change values here to change available select options
     ["English", "Japanese"],
     ["Group", "Individual"],
     ["Available", "Completed"],
@@ -32,6 +31,16 @@ export default function AddCourse() {
         courseStatus: "Available",
         courseParticipants: "",
     });
+
+    const [errors, setErrors] = useState({
+        courseName: "",
+        courseImage: "",
+        courseDescription: "",
+        courseStartDate: "",
+        courseEndDate: "",
+        courseParticipants: "",
+    });
+
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
     ) => {
@@ -41,6 +50,7 @@ export default function AddCourse() {
             [name]: value,
         });
     };
+
     const handleSelectChange = (name: string, value: string) => {
         setFormData({
             ...formData,
@@ -55,6 +65,7 @@ export default function AddCourse() {
             courseImage: file,
         });
     };
+
     const handleDateChange = (name: string, date: Date | undefined) => {
         setFormData({
             ...formData,
@@ -62,8 +73,56 @@ export default function AddCourse() {
         });
     };
 
+    const validateForm = () => {
+        let isValid = true;
+        let errorMessages: any = {};
+
+        if (!formData.courseName) {
+            errorMessages.courseName = "Course name is required";
+            isValid = false;
+        }
+
+        if (!formData.courseDescription) {
+            errorMessages.courseDescription = "Course description is required";
+            isValid = false;
+        }
+
+        if (!formData.courseStartDate) {
+            errorMessages.courseStartDate = "Start date is required";
+            isValid = false;
+        }
+
+        if (!formData.courseEndDate) {
+            errorMessages.courseEndDate = "End date is required";
+            isValid = false;
+        } else if (formData.courseStartDate && formData.courseEndDate) {
+            // Check if end date is after start date
+            const startDate = new Date(formData.courseStartDate);
+            const endDate = new Date(formData.courseEndDate);
+
+            if (endDate <= startDate) {
+                errorMessages.courseEndDate =
+                    "End date must be after start date";
+                isValid = false;
+            }
+        }
+
+        if (!formData.courseParticipants) {
+            errorMessages.courseParticipants = "Participants are required";
+            isValid = false;
+        }
+
+        setErrors(errorMessages);
+        return isValid;
+    };
+
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+
+        if (!validateForm()) {
+            return;
+        }
+
         console.log(formData);
         const res = await fetch("/api/courses/create", {
             method: "POST",
@@ -90,6 +149,11 @@ export default function AddCourse() {
                 <div className="flex flex-row gap-2 w-full">
                     <div className="flex flex-col flex-1 gap-2">
                         <label htmlFor="courseName">Course Name</label>
+                        {errors.courseName && (
+                            <p className="text-red-500 text-sm">
+                                {errors.courseName}
+                            </p>
+                        )}
                         <Input
                             id="courseName"
                             name="courseName"
@@ -101,27 +165,25 @@ export default function AddCourse() {
                     </div>
                 </div>
                 <div className="flex flex-col flex-1 gap-2">
-                    <label htmlFor="courseImage">
-                        Course Image
-                        <div className="flex flex-col items-center justify-center bg-[#D9D9D9] h-[148px] w-full rounded-lg">
-                            <svg
-                                width="26"
-                                height="24"
-                                viewBox="0 0 26 24"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                            >
-                                <path
-                                    d="M4.95508 16L9.60951 11.4142C10.4023 10.6332 11.6875 10.6332 12.4803 11.4142L17.1347 16M15.1048 14L16.7143 12.4142C17.507 11.6332 18.7923 11.6332 19.5851 12.4142L21.1946 14M15.1048 8H15.1149M6.98502 20H19.1647C20.2858 20 21.1946 19.1046 21.1946 18V6C21.1946 4.89543 20.2858 4 19.1647 4H6.98502C5.86391 4 4.95508 4.89543 4.95508 6V18C4.95508 19.1046 5.86391 20 6.98502 20Z"
-                                    stroke="#5D5D5D"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                />
-                            </svg>
-                            <p>Click or drag to add a photo</p>
-                        </div>
-                    </label>
+                    <label htmlFor="courseImage">Course Image</label>
+                    <div className="flex flex-col items-center justify-center bg-[#D9D9D9] h-[148px] w-full rounded-lg">
+                        <svg
+                            width="26"
+                            height="24"
+                            viewBox="0 0 26 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path
+                                d="M4.95508 16L9.60951 11.4142C10.4023 10.6332 11.6875 10.6332 12.4803 11.4142L17.1347 16M15.1048 14L16.7143 12.4142C17.507 11.6332 18.7923 11.6332 19.5851 12.4142L21.1946 14M15.1048 8H15.1149M6.98502 20H19.1647C20.2858 20 21.1946 19.1046 21.1946 18V6C21.1946 4.89543 20.2858 4 19.1647 4H6.98502C5.86391 4 4.95508 4.89543 4.95508 6V18C4.95508 19.1046 5.86391 20 6.98502 20Z"
+                                stroke="#5D5D5D"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            />
+                        </svg>
+                        <p>Click or drag to add a photo</p>
+                    </div>
                     <Input
                         type="file"
                         id="courseImage"
@@ -129,12 +191,17 @@ export default function AddCourse() {
                         className="hidden"
                         accept="image/*"
                         onChange={handleFileChange}
-                    ></Input>
+                    />
                 </div>
                 <div className="flex flex-col flex-1 gap-2">
                     <label htmlFor="courseDescription">
                         Course Description
                     </label>
+                    {errors.courseDescription && (
+                        <p className="text-red-500 text-sm">
+                            {errors.courseDescription}
+                        </p>
+                    )}
                     <Textarea
                         id="courseDescription"
                         name="courseDescription"
@@ -147,6 +214,11 @@ export default function AddCourse() {
                         <label htmlFor="courseStartDate">
                             Course Start Date
                         </label>
+                        {errors.courseStartDate && (
+                            <p className="text-red-500 text-sm">
+                                {errors.courseStartDate}
+                            </p>
+                        )}
                         <DatePicker
                             value={formData.courseStartDate}
                             onChange={(date) =>
@@ -156,6 +228,11 @@ export default function AddCourse() {
                     </div>
                     <div className="flex flex-col flex-1 gap-2">
                         <label htmlFor="courseEndDate">Course End Date</label>
+                        {errors.courseEndDate && (
+                            <p className="text-red-500 text-sm">
+                                {errors.courseEndDate}
+                            </p>
+                        )}
                         <DatePicker
                             value={formData.courseEndDate}
                             onChange={(date) =>
@@ -246,6 +323,11 @@ export default function AddCourse() {
                 </div>
                 <div className="flex flex-col flex-1 gap-2">
                     <label htmlFor="courseParticipants">Participants</label>
+                    {errors.courseParticipants && (
+                        <p className="text-red-500 text-sm">
+                            {errors.courseParticipants}
+                        </p>
+                    )}
                     <Textarea
                         id="courseParticipants"
                         name="courseParticipants"
