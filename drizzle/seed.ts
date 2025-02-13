@@ -9,18 +9,21 @@ async function SeedParticipants() {
             lastName: "Johnson",
             email: "alice@example.com",
             gender: "female",
+            dateOfBirth: "1968-08-22",
         },
         {
             firstName: "Bob",
             lastName: "Smith",
             email: "bob@example.com",
             gender: "male",
+            dateOfBirth: "1945-07-01",
         },
         {
             firstName: "Charlie",
             lastName: "Doe",
             email: "charlie@example.com",
             gender: "other",
+            dateOfBirth: "1950-03-11",
         },
     ];
 
@@ -36,6 +39,7 @@ async function SeedParticipants() {
                 lastName: participant.lastName,
                 email: participant.email,
                 gender: participant.gender as "male" | "female" | "other",
+                dateOfBirth: new Date(participant.dateOfBirth),
                 role: "participant",
             });
             console.log("Participant inserted");

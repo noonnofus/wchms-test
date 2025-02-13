@@ -9,6 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import AddParticipant from "@/components/manage/add-participant";
 
 const courses = [
     {
@@ -26,6 +27,14 @@ export default function ParticipantLogin() {
     // const allParticipants = courses.flatMap((course) => course.participants);
     const [participants, setParticipants] = useState<string[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
+
+    const [showAddPopup, setShowAddPopup] = useState(false);
+    const handleAddButtonClick = () => {
+        setShowAddPopup(true);
+    };
+    const handleClosePopup = () => {
+        setShowAddPopup(false);
+    };
 
     useEffect(() => {
         const fetchParticipants = async () => {
@@ -67,6 +76,40 @@ export default function ParticipantLogin() {
     return (
         <div className="flex flex-col gap-20 w-full h-full items-center">
             <h1 className="font-semibold text-4xl">Participants List</h1>
+            {showAddPopup && (
+                <div className="absolute min-h-full w-full top-0 left-0">
+                    <div
+                        className="absolute inset-0 bg-black opacity-50 z-10"
+                        onClick={handleClosePopup}
+                    />
+
+                    <div className="absolute inset-0 flex justify-center items-center z-10 max-h-[90vh] top-1/2 -translate-y-1/2">
+                        <div className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-white rounded-lg p-6">
+                            <AddParticipant />
+                        </div>
+                    </div>
+                </div>
+            )}
+            <button
+                className="absolute bottom-24 right-2 md:bottom-24 md:right-6 flex h-[72px] w-[72px] bg-primary-green shadow-lg border-4 border-white rounded-full justify-center items-center z-[1]"
+                onClick={handleAddButtonClick}
+            >
+                <svg
+                    width="32"
+                    height="32"
+                    viewBox="0 0 32 32"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                >
+                    <path
+                        d="M16 5.33334V26.6667M26.6667 16L5.33334 16"
+                        stroke="white"
+                        strokeWidth="4"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                    />
+                </svg>
+            </button>
             <div className="flex flex-col w-full items-center gap-10">
                 <div className="flex flex-col w-full items-center gap-4">
                     <h2 className="font-medium text-2xl">Select a Course</h2>
