@@ -7,7 +7,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 
 const courses = [
@@ -23,22 +23,45 @@ const courses = [
 
 export default function ParticipantLogin() {
     const [selectedCourse, setSelectedCourse] = useState<string | null>(null);
-    const allParticipants = courses.flatMap((course) => course.participants);
-    const [participants, setParticipants] = useState<string[]>(allParticipants);
+    // const allParticipants = courses.flatMap((course) => course.participants);
+    const [participants, setParticipants] = useState<string[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
+
+    useEffect(() => {
+        const fetchParticipants = async () => {
+            try {
+                const response = await fetch("/api/participants");
+                if (!response.ok)
+                    throw new Error("Failed to fetch participants");
+                const participants = await response.json();
+                const firstNames = participants.map(
+                    (participant: { firstName: string }) =>
+                        participant.firstName
+                );
+                setParticipants(firstNames);
+            } catch (error) {
+                console.error("Failed to fetch participants", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchParticipants();
+    }, []);
 
     const handleCourseSelect = (courseName: string) => {
-        if (courseName === "All Courses") {
-            setParticipants(allParticipants);
-            setSelectedCourse(null);
-        } else {
-            setSelectedCourse(courseName);
-            const selectCourseObj = courses.find(
-                (course) => course.name === courseName
-            );
-            if (selectCourseObj) {
-                setParticipants(selectCourseObj.participants);
-            }
-        }
+        // if (courseName === "All Courses") {
+        //     setParticipants(allParticipants);
+        //     setSelectedCourse(null);
+        // } else {
+        //     setSelectedCourse(courseName);
+        //     const selectCourseObj = courses.find(
+        //         (course) => course.name === courseName
+        //     );
+        //     if (selectCourseObj) {
+        //         setParticipants(selectCourseObj.participants);
+        //     }
+        // }
     };
 
     return (
