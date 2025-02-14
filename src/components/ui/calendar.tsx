@@ -18,7 +18,7 @@ function Calendar({
     const [currentMonth, setCurrentMonth] = React.useState(new Date());
 
     function CustomCaption({ displayMonth }: CaptionProps) {
-        const fromYear = 2000;
+        const fromYear = 1900;
         const toYear = new Date().getFullYear() + 10;
         const months = [
             "January",
