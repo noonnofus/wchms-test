@@ -31,7 +31,6 @@ export default function Courses() {
             try {
                 const availableCourses = await getAvailableCourses();
                 setCourses(availableCourses);
-                console.log(availableCourses);
             } catch (error) {
                 console.error("Error fetching courses", error);
                 setCourses({
@@ -50,34 +49,50 @@ export default function Courses() {
                 leftLabel="My Courses"
                 rightLabel="All Courses"
                 leftChildren={
-                    <div className="flex flex-col gap-4">
-                        {courses.enrolled.map((course) => (
-                            <CourseCard
-                                key={course.id}
-                                id={course.id}
-                                name={course.title}
-                                image={"/course-image.png"} // TODO: Add image reference
-                                imageAlt={`${course.title} Cover Image`}
-                                variant="client"
-                                enrolled={true}
-                            />
-                        ))}
-                    </div>
+                    <>
+                        {isLoading ? (
+                            <div className="flex justify-center items-center py-10">
+                                <p>Loading Courses...</p>
+                            </div>
+                        ) : (
+                            <div className="flex flex-col gap-4">
+                                {courses.enrolled.map((course) => (
+                                    <CourseCard
+                                        key={course.id}
+                                        id={course.id}
+                                        name={course.title}
+                                        image={"/course-image.png"} // TODO: Add image reference
+                                        imageAlt={`${course.title} Cover Image`}
+                                        variant="client"
+                                        enrolled={true}
+                                    />
+                                ))}
+                            </div>
+                        )}
+                    </>
                 }
                 rightChildren={
-                    <div className="flex flex-col gap-4">
-                        {courses.unenrolled.map((course) => (
-                            <CourseCard
-                                key={course.id}
-                                id={course.id}
-                                name={course.title}
-                                image={"/course-image.png"} // TODO: Add image reference
-                                imageAlt={`${course.title} Cover Image`}
-                                variant="client"
-                                enrolled={false}
-                            />
-                        ))}
-                    </div>
+                    <>
+                        {isLoading ? (
+                            <div className="flex justify-center items-center py-10">
+                                <p>Loading Courses...</p>
+                            </div>
+                        ) : (
+                            <div className="flex flex-col gap-4">
+                                {courses.unenrolled.map((course) => (
+                                    <CourseCard
+                                        key={course.id}
+                                        id={course.id}
+                                        name={course.title}
+                                        image={"/course-image.png"} // TODO: Add image reference
+                                        imageAlt={`${course.title} Cover Image`}
+                                        variant="client"
+                                        enrolled={false}
+                                    />
+                                ))}
+                            </div>
+                        )}
+                    </>
                 }
             />
         </div>

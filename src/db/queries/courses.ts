@@ -8,9 +8,9 @@ export interface courseList {
     title: string;
     description: string | null;
 }
-//Uncomment in the future for pagination functionality
+//Returns all courses that are available to users. Returns an object with an array of enrolled courses and unenrolled courses
 export async function getAvailableCourses() {
-    /* page = 1, limit = 10 */
+    /* page = 1, limit = 10 */ //Uncomment in the future for pagination functionality
     "use server";
     try {
         const userId = 1; //TODO: update to use current session user id
@@ -48,7 +48,7 @@ export async function getAvailableCourses() {
         };
     } catch (error) {
         console.error("Error fetching courses", error);
-        return { enrolled: [], unenrolled: [] }; // Return empty arrays in case of error
+        return { enrolled: [], unenrolled: [] };
     }
 }
 
