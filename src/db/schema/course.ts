@@ -6,7 +6,7 @@ import {
     varchar,
 } from "drizzle-orm/mysql-core";
 import { rooms } from "./room";
-import { users } from "./users";
+import { participants } from "./participants";
 
 export const Courses = mysqlTable("courses", {
     id: int("id").primaryKey().autoincrement(),
@@ -25,7 +25,7 @@ export const CourseParticipant = mysqlTable("course_participants", {
     id: int("id").primaryKey(),
     userId: int("user_id")
         .notNull()
-        .references(() => users.id),
+        .references(() => participants.id),
     courseId: int("course_id")
         .notNull()
         .references(() => Courses.id),
