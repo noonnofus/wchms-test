@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "../ui/input";
 import {
     Select,
@@ -10,22 +10,48 @@ import {
 import { Textarea } from "../ui/textarea";
 import { DatePicker } from "../ui/date-picker";
 import { Button } from "../ui/button";
+import { getAvailableRooms } from "@/db/queries/rooms";
+import { Room } from "@/db/schema/room";
 
-const [rooms, languages, types, statuses] = [
-    ["Online via Zoom", "Burnaby"], // Change values here to change available select options
+const defaultRoomName = "Online via Zoom"; //name of room for default selection
+const [languages, types, statuses] = [
+    // Change values here to change available select options
     ["English", "Japanese"],
     ["Group", "Individual"],
     ["Available", "Completed"],
 ];
-
 export default function AddCourse() {
+    const [isLoading, setIsLoading] = useState(true);
+    const [rooms, setRooms] = useState<Room[]>([]);
+    useEffect(() => {
+        const fetchRooms = async () => {
+            try {
+                const availableRooms = await getAvailableRooms();
+                setRooms(availableRooms);
+                setFormData({
+                    ...formData,
+                    courseRoom:
+                        availableRooms
+                            .find((room) => room.name === defaultRoomName)
+                            ?.id.toString() || "-1",
+                });
+            } catch (error) {
+                console.error("Error fetching rooms:", error);
+                setRooms([]);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        fetchRooms();
+    }, []);
+
     const [formData, setFormData] = useState({
         courseName: "",
         courseImage: null as File | null,
         courseDescription: "",
         courseStartDate: undefined,
         courseEndDate: undefined,
-        courseRoom: "Online via Zoom",
+        courseRoom: undefined as undefined | string,
         courseLanguage: "Japanese",
         courseType: "Group",
         courseStatus: "Available",
@@ -80,10 +106,16 @@ export default function AddCourse() {
         if (!formData.courseName) {
             errorMessages.courseName = "Course name is required";
             isValid = false;
+        } else if (formData.courseName.length > 255) {
+            errorMessages.courseName = `Course name cannot exceed 255 characters. Current count: ${formData.courseName.length}/255`;
+            isValid = false;
         }
 
         if (!formData.courseDescription) {
             errorMessages.courseDescription = "Course description is required";
+            isValid = false;
+        } else if (formData.courseDescription.length > 255) {
+            errorMessages.courseDescription = `Course Description cannot exceed 255 characters. Current count: ${formData.courseDescription.length}/255`;
             isValid = false;
         }
 
@@ -107,8 +139,21 @@ export default function AddCourse() {
             }
         }
 
+        // Validate course participants (comma-separated list)
         if (!formData.courseParticipants) {
             errorMessages.courseParticipants = "Participants are required";
+            isValid = false;
+        } else {
+            const participantsRegex = /^[a-zA-Z\s]+(?:,\s*[a-zA-Z\s]+)*$/;
+            if (!participantsRegex.test(formData.courseParticipants)) {
+                errorMessages.courseParticipants =
+                    "Participants must be a comma-separated list of names (e.g., 'John Kim, Kelly Zo')";
+                isValid = false;
+            }
+        }
+
+        if (!formData.courseRoom || formData.courseRoom === "-1") {
+            errorMessages.courseRoom = "Please select a valid room";
             isValid = false;
         }
 
@@ -248,16 +293,46 @@ export default function AddCourse() {
                             onValueChange={(value) =>
                                 handleSelectChange("courseRoom", value)
                             }
+                            disabled={isLoading} // Disable select while loading
                         >
                             <SelectTrigger>
-                                <SelectValue placeholder="Online via Zoom" />
+                                <SelectValue
+                                    placeholder={
+                                        isLoading
+                                            ? "Loading rooms..."
+                                            : formData.courseRoom
+                                              ? rooms.find(
+                                                    (room) =>
+                                                        room.name ===
+                                                        defaultRoomName
+                                                )?.name
+                                              : rooms.find(
+                                                    (room) =>
+                                                        room.id.toString() ===
+                                                        formData.courseRoom
+                                                )?.name
+                                    }
+                                />
                             </SelectTrigger>
                             <SelectContent>
-                                {rooms.map((room, index) => (
-                                    <SelectItem key={index} value={room}>
-                                        {room}
+                                {isLoading ? (
+                                    <SelectItem value={"-1"} disabled>
+                                        Loading...
                                     </SelectItem>
-                                ))}
+                                ) : rooms.length > 0 ? (
+                                    rooms.map((room) => (
+                                        <SelectItem
+                                            key={room.id}
+                                            value={String(room.id)}
+                                        >
+                                            {room.name}
+                                        </SelectItem>
+                                    ))
+                                ) : (
+                                    <SelectItem value={"-1"} disabled>
+                                        No rooms available
+                                    </SelectItem>
+                                )}
                             </SelectContent>
                         </Select>
                     </div>
