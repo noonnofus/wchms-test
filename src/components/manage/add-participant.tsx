@@ -129,7 +129,7 @@ export default function AddParticipant({
     };
 
     return (
-        <div className="flex flex-col gap-20 min-w-[360px] overflow-y-auto py-8 px-6 rounded-lg bg-white items-center justify-center">
+        <div className="flex flex-col gap-20 overflow-y-auto py-8 px-6 rounded-lg bg-white items-center justify-center">
             <h1 className="font-semibold text-4xl">Add New Participant</h1>
             <form
                 className="flex flex-col gap-4 w-full h-full md:text-2xl"

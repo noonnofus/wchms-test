@@ -77,16 +77,9 @@ export default function ParticipantLogin() {
         <div className="flex flex-col gap-20 w-full h-full items-center">
             <h1 className="font-semibold text-4xl">Participants List</h1>
             {showAddPopup && (
-                <div className="absolute min-h-full w-full top-0 left-0">
-                    <div
-                        className="absolute inset-0 bg-black opacity-50 z-10"
-                        onClick={handleClosePopup}
-                    />
-
-                    <div className="absolute inset-0 flex justify-center items-center z-10 max-h-[90vh] top-1/2 -translate-y-1/2">
-                        <div className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-white rounded-lg p-6">
-                            <AddParticipant closePopup={handleClosePopup} />
-                        </div>
+                <div className="absolute inset-0 flex justify-center items-center min-h-[800px] min-w-[360px] w-full h-full bg-black bg-opacity-50 z-50">
+                    <div className="relative w-full max-w-lg bg-white rounded-lg p-6 overflow-auto">
+                        <AddParticipant closePopup={handleClosePopup} />
                     </div>
                 </div>
             )}
