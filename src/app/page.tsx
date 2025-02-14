@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import AddParticipant from "@/components/manage/add-participant";
+import { type Participant } from "@/db/schema/participants";
 
 const courses = [
     {
@@ -44,12 +45,19 @@ export default function ParticipantLogin() {
                 const response = await fetch("/api/participants");
                 if (!response.ok)
                     throw new Error("Failed to fetch participants");
-                const participants = await response.json();
+                const participants: Participant[] = await response.json();
                 const firstNames = participants.map(
                     (participant: { firstName: string }) =>
                         participant.firstName
                 );
-                setParticipants(firstNames);
+
+                const uniqueParticipants: string[] = [
+                    ...new Set(
+                        firstNames.map((name: string) => name.toLowerCase())
+                    ),
+                ];
+
+                setParticipants(uniqueParticipants);
             } catch (error) {
                 console.error("Failed to fetch participants", error);
             } finally {
@@ -133,7 +141,7 @@ export default function ParticipantLogin() {
                             <Button
                                 asChild
                                 key={index}
-                                className="h-full bg-primary-green hover:bg-[#045B47] font-semibold text-xl py-4"
+                                className="capitalize h-full bg-primary-green hover:bg-[#045B47] font-semibold text-xl py-4"
                             >
                                 <Link href={`/${participant}`}>
                                     {participant}

@@ -12,6 +12,6 @@ export const participants = mysqlTable("participants", {
     lastName: varchar("last_name", { length: 255 }).notNull(),
     email: varchar("email", { length: 255 }).unique(),
     dateOfBirth: date("date_of_birth").notNull(),
-    gender: mysqlEnum("gender", ["male", "female", "other"]),
+    gender: mysqlEnum("gender", ["Male", "Female", "Other"]),
 });
 export type Participant = typeof participants.$inferSelect;

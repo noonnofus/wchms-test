@@ -11,7 +11,7 @@ import {
 import { Button } from "../ui/button";
 import { DatePicker } from "../ui/date-picker";
 
-const genders = ["male", "female", "other"];
+const genders = ["Male", "Female", "Other"];
 
 export default function AddParticipant({
     closePopup,

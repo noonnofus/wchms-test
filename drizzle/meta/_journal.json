@@ -43,6 +43,13 @@
       "when": 1739505160023,
       "tag": "0005_same_daredevil",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1739507591610,
+      "tag": "0006_hard_clea",
+      "breakpoints": true
     }
   ]
 }
