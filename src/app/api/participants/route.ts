@@ -1,12 +1,11 @@
-import {
-    getAllParticipantsFirstNames,
-    addParticipant,
-} from "@/db/queries/participants";
+import { getAllParticipants, addParticipant } from "@/db/queries/participants";
 
 export async function GET() {
     try {
-        const participants = await getAllParticipantsFirstNames();
-        return new Response(JSON.stringify(participants), { status: 200 });
+        const participantsFirstNames = await getAllParticipants();
+        return new Response(JSON.stringify(participantsFirstNames), {
+            status: 200,
+        });
     } catch (error) {
         return new Response(
             JSON.stringify({ message: "Error fetching participants" }),

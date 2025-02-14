@@ -1,15 +1,11 @@
 import db from "@/db";
-import { users } from "@/db/schema/users";
 import { eq } from "drizzle-orm";
+import { participants } from "../schema/participants";
 
-export async function getAllParticipantsFirstNames() {
+export async function getAllParticipants() {
     try {
-        const participants = await db
-            .select()
-            .from(users)
-            .where(eq(users.role, "participant"));
-        console.log(participants);
-        return participants;
+        const allParticipants = await db.select().from(participants);
+        return allParticipants;
     } catch (error) {
         console.error("Error fetching participants", error);
         return [];
@@ -26,17 +22,16 @@ export async function addParticipant(
     try {
         const existingUser = await db
             .select()
-            .from(users)
-            .where(eq(users.email, email));
+            .from(participants)
+            .where(eq(participants.email, email));
 
         if (existingUser.length === 0) {
-            await db.insert(users).values({
+            await db.insert(participants).values({
                 firstName,
                 lastName,
                 email,
                 gender,
                 dateOfBirth,
-                role: "participant",
             });
             console.log("Participant added");
             return { message: "Participant added successfully" };

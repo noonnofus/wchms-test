@@ -1,9 +1,9 @@
 import db from "../src/db";
-import { users } from "@/db/schema/users";
+import { participants } from "@/db/schema/participants";
 import { eq } from "drizzle-orm";
 
 async function SeedParticipants() {
-    const participants = [
+    const seedParticipants = [
         {
             firstName: "Alice",
             lastName: "Johnson",
@@ -27,20 +27,19 @@ async function SeedParticipants() {
         },
     ];
 
-    const insertParticipants = participants.map(async (participant) => {
+    const insertParticipants = seedParticipants.map(async (p) => {
         const existingUser = await db
             .select()
-            .from(users)
-            .where(eq(users.email, participant.email));
+            .from(participants)
+            .where(eq(participants.email, p.email));
 
         if (existingUser.length === 0) {
-            await db.insert(users).values({
-                firstName: participant.firstName,
-                lastName: participant.lastName,
-                email: participant.email,
-                gender: participant.gender as "male" | "female" | "other",
-                dateOfBirth: new Date(participant.dateOfBirth),
-                role: "participant",
+            await db.insert(participants).values({
+                firstName: p.firstName,
+                lastName: p.lastName,
+                email: p.email,
+                gender: p.gender as "male" | "female" | "other",
+                dateOfBirth: new Date(p.dateOfBirth),
             });
             console.log("Participant inserted");
         } else {

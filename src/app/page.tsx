@@ -27,6 +27,7 @@ export default function ParticipantLogin() {
     // const allParticipants = courses.flatMap((course) => course.participants);
     const [participants, setParticipants] = useState<string[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
+    const [refreshParticipants, setRefreshParticipants] = useState(false);
 
     const [showAddPopup, setShowAddPopup] = useState(false);
     const handleAddButtonClick = () => {
@@ -34,6 +35,7 @@ export default function ParticipantLogin() {
     };
     const handleClosePopup = () => {
         setShowAddPopup(false);
+        setRefreshParticipants((prev) => !prev);
     };
 
     useEffect(() => {
@@ -56,7 +58,7 @@ export default function ParticipantLogin() {
         };
 
         fetchParticipants();
-    }, []);
+    }, [refreshParticipants]);
 
     const handleCourseSelect = (courseName: string) => {
         // if (courseName === "All Courses") {
