@@ -6,21 +6,6 @@ import { type Course } from "@/db/schema/course";
 import { useEffect, useState } from "react";
 
 export default function Courses() {
-    const myCourses = [
-        {
-            id: 1,
-            name: "Course 122",
-            image: "/course-image.png",
-            imgAlt: "A Snake",
-        },
-        {
-            id: 2,
-            name: "Course 123",
-            image: "/course-image.png",
-            imgAlt: "A Snake",
-        },
-    ];
-
     const [isLoading, setIsLoading] = useState(true);
     const [courses, setCourses] = useState<{
         enrolled: courseList[];
@@ -52,7 +37,7 @@ export default function Courses() {
                     <>
                         {isLoading ? (
                             <div className="flex justify-center items-center py-10">
-                                <p>Loading Courses...</p>
+                                <p>Loading Course Details...</p>
                             </div>
                         ) : (
                             <div className="flex flex-col gap-4">
@@ -75,7 +60,7 @@ export default function Courses() {
                     <>
                         {isLoading ? (
                             <div className="flex justify-center items-center py-10">
-                                <p>Loading Courses...</p>
+                                <p>Loading Course Materials...</p>
                             </div>
                         ) : (
                             <div className="flex flex-col gap-4">
