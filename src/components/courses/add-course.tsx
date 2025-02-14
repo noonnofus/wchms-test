@@ -55,8 +55,8 @@ export default function AddCourse({
         courseName: "",
         courseImage: null as File | null,
         courseDescription: "",
-        courseStartDate: undefined,
-        courseEndDate: undefined,
+        courseStartDate: null as Date | null,
+        courseEndDate: null as Date | null,
         courseRoom: undefined as undefined | string,
         courseLanguage: "Japanese",
         courseType: "Group",
@@ -276,7 +276,7 @@ export default function AddCourse({
                             </p>
                         )}
                         <DatePicker
-                            value={formData.courseStartDate}
+                            selected={formData.courseStartDate}
                             onChange={(date) =>
                                 handleDateChange("courseStartDate", date)
                             }
@@ -290,7 +290,7 @@ export default function AddCourse({
                             </p>
                         )}
                         <DatePicker
-                            value={formData.courseEndDate}
+                            selected={formData.courseEndDate}
                             onChange={(date) =>
                                 handleDateChange("courseEndDate", date)
                             }

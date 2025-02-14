@@ -6,16 +6,12 @@ import {
     date,
 } from "drizzle-orm/mysql-core";
 
-export const users = mysqlTable("users", {
+export const participants = mysqlTable("participants", {
     id: int("id").primaryKey().autoincrement().notNull(),
     firstName: varchar("first_name", { length: 255 }).notNull(),
     lastName: varchar("last_name", { length: 255 }).notNull(),
     email: varchar("email", { length: 255 }).unique(),
-    password: varchar("password", { length: 255 }).notNull(),
     dateOfBirth: date("date_of_birth").notNull(),
-    gender: mysqlEnum("gender", ["male", "female", "other"]),
-    role: mysqlEnum("role", ["participant", "admin", "staff"]).default(
-        "participant"
-    ),
+    gender: mysqlEnum("gender", ["Male", "Female", "Other"]),
 });
-export type User = typeof users.$inferSelect;
+export type Participant = typeof participants.$inferSelect;

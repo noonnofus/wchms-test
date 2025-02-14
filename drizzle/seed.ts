@@ -1,57 +1,61 @@
 import db from "../src/db";
-import { users } from "@/db/schema/users";
-import { rooms as roomsTable, RoomStatus, RoomMedium } from "@/db/schema/room";
+import { participants } from "@/db/schema/participants";
 import { eq } from "drizzle-orm";
 
-// async function SeedParticipants() {
-//     const participants = [
-//         {
-//             firstName: "Alice",
-//             lastName: "Johnson",
-//             email: "alice@example.com",
-//             gender: "female",
-//         },
-//         {
-//             firstName: "Bob",
-//             lastName: "Smith",
-//             email: "bob@example.com",
-//             gender: "male",
-//         },
-//         {
-//             firstName: "Charlie",
-//             lastName: "Doe",
-//             email: "charlie@example.com",
-//             gender: "other",
-//         },
-//     ];
+async function SeedParticipants() {
+    const seedParticipants = [
+        {
+            firstName: "Alice",
+            lastName: "Johnson",
+            email: "alice@example.com",
+            gender: "Female",
+            dateOfBirth: "1968-08-22",
+        },
+        {
+            firstName: "Bob",
+            lastName: "Smith",
+            email: "bob@example.com",
+            gender: "Male",
+            dateOfBirth: "1945-07-01",
+        },
+        {
+            firstName: "Charlie",
+            lastName: "Doe",
+            email: "charlie@example.com",
+            gender: "Other",
+            dateOfBirth: "1950-03-11",
+        },
+    ];
 
-//     const insertParticipants = participants.map(async (participant) => {
-//         const existingUser = await db
-//             .select()
-//             .from(users)
-//             .where(eq(users.email, participant.email));
+    const insertParticipants = seedParticipants.map(async (p) => {
+        const existingUser = await db
+            .select()
+            .from(participants)
+            .where(eq(participants.email, p.email));
 
-//         if (existingUser.length === 0) {
-//             await db.insert(users).values({
-//                 firstName: participant.firstName,
-//                 lastName: participant.lastName,
-//                 email: participant.email,
-//                 gender: participant.gender as "male" | "female" | "other",
-//                 role: "participant",
-//             });
-//             console.log("Participant inserted");
-//         } else {
-//             console.log("Participant already exists");
-//         }
+        if (existingUser.length === 0) {
+            await db.insert(participants).values({
+                firstName: p.firstName,
+                lastName: p.lastName,
+                email: p.email,
+                gender: p.gender as "Male" | "Female" | "Other",
+                dateOfBirth: new Date(p.dateOfBirth),
+            });
+            console.log("Participant inserted");
+        } else {
+            console.log("Participant already exists");
+        }
 
-//         await Promise.all(insertParticipants);
-//         console.log("Participants seeded");
-//     });
-// }
+        await Promise.all(insertParticipants);
+        console.log("Participants seeded");
+    });
+}
 
-// SeedParticipants().catch((error) => {
-//     console.error("Seed participants failed", error);
-// });
+SeedParticipants().catch((error) => {
+    console.error("Seed participants failed", error);
+});
+
+import { rooms as roomsTable, RoomStatus, RoomMedium } from "@/db/schema/room";
 
 async function SeedRooms() {
     const rooms = [
