@@ -27,6 +27,7 @@ interface ClientVariantProps extends CourseCardProps {
 
 interface AdminVariantProps extends CourseCardProps {
     description: string | null;
+    handleEditButtonClick: (courseId: number) => void;
     variant: "admin";
 }
 
@@ -101,9 +102,13 @@ export default function CourseCard(
                         <CardContent>
                             <p>{props.description}</p>
                         </CardContent>
-                        <Link href="">
+                        <button
+                            onClick={() =>
+                                props.handleEditButtonClick(props.id)
+                            }
+                        >
                             <EditIcon className="absolute right-[2%] top-[8%]" />
-                        </Link>
+                        </button>
                         <Link href={`/admin/courses/${props.id}`}>
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"

@@ -8,6 +8,7 @@ import ParticipantList from "@/components/courses/participant-list";
 import AddMaterial from "@/components/courses/add-material";
 import EditMaterial from "@/components/courses/edit-material";
 import { getCourseById } from "@/db/queries/courses";
+import AddCourse from "@/components/courses/add-course";
 
 export default function AdminCourses() {
     const { id } = useParams();
@@ -118,6 +119,14 @@ export default function AdminCourses() {
         setShowEditMaterialPopup(false);
     };
 
+    const [showEditCoursePopup, setShowEditCoursePopup] = useState(false);
+    const handleEditCourseButtonClick = () => {
+        setShowEditCoursePopup(true);
+    };
+    const handleCloseEditCoursePopup = () => {
+        setShowEditCoursePopup(false);
+    };
+
     return (
         <div>
             <TabsMenu
@@ -136,6 +145,7 @@ export default function AdminCourses() {
                                     name={selectedCourse.title}
                                     description={selectedCourse?.description}
                                     variant="admin"
+                                    editAction={handleEditCourseButtonClick}
                                 />
                                 <ParticipantList
                                     participants={
@@ -143,7 +153,26 @@ export default function AdminCourses() {
                                     }
                                 />
                             </div>
-                        )}{" "}
+                        )}
+                        {showEditCoursePopup && (
+                            <div className="absolute min-h-full w-full top-0 left-0">
+                                <div
+                                    className="absolute inset-0 bg-black opacity-50 z-10"
+                                    onClick={handleCloseEditPopup}
+                                />
+
+                                <div className="absolute inset-0 flex justify-center items-center z-10 max-h-[90vh] top-1/2 -translate-y-1/2">
+                                    <div className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-white rounded-lg p-6">
+                                        <AddCourse
+                                            handleClosePopup={
+                                                handleCloseEditCoursePopup
+                                            }
+                                            courseId={parseInt(id as string)}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                     </>
                 }
                 rightChildren={
