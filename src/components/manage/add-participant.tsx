@@ -97,7 +97,7 @@ export default function AddParticipant({
         }
 
         try {
-            const response = await fetch("/api/participants", {
+            const response = await fetch("/api/participants/create", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

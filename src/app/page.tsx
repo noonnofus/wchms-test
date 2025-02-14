@@ -27,6 +27,8 @@ export default function ParticipantLogin() {
     const [selectedCourse, setSelectedCourse] = useState<string | null>(null);
     // const allParticipants = courses.flatMap((course) => course.participants);
     const [participants, setParticipants] = useState<string[]>([]);
+
+    // ADD PARTICIPANT TEMP HERE UNTIL MANAGE PAGE IS CREATED
     const [loading, setLoading] = useState<boolean>(true);
     const [refreshParticipants, setRefreshParticipants] = useState(false);
 
@@ -42,7 +44,7 @@ export default function ParticipantLogin() {
     useEffect(() => {
         const fetchParticipants = async () => {
             try {
-                const response = await fetch("/api/participants");
+                const response = await fetch("/api/create/participants");
                 if (!response.ok)
                     throw new Error("Failed to fetch participants");
                 const participants: Participant[] = await response.json();
@@ -86,6 +88,7 @@ export default function ParticipantLogin() {
     return (
         <div className="flex flex-col gap-20 w-full h-full items-center">
             <h1 className="font-semibold text-4xl">Participants List</h1>
+            {/* TEMP */}
             {showAddPopup && (
                 <div className="absolute inset-0 flex justify-center items-center min-h-[800px] min-w-[360px] w-full h-full bg-black bg-opacity-50 z-50">
                     <div className="relative w-full max-w-lg bg-white rounded-lg p-6 overflow-auto">

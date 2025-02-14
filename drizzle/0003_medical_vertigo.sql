@@ -1,1 +1,0 @@
-ALTER TABLE `users` ADD `date_of_birth` date NOT NULL;
