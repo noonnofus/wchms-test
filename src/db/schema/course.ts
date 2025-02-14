@@ -6,8 +6,9 @@ import {
     varchar,
 } from "drizzle-orm/mysql-core";
 import { rooms } from "./room";
+import { users } from "./users";
 
-export const Course = mysqlTable("courses", {
+export const Courses = mysqlTable("courses", {
     id: int("id").primaryKey().autoincrement(),
     title: varchar("title", { length: 255 }).notNull(),
     description: varchar("description", { length: 255 }),
@@ -22,8 +23,14 @@ export const Course = mysqlTable("courses", {
 
 export const CourseParticipant = mysqlTable("course_participants", {
     id: int("id").primaryKey(),
-    userId: int("user_id"),
-    courseId: int("course_id").notNull(),
+    userId: int("user_id")
+        .notNull()
+        .references(() => users.id),
+    courseId: int("course_id")
+        .notNull()
+        .references(() => Courses.id),
     status: varchar("status", { length: 50 }),
     subscriptionId: int("subscription_id"),
 });
+
+export type Course = typeof Courses.$inferSelect;

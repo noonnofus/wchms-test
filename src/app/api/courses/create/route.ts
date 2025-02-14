@@ -1,6 +1,6 @@
 import db from "@/db";
 import { eq } from "drizzle-orm";
-import { Course } from "@/db/schema/course";
+import { Courses } from "@/db/schema/course";
 import { rooms } from "@/db/schema/room";
 
 export async function POST(req: Request) {
@@ -40,6 +40,14 @@ export async function POST(req: Request) {
                 { status: 400 }
             );
         }
+        if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+            return new Response(
+                JSON.stringify({
+                    error: "Invalid date format",
+                }),
+                { status: 400 }
+            );
+        }
 
         const roomId = parseInt(body.courseRoom);
         if (!roomId || roomId === -1) {
@@ -64,7 +72,7 @@ export async function POST(req: Request) {
         //TODO: Handle image upload
 
         const courseId = await db
-            .insert(Course)
+            .insert(Courses)
             .values({
                 title: body.courseName,
                 description: body.courseDescription,

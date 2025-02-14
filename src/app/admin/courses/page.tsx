@@ -1,8 +1,10 @@
 "use client";
 import AddCourse from "@/components/courses/add-course";
 import CourseCard from "@/components/courses/course-card";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DeleteConfirmation from "@/components/shared/delete-confirmation";
+import { getAllCourses } from "@/db/queries/courses";
+import { type Course } from "@/db/schema/course";
 
 export default function Courses() {
     const [showAddPopup, setShowAddPopup] = useState(false);
@@ -12,39 +14,22 @@ export default function Courses() {
     const handleClosePopup = () => {
         setShowAddPopup(false);
     };
-    const allCourses = [
-        {
-            id: "4",
-            name: "第20期：脳の運動教室(シン 脳の運動教室)",
-            image: "/course-image.png",
-            imgAlt: "A Snake",
-            description: "20th class",
-        },
-        {
-            id: "3",
-            name: "第19期：脳の運動教室(シン 脳の運動教室)",
-            image: "/course-image.png",
-            imgAlt: "A Snake",
-            description:
-                "2025年は、60年に一度巡ってくる「乙巳（きのと・み）」の年。乙巳の年は、新しいものが生まれ、成長していく年と言われています。第19期となる脳の運動教室も、今年は「シン 脳の運動教室」としてブラッシュアップしていきます！皆さま、本年もよろしくお願いいたします。",
-        },
-        {
-            id: "2",
-            name: "Course 123",
-            image: "/course-image.png",
-            imgAlt: "A Snake",
-            description:
-                "2025年は、60年に一度巡ってくる「乙巳（きのと・み）」の年。乙巳の年は、新しいものが生まれ、成長していく年と言われています。第19期となる脳の運動教室も、今年は「シン 脳の運動教室」としてブラッシュアップしていきます！皆さま、本年もよろしくお願いいたします。",
-        },
-        {
-            id: "1",
-            name: "Course 122",
-            image: "/course-image.png",
-            imgAlt: "A Snake",
-            description:
-                "2025年は、60年に一度巡ってくる「乙巳（きのと・み）」の年。乙巳の年は、新しいものが生まれ、成長していく年と言われています。第19期となる脳の運動教室も、今年は「シン 脳の運動教室」としてブラッシュアップしていきます！皆さま、本年もよろしくお願いいたします。",
-        },
-    ];
+    const [isLoading, setIsLoading] = useState(true);
+    const [courses, setCourses] = useState<Course[]>([]);
+    useEffect(() => {
+        const fetchCourses = async () => {
+            try {
+                const allCourses = await getAllCourses();
+                setCourses(allCourses);
+            } catch (error) {
+                console.error("Error fetching courses", error);
+                setCourses([]);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        fetchCourses();
+    }, []);
 
     return (
         <>
@@ -58,7 +43,7 @@ export default function Courses() {
 
                     <div className="absolute inset-0 flex justify-center items-center z-10 max-h-[90vh] top-1/2 -translate-y-1/2">
                         <div className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-white rounded-lg p-6">
-                            <AddCourse />
+                            <AddCourse handleClosePopup={handleClosePopup} />
                             {/* <DeleteConfirmation body={"hi"} /> */}
                         </div>
                     </div>
@@ -84,21 +69,29 @@ export default function Courses() {
                     />
                 </svg>
             </button>
-            <div className="flex flex-col gap-4 pb-10 md:pb-12">
-                {allCourses.length
-                    ? allCourses.map((course) => (
-                          <CourseCard
-                              key={course.id}
-                              id={course.id}
-                              name={course.name}
-                              image={course.image}
-                              imageAlt={course.imgAlt}
-                              description={course.description}
-                              variant="admin"
-                          />
-                      ))
-                    : "No courses found."}
-            </div>
+            {isLoading ? (
+                <div className="flex justify-center items-center py-10">
+                    <p>Loading Courses...</p>
+                </div>
+            ) : (
+                <div className="flex flex-col gap-4 pb-10 md:pb-12">
+                    {courses.length ? (
+                        courses.map((course) => (
+                            <CourseCard
+                                key={course.id}
+                                id={course.id}
+                                name={course.title}
+                                image={"/course-image.png"} // TODO: Add image reference
+                                imageAlt={`${course.title} Cover Image`}
+                                description={course.description}
+                                variant="admin"
+                            />
+                        ))
+                    ) : (
+                        <p>No courses found.</p>
+                    )}
+                </div>
+            )}
         </>
     );
 }

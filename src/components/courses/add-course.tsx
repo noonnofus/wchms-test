@@ -20,7 +20,11 @@ const [languages, types, statuses] = [
     ["Group", "Individual"],
     ["Available", "Completed"],
 ];
-export default function AddCourse() {
+export default function AddCourse({
+    handleClosePopup,
+}: {
+    handleClosePopup: () => void;
+}) {
     const [isLoading, setIsLoading] = useState(true);
     const [rooms, setRooms] = useState<Room[]>([]);
     useEffect(() => {
@@ -416,6 +420,7 @@ export default function AddCourse() {
                         Save
                     </Button>
                     <Button
+                        onClick={handleClosePopup}
                         variant="outline"
                         className="w-full h-full rounded-full bg-transparent border-primary-green text-primary-green hover:bg-primary-green hover:text-white font-semibold text-xl py-4"
                     >

@@ -14,7 +14,7 @@ import { twMerge } from "tailwind-merge";
 import EditIcon from "../icons/edit-icon";
 
 interface CourseCardProps {
-    id: string;
+    id: number;
     name: string;
     image?: string;
     imageAlt?: string;
@@ -26,7 +26,7 @@ interface ClientVariantProps extends CourseCardProps {
 }
 
 interface AdminVariantProps extends CourseCardProps {
-    description: string;
+    description: string | null;
     variant: "admin";
 }
 
