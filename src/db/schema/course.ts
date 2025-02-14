@@ -1,12 +1,12 @@
 import {
     int,
     mysqlTable,
-    serial,
     timestamp,
     varchar,
 } from "drizzle-orm/mysql-core";
 import { rooms } from "./room";
 import { participants } from "./participants";
+import { uploadMedia } from "./mediaUpload";
 
 export const Courses = mysqlTable("courses", {
     id: int("id").primaryKey().autoincrement(),
@@ -17,7 +17,8 @@ export const Courses = mysqlTable("courses", {
     kind: varchar("kind", { length: 100 }).notNull(),
     status: varchar("status", { length: 100 }).notNull(),
     lang: varchar("lang", { length: 10 }).notNull(),
-    // uploadId: int("upload_id"),
+    uploadId: int("upload_id")
+    .references(() => uploadMedia.id),
     roomId: int("room_id").references(() => rooms.id),
 });
 

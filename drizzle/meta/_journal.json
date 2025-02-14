@@ -50,6 +50,41 @@
       "when": 1739507591610,
       "tag": "0006_hard_clea",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "5",
+      "when": 1739564241823,
+      "tag": "0007_fixed_phantom_reporter",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "5",
+      "when": 1739566846002,
+      "tag": "0008_luxuriant_risque",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "5",
+      "when": 1739567698388,
+      "tag": "0009_mean_wolfsbane",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "5",
+      "when": 1739567839109,
+      "tag": "0010_ancient_morlocks",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "5",
+      "when": 1739568202702,
+      "tag": "0011_brainy_william_stryker",
+      "breakpoints": true
     }
   ]
 }
