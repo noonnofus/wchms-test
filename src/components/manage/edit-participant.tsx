@@ -17,11 +17,11 @@ const genders = ["Male", "Female", "Other"];
 export default function EditParticipant({
     closePopup,
     participantData,
-    refreshParticipantsList,
+    onParticipantUpdated,
 }: {
     closePopup: () => void;
     participantData: Participant;
-    refreshParticipantsList: () => void;
+    onParticipantUpdated: () => void;
 }) {
     const [firstName, setFirstName] = useState(participantData.firstName);
     const [lastName, setLastName] = useState(participantData.lastName);
@@ -75,8 +75,8 @@ export default function EditParticipant({
                 throw new Error("Failed to update participant");
             }
 
+            onParticipantUpdated();
             console.log("Participant updated successfully");
-            refreshParticipantsList();
             closePopup();
         } catch (error) {
             console.error("Error updating participant:", error);

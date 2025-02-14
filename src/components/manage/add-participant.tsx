@@ -14,8 +14,10 @@ import { DatePicker } from "../ui/date-picker";
 const genders = ["Male", "Female", "Other"];
 
 export default function AddParticipant({
+    onParticipantAdded,
     closePopup,
 }: {
+    onParticipantAdded: () => void;
     closePopup: () => void;
 }) {
     const [firstName, setFirstName] = useState("");
@@ -114,7 +116,10 @@ export default function AddParticipant({
             if (!response.ok) {
                 throw new Error("Failed to add participant");
             }
+
+            onParticipantAdded();
             console.log("Participant added successfully");
+
             setFirstName("");
             setLastName("");
             setEmail("");

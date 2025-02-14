@@ -4,6 +4,7 @@ import DeleteConfirmation from "@/components/shared/delete-confirmation";
 import DeleteIcon from "@/components/icons/delete-icon";
 import { type Participant } from "@/db/schema/participants";
 import EditParticipant from "@/components/manage/edit-participant";
+import AddParticipant from "@/components/manage/add-participant";
 
 export default function Manage() {
     const [participants, setParticipants] = useState<Participant[]>([]);
@@ -15,6 +16,11 @@ export default function Manage() {
     const [showEditPopup, setShowEditPopup] = useState(false);
     const [participantToEdit, setParticipantToEdit] =
         useState<Participant | null>(null);
+
+    const [showAddPopup, setShowAddPopup] = useState(false);
+    const handleAddButtonClick = () => {
+        setShowAddPopup(true);
+    };
 
     useEffect(() => {
         const fetchParticipants = async () => {
@@ -71,14 +77,9 @@ export default function Manage() {
     const handleClosePopup = () => {
         setShowDeletePopup(false);
         setShowEditPopup(false);
+        setShowAddPopup(false);
         setParticipantToDelete(null);
         setParticipantToEdit(null);
-    };
-
-    const refreshParticipantsList = async () => {
-        const response = await fetch("/api/participants");
-        const data = await response.json();
-        setParticipants(data);
     };
 
     return (
@@ -105,11 +106,48 @@ export default function Manage() {
                         <EditParticipant
                             participantData={participantToEdit}
                             closePopup={handleClosePopup}
-                            refreshParticipantsList={refreshParticipantsList}
+                            onParticipantUpdated={() =>
+                                setRefreshParticipants((prev) => !prev)
+                            }
                         />
                     </div>
                 </div>
             )}
+
+            {showAddPopup && (
+                <div className="absolute inset-0 flex justify-center items-center min-h-[800px] min-w-[360px] w-full h-full bg-black bg-opacity-50 z-50">
+                    <div className="relative w-full max-w-lg bg-white rounded-lg p-6 overflow-auto">
+                        <AddParticipant
+                            closePopup={handleClosePopup}
+                            onParticipantAdded={() =>
+                                setRefreshParticipants((prev) => !prev)
+                            }
+                        />
+                    </div>
+                </div>
+            )}
+
+            <h1 className="font-semibold text-4xl">Manage</h1>
+            <button
+                className="absolute bottom-24 right-2 md:bottom-24 md:right-6 flex h-[72px] w-[72px] bg-primary-green shadow-lg border-4 border-white rounded-full justify-center items-center z-[1]"
+                onClick={handleAddButtonClick}
+            >
+                <svg
+                    width="32"
+                    height="32"
+                    viewBox="0 0 32 32"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                >
+                    <path
+                        d="M16 5.33334V26.6667M26.6667 16L5.33334 16"
+                        stroke="white"
+                        strokeWidth="4"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                    />
+                </svg>
+            </button>
 
             <div className="flex flex-col w-full items-center gap-10">
                 <div className="flex flex-col w-full items-center gap-4">
