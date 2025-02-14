@@ -12,6 +12,7 @@ import { DatePicker } from "../ui/date-picker";
 import { Button } from "../ui/button";
 import { getAvailableRooms } from "@/db/queries/rooms";
 import { Room } from "@/db/schema/room";
+import { useRouter } from "next/navigation";
 
 const defaultRoomName = "Online via Zoom"; //name of room for default selection
 const [languages, types, statuses] = [
@@ -25,6 +26,7 @@ export default function AddCourse({
 }: {
     handleClosePopup: () => void;
 }) {
+    const router = useRouter();
     const [isLoading, setIsLoading] = useState(true);
     const [rooms, setRooms] = useState<Room[]>([]);
     useEffect(() => {
@@ -144,10 +146,7 @@ export default function AddCourse({
         }
 
         // Validate course participants (comma-separated list)
-        if (!formData.courseParticipants) {
-            errorMessages.courseParticipants = "Participants are required";
-            isValid = false;
-        } else {
+        if (formData.courseParticipants) {
             const participantsRegex = /^[a-zA-Z\s]+(?:,\s*[a-zA-Z\s]+)*$/;
             if (!participantsRegex.test(formData.courseParticipants)) {
                 errorMessages.courseParticipants =
@@ -155,6 +154,10 @@ export default function AddCourse({
                 isValid = false;
             }
         }
+        // else {
+        // errorMessages.courseParticipants = "Participants are required";
+        // isValid = false;
+        // }
 
         if (!formData.courseRoom || formData.courseRoom === "-1") {
             errorMessages.courseRoom = "Please select a valid room";
@@ -182,7 +185,11 @@ export default function AddCourse({
         });
 
         if (res.ok) {
+            const data = await res.json();
+            const courseId = data.courseId;
             console.log("Form submitted successfully");
+
+            router.push(`/courses/${courseId}`);
         } else {
             console.error("Form submission failed");
         }

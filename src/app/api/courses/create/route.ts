@@ -6,7 +6,6 @@ import { rooms } from "@/db/schema/room";
 export async function POST(req: Request) {
     try {
         const body = await req.json();
-        console.log(body);
         if (
             !body.courseName ||
             !body.courseDescription ||
@@ -86,12 +85,9 @@ export async function POST(req: Request) {
             .$returningId();
 
         //TODO: handle course participants
-        return new Response(
-            JSON.stringify({
-                message: `Course created successfully: ${courseId}`,
-            }),
-            { status: 200 }
-        );
+        return new Response(JSON.stringify({ courseId: courseId[0].id }), {
+            status: 200,
+        });
     } catch (error) {
         console.error("Error processing the request:", error);
 
