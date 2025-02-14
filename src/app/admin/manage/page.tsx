@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import DeleteConfirmation from "@/components/shared/delete-confirmation";
 import DeleteIcon from "@/components/icons/delete-icon";
 import { type Participant } from "@/db/schema/participants";
+import EditParticipant from "@/components/manage/edit-participant";
 
 export default function Manage() {
     const [participants, setParticipants] = useState<Participant[]>([]);
@@ -10,6 +11,9 @@ export default function Manage() {
     const [refreshParticipants, setRefreshParticipants] = useState(false);
     const [showDeletePopup, setShowDeletePopup] = useState(false);
     const [participantToDelete, setParticipantToDelete] =
+        useState<Participant | null>(null);
+    const [showEditPopup, setShowEditPopup] = useState(false);
+    const [participantToEdit, setParticipantToEdit] =
         useState<Participant | null>(null);
 
     useEffect(() => {
@@ -59,13 +63,27 @@ export default function Manage() {
         }
     };
 
+    const handleEditButtonClick = (participant: Participant) => {
+        setParticipantToEdit(participant);
+        setShowEditPopup(true);
+    };
+
     const handleClosePopup = () => {
         setShowDeletePopup(false);
+        setShowEditPopup(false);
+        setParticipantToDelete(null);
+        setParticipantToEdit(null);
+    };
+
+    const refreshParticipantsList = async () => {
+        const response = await fetch("/api/participants");
+        const data = await response.json();
+        setParticipants(data);
     };
 
     return (
         <div className="flex flex-col gap-20 w-full h-full items-center">
-            {/* Delete Confirmation Popup TEMP */}
+            {/* Delete Confirmation Popup */}
             {showDeletePopup && participantToDelete && (
                 <div className="absolute inset-0 flex justify-center items-center min-h-[800px] min-w-[360px] w-full h-full bg-black bg-opacity-50 z-50">
                     <div className="relative w-full max-w-lg bg-white rounded-lg p-6 overflow-auto">
@@ -80,6 +98,19 @@ export default function Manage() {
                 </div>
             )}
 
+            {/* Edit Participant Popup */}
+            {showEditPopup && participantToEdit && (
+                <div className="absolute inset-0 flex justify-center items-center min-h-[800px] min-w-[360px] w-full h-full bg-black bg-opacity-50 z-50">
+                    <div className="relative w-full max-w-lg bg-white rounded-lg p-6 overflow-auto">
+                        <EditParticipant
+                            participantData={participantToEdit}
+                            closePopup={handleClosePopup}
+                            refreshParticipantsList={refreshParticipantsList}
+                        />
+                    </div>
+                </div>
+            )}
+
             <div className="flex flex-col w-full items-center gap-10">
                 <div className="flex flex-col w-full items-center gap-4">
                     <div className="w-full grid grid-cols-2 grid-rows-4 gap-4 h-full">
@@ -89,14 +120,26 @@ export default function Manage() {
                                 className="flex justify-between items-center w-full"
                             >
                                 <p>{participant.firstName}</p>
-                                <button
-                                    onClick={() =>
-                                        handleDeleteButtonClick(participant)
-                                    }
-                                    className="ml-4 bg-red-500 text-white px-2 py-1 rounded"
-                                >
-                                    <DeleteIcon />
-                                </button>
+                                <div className="flex gap-4">
+                                    {/* Edit Button */}
+                                    <button
+                                        onClick={() =>
+                                            handleEditButtonClick(participant)
+                                        }
+                                        className="bg-blue-500 text-white px-2 py-1 rounded"
+                                    >
+                                        Edit
+                                    </button>
+                                    {/* Delete Button */}
+                                    <button
+                                        onClick={() =>
+                                            handleDeleteButtonClick(participant)
+                                        }
+                                        className="bg-red-500 text-white px-2 py-1 rounded"
+                                    >
+                                        <DeleteIcon />
+                                    </button>
+                                </div>
                             </div>
                         ))}
                     </div>
