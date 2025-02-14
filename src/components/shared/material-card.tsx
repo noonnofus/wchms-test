@@ -15,7 +15,7 @@ export default function MaterialCard({
     handleEditButtonClick,
 }: {
     material: Material;
-    handleEditButtonClick: () => void;
+    handleEditButtonClick?: () => void;
 }) {
     return (
         <div className="flex flex-col items-center">
@@ -39,9 +39,11 @@ export default function MaterialCard({
                         </Button>
                     )}
                 </CardContent>
-                <button onClick={handleEditButtonClick}>
-                    <EditIcon className="absolute right-[2%] top-[8%]" />
-                </button>
+                {handleEditButtonClick && (
+                    <button onClick={handleEditButtonClick}>
+                        <EditIcon className="absolute right-[2%] top-[8%]" />
+                    </button>
+                )}
             </Card>
         </div>
     );

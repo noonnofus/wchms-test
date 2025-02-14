@@ -16,7 +16,7 @@ export async function addParticipant(
     firstName: string,
     lastName: string,
     email: string,
-    gender: "male" | "female" | "other",
+    gender: "Male" | "Female" | "Other",
     dateOfBirth: Date
 ) {
     try {

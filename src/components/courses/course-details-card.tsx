@@ -7,6 +7,7 @@ interface CourseDetailsProps {
     name: string;
     description: string;
     variant: "client" | "admin";
+    editAction?: () => void;
 }
 
 export default function CourseDetailsCard(props: CourseDetailsProps) {
@@ -35,6 +36,7 @@ export default function CourseDetailsCard(props: CourseDetailsProps) {
                                 Launch Zoom
                             </Button>
                             <Button
+                                onClick={props.editAction}
                                 variant="outline"
                                 className="border-primary-green text-primary-green rounded-full w-full font-semibold text-base hover:bg-primary-green hover:text-white"
                             >

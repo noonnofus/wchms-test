@@ -1,13 +1,23 @@
-import { mysqlTable, serial, varchar, mysqlEnum, date, int } from "drizzle-orm/mysql-core";
+import {
+    mysqlTable,
+    serial,
+    varchar,
+    mysqlEnum,
+    date,
+    int,
+} from "drizzle-orm/mysql-core";
 
-enum RoomStatus {
+export enum RoomStatus {
     available = "available",
     unavailable = "unavailable",
 }
 
-const roomStatusValues = [RoomStatus.available, RoomStatus.unavailable] as const;
+const roomStatusValues = [
+    RoomStatus.available,
+    RoomStatus.unavailable,
+] as const;
 
-enum RoomMedium {
+export enum RoomMedium {
     online = "online",
     offline = "offline",
 }
@@ -15,7 +25,7 @@ enum RoomMedium {
 const roomMediumValues = [RoomMedium.online, RoomMedium.offline] as const;
 
 export const rooms = mysqlTable("rooms", {
-    id: serial("id").primaryKey(),
+    id: int("id").primaryKey().autoincrement(),
     name: varchar("name", { length: 255 }).notNull(),
     description: varchar("description", { length: 255 }),
     internalNote: varchar("internal_note", { length: 255 }),
@@ -24,3 +34,5 @@ export const rooms = mysqlTable("rooms", {
     medium: mysqlEnum("medium", roomMediumValues).notNull(),
     status: mysqlEnum("status", roomStatusValues).notNull(),
 });
+
+export type Room = typeof rooms.$inferSelect;

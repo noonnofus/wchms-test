@@ -3,58 +3,70 @@ import { useParams } from "next/navigation";
 import TabsMenu from "@/components/shared/tabs-menu";
 import CourseDetailsCard from "@/components/courses/course-details-card";
 import MaterialCard from "@/components/shared/material-card";
+import { useEffect, useState } from "react";
+import { getCourseById } from "@/db/queries/courses";
 
 export default function Home() {
     const { id } = useParams();
-
-    const myCourses = [
-        {
-            id: "1",
-            name: "Course 122",
-            image: "/course-image.png",
-            imgAlt: "A Snake",
-            description:
-                "2025年は、60年に一度巡ってくる「乙巳（きのと・み）」の年。乙巳の年は、新しいものが生まれ、成長していく年と言われています。第19期となる脳の運動教室も、今年は「シン 脳の運動教室」としてブラッシュアップしていきます！皆さま、本年もよろしくお願いいたします。",
-            materials: [
-                {
-                    title: "Week 4: Just a file",
-                    content: null,
-                    createdAt: new Date(1738859550),
-                    file: "Week4.pdf",
-                },
-                {
-                    title: "Week 3",
-                    content: "No review materials this week",
-                    createdAt: new Date(1738859550),
-                    file: null,
-                },
-                {
-                    title: "Week 2",
-                    content:
-                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam id enim eget sem maximus accumsan. Pellentesque id varius mi, non sollicitudin orci. Donec eu condimentum justo. Donec vel sapien arcu. Quisque dapibus ligula non imperdiet malesuada.",
-                    createdAt: new Date(1738859545),
-                    file: "Week2.pdf",
-                },
-                {
-                    title: "Week 1: A really long title to see how it would look with multiple lines",
-                    content: "Some description",
-                    createdAt: new Date(1738859540),
-                    file: "Week1.pdf",
-                },
-            ],
-        },
-        {
-            id: "2",
-            name: "Course 123",
-            image: "/course-image.png",
-            imgAlt: "A Snake",
-            description: "Course Description",
-            materials: [],
-        },
-    ];
-
-    const course = myCourses.find((course) => course.id === id); // find course based on course id
-    if (!course) {
+    const [isLoading, setIsLoading] = useState(true);
+    const [selectedCourse, setSelectedCourse] = useState<any>({}); //TODO: update type, include materials and participant types
+    useEffect(() => {
+        const fetchCourses = async () => {
+            try {
+                const course = await getCourseById(parseInt(id as string));
+                //TODO: update to be dynamic class materials and dynamic participants
+                setSelectedCourse({
+                    ...course[0],
+                    materials: [
+                        {
+                            id: "4",
+                            type: "Simple Arithmetic" as const,
+                            difficulty: "Basic" as const,
+                            title: "Week 4: Just a file",
+                            content: null,
+                            createdAt: new Date(1738859550),
+                            file: "Week4.pdf",
+                        },
+                        {
+                            id: "3",
+                            type: "Physical Exercise" as const,
+                            difficulty: "Basic" as const,
+                            title: "Week 3",
+                            content: "No review materials this week",
+                            createdAt: new Date(1738859550),
+                            file: null,
+                        },
+                        {
+                            id: "2",
+                            type: "Reading Aloud" as const,
+                            difficulty: "Intermediate" as const,
+                            title: "Week 2",
+                            content:
+                                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam id enim eget sem maximus accumsan. Pellentesque id varius mi, non sollicitudin orci. Donec eu condimentum justo. Donec vel sapien arcu. Quisque dapibus ligula non imperdiet malesuada.",
+                            createdAt: new Date(1738859545),
+                            file: "Week2.pdf",
+                        },
+                        {
+                            id: "1",
+                            type: "Reading Aloud" as const,
+                            difficulty: "Intermediate" as const,
+                            title: "Week 1: A really long title to see how it would look with multiple lines",
+                            content: "Some description",
+                            createdAt: new Date(1738859540),
+                            file: "Week1.pdf",
+                        },
+                    ],
+                });
+            } catch (error) {
+                console.error("Error fetching courses", error);
+                setSelectedCourse([]);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        fetchCourses();
+    }, []);
+    if (!selectedCourse) {
         return <div>No course found</div>;
     }
 
@@ -64,29 +76,46 @@ export default function Home() {
                 leftLabel="Course Home"
                 rightLabel="Course Materials"
                 leftChildren={
-                    <CourseDetailsCard
-                        name={course.name}
-                        description={course?.description}
-                        variant="client"
-                    />
+                    <>
+                        {isLoading ? (
+                            <div className="flex justify-center items-center py-10">
+                                <p>Loading Course Details...</p>
+                            </div>
+                        ) : (
+                            <CourseDetailsCard //TODO: Pass Zoom link
+                                name={selectedCourse.title}
+                                description={selectedCourse?.description}
+                                variant="client"
+                            />
+                        )}
+                    </>
                 }
                 rightChildren={
-                    <div className="flex flex-col gap-4">
-                        {course.materials.length ? (
-                            course.materials.map((material) => {
-                                return (
-                                    <MaterialCard
-                                        key={
-                                            material.title + material.createdAt
-                                        }
-                                        material={material}
-                                    />
-                                );
-                            })
+                    <>
+                        {isLoading ? (
+                            <div className="flex justify-center items-center py-10">
+                                <p>Loading Course Materials...</p>
+                            </div>
                         ) : (
-                            <p>No course materials available.</p>
+                            <div className="flex flex-col gap-4">
+                                {selectedCourse.materials?.length ? (
+                                    selectedCourse.materials.map((material) => {
+                                        return (
+                                            <MaterialCard
+                                                key={
+                                                    material.title +
+                                                    material.createdAt
+                                                }
+                                                material={material}
+                                            />
+                                        );
+                                    })
+                                ) : (
+                                    <p>No course materials available.</p>
+                                )}
+                            </div>
                         )}
-                    </div>
+                    </>
                 }
             />
         </div>
