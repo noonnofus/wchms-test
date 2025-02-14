@@ -2,7 +2,7 @@ import db from "@/db";
 import { eq } from "drizzle-orm";
 import { Courses } from "@/db/schema/course";
 import { rooms } from "@/db/schema/room";
-
+//TODO: secure route for admins only
 export async function POST(req: Request) {
     try {
         const body = await req.json();

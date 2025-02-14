@@ -2,7 +2,7 @@ import db from "@/db";
 import { eq } from "drizzle-orm";
 import { Courses } from "@/db/schema/course";
 import { rooms } from "@/db/schema/room";
-
+//TODO: secure route for admins only
 export async function PUT(req: Request) {
     try {
         const body = await req.json();
@@ -87,6 +87,7 @@ export async function PUT(req: Request) {
                 { status: 404 }
             );
         }
+        // TODO: Handle image upload (if required)
 
         // Update Course
         await db
@@ -102,8 +103,6 @@ export async function PUT(req: Request) {
                 roomId,
             })
             .where(eq(Courses.id, body.courseId));
-
-        // TODO: Handle image upload (if required)
 
         const updatedCourse = await db
             .select()
