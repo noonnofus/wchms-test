@@ -1,0 +1,1 @@
+ALTER TABLE `upload_media` MODIFY COLUMN `file_data` varbinary(512000) NOT NULL;

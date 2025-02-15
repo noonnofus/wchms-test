@@ -1,0 +1,1 @@
+ALTER TABLE `upload_media` MODIFY COLUMN `file_data` binary(16777215) NOT NULL DEFAULT '0x';

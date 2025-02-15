@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import db from "@/db";
 import { uploadMedia } from "@/db/schema/mediaUpload";
+import sharp from "sharp";
 
 export async function POST(request: Request) {
     try {
@@ -27,14 +28,27 @@ export async function POST(request: Request) {
                 { status: 400 }
             );
         }
-        const fileBuffer = await file.arrayBuffer();
+        let fileBuffer = await file.arrayBuffer();
+        const maxBinarySize = 255;
+
+        const resizedBuffer = await sharp(Buffer.from(fileBuffer))
+        .resize(1000)
+        .jpeg({ quality: 60 })
+        .toBuffer();
+
+        if (resizedBuffer.length > maxBinarySize) {
+            return NextResponse.json(
+                { error: "File too large after compression" },
+                { status: 400 }
+            );
+        }
 
         // Save file and create
         const [mediaRecord] = await db.insert(uploadMedia).values({
             fileName: file.name,
             fileType: file.type,
             fileSize: file.size,
-            fileData: Buffer.from(fileBuffer).toString('base64'),
+            fileData: resizedBuffer.toString('base64'),
             mediaOrigin: 'course',
             originId: 0,
         });
