@@ -25,31 +25,27 @@ CREATE TABLE `assignments` (
 	CONSTRAINT `assignments_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
-CREATE TABLE `courses` (
-	`id` int NOT NULL,
-	`title` varchar(255) NOT NULL,
-	`description` varchar(255),
-	`start` timestamp NOT NULL,
-	`end` timestamp,
-	`deadline` timestamp,
-	`kind` varchar(100) NOT NULL,
-	`status` varchar(100) NOT NULL,
-	`lang` varchar(10) NOT NULL,
-	`timezone` varchar(50) DEFAULT 'America/Vancouver',
-	`category_id` int,
-	`upload_id` int,
-	`room_id` int,
-	`forum_id` int,
-	CONSTRAINT `courses_id` PRIMARY KEY(`id`)
-);
---> statement-breakpoint
 CREATE TABLE `course_participants` (
 	`id` int NOT NULL,
-	`user_id` int,
+	`user_id` int NOT NULL,
 	`course_id` int NOT NULL,
 	`status` varchar(50),
 	`subscription_id` int,
 	CONSTRAINT `course_participants_id` PRIMARY KEY(`id`)
+);
+--> statement-breakpoint
+CREATE TABLE `courses` (
+	`id` int AUTO_INCREMENT NOT NULL,
+	`title` varchar(255) NOT NULL,
+	`description` varchar(255),
+	`start` timestamp NOT NULL,
+	`end` timestamp,
+	`kind` varchar(100) NOT NULL,
+	`status` varchar(100) NOT NULL,
+	`lang` varchar(10) NOT NULL,
+	`upload_id` int,
+	`room_id` int,
+	CONSTRAINT `courses_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
 CREATE TABLE `course_schedules` (
@@ -78,6 +74,18 @@ CREATE TABLE `forums` (
 	CONSTRAINT `forums_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
+CREATE TABLE `upload_media` (
+	`id` int AUTO_INCREMENT NOT NULL,
+	`file_name` varchar(255) NOT NULL,
+	`file_type` varchar(50) NOT NULL,
+	`file_size` int NOT NULL,
+	`file_data` binary NOT NULL,
+	`media_origin` varchar(50) NOT NULL,
+	`origin_id` int NOT NULL,
+	`uploaded_at` timestamp DEFAULT (now()),
+	CONSTRAINT `upload_media_id` PRIMARY KEY(`id`)
+);
+--> statement-breakpoint
 CREATE TABLE `messages` (
 	`id` serial AUTO_INCREMENT NOT NULL,
 	`content` text NOT NULL,
@@ -97,6 +105,17 @@ CREATE TABLE `options` (
 	`name` varchar(255) NOT NULL,
 	`data` text NOT NULL,
 	CONSTRAINT `options_id` PRIMARY KEY(`id`)
+);
+--> statement-breakpoint
+CREATE TABLE `participants` (
+	`id` int AUTO_INCREMENT NOT NULL,
+	`first_name` varchar(255) NOT NULL,
+	`last_name` varchar(255) NOT NULL,
+	`email` varchar(255),
+	`date_of_birth` date NOT NULL,
+	`gender` enum('Male','Female','Other'),
+	CONSTRAINT `participants_id` PRIMARY KEY(`id`),
+	CONSTRAINT `participants_email_unique` UNIQUE(`email`)
 );
 --> statement-breakpoint
 CREATE TABLE `payments` (
@@ -162,7 +181,7 @@ CREATE TABLE `quiz_summaries` (
 );
 --> statement-breakpoint
 CREATE TABLE `rooms` (
-	`id` serial AUTO_INCREMENT NOT NULL,
+	`id` int AUTO_INCREMENT NOT NULL,
 	`name` varchar(255) NOT NULL,
 	`description` varchar(255),
 	`internal_note` varchar(255),
@@ -215,22 +234,19 @@ CREATE TABLE `subscriptions` (
 );
 --> statement-breakpoint
 CREATE TABLE `users` (
-	`id` serial AUTO_INCREMENT NOT NULL,
+	`id` int AUTO_INCREMENT NOT NULL,
 	`first_name` varchar(255) NOT NULL,
 	`last_name` varchar(255) NOT NULL,
-	`email` varchar(255) NOT NULL,
-	`birth_date` date,
-	`gender` enum('male','female','other') NOT NULL,
-	`building` varchar(255),
-	`street` varchar(255),
-	`city` varchar(255) NOT NULL,
-	`province` varchar(255) NOT NULL,
-	`country` varchar(255) NOT NULL,
-	`postal_code` varchar(255),
-	`timezone` varchar(255) DEFAULT 'America/Vancouver',
-	`lang` varchar(255) DEFAULT 'en',
-	`role` enum('client','staff','admin') DEFAULT 'client',
-	`status` enum('active','inactive') DEFAULT 'active',
-	`course_id` varchar(255),
-	CONSTRAINT `users_id` PRIMARY KEY(`id`)
+	`email` varchar(255),
+	`password` varchar(255) NOT NULL,
+	`date_of_birth` date NOT NULL,
+	`gender` enum('male','female','other'),
+	`role` enum('participant','admin','staff') DEFAULT 'participant',
+	CONSTRAINT `users_id` PRIMARY KEY(`id`),
+	CONSTRAINT `users_email_unique` UNIQUE(`email`)
 );
+--> statement-breakpoint
+ALTER TABLE `course_participants` ADD CONSTRAINT `course_participants_user_id_participants_id_fk` FOREIGN KEY (`user_id`) REFERENCES `participants`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `course_participants` ADD CONSTRAINT `course_participants_course_id_courses_id_fk` FOREIGN KEY (`course_id`) REFERENCES `courses`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `courses` ADD CONSTRAINT `courses_upload_id_upload_media_id_fk` FOREIGN KEY (`upload_id`) REFERENCES `upload_media`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `courses` ADD CONSTRAINT `courses_room_id_rooms_id_fk` FOREIGN KEY (`room_id`) REFERENCES `rooms`(`id`) ON DELETE no action ON UPDATE no action;

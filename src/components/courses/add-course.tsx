@@ -126,10 +126,12 @@ export default function AddCourse(props: props) {
             [name]: value,
         });
     };
-    const handleImageSelect = async (file: File) => {
+    const handleImageSelect = async (file: File | null) => {
         try {
             const imageFormData = new FormData();
-            imageFormData.append("file", file);
+            if (file) {
+                imageFormData.append("file", file);
+            }
 
             const uploadRes = await fetch("/api/upload", {
                 method: "POST",
@@ -316,11 +318,13 @@ export default function AddCourse(props: props) {
                         </p>
                     )}
                     <ImageUpload
-                        onFileSelect={(file) =>
-                            setFormData({
-                                ...formData,
-                                courseImage: file,
-                            })
+                        onFileSelect={handleImageSelect}
+                        existingImageUrl={
+                            props.courseId && formData.courseImage instanceof File
+                                ? URL.createObjectURL(formData.courseImage)
+                                : typeof formData.courseImage === "string"
+                                ? formData.courseImage
+                                : undefined
                         }
                     />
                     <Input

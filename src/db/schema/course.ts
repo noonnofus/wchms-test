@@ -1,12 +1,7 @@
-import {
-    int,
-    mysqlTable,
-    timestamp,
-    varchar,
-} from "drizzle-orm/mysql-core";
-import { rooms } from "./room";
-import { participants } from "./participants";
+import { int, mysqlTable, timestamp, varchar } from "drizzle-orm/mysql-core";
 import { uploadMedia } from "./mediaUpload";
+import { participants } from "./participants";
+import { rooms } from "./room";
 
 export const Courses = mysqlTable("courses", {
     id: int("id").primaryKey().autoincrement(),

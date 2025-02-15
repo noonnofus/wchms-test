@@ -1,1 +1,0 @@
-ALTER TABLE `courses` MODIFY COLUMN `upload_id` int;

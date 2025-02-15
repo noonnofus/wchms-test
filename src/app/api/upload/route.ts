@@ -27,12 +27,14 @@ export async function POST(request: Request) {
                 { status: 400 }
             );
         }
+        const fileBuffer = await file.arrayBuffer();
 
         // Save file and create
         const [mediaRecord] = await db.insert(uploadMedia).values({
             fileName: file.name,
             fileType: file.type,
             fileSize: file.size,
+            fileData: Buffer.from(fileBuffer).toString('base64'),
             mediaOrigin: 'course',
             originId: 0,
         });

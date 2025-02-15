@@ -1,1 +1,0 @@
-ALTER TABLE `upload_media` MODIFY COLUMN `id` int AUTO_INCREMENT NOT NULL;

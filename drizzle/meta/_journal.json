@@ -5,85 +5,8 @@
     {
       "idx": 0,
       "version": "5",
-      "when": 1738205589417,
-      "tag": "0000_cultured_virginia_dare",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "5",
-      "when": 1738960879035,
-      "tag": "0001_famous_gamora",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "5",
-      "when": 1739406911884,
-      "tag": "0002_spicy_cardiac",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "5",
-      "when": 1739477244248,
-      "tag": "0003_medical_vertigo",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "5",
-      "when": 1739504742267,
-      "tag": "0004_slim_overlord",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "5",
-      "when": 1739505160023,
-      "tag": "0005_same_daredevil",
-      "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "5",
-      "when": 1739507591610,
-      "tag": "0006_hard_clea",
-      "breakpoints": true
-    },
-    {
-      "idx": 7,
-      "version": "5",
-      "when": 1739564241823,
-      "tag": "0007_fixed_phantom_reporter",
-      "breakpoints": true
-    },
-    {
-      "idx": 8,
-      "version": "5",
-      "when": 1739566846002,
-      "tag": "0008_luxuriant_risque",
-      "breakpoints": true
-    },
-    {
-      "idx": 9,
-      "version": "5",
-      "when": 1739567698388,
-      "tag": "0009_mean_wolfsbane",
-      "breakpoints": true
-    },
-    {
-      "idx": 10,
-      "version": "5",
-      "when": 1739567839109,
-      "tag": "0010_ancient_morlocks",
-      "breakpoints": true
-    },
-    {
-      "idx": 11,
-      "version": "5",
-      "when": 1739568202702,
-      "tag": "0011_brainy_william_stryker",
+      "when": 1739652834771,
+      "tag": "0000_flimsy_genesis",
       "breakpoints": true
     }
   ]
