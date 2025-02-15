@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "86923281-3135-4d05-a893-572f14c16569",
+  "id": "7df1f99a-f070-4776-a3bb-8841ba606c3a",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "announcements": {
@@ -173,6 +173,85 @@
       "uniqueConstraints": {},
       "checkConstraint": {}
     },
+    "course_participants": {
+      "name": "course_participants",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "course_id": {
+          "name": "course_id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "status": {
+          "name": "status",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "subscription_id": {
+          "name": "subscription_id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "course_participants_user_id_participants_id_fk": {
+          "name": "course_participants_user_id_participants_id_fk",
+          "tableFrom": "course_participants",
+          "tableTo": "participants",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "course_participants_course_id_courses_id_fk": {
+          "name": "course_participants_course_id_courses_id_fk",
+          "tableFrom": "course_participants",
+          "tableTo": "courses",
+          "columnsFrom": [
+            "course_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "course_participants_id": {
+          "name": "course_participants_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
     "courses": {
       "name": "courses",
       "columns": {
@@ -181,7 +260,7 @@
           "type": "int",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": true
         },
         "title": {
           "name": "title",
@@ -211,13 +290,6 @@
           "notNull": false,
           "autoincrement": false
         },
-        "deadline": {
-          "name": "deadline",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
         "kind": {
           "name": "kind",
           "type": "varchar(100)",
@@ -239,100 +311,33 @@
           "notNull": true,
           "autoincrement": false
         },
-        "timezone": {
-          "name": "timezone",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false,
-          "default": "'America/Vancouver'"
-        },
-        "category_id": {
-          "name": "category_id",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "upload_id": {
-          "name": "upload_id",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
         "room_id": {
           "name": "room_id",
           "type": "int",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
-        },
-        "forum_id": {
-          "name": "forum_id",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "courses_room_id_rooms_id_fk": {
+          "name": "courses_room_id_rooms_id_fk",
+          "tableFrom": "courses",
+          "tableTo": "rooms",
+          "columnsFrom": [
+            "room_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {
         "courses_id": {
           "name": "courses_id",
-          "columns": [
-            "id"
-          ]
-        }
-      },
-      "uniqueConstraints": {},
-      "checkConstraint": {}
-    },
-    "course_participants": {
-      "name": "course_participants",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "user_id": {
-          "name": "user_id",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "course_id": {
-          "name": "course_id",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "status": {
-          "name": "status",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "subscription_id": {
-          "name": "subscription_id",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {
-        "course_participants_id": {
-          "name": "course_participants_id",
           "columns": [
             "id"
           ]
@@ -630,6 +635,72 @@
         }
       },
       "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "participants": {
+      "name": "participants",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "first_name": {
+          "name": "first_name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "last_name": {
+          "name": "last_name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "email": {
+          "name": "email",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "date_of_birth": {
+          "name": "date_of_birth",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "gender": {
+          "name": "gender",
+          "type": "enum('Male','Female','Other')",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "participants_id": {
+          "name": "participants_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {
+        "participants_email_unique": {
+          "name": "participants_email_unique",
+          "columns": [
+            "email"
+          ]
+        }
+      },
       "checkConstraint": {}
     },
     "payments": {
@@ -1018,7 +1089,7 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "serial",
+          "type": "int",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": true
@@ -1345,7 +1416,7 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "serial",
+          "type": "int",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": true
@@ -1368,103 +1439,37 @@
           "name": "email",
           "type": "varchar(255)",
           "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "password": {
+          "name": "password",
+          "type": "varchar(255)",
+          "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "birth_date": {
-          "name": "birth_date",
+        "date_of_birth": {
+          "name": "date_of_birth",
           "type": "date",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "gender": {
           "name": "gender",
           "type": "enum('male','female','other')",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "building": {
-          "name": "building",
-          "type": "varchar(255)",
-          "primaryKey": false,
           "notNull": false,
           "autoincrement": false
-        },
-        "street": {
-          "name": "street",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "city": {
-          "name": "city",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "province": {
-          "name": "province",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "country": {
-          "name": "country",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "postal_code": {
-          "name": "postal_code",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "timezone": {
-          "name": "timezone",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false,
-          "default": "'America/Vancouver'"
-        },
-        "lang": {
-          "name": "lang",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false,
-          "default": "'en'"
         },
         "role": {
           "name": "role",
-          "type": "enum('client','staff','admin')",
+          "type": "enum('participant','admin','staff')",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false,
-          "default": "'client'"
-        },
-        "status": {
-          "name": "status",
-          "type": "enum('active','inactive')",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false,
-          "default": "'active'"
-        },
-        "course_id": {
-          "name": "course_id",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "default": "'participant'"
         }
       },
       "indexes": {},
@@ -1477,7 +1482,14 @@
           ]
         }
       },
-      "uniqueConstraints": {},
+      "uniqueConstraints": {
+        "users_email_unique": {
+          "name": "users_email_unique",
+          "columns": [
+            "email"
+          ]
+        }
+      },
       "checkConstraint": {}
     }
   },
