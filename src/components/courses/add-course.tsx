@@ -98,6 +98,7 @@ export default function AddCourse(props: props) {
         courseType: "Group",
         courseStatus: "Available",
         courseParticipants: "",
+        uploadId: null as string | null,
     });
 
     const [errors, setErrors] = useState({
@@ -124,6 +125,30 @@ export default function AddCourse(props: props) {
             ...formData,
             [name]: value,
         });
+    };
+    const handleImageSelect = async (file: File) => {
+        try {
+            const imageFormData = new FormData();
+            imageFormData.append("file", file);
+
+            const uploadRes = await fetch("/api/upload", {
+                method: "POST",
+                body: imageFormData,
+            });
+
+            if (!uploadRes.ok) {
+                throw new Error("Failed to upload image");
+            }
+
+            const uploadData = await uploadRes.json();
+            setFormData({
+                ...formData,
+                courseImage: file,
+                uploadId: uploadData.id,
+            });
+        } catch (error) {
+            console.error("Error uploading image:", error);
+        }
     };
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {

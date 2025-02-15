@@ -12,9 +12,61 @@ export default function ImageUpload({ onFileSelect, existingImageUrl }: ImageUpl
   const [previewUrl, setPreviewUrl] = useState<string>(existingImageUrl || '');
   const [error, setError] = useState<string>('');
 
+  const handleFile = useCallback((file: File | null) => {
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      setError('Please upload an image file');
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      setError('Image must be less than 5MB');
+      return;
+    }
+
+    setError('');
+    setPreviewUrl(URL.createObjectURL(file));
+    onFileSelect(file);
+  }, [onFileSelect]);
+
+  const handleDrag = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActive(true);
+    } else if (e.type === "dragleave") {
+      setDragActive(false);
+    }
+  }, []);
+
+  const handleDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+
+    const file = e.dataTransfer.files?.[0];
+    handleFile(file || null);
+  }, [handleFile]);
+
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    handleFile(file || null);
+  }, [handleFile]);
+
+  const handleClick = useCallback(() => {
+    const fileInput = document.getElementById('courseImage');
+    fileInput?.click();
+  }, []);
+
   return (
     <div className="flex flex-col gap-2 w-full">
       <div
+        onClick={handleClick}
+        onDragEnter={handleDrag}
+        onDragLeave={handleDrag}
+        onDragOver={handleDrag}
+        onDrop={handleDrop}
         className={`
           relative flex flex-col items-center justify-center
           bg-[#D9D9D9] h-[148px] w-full rounded-lg
@@ -62,6 +114,7 @@ export default function ImageUpload({ onFileSelect, existingImageUrl }: ImageUpl
         name="courseImage"
         className="hidden"
         accept="image/*"
+        onChange={handleChange}
       />
       {error && <p className="text-red-500 text-sm">{error}</p>}
     </div>

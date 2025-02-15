@@ -1,7 +1,8 @@
 "use server";
 import db from "@/db";
-import { eq, desc, and, or } from "drizzle-orm";
 import { CourseParticipant, Courses as coursesTable } from "@/db/schema/course";
+import { desc, eq } from "drizzle-orm";
+import { uploadMedia } from "../schema/mediaUpload";
 
 export interface courseList {
     id: number;
@@ -112,13 +113,70 @@ export async function getCourseById(
     try {
         //TODO: withParticipants, verify administrator or member, return with participants
         //TODO: withMaterials, verify administrator or member, return with course materials
+        // Changed to give image file with name and type
         const course = await db
-            .select()
+            .select({
+                id: coursesTable.id,
+                title: coursesTable.title,
+                description: coursesTable.description,
+                uploadId: coursesTable.uploadId,
+                imageFileName: uploadMedia.fileName,
+                start: coursesTable.start,
+                end: coursesTable.end,
+                roomId: coursesTable.roomId,
+                lang: coursesTable.lang,
+                kind: coursesTable.kind,
+                status: coursesTable.status,
+            })
             .from(coursesTable)
+            .leftJoin(uploadMedia, eq(coursesTable.uploadId, uploadMedia.id))
             .where(eq(coursesTable.id, courseId));
+
         return course;
     } catch (error) {
         console.error("Error fetching courses", error);
         return [];
+    }
+}
+
+export async function createCourseWithMedia(courseData: any, mediaId?: number) {
+    "use server";
+    try {
+        const [course] = await db.insert(coursesTable).values({
+            ...courseData,
+            uploadId: mediaId,
+        });
+
+        if (mediaId) {
+            await db
+                .update(uploadMedia)
+                .set({ originId: course.insertId })
+                .where(eq(uploadMedia.id, mediaId));
+        }
+
+        return course;
+    } catch (error) {
+        console.error("Error creating course with media:", error);
+        throw error;
+    }
+}
+
+export async function updateCourseMedia(courseId: number, mediaId: number) {
+    "use server";
+    try {
+        await db
+            .update(coursesTable)
+            .set({ uploadId: mediaId })
+            .where(eq(coursesTable.id, courseId));
+
+        await db
+            .update(uploadMedia)
+            .set({ originId: courseId })
+            .where(eq(uploadMedia.id, mediaId));
+
+        return true;
+    } catch (error) {
+        console.error("Error updating course media:", error);
+        throw error;
     }
 }
