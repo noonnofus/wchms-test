@@ -44,12 +44,13 @@ export default function Courses() {
         <div className="w-full h-full">
             <h1 className="font-semibold text-4xl text-center mb-6">Courses</h1>
             {showAddPopup && (
-                <div className="fixed inset-0 flex justify-center z-20 overflow-y-auto">
+                <div className="fixed inset-0 flex items-center justify-center z-20 overflow-y-auto">
                     <div
                         className="absolute inset-0 bg-black opacity-50"
                         onClick={handleClosePopup}
                     ></div>
-                    <div className="relative z-30 px-4 py-8 bg-white rounded-lg overflow-y-auto min-w-[80%] max-h-screen">
+
+                    <div className="relative z-30 px-4 py-8 flex flex-col items-center bg-white rounded-lg overflow-y-auto min-w-[80%] max-w-md max-h-[90vh]">
                         <AddCourse handleClosePopup={handleClosePopup} />
                     </div>
                 </div>
