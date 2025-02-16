@@ -33,11 +33,11 @@ export default function AddMaterial(props: { handleClosePopup: () => void }) {
 
     return (
         <div className="flex flex-col gap-8 w-full h-full py-8 px-6 rounded-lg bg-white items-center justify-center">
-            <h1 className="font-semibold text-2xl md:text-4xl">
+            <h1 className="font-semibold text-2xl md:text-4xl text-center">
                 Add New Course Material
             </h1>
             <TabsMenu
-                tabsListClassName="max-w-full flex justify-center border-b"
+                tabsListClassName="w-full flex justify-center border-b"
                 leftLabel="Manual"
                 rightLabel="With AI"
                 leftChildren={
@@ -50,7 +50,7 @@ export default function AddMaterial(props: { handleClosePopup: () => void }) {
                                 placeholder="ex. Week 1: In-class math activity"
                             />
                         </div>
-                        <div className="flex flex-row md:flex-col gap-2 items-center w-full">
+                        <div className="flex flex-col md:flex-row gap-2 items-center w-full">
                             <div className="flex flex-col w-full">
                                 <label htmlFor="exerciseType">
                                     Exercise Type

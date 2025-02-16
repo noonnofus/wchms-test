@@ -50,7 +50,7 @@ export default function Courses() {
                         onClick={handleClosePopup}
                     ></div>
 
-                    <div className="relative z-20 px-4 py-8 flex flex-col items-center bg-white rounded-lg overflow-y-auto min-w-[80%] max-w-md max-h-[90vh]">
+                    <div className="relative z-20 flex flex-col items-center bg-white rounded-lg overflow-y-auto max-w-lg w-full mx-4 max-h-[90vh]">
                         <AddCourse handleClosePopup={handleClosePopup} />
                     </div>
                 </div>
@@ -62,7 +62,7 @@ export default function Courses() {
                         className="absolute inset-0 bg-black opacity-50"
                         onClick={handleCloseEditPopup}
                     />
-                    <div className="relative z-20 px-4 py-8 flex flex-col items-center bg-white rounded-lg overflow-y-auto min-w-[80%] max-w-md max-h-[90vh]">
+                    <div className="relative z-20 flex flex-col items-center bg-white rounded-lg overflow-y-auto max-w-lg w-full mx-4 max-h-[90vh]">
                         <AddCourse
                             handleClosePopup={handleCloseEditPopup}
                             courseId={editCourseId}
