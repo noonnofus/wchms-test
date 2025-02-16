@@ -80,6 +80,7 @@ export async function POST(req: Request) {
                 lang: body.courseLanguage,
                 status: body.courseStatus,
                 kind: body.courseType,
+                uploadId: body.uploadId,
                 roomId,
             })
             .$returningId();
