@@ -75,6 +75,30 @@ export async function getAllCourses(/* page = 1, limit = 10 */) {
     }
 }
 
+export const fetchCourseImage = async (uploadId: number) => {
+    try {
+        const result = await db
+            .select()
+            .from(uploadMedia)
+            .where(eq(uploadMedia.id, uploadId))
+            .limit(1);
+
+        if (result.length > 0) {
+            const { fileData, fileType } = result[0];
+            const imageUrl = `data:${fileType};base64,${fileData}`;
+            return imageUrl;
+        }
+
+        return null;
+    } catch (error) {
+        console.error("Error fetching course image", error);
+        return null;
+    }
+};
+
+
+
+
 //Uncomment in the future for pagination functionality
 export async function getUserCourses(
     userId: number
