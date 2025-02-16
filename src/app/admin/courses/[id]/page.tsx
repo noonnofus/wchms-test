@@ -128,7 +128,7 @@ export default function AdminCourses() {
     };
 
     return (
-        <div>
+        <div className="w-100vw h-100vh">
             <TabsMenu
                 tabsListClassName="z-[1]"
                 leftLabel="Course Home"
@@ -155,7 +155,7 @@ export default function AdminCourses() {
                             </div>
                         )}
                         {showEditCoursePopup && (
-                            <div className="absolute min-h-full w-full top-0 left-0">
+                            <div className="fixed inset-0 flex items-center justify-center z-10 overflow-y-auto">
                                 <div
                                     className="absolute inset-0 bg-black opacity-50 z-10"
                                     onClick={handleCloseEditPopup}
