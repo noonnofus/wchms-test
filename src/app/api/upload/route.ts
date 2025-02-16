@@ -1,12 +1,12 @@
-import { NextResponse } from "next/server";
 import db from "@/db";
 import { uploadMedia } from "@/db/schema/mediaUpload";
+import { NextResponse } from "next/server";
 import sharp from "sharp";
 
 export async function POST(request: Request) {
     try {
         const formData = await request.formData();
-        const file = formData.get('file') as File;
+        const file = formData.get("file") as File;
 
         if (!file) {
             return NextResponse.json(
@@ -15,7 +15,7 @@ export async function POST(request: Request) {
             );
         }
 
-        if (!file.type.startsWith('image/')) {
+        if (!file.type.startsWith("image/")) {
             return NextResponse.json(
                 { error: "Invalid file type" },
                 { status: 400 }
@@ -28,28 +28,22 @@ export async function POST(request: Request) {
                 { status: 400 }
             );
         }
-        let fileBuffer = await file.arrayBuffer();
-        const maxBinarySize = 255;
+
+        const fileBuffer = await file.arrayBuffer();
 
         const resizedBuffer = await sharp(Buffer.from(fileBuffer))
-        .resize(1000)
-        .jpeg({ quality: 60 })
-        .toBuffer();
+            .resize(1000)
+            .jpeg({ quality: 60 })
+            .toBuffer();
 
-        if (resizedBuffer.length > maxBinarySize) {
-            return NextResponse.json(
-                { error: "File too large after compression" },
-                { status: 400 }
-            );
-        }
+        const base64Data = resizedBuffer.toString("base64");
 
-        // Save file and create
         const [mediaRecord] = await db.insert(uploadMedia).values({
             fileName: file.name,
             fileType: file.type,
             fileSize: file.size,
-            fileData: resizedBuffer.toString('base64'),
-            mediaOrigin: 'course',
+            fileData: base64Data,
+            mediaOrigin: "course",
             originId: 0,
         });
 
