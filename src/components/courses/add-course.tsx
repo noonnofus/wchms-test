@@ -256,8 +256,8 @@ export default function AddCourse(props: props) {
     };
 
     return (
-        <div className="flex flex-col gap-20 min-w-[360px] overflow-y-auto py-8 px-6 rounded-lg bg-white items-center justify-center">
-            <h1 className="font-semibold text-4xl">
+        <div className="flex flex-col gap-8 w-full h-full py-8 px-6 rounded-lg bg-white items-center justify-center">
+            <h1 className="font-semibold text-3xl md:text-4xl text-center">
                 {props.courseId ? "Edit Course" : "Add New Course"}
             </h1>
             <form
@@ -284,7 +284,7 @@ export default function AddCourse(props: props) {
                 </div>
                 <div className="flex flex-col flex-1 gap-2">
                     <label htmlFor="courseImage">Course Image</label>
-                    <div className="flex flex-col items-center justify-center bg-[#D9D9D9] h-[148px] w-full rounded-lg">
+                    <div className="flex flex-col items-center justify-center bg-[#D9D9D9] h-[100px] md:h-[148px] w-full rounded-lg">
                         <svg
                             width="26"
                             height="24"
@@ -328,7 +328,7 @@ export default function AddCourse(props: props) {
                         value={formData.courseDescription}
                     />
                 </div>
-                <div className="w-full flex flex-row gap-2">
+                <div className="w-full flex flex-col md:flex-row gap-2">
                     <div className="flex flex-col flex-1 gap-2">
                         <label htmlFor="courseStartDate">
                             Course Start Date
@@ -360,7 +360,7 @@ export default function AddCourse(props: props) {
                         />
                     </div>
                 </div>
-                <div className="w-full flex flex-row gap-2">
+                <div className="w-full flex flex-col md:flex-row gap-2">
                     <div className="flex flex-col flex-1 gap-2">
                         <label htmlFor="courseRoom">Course Room</label>
                         <Select
@@ -433,7 +433,7 @@ export default function AddCourse(props: props) {
                         </Select>
                     </div>
                 </div>
-                <div className="w-full flex flex-row gap-2">
+                <div className="w-full flex flex-col md:flex-row gap-2">
                     <div className="flex flex-col flex-1 gap-2">
                         <label htmlFor="courseType">Course Type</label>
                         <Select
@@ -500,23 +500,23 @@ export default function AddCourse(props: props) {
                         />
                     </div>
                 )}
-                <div className="w-full flex flex-row gap-2">
+                <div className="w-full flex flex-row gap-2 pb-6 mt-4">
                     {props.courseId ? (
                         <Button
                             onClick={handleUpdate}
-                            className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold text-xl py-4"
+                            className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold md:text-xl py-2 md:py-4"
                         >
                             Update
                         </Button>
                     ) : (
-                        <Button className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold text-xl py-4">
+                        <Button className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold md:text-xl py-2 md:py-4">
                             Save
                         </Button>
                     )}
                     <Button
                         onClick={props.handleClosePopup}
                         variant="outline"
-                        className="w-full h-full rounded-full bg-transparent border-primary-green text-primary-green hover:bg-primary-green hover:text-white font-semibold text-xl py-4"
+                        className="w-full h-full rounded-full bg-transparent border-primary-green text-primary-green hover:bg-primary-green hover:text-white font-semibold md:text-xl py-2 md:py-4"
                     >
                         Cancel
                     </Button>
