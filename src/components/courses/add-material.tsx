@@ -50,8 +50,8 @@ export default function AddMaterial(props: { handleClosePopup: () => void }) {
                                 placeholder="ex. Week 1: In-class math activity"
                             />
                         </div>
-                        <div className="flex gap-2 items-center w-full">
-                            <div className="flex flex-col flex-1">
+                        <div className="flex flex-row md:flex-col gap-2 items-center w-full">
+                            <div className="flex flex-col w-full">
                                 <label htmlFor="exerciseType">
                                     Exercise Type
                                 </label>
@@ -74,7 +74,7 @@ export default function AddMaterial(props: { handleClosePopup: () => void }) {
                                     </SelectContent>
                                 </Select>
                             </div>
-                            <div className="flex flex-col flex-1">
+                            <div className="flex flex-col w-full">
                                 <label htmlFor="exerciseDifficulty">
                                     Exercise Difficulty
                                 </label>
@@ -157,7 +157,7 @@ export default function AddMaterial(props: { handleClosePopup: () => void }) {
                     </form>
                 }
                 rightChildren={
-                    <form className="mt-2 md:mt-4 flex flex-col gap-4 w-full h-full md:text-2xl">
+                    <form className="flex flex-col gap-4 w-full h-full md:text-2xl">
                         <div className="flex flex-col flex-1 gap-2">
                             <label htmlFor="title">Title</label>
                             <Input
@@ -166,8 +166,8 @@ export default function AddMaterial(props: { handleClosePopup: () => void }) {
                                 placeholder="ex. Week 1: In-class math activity"
                             />
                         </div>
-                        <div className="flex gap-2 items-center w-full">
-                            <div className="flex flex-col flex-1">
+                        <div className="flex flex-col md:flex-row gap-2 items-center w-full">
+                            <div className="flex flex-col w-full">
                                 <label htmlFor="exerciseType">
                                     Exercise Type
                                 </label>
@@ -196,7 +196,7 @@ export default function AddMaterial(props: { handleClosePopup: () => void }) {
                                     </SelectContent>
                                 </Select>
                             </div>
-                            <div className="flex flex-col flex-1">
+                            <div className="flex flex-col w-full">
                                 <label htmlFor="exerciseDifficulty">
                                     Exercise Difficulty
                                 </label>
