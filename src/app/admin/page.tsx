@@ -24,6 +24,7 @@ export default function LoginPage() {
         const res = await signIn("credentials", {
             email,
             password,
+            loginType: "admin",
             redirect: false,
         });
 
@@ -90,43 +91,5 @@ export default function LoginPage() {
                 </Card>
             </div>
         </div>
-
-        // <div
-        //     style={{
-        //         display: "flex",
-        //         flexDirection: "column",
-        //         gap: "10px",
-        //         maxWidth: "300px",
-        //         margin: "50px auto",
-        //     }}
-        // >
-        //     <h2>Login</h2>
-        //     {error && <p style={{ color: "red" }}>{error}</p>}
-        //     <input
-        //         type="email"
-        //         placeholder="Email"
-        //         value={email}
-        //         onChange={(e) => setEmail(e.target.value)}
-        //         required
-        //     />
-        //     <input
-        //         type="password"
-        //         placeholder="Password"
-        //         value={password}
-        //         onChange={(e) => setPassword(e.target.value)}
-        //         required
-        //     />
-        //     <button
-        //         onClick={handleLogin}
-        //         style={{
-        //             cursor: "pointer",
-        //             padding: "10px",
-        //             background: "#0070f3",
-        //             color: "white",
-        //         }}
-        //     >
-        //         Log In
-        //     </button>
-        // </div>
     );
 }
