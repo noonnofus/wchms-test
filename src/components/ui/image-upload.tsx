@@ -1,16 +1,16 @@
+import Image from 'next/image';
 import React, { useCallback, useState } from 'react';
 import { Input } from "../ui/input";
-import Image from 'next/image';
 
 interface ImageUploadProps {
-  onFileSelect: (file: File | null) => void;
   existingImageUrl?: string;
 }
 
-export default function ImageUpload({ onFileSelect, existingImageUrl }: ImageUploadProps) {
+export default function ImageUpload({ existingImageUrl }: ImageUploadProps) {
   const [dragActive, setDragActive] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string>(existingImageUrl || '');
   const [error, setError] = useState<string>('');
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const handleFile = useCallback((file: File | null) => {
     if (!file) return;
@@ -27,8 +27,8 @@ export default function ImageUpload({ onFileSelect, existingImageUrl }: ImageUpl
 
     setError('');
     setPreviewUrl(URL.createObjectURL(file));
-    onFileSelect(file);
-  }, [onFileSelect]);
+    setSelectedFile(file);
+  }, []);
 
   const handleDrag = useCallback((e: React.DragEvent) => {
     e.preventDefault();

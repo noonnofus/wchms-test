@@ -34,6 +34,7 @@ export default function AddCourse(props: props) {
     const path = usePathname();
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(true);
+    const [isUploading, setIsUploading] = useState(false);
     const [rooms, setRooms] = useState<Room[]>([]);
     useEffect(() => {
         const fetchRooms = async () => {
@@ -76,6 +77,7 @@ export default function AddCourse(props: props) {
                         courseLanguage: course.lang,
                         courseType: course.kind,
                         courseStatus: course.status,
+                        uploadId: course.uploadId?.toString() || null,
                     });
                 } catch (error) {
                     console.error("Error fetching course data:", error);
@@ -230,6 +232,10 @@ export default function AddCourse(props: props) {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
+        if (formData.courseImage) {
+            await handleImageSelect(formData.courseImage);
+        }
+
         if (!validateForm()) {
             return;
         }
@@ -318,7 +324,6 @@ export default function AddCourse(props: props) {
                         </p>
                     )}
                     <ImageUpload
-                        onFileSelect={handleImageSelect}
                         existingImageUrl={
                             props.courseId && formData.courseImage instanceof File
                                 ? URL.createObjectURL(formData.courseImage)
