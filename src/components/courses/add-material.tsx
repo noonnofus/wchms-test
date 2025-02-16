@@ -32,12 +32,12 @@ export default function AddMaterial(props: { handleClosePopup: () => void }) {
     };
 
     return (
-        <>
+        <div className="flex flex-col gap-8 w-full h-full py-8 px-6 rounded-lg bg-white items-center justify-center">
             <h1 className="font-semibold text-2xl md:text-4xl">
                 Add New Course Material
             </h1>
             <TabsMenu
-                tabsListClassName="w-[90%] max-w-[806px] mt-2 md:mt-4"
+                tabsListClassName="max-w-full flex justify-center border-b"
                 leftLabel="Manual"
                 rightLabel="With AI"
                 leftChildren={
@@ -244,6 +244,6 @@ export default function AddMaterial(props: { handleClosePopup: () => void }) {
                     </form>
                 }
             />
-        </>
+        </div>
     );
 }

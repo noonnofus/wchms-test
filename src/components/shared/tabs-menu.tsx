@@ -18,8 +18,12 @@ export default function TabsMenu(props: {
             )}
         >
             <TabsList className={props.tabsListClassName || undefined}>
-                <TabsTrigger value="leftLabel">{props.leftLabel}</TabsTrigger>
-                <TabsTrigger value="rightLabel">{props.rightLabel}</TabsTrigger>
+                <TabsTrigger value="leftLabel" className="flex-1  text-center">
+                    {props.leftLabel}
+                </TabsTrigger>
+                <TabsTrigger value="rightLabel" className="flex-1 text-center">
+                    {props.rightLabel}
+                </TabsTrigger>
             </TabsList>
 
             <TabsContent

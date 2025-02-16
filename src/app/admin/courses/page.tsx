@@ -44,31 +44,29 @@ export default function Courses() {
         <div className="w-full h-full">
             <h1 className="font-semibold text-4xl text-center mb-6">Courses</h1>
             {showAddPopup && (
-                <div className="fixed inset-0 flex items-center justify-center z-20 overflow-y-auto">
+                <div className="fixed inset-0 flex items-center justify-center z-10 overflow-y-auto">
                     <div
                         className="absolute inset-0 bg-black opacity-50"
                         onClick={handleClosePopup}
                     ></div>
 
-                    <div className="relative z-30 px-4 py-8 flex flex-col items-center bg-white rounded-lg overflow-y-auto min-w-[80%] max-w-md max-h-[90vh]">
+                    <div className="relative z-20 px-4 py-8 flex flex-col items-center bg-white rounded-lg overflow-y-auto min-w-[80%] max-w-md max-h-[90vh]">
                         <AddCourse handleClosePopup={handleClosePopup} />
                     </div>
                 </div>
             )}
 
             {showEditPopup && (
-                <div className="absolute min-h-screen min-w-full w-full top-0 left-0 flex items-center justify-center z-20">
+                <div className="fixed inset-0 flex items-center justify-center z-10 overflow-y-auto">
                     <div
-                        className="absolute inset-0 bg-black opacity-50 z-10"
+                        className="absolute inset-0 bg-black opacity-50"
                         onClick={handleCloseEditPopup}
                     />
-                    <div className="relative z-20 flex justify-center items-center w-full h-full px-4 py-6">
-                        <div className="relative w-full h-full max-w-full max-h-full overflow-y-auto bg-white rounded-lg p-6">
-                            <AddCourse
-                                handleClosePopup={handleCloseEditPopup}
-                                courseId={editCourseId}
-                            />
-                        </div>
+                    <div className="relative z-20 px-4 py-8 flex flex-col items-center bg-white rounded-lg overflow-y-auto min-w-[80%] max-w-md max-h-[90vh]">
+                        <AddCourse
+                            handleClosePopup={handleCloseEditPopup}
+                            courseId={editCourseId}
+                        />
                     </div>
                 </div>
             )}
