@@ -12,6 +12,15 @@ export async function getAllParticipants() {
     }
 }
 
+export async function getParticipantById(id: string) {
+    const participant = await db
+        .select()
+        .from(participants)
+        .where(eq(participants.id, Number(id)));
+
+    return participant;
+}
+
 export async function addParticipant(
     firstName: string,
     lastName: string,

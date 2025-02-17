@@ -1,7 +1,6 @@
 import db from "@/db";
 import { eq } from "drizzle-orm";
 import { participants } from "@/db/schema/participants";
-import { messages } from "@/db/schema/message";
 
 export async function PUT(req: Request) {
     try {

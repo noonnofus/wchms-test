@@ -49,7 +49,6 @@ export default function Courses() {
                         className="absolute inset-0 bg-black opacity-50 z-10"
                         onClick={handleClosePopup}
                     />
-
                     <div className="absolute inset-0 flex justify-center items-center z-10 max-h-[90vh] top-1/2 -translate-y-1/2">
                         <div className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-white rounded-lg p-6">
                             <AddCourse handleClosePopup={handleClosePopup} />
