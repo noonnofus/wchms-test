@@ -3,6 +3,8 @@ import { uploadMedia } from "@/db/schema/mediaUpload";
 import { NextResponse } from "next/server";
 import sharp from "sharp";
 
+const MAX_FILE_SIZE = 65535;
+
 export async function POST(request: Request) {
     try {
         const formData = await request.formData();
@@ -31,12 +33,30 @@ export async function POST(request: Request) {
 
         const fileBuffer = await file.arrayBuffer();
 
-        const resizedBuffer = await sharp(Buffer.from(fileBuffer))
+        let resizedBuffer = await sharp(Buffer.from(fileBuffer))
             .resize(1000)
             .jpeg({ quality: 60 })
             .toBuffer();
 
-        const base64Data = resizedBuffer.toString("base64");
+        let base64Data = resizedBuffer.toString("base64");
+
+        if (base64Data.length > MAX_FILE_SIZE) {
+            resizedBuffer = await sharp(Buffer.from(fileBuffer))
+                .resize(800)
+                .jpeg({ quality: 50 })
+                .toBuffer();
+
+            base64Data = resizedBuffer.toString("base64");
+
+            if (base64Data.length > MAX_FILE_SIZE) {
+                resizedBuffer = await sharp(Buffer.from(fileBuffer))
+                    .resize(600)
+                    .jpeg({ quality: 40 })
+                    .toBuffer();
+
+                base64Data = resizedBuffer.toString("base64");
+            }
+        }
 
         const [mediaRecord] = await db.insert(uploadMedia).values({
             fileName: file.name,
