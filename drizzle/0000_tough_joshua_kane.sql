@@ -79,7 +79,7 @@ CREATE TABLE `upload_media` (
 	`file_name` varchar(255) NOT NULL,
 	`file_type` varchar(50) NOT NULL,
 	`file_size` int NOT NULL,
-	`file_data` binary NOT NULL,
+	`file_data` text NOT NULL,
 	`media_origin` varchar(50) NOT NULL,
 	`origin_id` int NOT NULL,
 	`uploaded_at` timestamp DEFAULT (now()),

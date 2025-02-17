@@ -1,1 +1,0 @@
-ALTER TABLE `upload_media` MODIFY COLUMN `file_data` varchar(16777215) NOT NULL;

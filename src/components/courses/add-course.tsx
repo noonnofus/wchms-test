@@ -128,31 +128,11 @@ export default function AddCourse(props: props) {
             [name]: value,
         });
     };
-    const handleImageSelect = async (file: File | null) => {
-        try {
-            const imageFormData = new FormData();
-            if (file) {
-                imageFormData.append("file", file);
-            }
-
-            const uploadRes = await fetch("/api/upload", {
-                method: "POST",
-                body: imageFormData,
-            });
-
-            if (!uploadRes.ok) {
-                throw new Error("Failed to upload image");
-            }
-
-            const uploadData = await uploadRes.json();
-            setFormData({
-                ...formData,
-                courseImage: file,
-                uploadId: uploadData.id,
-            });
-        } catch (error) {
-            console.error("Error uploading image:", error);
-        }
+    const handleImageSelect = (file: File | null) => {
+        setFormData((prev) => ({
+            ...formData,
+            courseImage: file,
+        }));
     };
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -232,31 +212,58 @@ export default function AddCourse(props: props) {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        if (formData.courseImage) {
-            await handleImageSelect(formData.courseImage);
-        }
-
         if (!validateForm()) {
             return;
         }
 
-        console.log(formData);
-        const res = await fetch("/api/courses/create", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(formData),
-        });
+        setIsUploading(true);
+        try {
+            let updatedFormData = { ...formData };
 
-        if (res.ok) {
-            const data = await res.json();
-            const courseId = data.courseId;
-            console.log("Form submitted successfully");
+            // Only upload image if there's a new image to upload
+            if (formData.courseImage) {
+                const imageFormData = new FormData();
+                imageFormData.append("file", formData.courseImage);
 
-            router.push(`/admin/courses/${courseId}`);
-        } else {
-            console.error("Form submission failed");
+                const uploadRes = await fetch("/api/upload", {
+                    method: "POST",
+                    body: imageFormData,
+                });
+
+                if (!uploadRes.ok) {
+                    throw new Error("Failed to upload image");
+                }
+
+                const uploadData = await uploadRes.json();
+                updatedFormData.uploadId = uploadData.id;
+            }
+
+            const res = await fetch("/api/courses/create", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(updatedFormData),
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+                console.log("Form submitted successfully");
+                router.push(`/admin/courses/${data.courseId}`);
+            } else {
+                throw new Error("Failed to create course");
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            setErrors((prev) => ({
+                ...prev,
+                courseImage:
+                    error instanceof Error
+                        ? error.message
+                        : "Failed to process image",
+            }));
+        } finally {
+            setIsUploading(false);
         }
     };
 
@@ -267,25 +274,58 @@ export default function AddCourse(props: props) {
             return;
         }
 
-        console.log(formData);
-        const res = await fetch("/api/courses/update", {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(formData),
-        });
+        setIsUploading(true);
+        try {
+            let updatedFormData = { ...formData };
 
-        if (res.ok) {
-            const data = await res.json();
-            const courseId = data.courseId;
-            console.log("Course updated successfully");
-            if (path.startsWith("/admin/courses/")) {
-                return (window.location.href = `/admin/courses/${courseId}`);
+            // Only upload image if there's a new image to upload
+            if (formData.courseImage instanceof File) {
+                const imageFormData = new FormData();
+                imageFormData.append("file", formData.courseImage);
+
+                const uploadRes = await fetch("/api/upload", {
+                    method: "POST",
+                    body: imageFormData,
+                });
+
+                if (!uploadRes.ok) {
+                    throw new Error("Failed to upload image");
+                }
+
+                const uploadData = await uploadRes.json();
+                updatedFormData.uploadId = uploadData.id;
             }
-            router.push(`/admin/courses/${courseId}`);
-        } else {
-            console.error("Form submission failed");
+
+            const res = await fetch("/api/courses/update", {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(updatedFormData),
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+                console.log("Course updated successfully");
+                if (path.startsWith("/admin/courses/")) {
+                    window.location.href = `/admin/courses/${data.courseId}`;
+                } else {
+                    router.push(`/admin/courses/${data.courseId}`);
+                }
+            } else {
+                throw new Error("Failed to update course");
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            setErrors((prev) => ({
+                ...prev,
+                courseImage:
+                    error instanceof Error
+                        ? error.message
+                        : "Failed to process image",
+            }));
+        } finally {
+            setIsUploading(false);
         }
     };
 
@@ -325,20 +365,12 @@ export default function AddCourse(props: props) {
                     )}
                     <ImageUpload
                         existingImageUrl={
-                            props.courseId && formData.courseImage instanceof File
-                                ? URL.createObjectURL(formData.courseImage)
-                                : typeof formData.courseImage === "string"
-                                ? formData.courseImage
+                            formData.uploadId
+                                ? `/api/uploads/${formData.uploadId}`
                                 : undefined
                         }
-                    />
-                    <Input
-                        type="file"
-                        id="courseImage"
-                        name="courseImage"
-                        className="hidden"
-                        accept="image/*"
-                        onChange={handleFileChange}
+                        onImageSelect={handleImageSelect}
+                        error={errors.courseImage}
                     />
                 </div>
                 <div className="flex flex-col flex-1 gap-2">

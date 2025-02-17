@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "944d6e2b-5149-4fcd-adb9-6ef1dad905fc",
+  "id": "c4e42113-2cca-452e-a676-0cdd6666af30",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "announcements": {
@@ -562,7 +562,7 @@
         },
         "file_data": {
           "name": "file_data",
-          "type": "binary",
+          "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
