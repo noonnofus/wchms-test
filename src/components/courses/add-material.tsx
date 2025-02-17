@@ -32,12 +32,12 @@ export default function AddMaterial(props: { handleClosePopup: () => void }) {
     };
 
     return (
-        <>
-            <h1 className="font-semibold text-2xl md:text-4xl">
+        <div className="flex flex-col gap-8 w-full h-full py-8 px-6 rounded-lg bg-white items-center justify-center">
+            <h1 className="font-semibold text-2xl md:text-4xl text-center">
                 Add New Course Material
             </h1>
             <TabsMenu
-                tabsListClassName="w-[90%] max-w-[806px] mt-2 md:mt-4"
+                tabsListClassName="w-full flex justify-center border-b"
                 leftLabel="Manual"
                 rightLabel="With AI"
                 leftChildren={
@@ -50,8 +50,8 @@ export default function AddMaterial(props: { handleClosePopup: () => void }) {
                                 placeholder="ex. Week 1: In-class math activity"
                             />
                         </div>
-                        <div className="flex gap-2 items-center w-full">
-                            <div className="flex flex-col flex-1">
+                        <div className="flex flex-col md:flex-row gap-2 items-center w-full">
+                            <div className="flex flex-col w-full">
                                 <label htmlFor="exerciseType">
                                     Exercise Type
                                 </label>
@@ -74,7 +74,7 @@ export default function AddMaterial(props: { handleClosePopup: () => void }) {
                                     </SelectContent>
                                 </Select>
                             </div>
-                            <div className="flex flex-col flex-1">
+                            <div className="flex flex-col w-full">
                                 <label htmlFor="exerciseDifficulty">
                                     Exercise Difficulty
                                 </label>
@@ -157,7 +157,7 @@ export default function AddMaterial(props: { handleClosePopup: () => void }) {
                     </form>
                 }
                 rightChildren={
-                    <form className="mt-2 md:mt-4 flex flex-col gap-4 w-full h-full md:text-2xl">
+                    <form className="flex flex-col gap-4 w-full h-full md:text-2xl">
                         <div className="flex flex-col flex-1 gap-2">
                             <label htmlFor="title">Title</label>
                             <Input
@@ -166,8 +166,8 @@ export default function AddMaterial(props: { handleClosePopup: () => void }) {
                                 placeholder="ex. Week 1: In-class math activity"
                             />
                         </div>
-                        <div className="flex gap-2 items-center w-full">
-                            <div className="flex flex-col flex-1">
+                        <div className="flex flex-col md:flex-row gap-2 items-center w-full">
+                            <div className="flex flex-col w-full">
                                 <label htmlFor="exerciseType">
                                     Exercise Type
                                 </label>
@@ -196,7 +196,7 @@ export default function AddMaterial(props: { handleClosePopup: () => void }) {
                                     </SelectContent>
                                 </Select>
                             </div>
-                            <div className="flex flex-col flex-1">
+                            <div className="flex flex-col w-full">
                                 <label htmlFor="exerciseDifficulty">
                                     Exercise Difficulty
                                 </label>
@@ -244,6 +244,6 @@ export default function AddMaterial(props: { handleClosePopup: () => void }) {
                     </form>
                 }
             />
-        </>
+        </div>
     );
 }
