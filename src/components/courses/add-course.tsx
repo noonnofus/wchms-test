@@ -274,16 +274,15 @@ export default function AddCourse(props: props) {
             return;
         }
 
-        setIsUploading(true);
-        try {
-            let updatedFormData = { ...formData };
+        let updatedFormData = { ...formData };
 
-            // Only upload image if there's a new image to upload
-            if (formData.courseImage instanceof File) {
-                const imageFormData = new FormData();
-                imageFormData.append("file", formData.courseImage);
+        if (formData.courseImage instanceof File) {
+            const imageFormData = new FormData();
+            imageFormData.append("file", formData.courseImage);
+            imageFormData.append("courseId", String(formData.courseId));
 
-                const uploadRes = await fetch("/api/upload", {
+            try {
+                const uploadRes = await fetch("/api/updateImage", {
                     method: "POST",
                     body: imageFormData,
                 });
@@ -294,38 +293,34 @@ export default function AddCourse(props: props) {
 
                 const uploadData = await uploadRes.json();
                 updatedFormData.uploadId = uploadData.id;
+            } catch (error) {
+                console.error("Error uploading image:", error);
+                return;
+            }
+        }
+
+        console.log(updatedFormData);
+
+        const res = await fetch("/api/courses/update", {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(updatedFormData),
+        });
+
+        if (res.ok) {
+            const data = await res.json();
+            const courseId = data.courseId;
+            console.log("Course updated successfully");
+
+            if (path.startsWith("/admin/courses/")) {
+                return (window.location.href = `/admin/courses/${courseId}`);
             }
 
-            const res = await fetch("/api/courses/update", {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(updatedFormData),
-            });
-
-            if (res.ok) {
-                const data = await res.json();
-                console.log("Course updated successfully");
-                if (path.startsWith("/admin/courses/")) {
-                    window.location.href = `/admin/courses/${data.courseId}`;
-                } else {
-                    router.push(`/admin/courses/${data.courseId}`);
-                }
-            } else {
-                throw new Error("Failed to update course");
-            }
-        } catch (error) {
-            console.error("Error:", error);
-            setErrors((prev) => ({
-                ...prev,
-                courseImage:
-                    error instanceof Error
-                        ? error.message
-                        : "Failed to process image",
-            }));
-        } finally {
-            setIsUploading(false);
+            router.push(`/admin/courses/${courseId}`);
+        } else {
+            console.error("Form submission failed");
         }
     };
 
