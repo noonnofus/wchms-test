@@ -87,7 +87,7 @@ export default function Manage() {
             {/* Delete Confirmation Popup */}
             {showDeletePopup && participantToDelete && (
                 <div className="absolute inset-0 flex justify-center items-center min-h-[800px] min-w-[360px] w-full h-full bg-black bg-opacity-50 z-50">
-                    <div className="relative w-full max-w-lg bg-white rounded-lg p-6 overflow-auto">
+                    <div className="relative w-full bg-white rounded-lg p-6 overflow-auto">
                         <DeleteConfirmation
                             title="Before you delete!"
                             body={`Are you sure you want to delete ${participantToDelete.firstName}? You cannot undo this action.`}
@@ -102,7 +102,7 @@ export default function Manage() {
             {/* Edit Participant Popup */}
             {showEditPopup && participantToEdit && (
                 <div className="absolute inset-0 flex justify-center items-center min-h-[800px] min-w-[360px] w-full h-full bg-black bg-opacity-50 z-50">
-                    <div className="relative w-full max-w-lg bg-white rounded-lg p-6 overflow-auto">
+                    <div className="relative w-full bg-white rounded-lg p-6 overflow-auto">
                         <EditParticipant
                             participantData={participantToEdit}
                             closePopup={handleClosePopup}
@@ -116,7 +116,7 @@ export default function Manage() {
 
             {showAddPopup && (
                 <div className="absolute inset-0 flex justify-center items-center min-h-[800px] min-w-[360px] w-full h-full bg-black bg-opacity-50 z-50">
-                    <div className="relative w-full max-w-lg bg-white rounded-lg p-6 overflow-auto">
+                    <div className="relative w-full bg-white rounded-lg p-6 overflow-auto">
                         <AddParticipant
                             closePopup={handleClosePopup}
                             onParticipantAdded={() =>

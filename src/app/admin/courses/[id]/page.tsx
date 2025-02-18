@@ -160,7 +160,7 @@ export default function AdminCourses() {
                                     className="absolute inset-0 bg-black opacity-50"
                                     onClick={handleCloseEditCoursePopup}
                                 />
-                                <div className="relative z-20 flex flex-col items-center bg-white rounded-lg overflow-y-auto max-w-lg w-full mx-4 max-h-[90vh]">
+                                <div className="relative z-20 flex flex-col items-center bg-white rounded-lg overflow-y-auto w-full mx-4 max-h-[90vh]">
                                     <AddCourse
                                         handleClosePopup={
                                             handleCloseEditCoursePopup
@@ -226,7 +226,7 @@ export default function AdminCourses() {
                                             className="absolute inset-0 bg-black opacity-50 z-10"
                                             onClick={handleClosePopup}
                                         />
-                                        <div className="relative z-20 flex flex-col items-center bg-white rounded-lg overflow-y-auto max-w-lg w-full mx-4 max-h-[90vh]">
+                                        <div className="relative z-20 flex flex-col items-center bg-white rounded-lg overflow-y-auto w-full mx-4 max-h-[90vh]">
                                             <AddMaterial
                                                 handleClosePopup={
                                                     handleClosePopup
@@ -242,7 +242,7 @@ export default function AdminCourses() {
                                             onClick={handleCloseEditPopup}
                                         />
 
-                                        <div className="relative z-20 flex flex-col items-center bg-white rounded-lg overflow-y-auto max-w-lg w-full mx-4 max-h-[90vh]">
+                                        <div className="relative z-20 flex flex-col items-center bg-white rounded-lg overflow-y-auto w-full mx-4 max-h-[90vh]">
                                             <EditMaterial
                                                 handleClosePopup={
                                                     handleCloseEditPopup
