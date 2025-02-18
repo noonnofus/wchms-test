@@ -1,6 +1,6 @@
-import db from "../src/db";
 import { participants } from "@/db/schema/participants";
 import { eq } from "drizzle-orm";
+import db from "../src/db";
 
 async function SeedParticipants() {
     const seedParticipants = [
@@ -55,7 +55,7 @@ SeedParticipants().catch((error) => {
     console.error("Seed participants failed", error);
 });
 
-import { rooms as roomsTable, RoomStatus, RoomMedium } from "@/db/schema/room";
+import { RoomMedium, rooms as roomsTable, RoomStatus } from "@/db/schema/room";
 
 async function SeedRooms() {
     const rooms = [

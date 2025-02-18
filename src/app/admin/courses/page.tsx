@@ -1,9 +1,13 @@
 "use client";
 import AddCourse from "@/components/courses/add-course";
 import CourseCard from "@/components/courses/course-card";
-import { useEffect, useState } from "react";
-import { getAllCourses } from "@/db/queries/courses";
+import { fetchCourseImage, getAllCourses } from "@/db/queries/courses";
 import { type Course } from "@/db/schema/course";
+import { useEffect, useState } from "react";
+
+export type CourseWithImage = Course & {
+    imageUrl?: string | null;
+};
 
 export default function Courses() {
     const [showAddPopup, setShowAddPopup] = useState(false);
@@ -24,12 +28,22 @@ export default function Courses() {
         setShowAddPopup(false);
     };
     const [isLoading, setIsLoading] = useState(true);
-    const [courses, setCourses] = useState<Course[]>([]);
+    const [courses, setCourses] = useState<CourseWithImage[]>([]);
+
     useEffect(() => {
         const fetchCourses = async () => {
             try {
                 const allCourses = await getAllCourses();
-                setCourses(allCourses);
+                const coursesWithImages = await Promise.all(
+                    allCourses.map(async (course) => {
+                        const imageUrl =
+                            course.uploadId !== null
+                                ? await fetchCourseImage(course.uploadId)
+                                : null;
+                        return { ...course, imageUrl };
+                    })
+                );
+                setCourses(coursesWithImages);
             } catch (error) {
                 console.error("Error fetching courses", error);
                 setCourses([]);
@@ -103,7 +117,7 @@ export default function Courses() {
                                 key={course.id}
                                 id={course.id}
                                 name={course.title}
-                                image={"/course-image.png"} // TODO: Add image reference
+                                image={course.imageUrl || "/course-image.png"}
                                 imageAlt={`${course.title} Cover Image`}
                                 description={course.description}
                                 variant="admin"

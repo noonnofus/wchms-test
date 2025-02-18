@@ -1,7 +1,10 @@
 "use client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "../ui/button";
+import { fetchCourseImage } from "@/db/queries/courses";
 import Image from "next/image";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { Button } from "../ui/button";
 
 interface CourseDetailsProps {
     name: string;
@@ -11,6 +14,22 @@ interface CourseDetailsProps {
 }
 
 export default function CourseDetailsCard(props: CourseDetailsProps) {
+    const id = useParams().id;
+    const courseId = id ? parseInt(id as string) - 1 : 0;
+    const [imageUrl, setImageUrl] = useState<string>("/course-image.png");
+    useEffect(() => {
+        const fetchImage = async () => {
+            try {
+                const fetchedImage = await fetchCourseImage(courseId);
+                setImageUrl(fetchedImage || "/course-image.png");
+            } catch (error) {
+                console.error("Error fetching course image", error);
+                setImageUrl("/course-image.png");
+            }
+        };
+
+        fetchImage();
+    }, [courseId]);
     return (
         <div className="flex flex-col items-center">
             <Card>
@@ -18,7 +37,7 @@ export default function CourseDetailsCard(props: CourseDetailsProps) {
                     <CardTitle>{props.name}</CardTitle>
                 </CardHeader>
                 <Image
-                    src="/course-image.png"
+                    src={imageUrl}
                     width={200}
                     height={200}
                     alt="Picture of snake"

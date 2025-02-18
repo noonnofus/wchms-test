@@ -1,26 +1,55 @@
 "use client";
 import CourseCard from "@/components/courses/course-card";
 import TabsMenu from "@/components/shared/tabs-menu";
-import { courseList, getAvailableCourses } from "@/db/queries/courses";
-import { type Course } from "@/db/schema/course";
+import {
+    courseList,
+    fetchCourseImage,
+    getAvailableCourses,
+} from "@/db/queries/courses";
 import { useEffect, useState } from "react";
+
+export type CourseListWithImage = courseList & {
+    imageUrl?: string | null;
+};
 
 export default function Courses() {
     const [isLoading, setIsLoading] = useState(true);
     const [courses, setCourses] = useState<{
-        enrolled: courseList[];
-        unenrolled: courseList[];
-    }>({ enrolled: [] as courseList[], unenrolled: [] as courseList[] });
+        enrolled: CourseListWithImage[];
+        unenrolled: CourseListWithImage[];
+    }>({
+        enrolled: [] as CourseListWithImage[],
+        unenrolled: [] as CourseListWithImage[],
+    });
     useEffect(() => {
         const fetchCourses = async () => {
             try {
                 const availableCourses = await getAvailableCourses();
-                setCourses(availableCourses);
+                const enrolledCourses = await Promise.all(
+                    availableCourses.enrolled.map(async (course) => {
+                        const imageUrl = course.id
+                            ? await fetchCourseImage(course.id)
+                            : "/course-image.png";
+                        return { ...course, imageUrl };
+                    })
+                );
+                const unenrolledCourses = await Promise.all(
+                    availableCourses.unenrolled.map(async (course) => {
+                        const imageUrl = course.id
+                            ? await fetchCourseImage(course.id)
+                            : "/course-image.png";
+                        return { ...course, imageUrl };
+                    })
+                );
+                setCourses({
+                    enrolled: enrolledCourses,
+                    unenrolled: unenrolledCourses,
+                });
             } catch (error) {
                 console.error("Error fetching courses", error);
                 setCourses({
-                    enrolled: [] as courseList[],
-                    unenrolled: [] as courseList[],
+                    enrolled: [] as CourseListWithImage[],
+                    unenrolled: [] as CourseListWithImage[],
                 });
             } finally {
                 setIsLoading(false);
@@ -46,7 +75,10 @@ export default function Courses() {
                                         key={course.id}
                                         id={course.id}
                                         name={course.title}
-                                        image={"/course-image.png"} // TODO: Add image reference
+                                        image={
+                                            course.imageUrl ||
+                                            "/course-image.png"
+                                        }
                                         imageAlt={`${course.title} Cover Image`}
                                         variant="client"
                                         enrolled={true}
@@ -69,7 +101,10 @@ export default function Courses() {
                                         key={course.id}
                                         id={course.id}
                                         name={course.title}
-                                        image={"/course-image.png"} // TODO: Add image reference
+                                        image={
+                                            course.imageUrl ||
+                                            "/course-image.png"
+                                        }
                                         imageAlt={`${course.title} Cover Image`}
                                         variant="client"
                                         enrolled={false}
