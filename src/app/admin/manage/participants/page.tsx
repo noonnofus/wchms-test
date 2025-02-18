@@ -1,5 +1,6 @@
 "use client";
 import ChevronDownIcon from "@/components/icons/chevron-down-icon";
+import ChevronUpIcon from "@/components/icons/chevron-up-icon";
 import { Settings, PlusIcon } from "lucide-react";
 import DeleteIcon from "@/components/icons/delete-icon";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -29,6 +30,8 @@ export default function ManagePariticipant() {
     const [showDeletePopup, setShowDeletePopup] = useState(false);
     const [showAddPopup, setShowAddPopup] = useState(false);
     const [refreshParticipants, setRefreshParticipants] = useState(false);
+    const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+    const [searchQuery, setSearchQuery] = useState("");
 
     useEffect(() => {
         setIsLoading(true);
@@ -82,6 +85,31 @@ export default function ManagePariticipant() {
         setParticipantToDelete(null);
     }
 
+    const handleSortChange = () => {
+        setSortOrder((prevOrder) => (prevOrder === "asc" ? "desc" : "asc"));
+    };
+
+    const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchQuery(event.target.value);
+    };
+
+    const filteredParticipants = participants
+        .filter((participant) => {
+            const fullName =
+                `${participant.firstName} ${participant.lastName}`.toLowerCase();
+            return fullName.includes(searchQuery.toLowerCase());
+        })
+        .sort((a, b) => {
+            const nameA = `${a.firstName} ${a.lastName}`.toLowerCase();
+            const nameB = `${b.firstName} ${b.lastName}`.toLowerCase();
+
+            if (sortOrder === "asc") {
+                return nameA.localeCompare(nameB); // A-Z
+            } else {
+                return nameB.localeCompare(nameA); // Z-A
+            }
+        });
+
     return (
         <div>
             <div className="flex flex-col gap-10 w-full items-center">
@@ -122,7 +150,7 @@ export default function ManagePariticipant() {
                                 type="text"
                                 placeholder="Search"
                                 className="mt-2 md:mt-4 py-4 md:py-6 w-full"
-                            // onChange={handleSearchChange}
+                                onChange={handleSearchChange}
                             ></Input>
                             <button
                                 className="mt-2 md:mt-4 flex flex-col min-w-8 min-h-8 md:min-h-12 md:min-w-12 border-2 md:border-[3px] border-primary-green text-primary-green rounded-full justify-center items-center"
@@ -138,13 +166,24 @@ export default function ManagePariticipant() {
                                 <TableRow className="grid grid-cols-[auto_auto_1fr_auto_auto] text-base md:text-xl font-semibold items-center">
                                     <TableHead className="flex items-center gap-2 text-left text-black">
                                         Participant
-                                        <button className="flex items-center">
-                                            <ChevronDownIcon className="text-primary-green" />
+                                        <button
+                                            onClick={handleSortChange}
+                                            className="flex items-center"
+                                        >
+                                            {sortOrder === "asc" ? (
+                                                <ChevronDownIcon className="text-primary-green" />
+                                            ) : (
+                                                <ChevronUpIcon className="text-primary-green" />
+                                            )}
                                         </button>
                                     </TableHead>
                                     <TableHead className="flex items-center gap-2 text-left text-black">
                                         Course Assigned
-                                        <ChevronDownIcon className="text-primary-green" />
+                                        <button
+                                            className="flex items-center"
+                                        >
+                                            <ChevronDownIcon className="text-primary-green" />
+                                        </button>
                                     </TableHead>
                                     <div className="flex-1"></div>
                                     <TableHead className="text-center text-black">Delete</TableHead>
@@ -174,7 +213,7 @@ export default function ManagePariticipant() {
                                             </TableCell>
                                         </TableRow>
                                     ))
-                                    : participants.map((participant: any) => {
+                                    : filteredParticipants.map((participant: any) => {
                                         return (
                                             <TableRow
                                                 className="grid grid-cols-[auto_auto_1fr_auto_auto] items-center"
