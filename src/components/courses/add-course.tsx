@@ -359,10 +359,8 @@ export default function AddCourse(props: props) {
                         </p>
                     )}
                     <ImageUpload
-                        existingImageUrl={
-                            formData.uploadId
-                                ? formData.uploadId
-                                : undefined
+                        courseId={
+                            formData.uploadId ? String(formData.courseId) : undefined
                         }
                         onImageSelect={handleImageSelect}
                         error={errors.courseImage}
