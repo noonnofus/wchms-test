@@ -96,8 +96,18 @@ export const fetchCourseImage = async (uploadId: number) => {
     }
 };
 
-
-
+export async function getUploadId(courseId: number) {
+    try {
+        const course = await getCourseById(courseId);
+        if (course && course.length > 0) {
+            return course[0].uploadId;
+        }
+        return null;
+    } catch (error) {
+        console.error("Error fetching uploadId:", error);
+        return null;
+    }
+}
 
 //Uncomment in the future for pagination functionality
 export async function getUserCourses(
