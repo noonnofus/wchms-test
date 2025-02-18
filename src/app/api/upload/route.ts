@@ -16,9 +16,12 @@ export async function POST(request: Request) {
             );
         }
 
-        if (!file.type.startsWith("image/")) {
+        if (
+            !file.type.startsWith("image/") ||
+            (file.type !== "image/jpeg" && file.type !== "image/png")
+        ) {
             return NextResponse.json(
-                { error: "Invalid file type" },
+                { error: "Invalid file type. Only JPEG and PNG are allowed" },
                 { status: 400 }
             );
         }

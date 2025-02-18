@@ -138,7 +138,7 @@ export default function ImageUpload({
                 id="courseImage"
                 name="courseImage"
                 className="hidden"
-                accept="image/*"
+                accept="image/jpeg, image/png"
                 onChange={handleChange}
             />
             {(internalError || externalError) && (
