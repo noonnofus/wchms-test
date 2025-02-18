@@ -44,3 +44,20 @@ export async function addParticipant(
         return { error: "Failed to add participant" };
     }
 }
+
+export async function deleteParticipant(participantId: number) {
+    try {
+        const result = await db
+            .delete(participants)
+            .where(eq(participants.id, participantId));
+        if (!result) {
+            return { error: "Participant not found or already deleted" };
+        }
+
+        console.log(`Participant with ID ${participantId} deleted`);
+        return { message: "Participant deleted successfully" };
+    } catch (error) {
+        console.error("Error deleting participant", error);
+        return { error: "Failed to delete participant" };
+    }
+}

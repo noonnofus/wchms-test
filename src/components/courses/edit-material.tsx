@@ -46,7 +46,7 @@ export default function EditMaterial({
     };
 
     return (
-        <>
+        <div className="flex flex-col gap-8 w-full h-full py-8 px-6 rounded-lg bg-white items-center justify-center">
             <h1 className="font-semibold text-2xl md:text-4xl">
                 Edit Course Material
             </h1>
@@ -60,8 +60,8 @@ export default function EditMaterial({
                         defaultValue={material.title}
                     />
                 </div>
-                <div className="flex gap-2 items-center w-full">
-                    <div className="flex flex-col flex-1">
+                <div className="flex flex-col md:flex-row gap-2 items-center w-full">
+                    <div className="flex flex-col flex-1 w-full">
                         <label htmlFor="exerciseType">Exercise Type</label>
                         <Select onValueChange={handleActivitySelect}>
                             <SelectTrigger>
@@ -79,7 +79,7 @@ export default function EditMaterial({
                             </SelectContent>
                         </Select>
                     </div>
-                    <div className="flex flex-col flex-1">
+                    <div className="flex flex-col flex-1 w-full">
                         <label htmlFor="exerciseDifficulty">
                             Exercise Difficulty
                         </label>
@@ -208,6 +208,6 @@ export default function EditMaterial({
                     </Button>
                 </div>
             </form>
-        </>
+        </div>
     );
 }

@@ -27,17 +27,6 @@ export default function ParticipantLogin() {
     const [selectedCourse, setSelectedCourse] = useState<string | null>(null);
     // const allParticipants = courses.flatMap((course) => course.participants);
     const [participants, setParticipants] = useState<string[]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
-    const [refreshParticipants, setRefreshParticipants] = useState(false);
-
-    const [showAddPopup, setShowAddPopup] = useState(false);
-    const handleAddButtonClick = () => {
-        setShowAddPopup(true);
-    };
-    const handleClosePopup = () => {
-        setShowAddPopup(false);
-        setRefreshParticipants((prev) => !prev);
-    };
 
     useEffect(() => {
         const fetchParticipants = async () => {
@@ -60,13 +49,11 @@ export default function ParticipantLogin() {
                 setParticipants(uniqueParticipants);
             } catch (error) {
                 console.error("Failed to fetch participants", error);
-            } finally {
-                setLoading(false);
             }
         };
 
         fetchParticipants();
-    }, [refreshParticipants]);
+    }, []);
 
     const handleCourseSelect = (courseName: string) => {
         // if (courseName === "All Courses") {
@@ -86,33 +73,6 @@ export default function ParticipantLogin() {
     return (
         <div className="flex flex-col gap-20 w-full h-full items-center">
             <h1 className="font-semibold text-4xl">Participants List</h1>
-            {showAddPopup && (
-                <div className="absolute inset-0 flex justify-center items-center min-h-[800px] min-w-[360px] w-full h-full bg-black bg-opacity-50 z-50">
-                    <div className="relative w-full max-w-lg bg-white rounded-lg p-6 overflow-auto">
-                        <AddParticipant closePopup={handleClosePopup} />
-                    </div>
-                </div>
-            )}
-            <button
-                className="absolute bottom-24 right-2 md:bottom-24 md:right-6 flex h-[72px] w-[72px] bg-primary-green shadow-lg border-4 border-white rounded-full justify-center items-center z-[1]"
-                onClick={handleAddButtonClick}
-            >
-                <svg
-                    width="32"
-                    height="32"
-                    viewBox="0 0 32 32"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                >
-                    <path
-                        d="M16 5.33334V26.6667M26.6667 16L5.33334 16"
-                        stroke="white"
-                        strokeWidth="4"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                    />
-                </svg>
-            </button>
             <div className="flex flex-col w-full items-center gap-10">
                 <div className="flex flex-col w-full items-center gap-4">
                     <h2 className="font-medium text-2xl">Select a Course</h2>

@@ -128,7 +128,7 @@ export default function AdminCourses() {
     };
 
     return (
-        <div>
+        <div className="w-full h-full">
             <TabsMenu
                 tabsListClassName="z-[1]"
                 leftLabel="Course Home"
@@ -155,28 +155,25 @@ export default function AdminCourses() {
                             </div>
                         )}
                         {showEditCoursePopup && (
-                            <div className="absolute min-h-full w-full top-0 left-0">
+                            <div className="fixed inset-0 flex items-center justify-center z-30 overflow-y-auto">
                                 <div
-                                    className="absolute inset-0 bg-black opacity-50 z-10"
-                                    onClick={handleCloseEditPopup}
+                                    className="absolute inset-0 bg-black opacity-50"
+                                    onClick={handleCloseEditCoursePopup}
                                 />
-
-                                <div className="absolute inset-0 flex justify-center items-center z-10 max-h-[90vh] top-1/2 -translate-y-1/2">
-                                    <div className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-white rounded-lg p-6">
-                                        <AddCourse
-                                            handleClosePopup={
-                                                handleCloseEditCoursePopup
-                                            }
-                                            courseId={parseInt(id as string)}
-                                        />
-                                    </div>
+                                <div className="relative z-20 flex flex-col items-center bg-white rounded-lg overflow-y-auto max-w-lg w-full mx-4 max-h-[90vh]">
+                                    <AddCourse
+                                        handleClosePopup={
+                                            handleCloseEditCoursePopup
+                                        }
+                                        courseId={parseInt(id as string)}
+                                    />
                                 </div>
                             </div>
                         )}
                     </>
                 }
                 rightChildren={
-                    <>
+                    <div className="w-full">
                         {isLoading ? (
                             <div className="flex justify-center items-center py-10">
                                 <p>Loading Courses...</p>
@@ -224,51 +221,46 @@ export default function AdminCourses() {
                                     </svg>
                                 </button>
                                 {showAddPopup && (
-                                    <div className="absolute min-h-full w-full top-0 left-0">
+                                    <div className="fixed inset-0 flex items-center justify-center z-10">
                                         <div
                                             className="absolute inset-0 bg-black opacity-50 z-10"
                                             onClick={handleClosePopup}
                                         />
-
-                                        <div className="absolute inset-0 flex justify-center items-center z-10 max-h-[90vh] top-1/2 -translate-y-1/2">
-                                            <div className="relative w-full max-w-[95vw] lg:max-w-4xl max-h-[90vh] overflow-y-auto bg-white rounded-lg p-3 md:p-6">
-                                                <AddMaterial
-                                                    handleClosePopup={
-                                                        handleClosePopup
-                                                    }
-                                                />
-                                            </div>
+                                        <div className="relative z-20 flex flex-col items-center bg-white rounded-lg overflow-y-auto max-w-lg w-full mx-4 max-h-[90vh]">
+                                            <AddMaterial
+                                                handleClosePopup={
+                                                    handleClosePopup
+                                                }
+                                            />
                                         </div>
                                     </div>
                                 )}
                                 {showEditMaterialPopup && (
-                                    <div className="absolute min-h-full w-full top-0 left-0">
+                                    <div className="fixed inset-0 flex items-center justify-center z-10 overflow-y-auto">
                                         <div
                                             className="absolute inset-0 bg-black opacity-50 z-10"
                                             onClick={handleCloseEditPopup}
                                         />
 
-                                        <div className="absolute inset-0 flex justify-center items-center z-10 max-h-[90vh] top-1/2 -translate-y-1/2">
-                                            <div className="relative w-full max-w-[95vw] lg:max-w-4xl max-h-[90vh] overflow-y-auto bg-white rounded-lg p-3 md:p-6">
-                                                <EditMaterial
-                                                    handleClosePopup={
-                                                        handleCloseEditPopup
-                                                    }
-                                                    material={
-                                                        selectedCourse?.materials.filter(
-                                                            (material) =>
-                                                                material.id ===
-                                                                editMaterialId
-                                                        )[0]
-                                                    }
-                                                />
-                                            </div>
+                                        <div className="relative z-20 flex flex-col items-center bg-white rounded-lg overflow-y-auto max-w-lg w-full mx-4 max-h-[90vh]">
+                                            <EditMaterial
+                                                handleClosePopup={
+                                                    handleCloseEditPopup
+                                                }
+                                                material={
+                                                    selectedCourse?.materials.filter(
+                                                        (material) =>
+                                                            material.id ===
+                                                            editMaterialId
+                                                    )[0]
+                                                }
+                                            />
                                         </div>
                                     </div>
                                 )}
                             </div>
                         )}
-                    </>
+                    </div>
                 }
             />
         </div>
