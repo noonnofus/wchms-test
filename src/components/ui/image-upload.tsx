@@ -1,6 +1,7 @@
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import React, { useCallback, useState } from "react";
+import { fetchCourseImage } from "@/db/queries/courses";
 
 interface ImageUploadProps {
     existingImageUrl?: string;
@@ -18,7 +19,7 @@ export default function ImageUpload({
         existingImageUrl || ""
     );
     const [internalError, setInternalError] = useState<string>("");
-
+    console.log(existingImageUrl, "Existing image url");
     const handleFile = useCallback(
         (file: File | null) => {
             if (!file) {

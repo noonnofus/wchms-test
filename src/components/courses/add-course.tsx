@@ -361,7 +361,7 @@ export default function AddCourse(props: props) {
                     <ImageUpload
                         existingImageUrl={
                             formData.uploadId
-                                ? `/api/uploads/${formData.uploadId}`
+                                ? formData.uploadId
                                 : undefined
                         }
                         onImageSelect={handleImageSelect}
