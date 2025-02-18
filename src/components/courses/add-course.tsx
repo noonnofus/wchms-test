@@ -325,12 +325,12 @@ export default function AddCourse(props: props) {
     };
 
     return (
-        <div className="flex flex-col gap-8 w-full h-full py-8 px-6 rounded-lg bg-white items-center justify-center">
+        <div className="flex flex-col gap-12 w-full h-full py-8 px-6 rounded-lg bg-white items-center justify-center">
             <h1 className="font-semibold text-3xl md:text-4xl text-center">
                 {props.courseId ? "Edit Course" : "Add New Course"}
             </h1>
             <form
-                className="flex flex-col gap-4 w-full h-full md:text-2xl"
+                className="flex flex-col gap-4 md:gap-6 w-full h-full md:text-2xl"
                 onSubmit={handleSubmit}
             >
                 <div className="flex flex-row gap-2 w-full">
@@ -557,7 +557,7 @@ export default function AddCourse(props: props) {
                         />
                     </div>
                 )}
-                <div className="w-full flex flex-row gap-2 pb-6 mt-4">
+                <div className="w-full flex flex-row gap-2 mt-4">
                     {props.courseId ? (
                         <Button
                             onClick={handleUpdate}
