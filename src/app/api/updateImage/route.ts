@@ -55,10 +55,13 @@ export async function POST(request: Request) {
         }
 
         const fileBuffer = await file.arrayBuffer();
+        const fileType = file.name.split(".").pop()?.toLowerCase();
+        let imageFormat =
+            fileType === "jpeg" || fileType === "jpg" ? "jpeg" : "png";
 
         let resizedBuffer = await sharp(Buffer.from(fileBuffer))
             .resize(1000)
-            .jpeg({ quality: 60 })
+            .toFormat(imageFormat as "jpeg" | "png", { quality: 40 })
             .toBuffer();
 
         let base64Data = resizedBuffer.toString("base64");
@@ -66,7 +69,7 @@ export async function POST(request: Request) {
         if (base64Data.length > MAX_FILE_SIZE) {
             resizedBuffer = await sharp(Buffer.from(fileBuffer))
                 .resize(800)
-                .jpeg({ quality: 50 })
+                .toFormat(imageFormat as "jpeg" | "png", { quality: 40 })
                 .toBuffer();
 
             base64Data = resizedBuffer.toString("base64");
@@ -74,7 +77,7 @@ export async function POST(request: Request) {
             if (base64Data.length > MAX_FILE_SIZE) {
                 resizedBuffer = await sharp(Buffer.from(fileBuffer))
                     .resize(600)
-                    .jpeg({ quality: 40 })
+                    .toFormat(imageFormat as "jpeg" | "png", { quality: 40 })
                     .toBuffer();
 
                 base64Data = resizedBuffer.toString("base64");

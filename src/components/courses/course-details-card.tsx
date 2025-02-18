@@ -1,6 +1,6 @@
 "use client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { fetchCourseImage } from "@/db/queries/courses";
+import { fetchCourseImage, getUploadId } from "@/db/queries/courses";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -15,13 +15,17 @@ interface CourseDetailsProps {
 
 export default function CourseDetailsCard(props: CourseDetailsProps) {
     const id = useParams().id;
-    const courseId = id ? parseInt(id as string) - 1 : 0;
+    const courseId = Array.isArray(id) ? id[0] : id || "";
+
     const [imageUrl, setImageUrl] = useState<string>("/course-image.png");
     useEffect(() => {
         const fetchImage = async () => {
             try {
-                const fetchedImage = await fetchCourseImage(courseId);
-                setImageUrl(fetchedImage || "/course-image.png");
+                const uploadId = await getUploadId(parseInt(courseId, 10));
+                if (uploadId) {
+                    const fetchedImage = await fetchCourseImage(uploadId);
+                    setImageUrl(fetchedImage || "/course-image.png");
+                }
             } catch (error) {
                 console.error("Error fetching course image", error);
                 setImageUrl("/course-image.png");
