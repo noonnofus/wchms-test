@@ -1,4 +1,5 @@
 "use client";
+import { useRouter } from "next/navigation";
 import {
     Card,
     CardContent,
@@ -34,71 +35,71 @@ interface AdminVariantProps extends CourseCardProps {
 export default function CourseCard(
     props: ClientVariantProps | AdminVariantProps
 ) {
+    const router = useRouter();
+
     const courseLink =
         props.variant === "admin"
             ? `/admin/courses/${props.id}`
             : `/courses/${props.id}`;
     return (
         <div className="flex flex-col items-center justify-center relative">
-            <Card className="w-full relative">
-                <Link
-                    href={courseLink}
-                    className="flex flex-col gap-2 items-center w-full h-full p-4"
-                >
-                    <CardHeader>
-                        <CardTitle
-                            className={twMerge(
-                                props.variant === "admin"
-                                    ? "px-6 sm:px-4 md:px-4"
-                                    : ""
-                            )}
+            <Card
+                className="w-full relative cursor-pointer flex flex-col gap-4"
+                onClick={() => router.push(courseLink)}
+            >
+                <CardHeader>
+                    <CardTitle
+                        className={twMerge(
+                            props.variant === "admin"
+                                ? "px-6 sm:px-4 md:px-4"
+                                : ""
+                        )}
+                    >
+                        {props.name}
+                    </CardTitle>
+                </CardHeader>
+                {props.image && (
+                    <Image
+                        src={props.image}
+                        width={200}
+                        height={200}
+                        alt={props.imageAlt || `${props.name} Course Image`}
+                    />
+                )}
+                {props.variant == "client" &&
+                    (props.enrolled ? (
+                        <Button
+                            asChild
+                            className="bg-primary-green hover:bg-[#045B47] text-white rounded-full w-full font-semibold text-base"
                         >
-                            {props.name}
-                        </CardTitle>
-                    </CardHeader>
-                    {props.image && (
-                        <Image
-                            src={props.image}
-                            width={200}
-                            height={200}
-                            alt={props.imageAlt || `${props.name} Course Image`}
-                        />
-                    )}
-                    {props.variant == "client" &&
-                        (props.enrolled ? (
+                            <Link href={`/courses/${props.id}`}>
+                                View Course
+                            </Link>
+                        </Button>
+                    ) : (
+                        <div className="w-full flex flex-col gap-2 pb-4">
+                            <Button
+                                asChild
+                                className="hover:bg-primary-green border-primary-green text-primary-green hover:text-white rounded-full w-full font-semibold text-base"
+                                variant="outline"
+                            >
+                                <Link href={`/courses/${props.id}`}>
+                                    Details
+                                </Link>
+                            </Button>
                             <Button
                                 asChild
                                 className="bg-primary-green hover:bg-[#045B47] text-white rounded-full w-full font-semibold text-base"
                             >
-                                <Link href={`/courses/${props.id}`}>
-                                    View Course
-                                </Link>
+                                <Link href="#">Enroll</Link>
                             </Button>
-                        ) : (
-                            <>
-                                <Button
-                                    asChild
-                                    className="hover:bg-primary-green border-primary-green text-primary-green hover:text-white rounded-full w-full font-semibold text-base"
-                                    variant="outline"
-                                >
-                                    <Link href={`/courses/${props.id}`}>
-                                        Details
-                                    </Link>
-                                </Button>
-                                <Button
-                                    asChild
-                                    className="mt-2 bg-primary-green hover:bg-[#045B47] text-white rounded-full w-full font-semibold text-base"
-                                >
-                                    <Link href="#">Enroll</Link>
-                                </Button>
-                            </>
-                        ))}
-                    {props.variant == "admin" && (
-                        <CardContent>
-                            <p>{props.description}</p>
-                        </CardContent>
-                    )}
-                </Link>
+                        </div>
+                    ))}
+                {props.variant == "admin" && (
+                    <CardContent>
+                        <p>{props.description}</p>
+                    </CardContent>
+                )}
 
                 {props.variant == "admin" && (
                     <button
