@@ -285,8 +285,9 @@ export default function AdminCourses() {
                 <div className="absolute z-[1] inset-0 bg-black/50 flex items-center justify-center">
                     <div className="w-full max-w-md bg-white rounded-lg shadow-2xl p-6 flex flex-col gap-6">
                         <h1 className="font-semibold text-2xl md:text-3xl text-center">
-                            Unadded Participants
+                            Participants Not Added
                         </h1>
+                        <p>Invalid Participant Names:</p>
                         <ul className="list-disc list-inside text-gray-700 text-lg">
                             {unaddedParticipants.map((name, index) => (
                                 <li key={index} className="py-1">
