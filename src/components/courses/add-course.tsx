@@ -135,14 +135,6 @@ export default function AddCourse(props: props) {
         }));
     };
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files ? e.target.files[0] : null;
-        setFormData({
-            ...formData,
-            courseImage: file,
-        });
-    };
-
     const handleDateChange = (name: string, date: Date | undefined) => {
         setFormData({
             ...formData,
@@ -359,8 +351,10 @@ export default function AddCourse(props: props) {
                         </p>
                     )}
                     <ImageUpload
-                        courseId={
-                            formData.uploadId ? String(formData.courseId) : undefined
+                        uploadId={
+                            formData.uploadId
+                                ? String(formData.uploadId)
+                                : undefined
                         }
                         onImageSelect={handleImageSelect}
                         error={errors.courseImage}
