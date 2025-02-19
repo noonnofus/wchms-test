@@ -36,7 +36,7 @@ export default function CourseDetailsCard(props: CourseDetailsProps) {
     }, [courseId]);
     return (
         <div className="flex flex-col items-center">
-            <Card>
+            <Card className="flex flex-col gap-4">
                 <CardHeader>
                     <CardTitle>{props.name}</CardTitle>
                 </CardHeader>
@@ -44,8 +44,8 @@ export default function CourseDetailsCard(props: CourseDetailsProps) {
                     src={imageUrl}
                     width={200}
                     height={200}
-                    alt="Picture of snake"
-                    className="mb-2"
+                    alt={`${props.name} course image`}
+                    className="rounded-lg"
                 />
                 {props.variant == "client" && (
                     <Button className="bg-primary-green text-white rounded-full w-full font-semibold text-base hover:bg-[#045B47]">
