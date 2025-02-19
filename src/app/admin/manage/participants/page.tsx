@@ -20,8 +20,6 @@ import AddParticipant from "@/components/manage/add-participant";
 import DeleteConfirmation from "@/components/shared/delete-confirmation";
 import { type Participant } from "@/db/schema/participants";
 
-// TODO: Get the user data from db and show it on the table
-
 export default function ManagePariticipant() {
     const [participants, setParticipants] = useState<Participant[]>([]);
     const [error, setError] = useState('');
