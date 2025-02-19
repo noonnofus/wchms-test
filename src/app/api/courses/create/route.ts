@@ -1,7 +1,8 @@
 import db from "@/db";
-import { eq } from "drizzle-orm";
-import { Courses } from "@/db/schema/course";
+import { eq, and } from "drizzle-orm";
+import { CourseParticipant, Courses } from "@/db/schema/course";
 import { rooms } from "@/db/schema/room";
+import { participants } from "@/db/schema/participants";
 //TODO: secure route for admins only
 export async function POST(req: Request) {
     try {
@@ -68,7 +69,6 @@ export async function POST(req: Request) {
                 { status: 400 }
             );
         }
-        //TODO: Handle image upload
 
         const courseId = await db
             .insert(Courses)
@@ -83,10 +83,63 @@ export async function POST(req: Request) {
                 uploadId: body.uploadId,
                 roomId,
             })
-            .$returningId();
+            .$returningId()
+            .then((res) => res[0].id);
 
+        if (!courseId) {
+            return new Response(
+                JSON.stringify({
+                    error: "Error creating course",
+                }),
+                { status: 500 }
+            );
+        }
+
+        const unaddedParticipants: string[] = [];
+        if (body.courseParticipants) {
+            const participantsArr = body.courseParticipants.split(",");
+
+            await Promise.all(
+                participantsArr.map(async (participant: string) => {
+                    const nameParts = participant.trim().split(" ");
+                    const firstName = nameParts[0] || "";
+                    const lastName = nameParts.slice(1).join(" ") || "";
+
+                    if (!firstName || !lastName) {
+                        unaddedParticipants.push(participant.trim());
+                        return;
+                    }
+
+                    const existingUser = await db
+                        .select()
+                        .from(participants)
+                        .where(
+                            and(
+                                eq(participants.firstName, firstName),
+                                eq(participants.lastName, lastName)
+                            )
+                        )
+                        .then((res) => res[0]);
+
+                    console.log("D", existingUser);
+
+                    if (existingUser) {
+                        await db.insert(CourseParticipant).values({
+                            userId: existingUser.id,
+                            courseId,
+                        });
+                    } else {
+                        console.log("A", firstName, lastName);
+                        unaddedParticipants.push(
+                            `${firstName} ${lastName}`.trim()
+                        );
+                    }
+                })
+            );
+        }
+        console.log("YO", unaddedParticipants);
         //TODO: handle course participants
-        return new Response(JSON.stringify({ courseId: courseId[0].id }), {
+        return new Response(JSON.stringify({ courseId, unaddedParticipants }), {
             status: 200,
         });
     } catch (error) {

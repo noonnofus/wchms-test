@@ -9,6 +9,8 @@ import AddMaterial from "@/components/courses/add-material";
 import EditMaterial from "@/components/courses/edit-material";
 import { getCourseById } from "@/db/queries/courses";
 import AddCourse from "@/components/courses/add-course";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 export default function AdminCourses() {
     const { id } = useParams();
@@ -95,6 +97,22 @@ export default function AdminCourses() {
             }
         };
         fetchCourses();
+    }, []);
+    const [unaddedParticipants, setUnaddedParticipants] = useState<string[]>(
+        []
+    );
+    const [showUnaddedOverlay, setShowUnaddedOverlay] = useState(false);
+
+    useEffect(() => {
+        const storedData = sessionStorage.getItem("unaddedParticipants");
+        if (storedData) {
+            const parsedData = JSON.parse(storedData);
+            if (Array.isArray(parsedData) && parsedData.length > 0) {
+                setUnaddedParticipants(parsedData);
+                setShowUnaddedOverlay(true);
+                sessionStorage.setItem("unaddedParticipants", "");
+            }
+        }
     }, []);
 
     if (!selectedCourse) {
@@ -263,6 +281,30 @@ export default function AdminCourses() {
                     </div>
                 }
             />
+            {showUnaddedOverlay && (
+                <div className="absolute z-[1] inset-0 bg-black/50 flex items-center justify-center">
+                    <div className="w-full max-w-md bg-white rounded-lg shadow-2xl p-6 flex flex-col gap-6">
+                        <h1 className="font-semibold text-2xl md:text-3xl text-center">
+                            Unadded Participants
+                        </h1>
+                        <ul className="list-disc list-inside text-gray-700 text-lg">
+                            {unaddedParticipants.map((name, index) => (
+                                <li key={index} className="py-1">
+                                    {name}
+                                </li>
+                            ))}
+                        </ul>
+                        <div className="w-full flex justify-center">
+                            <Button
+                                onClick={() => setShowUnaddedOverlay(false)}
+                                className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold text-xl py-3"
+                            >
+                                OK
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

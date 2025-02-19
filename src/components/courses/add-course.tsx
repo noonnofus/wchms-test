@@ -190,6 +190,7 @@ export default function AddCourse(props: props) {
                     "Participants must be a comma-separated list of names (e.g., 'John Kim, Kelly Zo')";
                 isValid = false;
             }
+            console.log(formData.courseParticipants);
         }
 
         if (!formData.courseRoom || formData.courseRoom === "-1") {
@@ -241,6 +242,10 @@ export default function AddCourse(props: props) {
             if (res.ok) {
                 const data = await res.json();
                 console.log("Form submitted successfully");
+                sessionStorage.setItem(
+                    "unaddedParticipants",
+                    JSON.stringify(data.unaddedParticipants)
+                );
                 router.push(`/admin/courses/${data.courseId}`);
             } else {
                 throw new Error("Failed to create course");
