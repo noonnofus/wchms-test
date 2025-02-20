@@ -297,7 +297,7 @@ export default function AdminCourses() {
                         <div className="w-full flex justify-center">
                             <Button
                                 onClick={() => setShowUnaddedOverlay(false)}
-                                className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold text-xl py-3"
+                                className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold md:text-xl py-3"
                             >
                                 OK
                             </Button>
