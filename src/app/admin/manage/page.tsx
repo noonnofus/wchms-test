@@ -101,8 +101,12 @@ export default function Manage() {
 
             {/* Edit Participant Popup */}
             {showEditPopup && participantToEdit && (
-                <div className="absolute inset-0 flex justify-center items-center min-h-[800px] min-w-[360px] w-full h-full bg-black bg-opacity-50 z-50">
-                    <div className="relative w-full bg-white rounded-lg p-6 overflow-auto">
+                <div className="fixed inset-0 flex items-end md:items-center justify-center z-10 overflow-y-auto">
+                    <div
+                        className="absolute inset-0 bg-black opacity-50"
+                        onClick={handleClosePopup}
+                    ></div>
+                    <div className="relative z-20 bg-white rounded-t-lg md:rounded-lg overflow-y-auto w-full md:mx-8 max-h-[90vh]">
                         <EditParticipant
                             participantData={participantToEdit}
                             closePopup={handleClosePopup}
@@ -115,8 +119,12 @@ export default function Manage() {
             )}
 
             {showAddPopup && (
-                <div className="absolute inset-0 flex justify-center items-center min-h-[800px] min-w-[360px] w-full h-full bg-black bg-opacity-50 z-50">
-                    <div className="relative w-full bg-white rounded-lg p-6 overflow-auto">
+                <div className="fixed inset-0 flex items-end md:items-center justify-center z-10 overflow-y-auto">
+                    <div
+                        className="absolute inset-0 bg-black opacity-50"
+                        onClick={handleClosePopup}
+                    ></div>
+                    <div className="relative z-20 bg-white rounded-t-lg md:rounded-lg overflow-y-auto w-full md:mx-8 max-h-[90vh]">
                         <AddParticipant
                             closePopup={handleClosePopup}
                             onParticipantAdded={() =>

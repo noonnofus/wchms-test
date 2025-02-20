@@ -173,12 +173,12 @@ export default function AdminCourses() {
                             </div>
                         )}
                         {showEditCoursePopup && (
-                            <div className="fixed inset-0 flex items-center justify-center z-30 overflow-y-auto">
+                            <div className="fixed inset-0 flex items-end md:items-center justify-center z-10 overflow-y-auto">
                                 <div
                                     className="absolute inset-0 bg-black opacity-50"
-                                    onClick={handleCloseEditCoursePopup}
-                                />
-                                <div className="relative z-20 flex flex-col items-center bg-white rounded-lg overflow-y-auto w-full mx-4 max-h-[90vh]">
+                                    onClick={handleClosePopup}
+                                ></div>
+                                <div className="relative z-20 bg-white rounded-t-lg md:rounded-lg overflow-y-auto w-full md:mx-8 max-h-[90vh]">
                                     <AddCourse
                                         handleClosePopup={
                                             handleCloseEditCoursePopup
@@ -239,12 +239,12 @@ export default function AdminCourses() {
                                     </svg>
                                 </button>
                                 {showAddPopup && (
-                                    <div className="fixed inset-0 flex items-center justify-center z-10">
+                                    <div className="fixed inset-0 flex items-end md:items-center justify-center z-10 overflow-y-auto">
                                         <div
-                                            className="absolute inset-0 bg-black opacity-50 z-10"
+                                            className="absolute inset-0 bg-black opacity-50"
                                             onClick={handleClosePopup}
-                                        />
-                                        <div className="relative z-20 flex flex-col items-center bg-white rounded-lg overflow-y-auto w-full mx-4 max-h-[90vh]">
+                                        ></div>
+                                        <div className="relative z-20 bg-white rounded-t-lg md:rounded-lg overflow-y-auto w-full md:mx-8 max-h-[90vh]">
                                             <AddMaterial
                                                 handleClosePopup={
                                                     handleClosePopup
@@ -254,13 +254,12 @@ export default function AdminCourses() {
                                     </div>
                                 )}
                                 {showEditMaterialPopup && (
-                                    <div className="fixed inset-0 flex items-center justify-center z-10 overflow-y-auto">
+                                    <div className="fixed inset-0 flex items-end md:items-center justify-center z-10 overflow-y-auto">
                                         <div
-                                            className="absolute inset-0 bg-black opacity-50 z-10"
-                                            onClick={handleCloseEditPopup}
-                                        />
-
-                                        <div className="relative z-20 flex flex-col items-center bg-white rounded-lg overflow-y-auto w-full mx-4 max-h-[90vh]">
+                                            className="absolute inset-0 bg-black opacity-50"
+                                            onClick={handleClosePopup}
+                                        ></div>
+                                        <div className="relative z-20 bg-white rounded-t-lg md:rounded-lg overflow-y-auto w-full md:mx-8 max-h-[90vh]">
                                             <EditMaterial
                                                 handleClosePopup={
                                                     handleCloseEditPopup
