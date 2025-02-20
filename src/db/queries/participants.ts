@@ -1,10 +1,23 @@
 import db from "@/db";
 import { eq } from "drizzle-orm";
 import { participants } from "../schema/participants";
+import { Courses } from "../schema/course";
+import { CourseParticipant } from "../schema/course";
 
 export async function getAllParticipants() {
     try {
-        const allParticipants = await db.select().from(participants);
+        const allParticipants = await db
+            .select({
+                participant: participants,
+                course: Courses,
+            })
+            .from(participants)
+            .leftJoin(
+                CourseParticipant,
+                eq(participants.id, CourseParticipant.userId)
+            )
+            .leftJoin(Courses, eq(CourseParticipant.courseId, Courses.id));
+
         return allParticipants;
     } catch (error) {
         console.error("Error fetching participants", error);

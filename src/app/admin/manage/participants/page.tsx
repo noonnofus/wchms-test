@@ -19,9 +19,15 @@ import { useState, useEffect } from "react";
 import AddParticipant from "@/components/manage/add-participant";
 import DeleteConfirmation from "@/components/shared/delete-confirmation";
 import { type Participant } from "@/db/schema/participants";
+import { type Course } from "@/db/schema/course";
+
+interface ParticipantCourse {
+    participant: Participant;
+    course: Course;
+}
 
 export default function ManagePariticipant() {
-    const [participants, setParticipants] = useState<Participant[]>([]);
+    const [participants, setParticipants] = useState<ParticipantCourse[]>([]);
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [participantToDelete, setParticipantToDelete] = useState<Participant | null>(null);
@@ -36,6 +42,7 @@ export default function ManagePariticipant() {
         fetch("/api/participants")
             .then((res) => res.json())
             .then((data) => {
+                // console.log(data[0].participant);
                 setParticipants(data);
                 setIsLoading(false);
             })
@@ -92,21 +99,21 @@ export default function ManagePariticipant() {
     };
 
     const filteredParticipants = participants
-        .filter((participant) => {
+        .filter((arr) => {
             const fullName =
-                `${participant.firstName} ${participant.lastName}`.toLowerCase();
+                `${arr.participant.firstName} ${arr.participant.lastName}`.toLowerCase();
             return fullName.includes(searchQuery.toLowerCase());
         })
         .sort((a, b) => {
-            const nameA = `${a.firstName} ${a.lastName}`.toLowerCase();
-            const nameB = `${b.firstName} ${b.lastName}`.toLowerCase();
+            const nameA = `${a.participant.firstName} ${a.participant.lastName}`.toLowerCase();
+            const nameB = `${b.participant.firstName} ${b.participant.lastName}`.toLowerCase();
 
             if (sortOrder === "asc") {
                 return nameA.localeCompare(nameB); // A-Z
             } else {
                 return nameB.localeCompare(nameA); // Z-A
             }
-        });
+        })
 
     return (
         <div>
@@ -177,11 +184,6 @@ export default function ManagePariticipant() {
                                     </TableHead>
                                     <TableHead className="flex items-center gap-2 text-left text-black">
                                         Course Assigned
-                                        <button
-                                            className="flex items-center"
-                                        >
-                                            <ChevronDownIcon className="text-primary-green" />
-                                        </button>
                                     </TableHead>
                                     <div className="flex-1"></div>
                                     <TableHead className="text-center text-black">Delete</TableHead>
@@ -211,20 +213,20 @@ export default function ManagePariticipant() {
                                             </TableCell>
                                         </TableRow>
                                     ))
-                                    : filteredParticipants.map((participant: any) => {
+                                    : filteredParticipants.map((participantCourse: any) => {
                                         return (
                                             <TableRow
                                                 className="grid grid-cols-[auto_auto_1fr_auto_auto] items-center"
-                                                key={participant.id}
+                                                key={participantCourse.participant.id}
                                             >
                                                 <TableCell className="flex items-center gap-4 text-left text-base md:text-lg">
                                                     <div className="hidden md:flex md:w-10 md:h-10 rounded-full bg-gray-200 items-center justify-center">
-                                                        {`${participant.firstName[0]}${participant.lastName[0]}`}
+                                                        {`${participantCourse.participant.firstName[0]}${participantCourse.participant.lastName[0]}`}
                                                     </div>
-                                                    {`${participant.firstName} ${participant.lastName}`}
+                                                    {`${participantCourse.participant.firstName} ${participantCourse.participant.lastName}`}
                                                 </TableCell>
-                                                <TableCell className="flex items-center gap-2 text-left">
-                                                    The course this participant assigned here
+                                                <TableCell className="flex items-center gap-2 text-left text-base md:text-lg">
+                                                    {participantCourse.course?.title ?? "none"}
                                                 </TableCell>
                                                 <div className="flex-1"></div>
                                                 <TableCell
@@ -232,15 +234,15 @@ export default function ManagePariticipant() {
                                                 >
                                                     <button
                                                         onClick={() => {
-                                                            setParticipantToDelete(participant)
-                                                            handleDeleteButtonClick(participant)
+                                                            setParticipantToDelete(participantCourse.participant)
+                                                            handleDeleteButtonClick(participantCourse.participant)
                                                         }}
                                                     >
                                                         <DeleteIcon className="inline-flex text-center" />
                                                     </button>
                                                 </TableCell>
                                                 <TableCell className="flex justify-center items-center">
-                                                    <Link href={`/admin/manage/participants/${participant.id}`}>
+                                                    <Link href={`/admin/manage/participants/${participantCourse.participant.id}`}>
                                                         <Settings className="inline-flex text-center" />
                                                     </Link>
                                                 </TableCell>
