@@ -166,13 +166,13 @@ export default function EditParticipant({
                 <div className="w-full flex flex-row gap-2 mt-4">
                     <Button
                         type="submit"
-                        className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold text-xl py-2 md:py-4"
+                        className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold md:text-xl py-2 md:py-4"
                     >
                         {loading ? "Updating..." : "Update"}
                     </Button>
                     <Button
                         variant="outline"
-                        className="w-full h-full rounded-full bg-transparent border-primary-green text-primary-green hover:bg-primary-green hover:text-white font-semibold text-xl py-2 md:py-4"
+                        className="w-full h-full rounded-full bg-transparent border-primary-green text-primary-green hover:bg-primary-green hover:text-white font-semibold md:text-xl py-2 md:py-4"
                         onClick={handleCancel}
                     >
                         Cancel
