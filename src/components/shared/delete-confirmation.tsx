@@ -19,7 +19,7 @@ export default function DeleteConfirmation({
     };
 
     return (
-        <div className="flex flex-col w-full min-w-[360px] gap-8 py-20 px-8 rounded-lg bg-white items-center justify-center">
+        <div className="flex flex-col w-full gap-8 py-20 px-8 rounded-lg bg-white items-center justify-center">
             <h1 className="font-semibold text-3xl">{title}</h1>
             <form
                 className="flex flex-col items-center justify-center gap-16 w-full h-full md:text-xl"

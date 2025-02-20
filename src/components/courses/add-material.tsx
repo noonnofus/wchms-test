@@ -11,6 +11,7 @@ import {
 import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
 import TabsMenu from "../shared/tabs-menu";
+import CloseIcon from "../icons/close-icon";
 
 const activities = ["Simple Arithmetic", "Reading Aloud", "Physical Exercise"];
 const difficulties = ["Basic", "Intermediate"];
@@ -33,6 +34,12 @@ export default function AddMaterial(props: { handleClosePopup: () => void }) {
 
     return (
         <div className="flex flex-col gap-12 w-full h-full py-8 px-6 rounded-lg bg-white items-center justify-center">
+            <div className="relative w-full flex flex-row items-center justify-center">
+                <div className="w-1/3 md:hidden border-b-2 border-black"></div>
+                <button onClick={props.handleClosePopup}>
+                    <CloseIcon className="absolute -top-3 right-0" />
+                </button>
+            </div>
             <h1 className="font-semibold text-3xl md:text-4xl text-center">
                 Add New Course Material
             </h1>

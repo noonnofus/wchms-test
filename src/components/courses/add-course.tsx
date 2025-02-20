@@ -16,6 +16,7 @@ import { DatePicker } from "../ui/date-picker";
 import ImageUpload from "../ui/image-upload";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
+import CloseIcon from "../icons/close-icon";
 
 const defaultRoomName = "Online via Zoom"; //name of room for default selection
 export const [languages, types, statuses] = [
@@ -323,6 +324,12 @@ export default function AddCourse(props: props) {
 
     return (
         <div className="flex flex-col gap-12 w-full h-full py-8 px-6 rounded-lg bg-white items-center justify-center">
+            <div className="relative w-full flex flex-row items-center justify-center">
+                <div className="w-1/3 md:hidden border-b-2 border-black"></div>
+                <button onClick={props.handleClosePopup}>
+                    <CloseIcon className="absolute -top-3 right-0" />
+                </button>
+            </div>
             <h1 className="font-semibold text-3xl md:text-4xl text-center">
                 {props.courseId ? "Edit Course" : "Add New Course"}
             </h1>
