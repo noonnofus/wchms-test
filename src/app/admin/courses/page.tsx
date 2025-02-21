@@ -151,7 +151,18 @@ export default function Courses() {
                             />
                         ))
                     ) : (
-                        <p>No courses found.</p>
+                        <div className="flex flex-col items-center justify-center min-h-screen">
+                            <p className="text-center text-xl mb-4">
+                                No courses found. Would you like to create a new
+                                course?
+                            </p>
+                            <button
+                                onClick={handleAddButtonClick}
+                                className="px-6 py-2 bg-primary-green text-white rounded-lg"
+                            >
+                                Create New Course
+                            </button>
+                        </div>
                     )}
                 </div>
             )}
