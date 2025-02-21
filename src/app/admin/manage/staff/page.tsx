@@ -21,9 +21,9 @@ import DeleteConfirmation from "@/components/shared/delete-confirmation";
 import { type User } from "@/db/schema/users";
 import EditAdmin from "@/components/manage/edit-admin";
 
-export default function ManageStaffs() {
+export default function ManageStaff() {
     const [admins, setAdmins] = useState<User[]>([]);
-    const [error, setError] = useState('');
+    const [error, setError] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [adminToDelete, setAdminToDelete] = useState<User | null>(null);
     const [showDeletePopup, setShowDeletePopup] = useState(false);
@@ -47,7 +47,7 @@ export default function ManageStaffs() {
                 console.error("Error fetching posts:", error);
                 setError("Unexpected error occured.");
                 setIsLoading(false);
-            })
+            });
     }, [refreshAdmins]);
 
     const handleDeleteButtonClick = (participant: User) => {
@@ -92,7 +92,7 @@ export default function ManageStaffs() {
         setShowEditPopup(false);
         setAdminToDelete(null);
         setAdminToEdit(null);
-    }
+    };
 
     const handleSortChange = () => {
         setSortOrder((prevOrder) => (prevOrder === "asc" ? "desc" : "asc"));
@@ -129,14 +129,14 @@ export default function ManageStaffs() {
                 return roleSort === "asc" ? roleA - roleB : roleB - roleA;
             }
             return 0;
-        })
+        });
 
     return (
         <div>
             <div className="flex flex-col gap-10 w-full items-center">
                 <h1 className="font-semibold text-4xl text-center">Manage</h1>
                 {showEditPopup && adminToEdit && (
-                    // TODO: 이거 작동하게 하셈. 그리고 /manage/admin/[id] 폴더 지워버리기 시이팔 
+                    // TODO: 이거 작동하게 하셈. 그리고 /manage/admin/[id] 폴더 지워버리기 시이팔
                     <div className="absolute inset-0 flex justify-center items-center min-h-[800px] min-w-[360px] w-full h-full bg-black bg-opacity-50 z-50">
                         <div className="relative w-full max-w-lg bg-white rounded-lg p-6 overflow-auto">
                             <EditAdmin
@@ -178,7 +178,7 @@ export default function ManageStaffs() {
                 <Card className="flex flex-col h-full">
                     <CardHeader className="w-full">
                         <h2 className="text-xl md:text-3xl font-semibold">
-                            Staffs
+                            Staff
                         </h2>
                         <div className="flex gap-2 md:gap-4 items-center">
                             <Input
@@ -225,74 +225,82 @@ export default function ManageStaffs() {
                                             )}
                                         </button>
                                     </TableHead>
-                                    <div className="flex-1"></div>
-                                    <TableHead className="text-center text-black">Delete</TableHead>
-                                    <TableHead className="text-center text-black">Edit</TableHead>
+                                    <TableCell className="flex-1"></TableCell>
+                                    <TableHead className="text-center text-black">
+                                        Delete
+                                    </TableHead>
+                                    <TableHead className="text-center text-black">
+                                        Edit
+                                    </TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
                                 {isLoading
                                     ? [...Array(3)].map((_, index) => (
-                                        <TableRow
-                                            className="grid grid-cols-[auto_auto_1fr_auto_auto] items-center"
-                                            key={index}
-                                        >
-                                            <TableCell className="flex items-center gap-4 text-left text-base md:text-lg">
-                                                <Skeleton className="hidden md:flex md:w-10 md:h-10 rounded-full" />
-                                                <Skeleton className="h-4 w-24 rounded" />
-                                            </TableCell>
-                                            <TableCell>
-                                                <Skeleton className="h-4 w-40 rounded" />
-                                            </TableCell>
-                                            <div className="flex-1"></div>
-                                            <TableCell className="flex justify-center items-center">
-                                                <Skeleton className="h-6 w-6 rounded" />
-                                            </TableCell>
-                                            <TableCell className="flex justify-center items-center">
-                                                <Skeleton className="h-6 w-6 rounded" />
-                                            </TableCell>
-                                        </TableRow>
-                                    ))
+                                          <TableRow
+                                              className="grid grid-cols-[auto_auto_1fr_auto_auto] items-center"
+                                              key={index}
+                                          >
+                                              <TableCell className="flex items-center gap-4 text-left text-base md:text-lg">
+                                                  <Skeleton className="hidden md:flex md:w-10 md:h-10 rounded-full" />
+                                                  <Skeleton className="h-4 w-24 rounded" />
+                                              </TableCell>
+                                              <TableCell>
+                                                  <Skeleton className="h-4 w-40 rounded" />
+                                              </TableCell>
+                                              <TableCell className="flex-1"></TableCell>
+                                              <TableCell className="flex justify-center items-center">
+                                                  <Skeleton className="h-6 w-6 rounded" />
+                                              </TableCell>
+                                              <TableCell className="flex justify-center items-center">
+                                                  <Skeleton className="h-6 w-6 rounded" />
+                                              </TableCell>
+                                          </TableRow>
+                                      ))
                                     : filteredAdmins.map((admin: User) => {
-                                        return (
-                                            <TableRow
-                                                className="grid grid-cols-[auto_auto_1fr_auto_auto] items-center"
-                                                key={admin.id}
-                                            >
-                                                <TableCell className="flex items-center gap-4 text-left text-base md:text-lg">
-                                                    <div className="hidden md:flex md:w-10 md:h-10 rounded-full bg-gray-200 items-center justify-center">
-                                                        {`${admin.firstName[0]}${admin.lastName[0]}`}
-                                                    </div>
-                                                    {`${admin.firstName} ${admin.lastName}`}
-                                                </TableCell>
-                                                <TableCell className="flex items-center gap-2 text-left text-base md:text-lg">
-                                                    {admin.role}
-                                                </TableCell>
-                                                <div className="flex-1"></div>
-                                                <TableCell
-                                                    className="flex justify-center items-center"
-                                                >
-                                                    <button
-                                                        onClick={() => {
-                                                            setAdminToDelete(admin)
-                                                            handleDeleteButtonClick(admin)
-                                                        }}
-                                                    >
-                                                        <DeleteIcon className="inline-flex text-center" />
-                                                    </button>
-                                                </TableCell>
-                                                <TableCell className="flex justify-center items-center">
-                                                    <button
-                                                        onClick={() => {
-                                                            handleEditButtonClick(admin)
-                                                        }}
-                                                    >
-                                                        <Settings className="inline-flex text-center" />
-                                                    </button>
-                                                </TableCell>
-                                            </TableRow>
-                                        );
-                                    })}
+                                          return (
+                                              <TableRow
+                                                  className="grid grid-cols-[auto_auto_1fr_auto_auto] items-center"
+                                                  key={admin.id}
+                                              >
+                                                  <TableCell className="flex items-center gap-4 text-left text-base md:text-lg">
+                                                      <div className="hidden md:flex md:w-10 md:h-10 rounded-full bg-gray-200 items-center justify-center">
+                                                          {`${admin.firstName[0]}${admin.lastName[0]}`}
+                                                      </div>
+                                                      {`${admin.firstName} ${admin.lastName}`}
+                                                  </TableCell>
+                                                  <TableCell className="flex items-center gap-2 text-left text-base md:text-lg">
+                                                      {admin.role}
+                                                  </TableCell>
+                                                  <TableCell className="flex-1"></TableCell>
+                                                  <TableCell className="flex justify-center items-center">
+                                                      <button
+                                                          onClick={() => {
+                                                              setAdminToDelete(
+                                                                  admin
+                                                              );
+                                                              handleDeleteButtonClick(
+                                                                  admin
+                                                              );
+                                                          }}
+                                                      >
+                                                          <DeleteIcon className="inline-flex text-center" />
+                                                      </button>
+                                                  </TableCell>
+                                                  <TableCell className="flex justify-center items-center">
+                                                      <button
+                                                          onClick={() => {
+                                                              handleEditButtonClick(
+                                                                  admin
+                                                              );
+                                                          }}
+                                                      >
+                                                          <Settings className="inline-flex text-center" />
+                                                      </button>
+                                                  </TableCell>
+                                              </TableRow>
+                                          );
+                                      })}
                             </TableBody>
                         </Table>
                     </CardContent>

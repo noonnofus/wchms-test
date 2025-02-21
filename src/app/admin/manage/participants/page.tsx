@@ -25,11 +25,12 @@ interface ParticipantCourse {
     course: string;
 }
 
-export default function ManagePariticipant() {
+export default function ManageParticipant() {
     const [participants, setParticipants] = useState<ParticipantCourse[]>([]);
-    const [error, setError] = useState('');
+    const [error, setError] = useState("");
     const [isLoading, setIsLoading] = useState(false);
-    const [participantToDelete, setParticipantToDelete] = useState<Participant | null>(null);
+    const [participantToDelete, setParticipantToDelete] =
+        useState<Participant | null>(null);
     const [showDeletePopup, setShowDeletePopup] = useState(false);
     const [showAddPopup, setShowAddPopup] = useState(false);
     const [showEditPopup, setShowEditPopup] = useState(false);
@@ -51,7 +52,7 @@ export default function ManagePariticipant() {
                 console.error("Error fetching posts:", error);
                 setError("Unexpected error occured.");
                 setIsLoading(false);
-            })
+            });
     }, [refreshParticipants]);
 
     const handleDeleteButtonClick = (participant: Participant) => {
@@ -95,7 +96,7 @@ export default function ManagePariticipant() {
         setShowAddPopup(false);
         setParticipantToDelete(null);
         setShowEditPopup(false);
-    }
+    };
 
     const handleSortChange = () => {
         setSortOrder((prevOrder) => (prevOrder === "asc" ? "desc" : "asc"));
@@ -112,22 +113,24 @@ export default function ManagePariticipant() {
             return fullName.includes(searchQuery.toLowerCase());
         })
         .sort((a, b) => {
-            const nameA = `${a.participant.firstName} ${a.participant.lastName}`.toLowerCase();
-            const nameB = `${b.participant.firstName} ${b.participant.lastName}`.toLowerCase();
+            const nameA =
+                `${a.participant.firstName} ${a.participant.lastName}`.toLowerCase();
+            const nameB =
+                `${b.participant.firstName} ${b.participant.lastName}`.toLowerCase();
 
             if (sortOrder === "asc") {
                 return nameA.localeCompare(nameB); // A-Z
             } else {
                 return nameB.localeCompare(nameA); // Z-A
             }
-        })
+        });
 
     return (
         <div>
             <div className="flex flex-col gap-10 w-full items-center">
                 <h1 className="font-semibold text-4xl text-center">Manage</h1>
                 {showEditPopup && participantToEdit && (
-                    // TODO: 이거 작동하게 하셈. 그리고 /manage/participant/[id] 폴더 지워버리기 시이팔 
+                    // TODO: 이거 작동하게 하셈. 그리고 /manage/participant/[id] 폴더 지워버리기 시이팔
                     <div className="absolute inset-0 flex justify-center items-center min-h-[800px] min-w-[360px] w-full h-full bg-black bg-opacity-50 z-50">
                         <div className="relative w-full max-w-lg bg-white rounded-lg p-6 overflow-auto">
                             <EditParticipant
@@ -207,72 +210,86 @@ export default function ManagePariticipant() {
                                         Course Assigned
                                     </TableHead>
                                     <TableCell className="flex-1"></TableCell>
-                                    <TableHead className="text-center text-black">Delete</TableHead>
-                                    <TableHead className="text-center text-black">Edit</TableHead>
+                                    <TableHead className="text-center text-black">
+                                        Delete
+                                    </TableHead>
+                                    <TableHead className="text-center text-black">
+                                        Edit
+                                    </TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
                                 {isLoading
                                     ? [...Array(3)].map((_, index) => (
-                                        <TableRow
-                                            className="grid grid-cols-[auto_auto_1fr_auto_auto] items-center"
-                                            key={index}
-                                        >
-                                            <TableCell className="flex items-center gap-4 text-left text-base md:text-lg">
-                                                <Skeleton className="hidden md:flex md:w-10 md:h-10 rounded-full" />
-                                                <Skeleton className="h-4 w-24 rounded" />
-                                            </TableCell>
-                                            <TableCell>
-                                                <Skeleton className="h-4 w-40 rounded" />
-                                            </TableCell>
-                                            <TableCell className="flex-1"></TableCell>
-                                            <TableCell className="flex justify-center items-center">
-                                                <Skeleton className="h-6 w-6 rounded" />
-                                            </TableCell>
-                                            <TableCell className="flex justify-center items-center">
-                                                <Skeleton className="h-6 w-6 rounded" />
-                                            </TableCell>
-                                        </TableRow>
-                                    ))
-                                    : filteredParticipants.map((participantCourse: ParticipantCourse) => {
-                                        return (
-                                            <TableRow
-                                                className="grid grid-cols-[auto_auto_1fr_auto_auto] items-center"
-                                                key={participantCourse.participant.id}
-                                            >
-                                                <TableCell className="flex items-center gap-4 text-left text-base md:text-lg">
-                                                    <div className="hidden md:flex md:w-10 md:h-10 rounded-full bg-gray-200 items-center justify-center">
-                                                        {`${participantCourse.participant.firstName[0]}${participantCourse.participant.lastName[0]}`}
-                                                    </div>
-                                                    {`${participantCourse.participant.firstName} ${participantCourse.participant.lastName}`}
-                                                </TableCell>
-                                                <TableCell className="flex items-center gap-2 text-left text-base md:text-lg">
-                                                    {participantCourse.course ?? "none"}
-                                                </TableCell>
-                                                <div className="flex-1"></div>
-                                                <TableCell
-                                                    className="flex justify-center items-center"
-                                                >
-                                                    <button
-                                                        onClick={() => {
-                                                            handleDeleteButtonClick(participantCourse.participant)
-                                                        }}
-                                                    >
-                                                        <DeleteIcon className="inline-flex text-center" />
-                                                    </button>
-                                                </TableCell>
-                                                <TableCell className="flex justify-center items-center">
-                                                    <button
-                                                        onClick={() => {
-                                                            handleEditButtonClick(participantCourse.participant)
-                                                        }}
-                                                    >
-                                                        <Settings className="inline-flex text-center" />
-                                                    </button>
-                                                </TableCell>
-                                            </TableRow>
-                                        );
-                                    })}
+                                          <TableRow
+                                              className="grid grid-cols-[auto_auto_1fr_auto_auto] items-center"
+                                              key={index}
+                                          >
+                                              <TableCell className="flex items-center gap-4 text-left text-base md:text-lg">
+                                                  <Skeleton className="hidden md:flex md:w-10 md:h-10 rounded-full" />
+                                                  <Skeleton className="h-4 w-24 rounded" />
+                                              </TableCell>
+                                              <TableCell>
+                                                  <Skeleton className="h-4 w-40 rounded" />
+                                              </TableCell>
+                                              <TableCell className="flex-1"></TableCell>
+                                              <TableCell className="flex justify-center items-center">
+                                                  <Skeleton className="h-6 w-6 rounded" />
+                                              </TableCell>
+                                              <TableCell className="flex justify-center items-center">
+                                                  <Skeleton className="h-6 w-6 rounded" />
+                                              </TableCell>
+                                          </TableRow>
+                                      ))
+                                    : filteredParticipants.map(
+                                          (
+                                              participantCourse: ParticipantCourse
+                                          ) => {
+                                              return (
+                                                  <TableRow
+                                                      className="grid grid-cols-[auto_auto_1fr_auto_auto] items-center"
+                                                      key={
+                                                          participantCourse
+                                                              .participant.id
+                                                      }
+                                                  >
+                                                      <TableCell className="flex items-center gap-4 text-left text-base md:text-lg">
+                                                          <div className="hidden md:flex md:w-10 md:h-10 rounded-full bg-gray-200 items-center justify-center">
+                                                              {`${participantCourse.participant.firstName[0]}${participantCourse.participant.lastName[0]}`}
+                                                          </div>
+                                                          {`${participantCourse.participant.firstName} ${participantCourse.participant.lastName}`}
+                                                      </TableCell>
+                                                      <TableCell className="flex items-center gap-2 text-left text-base md:text-lg">
+                                                          {participantCourse.course ??
+                                                              "none"}
+                                                      </TableCell>
+                                                      <TableCell className="flex-1"></TableCell>
+                                                      <TableCell className="flex justify-center items-center">
+                                                          <button
+                                                              onClick={() => {
+                                                                  handleDeleteButtonClick(
+                                                                      participantCourse.participant
+                                                                  );
+                                                              }}
+                                                          >
+                                                              <DeleteIcon className="inline-flex text-center" />
+                                                          </button>
+                                                      </TableCell>
+                                                      <TableCell className="flex justify-center items-center">
+                                                          <button
+                                                              onClick={() => {
+                                                                  handleEditButtonClick(
+                                                                      participantCourse.participant
+                                                                  );
+                                                              }}
+                                                          >
+                                                              <Settings className="inline-flex text-center" />
+                                                          </button>
+                                                      </TableCell>
+                                                  </TableRow>
+                                              );
+                                          }
+                                      )}
                             </TableBody>
                         </Table>
                     </CardContent>

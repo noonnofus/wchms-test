@@ -1,6 +1,7 @@
 import db from "@/db";
 import { eq } from "drizzle-orm";
 import { users } from "../schema/users";
+import { hashPassword } from "@/lib/hashing";
 
 export async function getAllAdmins() {
     try {
@@ -37,13 +38,14 @@ export async function addAdmin(
             .where(eq(users.email, email));
 
         if (existingAdmin.length === 0) {
+            const hashedPass = await hashPassword(password);
             await db.insert(users).values({
                 firstName,
                 lastName,
                 email,
                 gender,
                 dateOfBirth,
-                password,
+                password: hashedPass,
                 role,
             });
             console.log("Admin added");
