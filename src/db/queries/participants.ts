@@ -1,15 +1,46 @@
 import db from "@/db";
 import { eq } from "drizzle-orm";
+import { sql } from "drizzle-orm";
 import { participants } from "../schema/participants";
+import { Courses } from "../schema/course";
+import { CourseParticipant } from "../schema/course";
 
-export async function getAllParticipants() {
+export async function getAllParticipants(withCourses = false) {
     try {
-        const allParticipants = await db.select().from(participants);
-        return allParticipants;
+        if (withCourses) {
+            const allParticipants = await db
+                .select({
+                    participant: participants,
+                    course: sql`GROUP_CONCAT(${Courses.title} SEPARATOR ', ')`.as(
+                        "courses"
+                    ),
+                })
+                .from(participants)
+                .leftJoin(
+                    CourseParticipant,
+                    eq(participants.id, CourseParticipant.userId)
+                )
+                .leftJoin(Courses, eq(CourseParticipant.courseId, Courses.id))
+                .groupBy(participants.id);
+
+            return allParticipants;
+        } else {
+            const allParticipants = await db.select().from(participants);
+            return allParticipants;
+        }
     } catch (error) {
         console.error("Error fetching participants", error);
         return [];
     }
+}
+
+export async function getParticipantById(id: string) {
+    const participant = await db
+        .select()
+        .from(participants)
+        .where(eq(participants.id, Number(id)));
+
+    return participant;
 }
 
 export async function addParticipant(

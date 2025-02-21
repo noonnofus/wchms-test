@@ -10,7 +10,7 @@ export default function TopNav() {
     const path = usePathname();
     const router = useRouter();
     return (
-        <div className="p-6 min-w-[360px] min-h-28 flex items-center">
+        <div className="p-6 min-h-28 flex items-center">
             <div className="flex justify-between items-center w-full">
                 <div className="flex-1">
                     {/* If its not the root page, and admin login page render a button */}
