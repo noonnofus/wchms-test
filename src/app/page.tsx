@@ -10,26 +10,34 @@ import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { type Participant } from "@/db/schema/participants";
-
-const courses = [
-    {
-        name: "第19期：脳の運動教室(シン 脳の運動教室)",
-        participants: ["Max", "Angus", "Kevin"],
-    },
-    {
-        name: "Course 2025",
-        participants: ["Armaan", "Annabelle", "Tomoko", "Aless", "Emmy"],
-    },
-];
+import { getAllCourses } from "@/db/queries/courses";
+import { type Course } from "@/db/schema/course";
 
 export default function ParticipantLogin() {
-    const [selectedCourse, setSelectedCourse] = useState<string | null>(null);
-    // const allParticipants = courses.flatMap((course) => course.participants);
     const [participants, setParticipants] = useState<
         { name: string; courses: string[] }[]
     >([]);
+    const [allParticipants, setAllParticipants] = useState<
+        { name: string; courses: string[] }[]
+    >([]);
+    const [courses, setCourses] = useState<
+        {
+            title: string;
+        }[]
+    >([]);
 
     useEffect(() => {
+        const fetchCourses = async () => {
+            try {
+                const courses = await getAllCourses();
+                const courseData = courses.map((course: Course) => ({
+                    title: course.title,
+                }));
+                setCourses(courseData);
+            } catch (error) {
+                console.error("Error fetching courses", error);
+            }
+        };
         const fetchParticipants = async () => {
             try {
                 const response = await fetch("/api/participants");
@@ -38,38 +46,68 @@ export default function ParticipantLogin() {
 
                 const participants = await response.json();
 
-                const uniqueParticipants = participants.map(
+                const uniqueParticipants: {
+                    name: string;
+                    courses: string[];
+                }[] = [];
+
+                const seenNames = new Set(); // stores unique first names to check for duplicates
+
+                participants.forEach(
                     (p: {
                         participant: Participant;
-                        courses: string | null;
-                    }) => ({
-                        name: p.participant.firstName.toLowerCase(),
-                        courses: p.courses ? p.courses.split(", ") : [],
-                    })
+                        course: string | null;
+                    }) => {
+                        const firstName = p.participant.firstName.toLowerCase();
+
+                        if (!seenNames.has(firstName)) {
+                            seenNames.add(firstName);
+                            const coursesArray = p.course
+                                ? p.course
+                                      .split(",")
+                                      .map((course) => course.trim())
+                                : [];
+                            uniqueParticipants.push({
+                                name: firstName,
+                                courses: coursesArray,
+                            });
+                        } else {
+                            // if name exists, push course name to existing courses array under existing name
+                            const participant = uniqueParticipants.find(
+                                (p) => p.name === firstName
+                            );
+                            if (participant) {
+                                const participantCourses = p.course
+                                    ? p.course
+                                          .split(",")
+                                          .map((course) => course.trim())
+                                    : [];
+                                participant.courses.push(...participantCourses);
+                            }
+                        }
+                    }
                 );
 
                 setParticipants(uniqueParticipants);
+                setAllParticipants(uniqueParticipants);
             } catch (error) {
                 console.error("Failed to fetch participants", error);
             }
         };
 
         fetchParticipants();
+        fetchCourses();
     }, []);
 
     const handleCourseSelect = (courseName: string) => {
-        // if (courseName === "All Courses") {
-        //     setParticipants(allParticipants);
-        //     setSelectedCourse(null);
-        // } else {
-        //     setSelectedCourse(courseName);
-        //     const selectCourseObj = courses.find(
-        //         (course) => course.name === courseName
-        //     );
-        //     if (selectCourseObj) {
-        //         setParticipants(selectCourseObj.participants);
-        //     }
-        // }
+        if (courseName === "All Courses") {
+            setParticipants(allParticipants);
+        } else {
+            const filteredParticipants = allParticipants.filter((p) =>
+                p.courses.includes(courseName)
+            );
+            setParticipants(filteredParticipants);
+        }
     };
 
     return (
@@ -87,8 +125,8 @@ export default function ParticipantLogin() {
                                 All Courses
                             </SelectItem>
                             {courses.map((course, index) => (
-                                <SelectItem key={index} value={course.name}>
-                                    {course.name}
+                                <SelectItem key={index} value={course.title}>
+                                    {course.title}
                                 </SelectItem>
                             ))}
                         </SelectContent>
