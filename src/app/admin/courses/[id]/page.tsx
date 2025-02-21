@@ -232,7 +232,18 @@ export default function AdminCourses() {
                                         );
                                     })
                                 ) : (
-                                    <p>No course materials available.</p>
+                                    <div className="flex flex-col items-center justify-center">
+                                        <p className="text-center md:text-xl">
+                                            No courses available. Would you like
+                                            to create a new course material?
+                                        </p>
+                                        <button
+                                            onClick={handleAddButtonClick}
+                                            className="mt-4 px-6 py-2 bg-primary-green text-white rounded-lg md:text-xl"
+                                        >
+                                            Create New Course Material
+                                        </button>
+                                    </div>
                                 )}
                                 <button
                                     onClick={handleAddButtonClick}
