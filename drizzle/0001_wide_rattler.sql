@@ -1,0 +1,1 @@
+ALTER TABLE `sessions` MODIFY COLUMN `instructor_id` int;
