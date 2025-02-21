@@ -26,7 +26,9 @@ export default function RootLayout({
             >
                 <TopNav />
                 <div className="flex-1 p-6 overflow-y-auto">{children}</div>
-                <AdminNav />
+                <div className="flex-1 fixed bottom-0 right-0 left-0">
+                    <AdminNav />
+                </div>
             </body>
         </html>
     );

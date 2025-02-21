@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
+import CloseIcon from "../icons/close-icon";
 
 const activities = ["Simple Arithmetic", "Reading Aloud", "Physical Exercise"];
 const difficulties = ["Basic", "Intermediate"];
@@ -196,13 +197,13 @@ export default function EditMaterial({
                     />
                 </div>
                 <div className="w-full flex flex-row gap-2 mt-4">
-                    <Button className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold text-xl py-4">
+                    <Button className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold md:text-xl py-2 md:py-4">
                         Save
                     </Button>
                     <Button
                         onClick={handleClosePopup}
                         variant="outline"
-                        className="w-full h-full rounded-full bg-transparent border-primary-green text-primary-green hover:bg-primary-green hover:text-white font-semibold text-xl py-4"
+                        className="w-full h-full rounded-full bg-transparent border-primary-green text-primary-green hover:bg-primary-green hover:text-white font-semibold md:text-xl py-2 md:py-4"
                     >
                         Cancel
                     </Button>

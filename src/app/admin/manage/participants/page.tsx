@@ -19,6 +19,7 @@ import AddParticipant from "@/components/manage/add-participant";
 import DeleteConfirmation from "@/components/shared/delete-confirmation";
 import { type Participant } from "@/db/schema/participants";
 import EditParticipant from "@/components/manage/edit-participant";
+import CloseIcon from "@/components/icons/close-icon";
 
 interface ParticipantCourse {
     participant: Participant;
@@ -130,16 +131,32 @@ export default function ManageParticipant() {
             <div className="flex flex-col gap-10 w-full items-center">
                 <h1 className="font-semibold text-4xl text-center">Manage</h1>
                 {showEditPopup && participantToEdit && (
-                    // TODO: 이거 작동하게 하셈. 그리고 /manage/participant/[id] 폴더 지워버리기 시이팔
-                    <div className="absolute inset-0 flex justify-center items-center min-h-[800px] min-w-[360px] w-full h-full bg-black bg-opacity-50 z-50">
-                        <div className="relative w-full bg-white rounded-lg p-6 overflow-auto">
-                            <EditParticipant
-                                closePopup={handleClosePopup}
-                                participantData={participantToEdit}
-                                onParticipantUpdated={() =>
-                                    setRefreshParticipants((prev) => !prev)
-                                }
-                            />
+                    <div className="fixed inset-0 flex items-end md:items-center justify-center z-10 overflow-y-auto">
+                        <div
+                            className="absolute inset-0 bg-black opacity-50"
+                            onClick={handleClosePopup}
+                        ></div>
+                        <div className="z-30 bg-white rounded-t-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
+                            <div className="relative w-full">
+                                <div className="flex justify-center items-center relative p-6">
+                                    <div className="w-1/3 md:hidden border-b-2 border-black"></div>
+                                    <button
+                                        onClick={handleClosePopup}
+                                        className="absolute top-3 right-4"
+                                    >
+                                        <CloseIcon />
+                                    </button>
+                                </div>
+                            </div>
+                            <div className="overflow-y-auto max-h-[calc(90vh-90px)]">
+                                <EditParticipant
+                                    participantData={participantToEdit}
+                                    closePopup={handleClosePopup}
+                                    onParticipantUpdated={() =>
+                                        setRefreshParticipants((prev) => !prev)
+                                    }
+                                />
+                            </div>
                         </div>
                     </div>
                 )}
@@ -157,14 +174,31 @@ export default function ManageParticipant() {
                     </div>
                 )}
                 {showAddPopup && (
-                    <div className="absolute inset-0 flex justify-center items-center min-h-[800px] min-w-[360px] w-full h-full bg-black bg-opacity-50 z-50">
-                        <div className="relative w-full bg-white rounded-lg p-6 overflow-auto">
-                            <AddParticipant
-                                closePopup={handleClosePopup}
-                                onParticipantAdded={() =>
-                                    setRefreshParticipants((prev) => !prev)
-                                }
-                            />
+                    <div className="fixed inset-0 flex items-end md:items-center justify-center z-10 overflow-y-auto">
+                        <div
+                            className="absolute inset-0 bg-black opacity-50"
+                            onClick={handleClosePopup}
+                        ></div>
+                        <div className="z-30 bg-white rounded-t-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
+                            <div className="relative w-full">
+                                <div className="flex justify-center items-center relative p-6">
+                                    <div className="w-1/3 md:hidden border-b-2 border-black"></div>
+                                    <button
+                                        onClick={handleClosePopup}
+                                        className="absolute top-3 right-4"
+                                    >
+                                        <CloseIcon />
+                                    </button>
+                                </div>
+                            </div>
+                            <div className="overflow-y-auto max-h-[calc(90vh-90px)]">
+                                <AddParticipant
+                                    closePopup={handleClosePopup}
+                                    onParticipantAdded={() =>
+                                        setRefreshParticipants((prev) => !prev)
+                                    }
+                                />
+                            </div>
                         </div>
                     </div>
                 )}

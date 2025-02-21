@@ -11,6 +11,7 @@ import {
 import { Button } from "../ui/button";
 import { DatePicker } from "../ui/date-picker";
 import { type Participant } from "@/db/schema/participants";
+import CloseIcon from "../icons/close-icon";
 
 const genders = ["Male", "Female", "Other"];
 
@@ -133,8 +134,8 @@ export default function EditParticipant({
     };
 
     return (
-        <div className="flex flex-col gap-12 overflow-y-auto py-8 px-6 rounded-lg bg-white items-center justify-center">
-            <h1 className="font-semibold text-3xl md:text-4xl text-center">
+        <div className="flex flex-col gap-6 overflow-y-auto overflow-x-hidden py-8 px-6 rounded-lg bg-white items-center justify-center">
+            <h1 className="font-semibold text-3xl md:text-4xl text-center mt-4">
                 Edit Participant
             </h1>
             <form
@@ -233,13 +234,13 @@ export default function EditParticipant({
                 <div className="w-full flex flex-row gap-2 mt-4">
                     <Button
                         type="submit"
-                        className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold text-xl py-2 md:py-4"
+                        className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold md:text-xl py-2 md:py-4"
                     >
                         {loading ? "Updating..." : "Update"}
                     </Button>
                     <Button
                         variant="outline"
-                        className="w-full h-full rounded-full bg-transparent border-primary-green text-primary-green hover:bg-primary-green hover:text-white font-semibold text-xl py-2 md:py-4"
+                        className="w-full h-full rounded-full bg-transparent border-primary-green text-primary-green hover:bg-primary-green hover:text-white font-semibold md:text-xl py-2 md:py-4"
                         onClick={handleCancel}
                     >
                         Cancel

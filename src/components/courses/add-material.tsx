@@ -11,6 +11,7 @@ import {
 import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
 import TabsMenu from "../shared/tabs-menu";
+import CloseIcon from "../icons/close-icon";
 
 const activities = ["Simple Arithmetic", "Reading Aloud", "Physical Exercise"];
 const difficulties = ["Basic", "Intermediate"];
@@ -33,7 +34,7 @@ export default function AddMaterial(props: { handleClosePopup: () => void }) {
 
     return (
         <div className="flex flex-col gap-12 w-full h-full py-8 px-6 rounded-lg bg-white items-center justify-center">
-            <h1 className="font-semibold text-3xl md:text-4xl text-center">
+            <h1 className="mt-4 font-semibold text-3xl md:text-4xl text-center">
                 Add New Course Material
             </h1>
             <TabsMenu
@@ -143,13 +144,13 @@ export default function AddMaterial(props: { handleClosePopup: () => void }) {
                             />
                         </div>
                         <div className="w-full flex flex-row gap-2 mt-4">
-                            <Button className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold text-xl py-4">
+                            <Button className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold md:text-xl py-2 md:py-4">
                                 Save
                             </Button>
                             <Button
                                 onClick={props.handleClosePopup}
                                 variant="outline"
-                                className="w-full h-full rounded-full bg-transparent border-primary-green text-primary-green hover:bg-primary-green hover:text-white font-semibold text-xl py-4"
+                                className="w-full h-full rounded-full bg-transparent border-primary-green text-primary-green hover:bg-primary-green hover:text-white font-semibold md:text-xl py-2 md:py-4"
                             >
                                 Cancel
                             </Button>

@@ -11,6 +11,7 @@ import { getCourseById } from "@/db/queries/courses";
 import AddCourse from "@/components/courses/add-course";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import CloseIcon from "@/components/icons/close-icon";
 
 export default function AdminCourses() {
     const { id } = useParams();
@@ -173,18 +174,33 @@ export default function AdminCourses() {
                             </div>
                         )}
                         {showEditCoursePopup && (
-                            <div className="fixed inset-0 flex items-center justify-center z-30 overflow-y-auto">
+                            <div className="fixed inset-0 flex items-end md:items-center justify-center z-10 overflow-y-auto">
                                 <div
                                     className="absolute inset-0 bg-black opacity-50"
                                     onClick={handleCloseEditCoursePopup}
-                                />
-                                <div className="relative z-20 flex flex-col items-center bg-white rounded-lg overflow-y-auto w-full mx-4 max-h-[90vh]">
-                                    <AddCourse
-                                        handleClosePopup={
-                                            handleCloseEditCoursePopup
-                                        }
-                                        courseId={parseInt(id as string)}
-                                    />
+                                ></div>
+                                <div className="z-30 bg-white rounded-t-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
+                                    <div className="relative w-full">
+                                        <div className="flex justify-center items-center relative p-6">
+                                            <div className="w-1/3 md:hidden border-b-2 border-black"></div>
+                                            <button
+                                                onClick={
+                                                    handleCloseEditCoursePopup
+                                                }
+                                                className="absolute top-3 right-4"
+                                            >
+                                                <CloseIcon />
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div className="overflow-y-auto max-h-[calc(90vh-90px)]">
+                                        <AddCourse
+                                            handleClosePopup={
+                                                handleCloseEditCoursePopup
+                                            }
+                                            courseId={parseInt(id as string)}
+                                        />
+                                    </div>
                                 </div>
                             </div>
                         )}
@@ -241,40 +257,70 @@ export default function AdminCourses() {
                                     </svg>
                                 </button>
                                 {showAddPopup && (
-                                    <div className="fixed inset-0 flex items-center justify-center z-10">
+                                    <div className="fixed inset-0 flex items-end md:items-center justify-center z-10">
                                         <div
-                                            className="absolute inset-0 bg-black opacity-50 z-10"
+                                            className="absolute inset-0 bg-black opacity-50"
                                             onClick={handleClosePopup}
-                                        />
-                                        <div className="relative z-20 flex flex-col items-center bg-white rounded-lg overflow-y-auto w-full mx-4 max-h-[90vh]">
-                                            <AddMaterial
-                                                handleClosePopup={
-                                                    handleClosePopup
-                                                }
-                                            />
+                                        ></div>
+                                        <div className="z-30 bg-white rounded-t-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
+                                            <div className="relative w-full">
+                                                <div className="flex justify-center items-center relative pt-6">
+                                                    <div className="w-1/3 md:hidden border-b-2 border-black"></div>
+                                                    <button
+                                                        onClick={
+                                                            handleClosePopup
+                                                        }
+                                                        className="absolute top-3 right-4"
+                                                    >
+                                                        <CloseIcon />
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div className="overflow-y-auto max-h-[calc(90vh-90px)]">
+                                                <AddMaterial
+                                                    handleClosePopup={
+                                                        handleClosePopup
+                                                    }
+                                                />
+                                            </div>
                                         </div>
                                     </div>
                                 )}
-                                {showEditMaterialPopup && (
-                                    <div className="fixed inset-0 flex items-center justify-center z-10 overflow-y-auto">
-                                        <div
-                                            className="absolute inset-0 bg-black opacity-50 z-10"
-                                            onClick={handleCloseEditPopup}
-                                        />
 
-                                        <div className="relative z-20 flex flex-col items-center bg-white rounded-lg overflow-y-auto w-full mx-4 max-h-[90vh]">
-                                            <EditMaterial
-                                                handleClosePopup={
-                                                    handleCloseEditPopup
-                                                }
-                                                material={
-                                                    selectedCourse?.materials.filter(
-                                                        (material: any) =>
-                                                            material.id ===
-                                                            editMaterialId
-                                                    )[0]
-                                                }
-                                            />
+                                {showEditMaterialPopup && (
+                                    <div className="fixed inset-0 flex items-end md:items-center justify-center z-10 overflow-y-auto">
+                                        <div
+                                            className="absolute inset-0 bg-black opacity-50"
+                                            onClick={handleCloseEditPopup}
+                                        ></div>
+                                        <div className="z-30 bg-white rounded-t-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
+                                            <div className="relative w-full">
+                                                <div className="flex justify-center items-center relative pt-6">
+                                                    <div className="w-1/3 md:hidden border-b-2 border-black"></div>
+                                                    <button
+                                                        onClick={
+                                                            handleCloseEditPopup
+                                                        }
+                                                        className="absolute top-3 right-4"
+                                                    >
+                                                        <CloseIcon />
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div className="overflow-y-auto max-h-[calc(90vh-90px)]">
+                                                <EditMaterial
+                                                    handleClosePopup={
+                                                        handleCloseEditPopup
+                                                    }
+                                                    material={
+                                                        selectedCourse?.materials.filter(
+                                                            (material: any) =>
+                                                                material.id ===
+                                                                editMaterialId
+                                                        )[0]
+                                                    }
+                                                />
+                                            </div>
                                         </div>
                                     </div>
                                 )}
@@ -300,7 +346,7 @@ export default function AdminCourses() {
                         <div className="w-full flex justify-center">
                             <Button
                                 onClick={() => setShowUnaddedOverlay(false)}
-                                className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold text-xl py-3"
+                                className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold md:text-xl py-3"
                             >
                                 OK
                             </Button>
