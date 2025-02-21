@@ -14,16 +14,15 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import Link from "next/link";
 import { useState, useEffect } from "react";
 import AddParticipant from "@/components/manage/add-participant";
 import DeleteConfirmation from "@/components/shared/delete-confirmation";
 import { type Participant } from "@/db/schema/participants";
-import { type Course } from "@/db/schema/course";
+import EditParticipant from "@/components/manage/edit-participant";
 
 interface ParticipantCourse {
     participant: Participant;
-    course: Course;
+    course: string;
 }
 
 export default function ManagePariticipant() {
@@ -33,6 +32,8 @@ export default function ManagePariticipant() {
     const [participantToDelete, setParticipantToDelete] = useState<Participant | null>(null);
     const [showDeletePopup, setShowDeletePopup] = useState(false);
     const [showAddPopup, setShowAddPopup] = useState(false);
+    const [showEditPopup, setShowEditPopup] = useState(false);
+    const [participantToEdit, setParticipantToEdit] = useState<Participant>();
     const [refreshParticipants, setRefreshParticipants] = useState(false);
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
     const [searchQuery, setSearchQuery] = useState("");
@@ -42,7 +43,7 @@ export default function ManagePariticipant() {
         fetch("/api/participants")
             .then((res) => res.json())
             .then((data) => {
-                // console.log(data[0].participant);
+                console.log(data);
                 setParticipants(data);
                 setIsLoading(false);
             })
@@ -56,6 +57,11 @@ export default function ManagePariticipant() {
     const handleDeleteButtonClick = (participant: Participant) => {
         setParticipantToDelete(participant);
         setShowDeletePopup(true);
+    };
+
+    const handleEditButtonClick = (participant: Participant) => {
+        setParticipantToEdit(participant);
+        setShowEditPopup(true);
     };
 
     const handleDelete = async () => {
@@ -88,6 +94,7 @@ export default function ManagePariticipant() {
         setShowDeletePopup(false);
         setShowAddPopup(false);
         setParticipantToDelete(null);
+        setShowEditPopup(false);
     }
 
     const handleSortChange = () => {
@@ -119,7 +126,20 @@ export default function ManagePariticipant() {
         <div>
             <div className="flex flex-col gap-10 w-full items-center">
                 <h1 className="font-semibold text-4xl text-center">Manage</h1>
-                {/* Delete Confirmation Popup */}
+                {showEditPopup && participantToEdit && (
+                    // TODO: 이거 작동하게 하셈. 그리고 /manage/participant/[id] 폴더 지워버리기 시이팔 
+                    <div className="absolute inset-0 flex justify-center items-center min-h-[800px] min-w-[360px] w-full h-full bg-black bg-opacity-50 z-50">
+                        <div className="relative w-full max-w-lg bg-white rounded-lg p-6 overflow-auto">
+                            <EditParticipant
+                                closePopup={handleClosePopup}
+                                participantData={participantToEdit}
+                                onParticipantUpdated={() =>
+                                    setRefreshParticipants((prev) => !prev)
+                                }
+                            />
+                        </div>
+                    </div>
+                )}
                 {showDeletePopup && participantToDelete && (
                     <div className="absolute inset-0 flex justify-center items-center min-h-[800px] min-w-[360px] w-full h-full bg-black bg-opacity-50 z-50">
                         <div className="relative w-full max-w-lg bg-white rounded-lg p-6 overflow-auto">
@@ -145,6 +165,7 @@ export default function ManagePariticipant() {
                         </div>
                     </div>
                 )}
+
                 <Card className="flex flex-col h-full">
                     <CardHeader className="w-full">
                         <h2 className="text-xl md:text-3xl font-semibold">
@@ -185,7 +206,7 @@ export default function ManagePariticipant() {
                                     <TableHead className="flex items-center gap-2 text-left text-black">
                                         Course Assigned
                                     </TableHead>
-                                    <div className="flex-1"></div>
+                                    <TableCell className="flex-1"></TableCell>
                                     <TableHead className="text-center text-black">Delete</TableHead>
                                     <TableHead className="text-center text-black">Edit</TableHead>
                                 </TableRow>
@@ -204,7 +225,7 @@ export default function ManagePariticipant() {
                                             <TableCell>
                                                 <Skeleton className="h-4 w-40 rounded" />
                                             </TableCell>
-                                            <div className="flex-1"></div>
+                                            <TableCell className="flex-1"></TableCell>
                                             <TableCell className="flex justify-center items-center">
                                                 <Skeleton className="h-6 w-6 rounded" />
                                             </TableCell>
@@ -213,7 +234,7 @@ export default function ManagePariticipant() {
                                             </TableCell>
                                         </TableRow>
                                     ))
-                                    : filteredParticipants.map((participantCourse: any) => {
+                                    : filteredParticipants.map((participantCourse: ParticipantCourse) => {
                                         return (
                                             <TableRow
                                                 className="grid grid-cols-[auto_auto_1fr_auto_auto] items-center"
@@ -226,7 +247,7 @@ export default function ManagePariticipant() {
                                                     {`${participantCourse.participant.firstName} ${participantCourse.participant.lastName}`}
                                                 </TableCell>
                                                 <TableCell className="flex items-center gap-2 text-left text-base md:text-lg">
-                                                    {participantCourse.course?.title ?? "none"}
+                                                    {participantCourse.course ?? "none"}
                                                 </TableCell>
                                                 <div className="flex-1"></div>
                                                 <TableCell
@@ -234,7 +255,6 @@ export default function ManagePariticipant() {
                                                 >
                                                     <button
                                                         onClick={() => {
-                                                            setParticipantToDelete(participantCourse.participant)
                                                             handleDeleteButtonClick(participantCourse.participant)
                                                         }}
                                                     >
@@ -242,9 +262,13 @@ export default function ManagePariticipant() {
                                                     </button>
                                                 </TableCell>
                                                 <TableCell className="flex justify-center items-center">
-                                                    <Link href={`/admin/manage/participants/${participantCourse.participant.id}`}>
+                                                    <button
+                                                        onClick={() => {
+                                                            handleEditButtonClick(participantCourse.participant)
+                                                        }}
+                                                    >
                                                         <Settings className="inline-flex text-center" />
-                                                    </Link>
+                                                    </button>
                                                 </TableCell>
                                             </TableRow>
                                         );

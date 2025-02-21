@@ -33,6 +33,13 @@ export default function EditParticipant({
         participantData.dateOfBirth
     );
     const [loading, setLoading] = useState(false);
+    const [errors, setErrors] = useState({
+        email: "",
+        gender: "",
+        firstName: "",
+        lastName: "",
+        dateOfBirth: "",
+    });
 
     useEffect(() => {
         setFirstName(participantData.firstName);
@@ -51,8 +58,48 @@ export default function EditParticipant({
         closePopup();
     };
 
+    const validateFields = () => {
+        let newErrors = {
+            email: "",
+            gender: "",
+            firstName: "",
+            lastName: "",
+            dateOfBirth: "",
+            role: "",
+            password: "",
+        };
+        let valid = true;
+
+        if (!firstName.trim()) {
+            newErrors.firstName = "First name is required";
+            valid = false;
+        }
+        if (!lastName.trim()) {
+            newErrors.lastName = "Last name is required";
+            valid = false;
+        }
+        if (!email?.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            newErrors.email = "Valid email is required";
+            valid = false;
+        }
+        if (!selectedGender?.trim()) {
+            newErrors.gender = "Gender is required";
+            valid = false;
+        }
+        if (!dateOfBirth) {
+            newErrors.dateOfBirth = "Date of birth is required";
+            valid = false;
+        }
+        setErrors(newErrors);
+        return valid;
+    };
+
+
     const handleEditParticipantSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        if (!validateFields()) return;
+
         setLoading(true);
 
         try {
@@ -96,7 +143,11 @@ export default function EditParticipant({
                 <div className="flex flex-row gap-2 w-full">
                     <div className="flex flex-col flex-1 gap-2">
                         <label htmlFor="firstName">First Name</label>
-
+                        {errors.firstName && (
+                            <p className="text-red-500 text-sm">
+                                {errors.firstName}
+                            </p>
+                        )}
                         <Input
                             id="firstName"
                             type="text"
@@ -107,7 +158,11 @@ export default function EditParticipant({
                     </div>
                     <div className="flex flex-col flex-1 gap-2">
                         <label htmlFor="lastName">Last Name</label>
-
+                        {errors.lastName && (
+                            <p className="text-red-500 text-sm">
+                                {errors.lastName}
+                            </p>
+                        )}
                         <Input
                             id="lastName"
                             type="text"
@@ -120,7 +175,11 @@ export default function EditParticipant({
                 <div className="flex flex-row gap-2 w-full">
                     <div className="flex flex-col flex-1 gap-2">
                         <label htmlFor="email">Email</label>
-
+                        {errors.email && (
+                            <p className="text-red-500 text-sm">
+                                {errors.email}
+                            </p>
+                        )}
                         <Input
                             id="email"
                             type="email"
@@ -131,7 +190,11 @@ export default function EditParticipant({
                     </div>
                     <div className="flex flex-col flex-1 gap-2">
                         <label htmlFor="courseCategory">Gender</label>
-
+                        {errors.gender && (
+                            <p className="text-red-500 text-sm">
+                                {errors.gender}
+                            </p>
+                        )}
                         <Select
                             value={selectedGender ?? ""}
                             onValueChange={handleGenderSelect}
@@ -155,7 +218,11 @@ export default function EditParticipant({
                 </div>
                 <div className="flex flex-col flex-1 gap-2">
                     <label htmlFor="dateOfBirth">Date of Birth</label>
-
+                    {errors.dateOfBirth && (
+                        <p className="text-red-500 text-sm">
+                            {errors.dateOfBirth}
+                        </p>
+                    )}
                     <DatePicker
                         selected={dateOfBirth}
                         onChange={(date) => setDateOfBirth(date ?? null)}

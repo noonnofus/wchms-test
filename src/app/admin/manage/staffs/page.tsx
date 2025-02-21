@@ -19,6 +19,7 @@ import { useState, useEffect } from "react";
 import AddAdmin from "@/components/manage/add-admin";
 import DeleteConfirmation from "@/components/shared/delete-confirmation";
 import { type User } from "@/db/schema/users";
+import EditAdmin from "@/components/manage/edit-admin";
 
 export default function ManageStaffs() {
     const [admins, setAdmins] = useState<User[]>([]);
@@ -27,6 +28,8 @@ export default function ManageStaffs() {
     const [adminToDelete, setAdminToDelete] = useState<User | null>(null);
     const [showDeletePopup, setShowDeletePopup] = useState(false);
     const [showAddPopup, setShowAddPopup] = useState(false);
+    const [showEditPopup, setShowEditPopup] = useState(false);
+    const [adminToEdit, setAdminToEdit] = useState<User | null>(null);
     const [refreshAdmins, setRefreshAdmins] = useState(false);
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
     const [roleSort, setRoleSort] = useState<"asc" | "desc">("asc");
@@ -50,6 +53,11 @@ export default function ManageStaffs() {
     const handleDeleteButtonClick = (participant: User) => {
         setAdminToDelete(participant);
         setShowDeletePopup(true);
+    };
+
+    const handleEditButtonClick = (admin: User) => {
+        setAdminToEdit(admin);
+        setShowEditPopup(true);
     };
 
     const handleDelete = async () => {
@@ -81,7 +89,9 @@ export default function ManageStaffs() {
     const handleClosePopup = () => {
         setShowDeletePopup(false);
         setShowAddPopup(false);
+        setShowEditPopup(false);
         setAdminToDelete(null);
+        setAdminToEdit(null);
     }
 
     const handleSortChange = () => {
@@ -125,6 +135,20 @@ export default function ManageStaffs() {
         <div>
             <div className="flex flex-col gap-10 w-full items-center">
                 <h1 className="font-semibold text-4xl text-center">Manage</h1>
+                {showEditPopup && adminToEdit && (
+                    // TODO: 이거 작동하게 하셈. 그리고 /manage/admin/[id] 폴더 지워버리기 시이팔 
+                    <div className="absolute inset-0 flex justify-center items-center min-h-[800px] min-w-[360px] w-full h-full bg-black bg-opacity-50 z-50">
+                        <div className="relative w-full max-w-lg bg-white rounded-lg p-6 overflow-auto">
+                            <EditAdmin
+                                closePopup={handleClosePopup}
+                                adminData={adminToEdit}
+                                onAdminUpdated={() =>
+                                    setRefreshAdmins((prev) => !prev)
+                                }
+                            />
+                        </div>
+                    </div>
+                )}
                 {/* Delete Confirmation Popup */}
                 {showDeletePopup && adminToDelete && (
                     <div className="absolute inset-0 flex justify-center items-center min-h-[800px] min-w-[360px] w-full h-full bg-black bg-opacity-50 z-50">
@@ -258,9 +282,13 @@ export default function ManageStaffs() {
                                                     </button>
                                                 </TableCell>
                                                 <TableCell className="flex justify-center items-center">
-                                                    <Link href={`/admin/manage/staffs/${admin.id}`}>
+                                                    <button
+                                                        onClick={() => {
+                                                            handleEditButtonClick(admin)
+                                                        }}
+                                                    >
                                                         <Settings className="inline-flex text-center" />
-                                                    </Link>
+                                                    </button>
                                                 </TableCell>
                                             </TableRow>
                                         );
