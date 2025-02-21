@@ -132,7 +132,7 @@ export default function ManageParticipant() {
                 {showEditPopup && participantToEdit && (
                     // TODO: 이거 작동하게 하셈. 그리고 /manage/participant/[id] 폴더 지워버리기 시이팔
                     <div className="absolute inset-0 flex justify-center items-center min-h-[800px] min-w-[360px] w-full h-full bg-black bg-opacity-50 z-50">
-                        <div className="relative w-full max-w-lg bg-white rounded-lg p-6 overflow-auto">
+                        <div className="relative w-full bg-white rounded-lg p-6 overflow-auto">
                             <EditParticipant
                                 closePopup={handleClosePopup}
                                 participantData={participantToEdit}
@@ -145,7 +145,7 @@ export default function ManageParticipant() {
                 )}
                 {showDeletePopup && participantToDelete && (
                     <div className="absolute inset-0 flex justify-center items-center min-h-[800px] min-w-[360px] w-full h-full bg-black bg-opacity-50 z-50">
-                        <div className="relative w-full max-w-lg bg-white rounded-lg p-6 overflow-auto">
+                        <div className="relative w-full bg-white rounded-lg p-6 overflow-auto">
                             <DeleteConfirmation
                                 title="Before you delete!"
                                 body={`Are you sure you want to delete ${participantToDelete.firstName}? You cannot undo this action.`}
@@ -158,7 +158,7 @@ export default function ManageParticipant() {
                 )}
                 {showAddPopup && (
                     <div className="absolute inset-0 flex justify-center items-center min-h-[800px] min-w-[360px] w-full h-full bg-black bg-opacity-50 z-50">
-                        <div className="relative w-full max-w-lg bg-white rounded-lg p-6 overflow-auto">
+                        <div className="relative w-full bg-white rounded-lg p-6 overflow-auto">
                             <AddParticipant
                                 closePopup={handleClosePopup}
                                 onParticipantAdded={() =>

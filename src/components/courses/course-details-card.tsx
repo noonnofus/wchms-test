@@ -1,7 +1,10 @@
 "use client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "../ui/button";
+import { fetchCourseImage, getUploadId } from "@/db/queries/courses";
 import Image from "next/image";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { Button } from "../ui/button";
 
 interface CourseDetailsProps {
     name: string;
@@ -11,18 +14,38 @@ interface CourseDetailsProps {
 }
 
 export default function CourseDetailsCard(props: CourseDetailsProps) {
+    const id = useParams().id;
+    const courseId = Array.isArray(id) ? id[0] : id || "";
+
+    const [imageUrl, setImageUrl] = useState<string>("/course-image.png");
+    useEffect(() => {
+        const fetchImage = async () => {
+            try {
+                const uploadId = await getUploadId(parseInt(courseId, 10));
+                if (uploadId) {
+                    const fetchedImage = await fetchCourseImage(uploadId);
+                    setImageUrl(fetchedImage || "/course-image.png");
+                }
+            } catch (error) {
+                console.error("Error fetching course image", error);
+                setImageUrl("/course-image.png");
+            }
+        };
+
+        fetchImage();
+    }, [courseId]);
     return (
         <div className="flex flex-col items-center">
-            <Card>
+            <Card className="flex flex-col gap-4">
                 <CardHeader>
                     <CardTitle>{props.name}</CardTitle>
                 </CardHeader>
                 <Image
-                    src="/course-image.png"
+                    src={imageUrl}
                     width={200}
                     height={200}
-                    alt="Picture of snake"
-                    className="mb-2"
+                    alt={`${props.name} course image`}
+                    className="rounded-lg"
                 />
                 {props.variant == "client" && (
                     <Button className="bg-primary-green text-white rounded-full w-full font-semibold text-base hover:bg-[#045B47]">

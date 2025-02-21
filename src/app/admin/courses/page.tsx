@@ -1,9 +1,13 @@
 "use client";
 import AddCourse from "@/components/courses/add-course";
 import CourseCard from "@/components/courses/course-card";
-import { useEffect, useState } from "react";
-import { getAllCourses } from "@/db/queries/courses";
+import { fetchCourseImage, getAllCourses } from "@/db/queries/courses";
 import { type Course } from "@/db/schema/course";
+import { useEffect, useState } from "react";
+
+export type CourseWithImage = Course & {
+    imageUrl?: string | null;
+};
 
 export default function Courses() {
     const [showAddPopup, setShowAddPopup] = useState(false);
@@ -24,12 +28,22 @@ export default function Courses() {
         setShowAddPopup(false);
     };
     const [isLoading, setIsLoading] = useState(true);
-    const [courses, setCourses] = useState<Course[]>([]);
+    const [courses, setCourses] = useState<CourseWithImage[]>([]);
+
     useEffect(() => {
         const fetchCourses = async () => {
             try {
                 const allCourses = await getAllCourses();
-                setCourses(allCourses);
+                const coursesWithImages = await Promise.all(
+                    allCourses.map(async (course) => {
+                        const imageUrl =
+                            course.uploadId !== null
+                                ? await fetchCourseImage(course.uploadId)
+                                : null;
+                        return { ...course, imageUrl };
+                    })
+                );
+                setCourses(coursesWithImages);
             } catch (error) {
                 console.error("Error fetching courses", error);
                 setCourses([]);
@@ -41,40 +55,38 @@ export default function Courses() {
     }, []);
 
     return (
-        <>
+        <div className="w-full h-full">
             <h1 className="font-semibold text-4xl text-center mb-6">Courses</h1>
             {showAddPopup && (
-                <div className="absolute min-h-full w-full top-0 left-0">
+                <div className="fixed inset-0 flex items-center justify-center z-10 overflow-y-auto">
                     <div
-                        className="absolute inset-0 bg-black opacity-50 z-10"
+                        className="absolute inset-0 bg-black opacity-50"
                         onClick={handleClosePopup}
-                    />
-                    <div className="absolute inset-0 flex justify-center items-center z-10 max-h-[90vh] top-1/2 -translate-y-1/2">
-                        <div className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-white rounded-lg p-6">
-                            <AddCourse handleClosePopup={handleClosePopup} />
-                        </div>
+                    ></div>
+
+                    <div className="relative z-20 flex flex-col items-center bg-white rounded-lg overflow-y-auto w-full mx-4 max-h-[90vh]">
+                        <AddCourse handleClosePopup={handleClosePopup} />
                     </div>
                 </div>
             )}
+
             {showEditPopup && (
-                <div className="absolute min-h-full w-full top-0 left-0">
+                <div className="fixed inset-0 flex items-center justify-center z-10 overflow-y-auto">
                     <div
-                        className="absolute inset-0 bg-black opacity-50 z-10"
+                        className="absolute inset-0 bg-black opacity-50"
                         onClick={handleCloseEditPopup}
                     />
-
-                    <div className="absolute inset-0 flex justify-center items-center z-10 max-h-[90vh] top-1/2 -translate-y-1/2">
-                        <div className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-white rounded-lg p-6">
-                            <AddCourse
-                                handleClosePopup={handleCloseEditPopup}
-                                courseId={editCourseId}
-                            />
-                        </div>
+                    <div className="relative z-20 flex flex-col items-center bg-white rounded-lg overflow-y-auto w-full mx-4 max-h-[90vh]">
+                        <AddCourse
+                            handleClosePopup={handleCloseEditPopup}
+                            courseId={editCourseId}
+                        />
                     </div>
                 </div>
             )}
+
             <button
-                className="absolute bottom-24 right-2 md:bottom-24 md:right-6 flex h-[72px] w-[72px] bg-primary-green shadow-lg border-4 border-white rounded-full justify-center items-center z-[1]"
+                className="absolute bottom-24 right-6 flex h-[72px] w-[72px] bg-primary-green shadow-lg border-4 border-white rounded-full justify-center items-center z-[1]"
                 onClick={handleAddButtonClick}
             >
                 <svg
@@ -105,7 +117,7 @@ export default function Courses() {
                                 key={course.id}
                                 id={course.id}
                                 name={course.title}
-                                image={"/course-image.png"} // TODO: Add image reference
+                                image={course.imageUrl || "/course-image.png"}
                                 imageAlt={`${course.title} Cover Image`}
                                 description={course.description}
                                 variant="admin"
@@ -117,6 +129,6 @@ export default function Courses() {
                     )}
                 </div>
             )}
-        </>
+        </div>
     );
 }

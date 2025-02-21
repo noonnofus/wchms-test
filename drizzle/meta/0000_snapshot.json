@@ -1,7 +1,11 @@
 {
   "version": "5",
   "dialect": "mysql",
+<<<<<<< HEAD
+  "id": "c4e42113-2cca-452e-a676-0cdd6666af30",
+=======
   "id": "7df1f99a-f070-4776-a3bb-8841ba606c3a",
+>>>>>>> 5f9b510dd75d631562c2662115ca0e084063cead
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "announcements": {
@@ -311,6 +315,16 @@
           "notNull": true,
           "autoincrement": false
         },
+<<<<<<< HEAD
+        "upload_id": {
+          "name": "upload_id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+=======
+>>>>>>> 5f9b510dd75d631562c2662115ca0e084063cead
         "room_id": {
           "name": "room_id",
           "type": "int",
@@ -321,6 +335,22 @@
       },
       "indexes": {},
       "foreignKeys": {
+<<<<<<< HEAD
+        "courses_upload_id_upload_media_id_fk": {
+          "name": "courses_upload_id_upload_media_id_fk",
+          "tableFrom": "courses",
+          "tableTo": "upload_media",
+          "columnsFrom": [
+            "upload_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+=======
+>>>>>>> 5f9b510dd75d631562c2662115ca0e084063cead
         "courses_room_id_rooms_id_fk": {
           "name": "courses_room_id_rooms_id_fk",
           "tableFrom": "courses",
@@ -501,6 +531,80 @@
       "compositePrimaryKeys": {
         "forums_id": {
           "name": "forums_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "upload_media": {
+      "name": "upload_media",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "file_name": {
+          "name": "file_name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "file_type": {
+          "name": "file_type",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "file_size": {
+          "name": "file_size",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "file_data": {
+          "name": "file_data",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "media_origin": {
+          "name": "media_origin",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "origin_id": {
+          "name": "origin_id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "uploaded_at": {
+          "name": "uploaded_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "(now())"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "upload_media_id": {
+          "name": "upload_media_id",
           "columns": [
             "id"
           ]
