@@ -136,12 +136,6 @@ export default function AddParticipant({
 
     return (
         <div className="flex flex-col gap-12 overflow-y-auto py-8 px-6 rounded-lg bg-white items-center justify-center">
-            <div className="relative w-full flex flex-row items-center justify-center">
-                <div className="w-1/3 md:hidden border-b-2 border-black"></div>
-                <button onClick={handleCancel}>
-                    <CloseIcon className="absolute -top-3 right-0" />
-                </button>
-            </div>
             <h1 className="font-semibold text-3xl md:text-4xl text-center">
                 Add New Participant
             </h1>

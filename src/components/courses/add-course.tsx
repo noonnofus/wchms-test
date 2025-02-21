@@ -297,8 +297,6 @@ export default function AddCourse(props: props) {
             }
         }
 
-        console.log(updatedFormData);
-
         const res = await fetch("/api/courses/update", {
             method: "PUT",
             headers: {
@@ -323,13 +321,7 @@ export default function AddCourse(props: props) {
     };
 
     return (
-        <div className="flex flex-col gap-12 w-full h-full py-8 px-6 rounded-lg bg-white items-center justify-center">
-            <div className="relative w-full flex flex-row items-center justify-center">
-                <div className="w-1/3 md:hidden border-b-2 border-black"></div>
-                <button onClick={props.handleClosePopup}>
-                    <CloseIcon className="absolute -top-3 right-0" />
-                </button>
-            </div>
+        <div className="relative flex flex-col gap-12 w-full h-full py-8 px-6 rounded-lg bg-white items-center justify-center overf">
             <h1 className="font-semibold text-3xl md:text-4xl text-center">
                 {props.courseId ? "Edit Course" : "Add New Course"}
             </h1>

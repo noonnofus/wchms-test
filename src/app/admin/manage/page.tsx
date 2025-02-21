@@ -5,6 +5,7 @@ import DeleteIcon from "@/components/icons/delete-icon";
 import { type Participant } from "@/db/schema/participants";
 import EditParticipant from "@/components/manage/edit-participant";
 import AddParticipant from "@/components/manage/add-participant";
+import CloseIcon from "@/components/icons/close-icon";
 
 export default function Manage() {
     const [participants, setParticipants] = useState<Participant[]>([]);
@@ -106,14 +107,27 @@ export default function Manage() {
                         className="absolute inset-0 bg-black opacity-50"
                         onClick={handleClosePopup}
                     ></div>
-                    <div className="relative z-20 bg-white rounded-t-lg md:rounded-lg overflow-y-auto w-full md:mx-8 max-h-[90vh]">
-                        <EditParticipant
-                            participantData={participantToEdit}
-                            closePopup={handleClosePopup}
-                            onParticipantUpdated={() =>
-                                setRefreshParticipants((prev) => !prev)
-                            }
-                        />
+                    <div className="z-30 bg-white rounded-t-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
+                        <div className="relative w-full">
+                            <div className="flex justify-center items-center relative p-6">
+                                <div className="w-1/3 md:hidden border-b-2 border-black"></div>
+                                <button
+                                    onClick={handleClosePopup}
+                                    className="absolute top-3 right-4"
+                                >
+                                    <CloseIcon />
+                                </button>
+                            </div>
+                        </div>
+                        <div className="overflow-y-auto max-h-[calc(90vh-90px)]">
+                            <EditParticipant
+                                participantData={participantToEdit}
+                                closePopup={handleClosePopup}
+                                onParticipantUpdated={() =>
+                                    setRefreshParticipants((prev) => !prev)
+                                }
+                            />
+                        </div>
                     </div>
                 </div>
             )}
@@ -124,20 +138,33 @@ export default function Manage() {
                         className="absolute inset-0 bg-black opacity-50"
                         onClick={handleClosePopup}
                     ></div>
-                    <div className="relative z-20 bg-white rounded-t-lg md:rounded-lg overflow-y-auto w-full md:mx-8 max-h-[90vh]">
-                        <AddParticipant
-                            closePopup={handleClosePopup}
-                            onParticipantAdded={() =>
-                                setRefreshParticipants((prev) => !prev)
-                            }
-                        />
+                    <div className="z-30 bg-white rounded-t-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
+                        <div className="relative w-full">
+                            <div className="flex justify-center items-center relative p-6">
+                                <div className="w-1/3 md:hidden border-b-2 border-black"></div>
+                                <button
+                                    onClick={handleClosePopup}
+                                    className="absolute top-3 right-4"
+                                >
+                                    <CloseIcon />
+                                </button>
+                            </div>
+                        </div>
+                        <div className="overflow-y-auto max-h-[calc(90vh-90px)]">
+                            <AddParticipant
+                                closePopup={handleClosePopup}
+                                onParticipantAdded={() =>
+                                    setRefreshParticipants((prev) => !prev)
+                                }
+                            />
+                        </div>
                     </div>
                 </div>
             )}
 
             <h1 className="font-semibold text-4xl">Manage</h1>
             <button
-                className="absolute bottom-24 right-2 md:bottom-24 md:right-6 flex h-[72px] w-[72px] bg-primary-green shadow-lg border-4 border-white rounded-full justify-center items-center z-[1]"
+                className="absolute bottom-20 right-6 flex h-[72px] w-[72px] bg-primary-green shadow-lg border-4 border-white rounded-full justify-center items-center z-10"
                 onClick={handleAddButtonClick}
             >
                 <svg
