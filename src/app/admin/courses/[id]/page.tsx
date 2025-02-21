@@ -215,22 +215,24 @@ export default function AdminCourses() {
                         ) : (
                             <div className="flex flex-col gap-4">
                                 {selectedCourse.materials?.length ? (
-                                    selectedCourse.materials.map((material) => {
-                                        return (
-                                            <MaterialCard
-                                                key={
-                                                    material.title +
-                                                    material.createdAt
-                                                }
-                                                material={material}
-                                                handleEditButtonClick={() =>
-                                                    handleEditButtonClick(
-                                                        material.id
-                                                    )
-                                                }
-                                            />
-                                        );
-                                    })
+                                    selectedCourse.materials.map(
+                                        (material: any) => {
+                                            return (
+                                                <MaterialCard
+                                                    key={
+                                                        material.title +
+                                                        material.createdAt
+                                                    }
+                                                    material={material}
+                                                    handleEditButtonClick={() =>
+                                                        handleEditButtonClick(
+                                                            material.id
+                                                        )
+                                                    }
+                                                />
+                                            );
+                                        }
+                                    )
                                 ) : (
                                     <p>No course materials available.</p>
                                 )}
@@ -312,7 +314,7 @@ export default function AdminCourses() {
                                                     }
                                                     material={
                                                         selectedCourse?.materials.filter(
-                                                            (material) =>
+                                                            (material: any) =>
                                                                 material.id ===
                                                                 editMaterialId
                                                         )[0]

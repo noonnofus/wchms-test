@@ -60,7 +60,7 @@ export default function AdminLanding() {
                     asChild
                     className="min-h-[16vh] rounded-lg bg-manage-red hover:bg-[#8B182A]"
                 >
-                    <Link href="#">
+                    <Link href="/admin/manage">
                         <div className="flex flex-col items-center justify-center">
                             <GearIcon className="min-w-12 min-h-12" />
                             <p className="text-2xl md:text-3xl">Manage</p>

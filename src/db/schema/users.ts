@@ -13,9 +13,7 @@ export const users = mysqlTable("users", {
     email: varchar("email", { length: 255 }).unique(),
     password: varchar("password", { length: 255 }).notNull(),
     dateOfBirth: date("date_of_birth").notNull(),
-    gender: mysqlEnum("gender", ["male", "female", "other"]),
-    role: mysqlEnum("role", ["participant", "admin", "staff"]).default(
-        "participant"
-    ),
+    gender: mysqlEnum("gender", ["Male", "Female", "Other"]),
+    role: mysqlEnum("role", ["Admin", "Staff"]).default("Staff"),
 });
 export type User = typeof users.$inferSelect;
