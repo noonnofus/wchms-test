@@ -24,45 +24,45 @@ export default function AdminCourses() {
                 //TODO: update to be dynamic class materials and dynamic participants
                 setSelectedCourse({
                     ...course[0],
-                    materials: [
-                        {
-                            id: "4",
-                            type: "Simple Arithmetic" as const,
-                            difficulty: "Basic" as const,
-                            title: "Week 4: Just a file",
-                            content: null,
-                            createdAt: new Date(1738859550),
-                            file: "Week4.pdf",
-                        },
-                        {
-                            id: "3",
-                            type: "Physical Exercise" as const,
-                            difficulty: "Basic" as const,
-                            title: "Week 3",
-                            content: "No review materials this week",
-                            createdAt: new Date(1738859550),
-                            file: null,
-                        },
-                        {
-                            id: "2",
-                            type: "Reading Aloud" as const,
-                            difficulty: "Intermediate" as const,
-                            title: "Week 2",
-                            content:
-                                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam id enim eget sem maximus accumsan. Pellentesque id varius mi, non sollicitudin orci. Donec eu condimentum justo. Donec vel sapien arcu. Quisque dapibus ligula non imperdiet malesuada.",
-                            createdAt: new Date(1738859545),
-                            file: "Week2.pdf",
-                        },
-                        {
-                            id: "1",
-                            type: "Reading Aloud" as const,
-                            difficulty: "Intermediate" as const,
-                            title: "Week 1: A really long title to see how it would look with multiple lines",
-                            content: "Some description",
-                            createdAt: new Date(1738859540),
-                            file: "Week1.pdf",
-                        },
-                    ],
+                    // materials: [
+                    //     {
+                    //         id: "4",
+                    //         type: "Simple Arithmetic" as const,
+                    //         difficulty: "Basic" as const,
+                    //         title: "Week 4: Just a file",
+                    //         content: null,
+                    //         createdAt: new Date(1738859550),
+                    //         file: "Week4.pdf",
+                    //     },
+                    //     {
+                    //         id: "3",
+                    //         type: "Physical Exercise" as const,
+                    //         difficulty: "Basic" as const,
+                    //         title: "Week 3",
+                    //         content: "No review materials this week",
+                    //         createdAt: new Date(1738859550),
+                    //         file: null,
+                    //     },
+                    //     {
+                    //         id: "2",
+                    //         type: "Reading Aloud" as const,
+                    //         difficulty: "Intermediate" as const,
+                    //         title: "Week 2",
+                    //         content:
+                    //             "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam id enim eget sem maximus accumsan. Pellentesque id varius mi, non sollicitudin orci. Donec eu condimentum justo. Donec vel sapien arcu. Quisque dapibus ligula non imperdiet malesuada.",
+                    //         createdAt: new Date(1738859545),
+                    //         file: "Week2.pdf",
+                    //     },
+                    //     {
+                    //         id: "1",
+                    //         type: "Reading Aloud" as const,
+                    //         difficulty: "Intermediate" as const,
+                    //         title: "Week 1: A really long title to see how it would look with multiple lines",
+                    //         content: "Some description",
+                    //         createdAt: new Date(1738859540),
+                    //         file: "Week1.pdf",
+                    //     },
+                    // ],
                     participants: [
                         {
                             id: "1",
@@ -232,14 +232,18 @@ export default function AdminCourses() {
                                         );
                                     })
                                 ) : (
-                                    <div className="flex flex-col items-center justify-center">
+                                    <div className="flex flex-col justify-center items-center py-10 gap-6">
+                                        <p className="text-center text-xl md:text-2xl font-semibold">
+                                            No materials available for this
+                                            course.
+                                        </p>
                                         <p className="text-center md:text-xl">
-                                            No courses available. Would you like
-                                            to create a new course material?
+                                            Would you like to create new course
+                                            material?
                                         </p>
                                         <button
                                             onClick={handleAddButtonClick}
-                                            className="mt-4 px-6 py-2 bg-primary-green text-white rounded-lg md:text-xl"
+                                            className="px-6 py-2 bg-primary-green text-white rounded-lg"
                                         >
                                             Create New Course Material
                                         </button>
