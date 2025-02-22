@@ -19,7 +19,7 @@ export default function AdminCourses() {
     const [isLoading, setIsLoading] = useState(true);
     const [selectedCourse, setSelectedCourse] = useState<
         CourseFull | undefined
-    >(undefined); //TODO: update type, include materials and participant types
+    >(undefined);
     const [unaddedParticipants, setUnaddedParticipants] = useState<string[]>(
         []
     );
@@ -33,40 +33,11 @@ export default function AdminCourses() {
             try {
                 const course = await getCourseById(
                     parseInt(id as string),
-                    false,
+                    true,
                     true
                 );
-                //TODO: update to be dynamic class materials and dynamic participants
                 if (course) {
-                    setSelectedCourse({
-                        ...course,
-                        participants: [
-                            {
-                                id: "1",
-                                firstName: "Annabelle",
-                                lastName: "Chen",
-                                city: "Vancouver",
-                            },
-                            {
-                                id: "2",
-                                firstName: "Kevin",
-                                lastName: "So",
-                                city: "Vancouver",
-                            },
-                            {
-                                id: "3",
-                                firstName: "Armaan",
-                                lastName: "Brar",
-                                city: "Surrey",
-                            },
-                            {
-                                id: "4",
-                                firstName: "Angus",
-                                lastName: "Ng",
-                                city: "Vancouver",
-                            },
-                        ],
-                    });
+                    setSelectedCourse(course);
                 }
             } catch (error) {
                 console.error("Error fetching courses", error);

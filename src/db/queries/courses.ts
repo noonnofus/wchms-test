@@ -8,6 +8,8 @@ import {
 import { desc, eq } from "drizzle-orm";
 import { uploadMedia } from "../schema/mediaUpload";
 import { courseMaterials } from "../schema/courseMaterials";
+import { participants } from "@/db/schema/participants";
+import { type Participant } from "../schema/participants";
 
 export interface courseList {
     id: number;
@@ -204,6 +206,30 @@ export async function getCourseById(
             course = {
                 ...course,
                 materials,
+            };
+        }
+
+        let participantsData: Participant[] = [];
+        if (withParticipants) {
+            participantsData = await db
+                .select({
+                    id: participants.id,
+                    firstName: participants.firstName,
+                    lastName: participants.lastName,
+                    email: participants.email,
+                    dateOfBirth: participants.dateOfBirth,
+                    gender: participants.gender,
+                })
+                .from(CourseParticipant)
+                .innerJoin(
+                    participants,
+                    eq(CourseParticipant.userId, participants.id)
+                )
+                .where(eq(CourseParticipant.courseId, courseId));
+
+            course = {
+                ...course,
+                participants: participantsData,
             };
         }
 

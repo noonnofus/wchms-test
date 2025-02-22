@@ -14,69 +14,42 @@ import {
 } from "@/components/ui/table";
 import { PlusIcon } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { CourseFull } from "@/db/schema/course";
+import { getCourseById } from "@/db/queries/courses";
+
 export default function ClassParticipants() {
-    const courseWithParticipants = {
-        id: "4",
-        name: "第20期：脳の運動教室(シン 脳の運動教室)",
-        image: "/course-image.png",
-        imgAlt: "A Snake",
-        description:
-            "2025年は、60年に一度巡ってくる「乙巳（きのと・み）」の年。乙巳の年は、新しいものが生まれ、成長していく年と言われています。第19期となる脳の運動教室も、今年は「シン 脳の運動教室」としてブラッシュアップしていきます！皆さま、本年もよろしくお願いいたします。",
-        materials: [
-            {
-                title: "Week 4: Just a file",
-                content: null,
-                createdAt: new Date(1738859550),
-                file: "Week4.pdf",
-            },
-            {
-                title: "Week 3",
-                content: "No review materials this week",
-                createdAt: new Date(1738859550),
-                file: null,
-            },
-            {
-                title: "Week 2",
-                content:
-                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam id enim eget sem maximus accumsan. Pellentesque id varius mi, non sollicitudin orci. Donec eu condimentum justo. Donec vel sapien arcu. Quisque dapibus ligula non imperdiet malesuada.",
-                createdAt: new Date(1738859545),
-                file: "Week2.pdf",
-            },
-            {
-                title: "Week 1: A really long title to see how it would look with multiple lines",
-                content: "Some description",
-                createdAt: new Date(1738859540),
-                file: "Week1.pdf",
-            },
-        ],
-        participants: [
-            {
-                id: "1",
-                firstName: "Annabelle",
-                lastName: "Chen",
-                city: "Vancouver",
-            },
-            {
-                id: "2",
-                firstName: "Kevin",
-                lastName: "So",
-                city: "Vancouver",
-            },
-            {
-                id: "3",
-                firstName: "Armaan",
-                lastName: "Brar",
-                city: "Surrey",
-            },
-            {
-                id: "4",
-                firstName: "Angus",
-                lastName: "Ng",
-                city: "Vancouver",
-            },
-        ],
-    };
+    const { id } = useParams();
+    const [isLoading, setIsLoading] = useState(true);
+    const [selectedCourse, setSelectedCourse] = useState<
+        CourseFull | undefined
+    >(undefined);
+
+    useEffect(() => {
+        const fetchCourses = async () => {
+            try {
+                const course = await getCourseById(
+                    parseInt(id as string),
+                    false,
+                    true
+                );
+                if (course) {
+                    setSelectedCourse({
+                        ...course,
+                        participants: course.participants || [],
+                    });
+                }
+            } catch (error) {
+                console.error("Error fetching courses", error);
+                setSelectedCourse(undefined);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        fetchCourses();
+    }, [id]);
+
     const [searchQuery, setSearchQuery] = useState("");
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
@@ -88,7 +61,7 @@ export default function ClassParticipants() {
         setSortOrder((prevOrder) => (prevOrder === "asc" ? "desc" : "asc"));
     };
 
-    const filteredParticipants = courseWithParticipants.participants
+    const filteredParticipants = (selectedCourse?.participants || [])
         .filter((participant) => {
             const fullName =
                 `${participant.firstName} ${participant.lastName}`.toLowerCase();
@@ -97,13 +70,11 @@ export default function ClassParticipants() {
         .sort((a, b) => {
             const nameA = `${a.firstName} ${a.lastName}`.toLowerCase();
             const nameB = `${b.firstName} ${b.lastName}`.toLowerCase();
-
-            if (sortOrder === "asc") {
-                return nameA.localeCompare(nameB); // A-Z
-            } else {
-                return nameB.localeCompare(nameA); // Z-A
-            }
+            return sortOrder === "asc"
+                ? nameA.localeCompare(nameB)
+                : nameB.localeCompare(nameA);
         });
+
     return (
         <div className="flex flex-col gap-10 w-full items-center">
             <h1 className="font-semibold text-4xl text-center">
@@ -112,7 +83,7 @@ export default function ClassParticipants() {
             <Card className="flex flex-col h-full">
                 <CardHeader className="w-full">
                     <h2 className="text-xl md:text-3xl font-semibold">
-                        {courseWithParticipants.name}
+                        {selectedCourse?.title}
                     </h2>
                     <div className="flex gap-2 md:gap-4 items-center">
                         <Input

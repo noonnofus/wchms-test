@@ -1,6 +1,6 @@
 import { int, mysqlTable, timestamp, varchar } from "drizzle-orm/mysql-core";
 import { uploadMedia } from "./mediaUpload";
-import { participants } from "./participants";
+import { Participant, participants } from "./participants";
 import { rooms } from "./room";
 import { CourseMaterialsWithFile } from "./courseMaterials";
 
@@ -33,5 +33,5 @@ export type Course = typeof Courses.$inferSelect;
 
 export interface CourseFull extends Course {
     materials?: CourseMaterialsWithFile[] | null;
-    participants?: any[];
+    participants?: Participant[] | null;
 }
