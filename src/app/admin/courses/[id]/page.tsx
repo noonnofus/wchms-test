@@ -19,7 +19,7 @@ export default function AdminCourses() {
     const [isLoading, setIsLoading] = useState(true);
     const [selectedCourse, setSelectedCourse] = useState<
         CourseFull | undefined
-    >(undefined); //TODO: update type, include materials and participant types
+    >(undefined);
     const [unaddedParticipants, setUnaddedParticipants] = useState<string[]>(
         []
     );
@@ -36,12 +36,8 @@ export default function AdminCourses() {
                     true,
                     true
                 );
-                //TODO: update to be dynamic class materials
                 if (course) {
-                    setSelectedCourse({
-                        ...course,
-                        participants: course.participants || [],
-                    });
+                    setSelectedCourse(course);
                 }
             } catch (error) {
                 console.error("Error fetching courses", error);

@@ -1,19 +1,12 @@
 "use client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "../ui/button";
-import Image from "next/image";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-
-type participant = {
-    id: string;
-    firstName: string;
-    lastName: string;
-    city: string;
-};
+import { Participant } from "@/db/schema/participants";
 
 export default function ParticipantList(props: {
-    participants: participant[];
+    participants: Participant[];
 }) {
     const { id } = useParams();
     return (
@@ -44,9 +37,9 @@ export default function ParticipantList(props: {
                                           }
                                       >
                                           <p className="text-lg md:text-2xl font-semibold">{`${participant.firstName} ${participant.lastName[0]}.`}</p>
-                                          <p className="text-[14px] md:text-base font-semibold">
+                                          {/* <p className="text-[14px] md:text-base font-semibold">
                                               {participant.city}
-                                          </p>
+                                          </p> */}
                                           <div className="my-2 md:my-4 self-center w-14 h-14 md:w-20 md:h-20 rounded-full bg-gray-300 flex flex-col items-center justify-center">{`${participant.firstName[0]}${participant.lastName[0]}`}</div>
                                           <Button
                                               asChild
