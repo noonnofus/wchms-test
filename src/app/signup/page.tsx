@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
-import { Input } from "../ui/input";
+import { useRouter } from "next/navigation";
+import { Input } from "@/components/ui/input";
 import {
     Select,
     SelectContent,
@@ -8,18 +9,13 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { Button } from "../ui/button";
-import { DatePicker } from "../ui/date-picker";
+import { Button } from "@/components/ui/button";
+import { DatePicker } from "@/components/ui/date-picker";
 
 const genders = ["Male", "Female", "Other"];
 
-export default function AddParticipant({
-    onParticipantAdded,
-    closePopup,
-}: {
-    onParticipantAdded: () => void;
-    closePopup: () => void;
-}) {
+export default function SignUp() {
+    const router = useRouter();
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
@@ -86,7 +82,8 @@ export default function AddParticipant({
             gender: "",
             dateOfBirth: "",
         });
-        closePopup();
+
+        router.push("/");
     };
 
     const handleAddParticipantSubmit = async (e: React.FormEvent) => {
@@ -117,7 +114,6 @@ export default function AddParticipant({
                 throw new Error("Failed to add participant");
             }
 
-            onParticipantAdded();
             console.log("Participant added successfully");
 
             setFirstName("");
@@ -125,7 +121,7 @@ export default function AddParticipant({
             setEmail("");
             setSelectedGender(null);
             setDateOfBirth(null);
-            closePopup();
+            router.push("/");
         } catch (error) {
             console.error(error);
         } finally {
@@ -134,10 +130,8 @@ export default function AddParticipant({
     };
 
     return (
-        <div className="flex flex-col gap-12 overflow-y-auto py-8 px-6 rounded-lg bg-white items-center justify-center">
-            <h1 className="font-semibold text-3xl md:text-4xl text-center">
-                Add New Participant
-            </h1>
+        <div className="flex flex-col gap-12 w-full h-full items-center">
+            <h1 className="font-semibold text-4xl">Signup</h1>
             <form
                 className="flex flex-col gap-4 md:gap-6 w-full h-full md:text-2xl"
                 method="POST"
@@ -236,7 +230,7 @@ export default function AddParticipant({
                         type="submit"
                         className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold md:text-xl py-2 md:py-4"
                     >
-                        {loading ? "Adding..." : "Add"}
+                        {loading ? "Creating account..." : "Signup"}
                     </Button>
                     <Button
                         variant="outline"
