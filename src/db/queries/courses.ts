@@ -1,8 +1,13 @@
 "use server";
 import db from "@/db";
-import { CourseParticipant, Courses as coursesTable } from "@/db/schema/course";
+import {
+    CourseFull,
+    CourseParticipant,
+    Courses as coursesTable,
+} from "@/db/schema/course";
 import { desc, eq } from "drizzle-orm";
 import { uploadMedia } from "../schema/mediaUpload";
+import { courseMaterials } from "../schema/courseMaterials";
 
 export interface courseList {
     id: number;
@@ -99,8 +104,8 @@ export const fetchCourseImage = async (uploadId: number) => {
 export async function getUploadId(courseId: number) {
     try {
         const course = await getCourseById(courseId);
-        if (course && course.length > 0) {
-            return course[0].uploadId;
+        if (course) {
+            return course.uploadId;
         }
         return null;
     } catch (error) {
@@ -148,7 +153,7 @@ export async function getCourseById(
         //TODO: withParticipants, verify administrator or member, return with participants
         //TODO: withMaterials, verify administrator or member, return with course materials
         // Changed to give image file with name and type
-        const course = await db
+        const courseQuery = db
             .select({
                 id: coursesTable.id,
                 title: coursesTable.title,
@@ -164,12 +169,46 @@ export async function getCourseById(
             })
             .from(coursesTable)
             .leftJoin(uploadMedia, eq(coursesTable.uploadId, uploadMedia.id))
-            .where(eq(coursesTable.id, courseId));
+            .where(eq(coursesTable.id, courseId))
+            .then((res) => res[0]);
+
+        let course: CourseFull = { ...(await courseQuery) };
+
+        if (withMaterials) {
+            const materials = await db
+                .select({
+                    id: courseMaterials.id,
+                    title: courseMaterials.title,
+                    type: courseMaterials.type,
+                    difficulty: courseMaterials.difficulty,
+                    description: courseMaterials.description,
+                    courseId: courseMaterials.courseId,
+                    createdAt: courseMaterials.createdAt,
+                    uploadId: courseMaterials.uploadId,
+                    file: {
+                        fileName: uploadMedia.fileName,
+                        fileType: uploadMedia.fileType,
+                        fileSize: uploadMedia.fileSize,
+                        fileData: uploadMedia.fileData,
+                    },
+                })
+                .from(courseMaterials)
+                .leftJoin(
+                    uploadMedia,
+                    eq(courseMaterials.uploadId, uploadMedia.id)
+                )
+                .where(eq(courseMaterials.courseId, courseId));
+
+            course = {
+                ...course,
+                materials,
+            };
+        }
 
         return course;
     } catch (error) {
         console.error("Error fetching courses", error);
-        return [];
+        return undefined;
     }
 }
 

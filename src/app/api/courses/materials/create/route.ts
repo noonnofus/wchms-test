@@ -4,10 +4,13 @@ import {
     Difficulty,
     MaterialType,
 } from "@/db/schema/courseMaterials";
+import { uploadMedia } from "@/db/schema/mediaUpload";
+import { eq } from "drizzle-orm";
 
 export async function POST(req: Request) {
     try {
         const body = await req.json();
+        console.log(body);
         const {
             title,
             exerciseType,
@@ -31,19 +34,44 @@ export async function POST(req: Request) {
             );
         }
 
-        const newMaterial = await db.insert(courseMaterials).values({
-            title,
-            type: exerciseType,
-            difficulty,
-            description,
-            uploadId,
-            courseId,
-        });
+        const newMaterial = await db
+            .insert(courseMaterials)
+            .values({
+                title,
+                type: exerciseType,
+                difficulty,
+                description,
+                uploadId,
+                courseId,
+            })
+            .$returningId()
+            .then((res) => res[0]);
+
+        const insertedMaterial = await db
+            .select({
+                id: courseMaterials.id,
+                title: courseMaterials.title,
+                type: courseMaterials.type,
+                difficulty: courseMaterials.difficulty,
+                description: courseMaterials.description,
+                courseId: courseMaterials.courseId,
+                createdAt: courseMaterials.createdAt,
+                uploadId: courseMaterials.uploadId,
+                file: {
+                    fileName: uploadMedia.fileName,
+                    fileType: uploadMedia.fileType,
+                    fileSize: uploadMedia.fileSize,
+                    fileData: uploadMedia.fileData,
+                },
+            })
+            .from(courseMaterials)
+            .leftJoin(uploadMedia, eq(courseMaterials.uploadId, uploadMedia.id))
+            .where(eq(courseMaterials.courseId, courseId));
 
         return new Response(
             JSON.stringify({
                 message: "Course material created",
-                data: newMaterial,
+                data: insertedMaterial,
             }),
             { status: 201 }
         );

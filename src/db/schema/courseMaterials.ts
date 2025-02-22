@@ -7,7 +7,7 @@ import {
     timestamp,
     varchar,
 } from "drizzle-orm/mysql-core";
-import { uploadMedia } from "./mediaUpload";
+import { UploadMedia, uploadMedia } from "./mediaUpload";
 import { Courses } from "./course";
 
 export enum MaterialType {
@@ -44,3 +44,14 @@ export const courseMaterials = mysqlTable("course_materials", {
         .references(() => Courses.id),
     createdAt: timestamp("createdAt").defaultNow(),
 });
+
+export type CourseMaterials = typeof courseMaterials.$inferSelect;
+
+export interface CourseMaterialsWithFile extends CourseMaterials {
+    file: {
+        fileName: UploadMedia["fileName"];
+        fileType: UploadMedia["fileType"];
+        fileSize: UploadMedia["fileSize"];
+        fileData: UploadMedia["fileData"];
+    } | null;
+}

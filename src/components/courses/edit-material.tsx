@@ -11,25 +11,17 @@ import {
 import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
 import CloseIcon from "../icons/close-icon";
+import { CourseMaterialsWithFile } from "@/db/schema/courseMaterials";
 
 const activities = ["Simple Arithmetic", "Reading Aloud", "Physical Exercise"];
 const difficulties = ["Basic", "Intermediate"];
-export type Material = {
-    id: string;
-    type: "Simple Arithmetic" | "Reading Aloud" | "Physical Exercise";
-    difficulty: "Basic" | "Intermediate";
-    title: string;
-    content: string | null;
-    createdAt: Date;
-    file: string | null;
-};
 
 export default function EditMaterial({
     handleClosePopup,
     material,
 }: {
     handleClosePopup: () => void;
-    material: Material;
+    material: CourseMaterialsWithFile;
 }) {
     const [selectedActivity, setSelectedActivity] = useState<string>(
         material.type
@@ -128,7 +120,7 @@ export default function EditMaterial({
                                             />
                                         </g>
                                     </svg>
-                                    <p>{material.file}</p>
+                                    <p>{material.file.fileName}</p>
                                     <div className="absolute top-0 right-0 flex items-center gap-2 stroke-destructive-text">
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
@@ -193,7 +185,7 @@ export default function EditMaterial({
                     <Textarea
                         id="ExerciseInstructions"
                         placeholder="Exercise Instructions (Optional)"
-                        defaultValue={material.content || ""}
+                        defaultValue={material.description || ""}
                     />
                 </div>
                 <div className="w-full flex flex-row gap-2 mt-4">

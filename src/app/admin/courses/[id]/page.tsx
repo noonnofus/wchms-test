@@ -9,100 +9,75 @@ import AddMaterial from "@/components/courses/add-material";
 import EditMaterial from "@/components/courses/edit-material";
 import { getCourseById } from "@/db/queries/courses";
 import AddCourse from "@/components/courses/add-course";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import CloseIcon from "@/components/icons/close-icon";
+import { CourseMaterialsWithFile } from "@/db/schema/courseMaterials";
+import { CourseFull } from "@/db/schema/course";
 
 export default function AdminCourses() {
     const { id } = useParams();
     const [isLoading, setIsLoading] = useState(true);
-    const [selectedCourse, setSelectedCourse] = useState<any>({}); //TODO: update type, include materials and participant types
+    const [selectedCourse, setSelectedCourse] = useState<
+        CourseFull | undefined
+    >(undefined); //TODO: update type, include materials and participant types
+    const [unaddedParticipants, setUnaddedParticipants] = useState<string[]>(
+        []
+    );
+    const [showUnaddedOverlay, setShowUnaddedOverlay] = useState(false);
+    const [showAddPopup, setShowAddPopup] = useState(false);
+    const [showEditMaterialPopup, setShowEditMaterialPopup] = useState(false);
+    const [editMaterialId, setMaterialId] = useState("");
+    const [showEditCoursePopup, setShowEditCoursePopup] = useState(false);
     useEffect(() => {
         const fetchCourses = async () => {
             try {
-                const course = await getCourseById(parseInt(id as string));
+                const course = await getCourseById(
+                    parseInt(id as string),
+                    false,
+                    true
+                );
+                console.log(course);
                 //TODO: update to be dynamic class materials and dynamic participants
-                setSelectedCourse({
-                    ...course[0],
-                    // materials: [
-                    //     {
-                    //         id: "4",
-                    //         type: "Simple Arithmetic" as const,
-                    //         difficulty: "Basic" as const,
-                    //         title: "Week 4: Just a file",
-                    //         content: null,
-                    //         createdAt: new Date(1738859550),
-                    //         file: "Week4.pdf",
-                    //     },
-                    //     {
-                    //         id: "3",
-                    //         type: "Physical Exercise" as const,
-                    //         difficulty: "Basic" as const,
-                    //         title: "Week 3",
-                    //         content: "No review materials this week",
-                    //         createdAt: new Date(1738859550),
-                    //         file: null,
-                    //     },
-                    //     {
-                    //         id: "2",
-                    //         type: "Reading Aloud" as const,
-                    //         difficulty: "Intermediate" as const,
-                    //         title: "Week 2",
-                    //         content:
-                    //             "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam id enim eget sem maximus accumsan. Pellentesque id varius mi, non sollicitudin orci. Donec eu condimentum justo. Donec vel sapien arcu. Quisque dapibus ligula non imperdiet malesuada.",
-                    //         createdAt: new Date(1738859545),
-                    //         file: "Week2.pdf",
-                    //     },
-                    //     {
-                    //         id: "1",
-                    //         type: "Reading Aloud" as const,
-                    //         difficulty: "Intermediate" as const,
-                    //         title: "Week 1: A really long title to see how it would look with multiple lines",
-                    //         content: "Some description",
-                    //         createdAt: new Date(1738859540),
-                    //         file: "Week1.pdf",
-                    //     },
-                    // ],
-                    participants: [
-                        {
-                            id: "1",
-                            firstName: "Annabelle",
-                            lastName: "Chen",
-                            city: "Vancouver",
-                        },
-                        {
-                            id: "2",
-                            firstName: "Kevin",
-                            lastName: "So",
-                            city: "Vancouver",
-                        },
-                        {
-                            id: "3",
-                            firstName: "Armaan",
-                            lastName: "Brar",
-                            city: "Surrey",
-                        },
-                        {
-                            id: "4",
-                            firstName: "Angus",
-                            lastName: "Ng",
-                            city: "Vancouver",
-                        },
-                    ],
-                });
+                if (course) {
+                    setSelectedCourse({
+                        ...course,
+                        participants: [
+                            {
+                                id: "1",
+                                firstName: "Annabelle",
+                                lastName: "Chen",
+                                city: "Vancouver",
+                            },
+                            {
+                                id: "2",
+                                firstName: "Kevin",
+                                lastName: "So",
+                                city: "Vancouver",
+                            },
+                            {
+                                id: "3",
+                                firstName: "Armaan",
+                                lastName: "Brar",
+                                city: "Surrey",
+                            },
+                            {
+                                id: "4",
+                                firstName: "Angus",
+                                lastName: "Ng",
+                                city: "Vancouver",
+                            },
+                        ],
+                    });
+                }
             } catch (error) {
                 console.error("Error fetching courses", error);
-                setSelectedCourse([]);
+                setSelectedCourse(undefined);
             } finally {
                 setIsLoading(false);
             }
         };
         fetchCourses();
-    }, []);
-    const [unaddedParticipants, setUnaddedParticipants] = useState<string[]>(
-        []
-    );
-    const [showUnaddedOverlay, setShowUnaddedOverlay] = useState(false);
+    }, [id]);
 
     useEffect(() => {
         const storedData = sessionStorage.getItem("unaddedParticipants");
@@ -120,15 +95,12 @@ export default function AdminCourses() {
         return <div>No course found</div>;
     }
 
-    const [showAddPopup, setShowAddPopup] = useState(false);
     const handleAddButtonClick = () => {
         setShowAddPopup(true);
     };
     const handleClosePopup = () => {
         setShowAddPopup(false);
     };
-    const [showEditMaterialPopup, setShowEditMaterialPopup] = useState(false);
-    const [editMaterialId, setMaterialId] = useState("");
     const handleEditButtonClick = (id: string) => {
         setMaterialId(id);
         setShowEditMaterialPopup(true);
@@ -138,7 +110,6 @@ export default function AdminCourses() {
         setShowEditMaterialPopup(false);
     };
 
-    const [showEditCoursePopup, setShowEditCoursePopup] = useState(false);
     const handleEditCourseButtonClick = () => {
         setShowEditCoursePopup(true);
     };
@@ -162,7 +133,9 @@ export default function AdminCourses() {
                             <div className="flex flex-col gap-4">
                                 <CourseDetailsCard
                                     name={selectedCourse.title}
-                                    description={selectedCourse?.description}
+                                    description={
+                                        selectedCourse?.description || ""
+                                    }
                                     variant="admin"
                                     editAction={handleEditCourseButtonClick}
                                 />
@@ -216,17 +189,17 @@ export default function AdminCourses() {
                             <div className="flex flex-col gap-4">
                                 {selectedCourse.materials?.length ? (
                                     selectedCourse.materials.map(
-                                        (material: any) => {
+                                        (material: CourseMaterialsWithFile) => {
                                             return (
                                                 <MaterialCard
                                                     key={
-                                                        material.title +
-                                                        material.createdAt
+                                                        material.id +
+                                                        material.title
                                                     }
                                                     material={material}
                                                     handleEditButtonClick={() =>
                                                         handleEditButtonClick(
-                                                            material.id
+                                                            material.id.toString()
                                                         )
                                                     }
                                                 />
@@ -296,6 +269,9 @@ export default function AdminCourses() {
                                                     handleClosePopup={
                                                         handleClosePopup
                                                     }
+                                                    setSelectedCourse={
+                                                        setSelectedCourse
+                                                    }
                                                 />
                                             </div>
                                         </div>
@@ -323,18 +299,22 @@ export default function AdminCourses() {
                                                 </div>
                                             </div>
                                             <div className="overflow-y-auto max-h-[calc(90vh-90px)]">
-                                                <EditMaterial
-                                                    handleClosePopup={
-                                                        handleCloseEditPopup
-                                                    }
-                                                    material={
-                                                        selectedCourse?.materials.filter(
-                                                            (material: any) =>
-                                                                material.id ===
-                                                                editMaterialId
-                                                        )[0]
-                                                    }
-                                                />
+                                                {selectedCourse?.materials && (
+                                                    <EditMaterial
+                                                        handleClosePopup={
+                                                            handleCloseEditPopup
+                                                        }
+                                                        material={
+                                                            selectedCourse?.materials?.filter(
+                                                                (
+                                                                    material: CourseMaterialsWithFile
+                                                                ) =>
+                                                                    material.id.toString() ===
+                                                                    editMaterialId
+                                                            )[0]
+                                                        }
+                                                    />
+                                                )}
                                             </div>
                                         </div>
                                     </div>

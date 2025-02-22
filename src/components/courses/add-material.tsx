@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import TabsMenu from "../shared/tabs-menu";
@@ -11,17 +11,22 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { useParams } from "next/navigation";
+import { CourseFull } from "@/db/schema/course";
+import { CourseMaterialsWithFile } from "@/db/schema/courseMaterials";
 
 const activities = ["Simple Arithmetic", "Reading Aloud", "Physical Exercise"];
 const difficulties = ["Basic", "Intermediate"];
 type Errors = {
-    title: string;
-    exerciseType: string;
-    exerciseDifficulty: string;
-    description: string;
+    title?: string;
+    exerciseType?: string;
+    exerciseDifficulty?: string;
+    description?: string;
 };
 
-export default function AddMaterial(props: { handleClosePopup: () => void }) {
+export default function AddMaterial(props: {
+    handleClosePopup: () => void;
+    setSelectedCourse: Dispatch<SetStateAction<CourseFull | undefined>>;
+}) {
     const courseId = useParams().id;
     const [selectedActivity, setSelectedActivity] = useState<string>(
         activities[0]
@@ -31,12 +36,7 @@ export default function AddMaterial(props: { handleClosePopup: () => void }) {
     );
     const [title, setTitle] = useState<string>("");
     const [description, setDescription] = useState<string>("");
-    const [errors, setErrors] = useState<Errors>({
-        title: "",
-        exerciseType: "",
-        exerciseDifficulty: "",
-        description: "",
-    });
+    const [errors, setErrors] = useState<Errors>({});
 
     const handleActivitySelect = (activity: string) => {
         setSelectedActivity(activity);
@@ -47,12 +47,7 @@ export default function AddMaterial(props: { handleClosePopup: () => void }) {
     };
 
     const validateForm = () => {
-        const newErrors: Errors = {
-            title: "",
-            exerciseType: "",
-            exerciseDifficulty: "",
-            description: "",
-        };
+        const newErrors: Errors = {};
 
         if (!title) newErrors.title = "Title is required.";
         if (!description) newErrors.description = "Description is required.";
@@ -62,16 +57,14 @@ export default function AddMaterial(props: { handleClosePopup: () => void }) {
             newErrors.exerciseDifficulty = "Please select a difficulty.";
 
         setErrors(newErrors);
-        return Object.keys(newErrors).length === 0; // If no errors, form is valid
+        return Object.keys(newErrors).length === 0;
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-
         if (!validateForm()) {
-            return; // Stop form submission if validation fails
+            return;
         }
-
         const data = {
             title,
             exerciseType: selectedActivity,
@@ -91,6 +84,25 @@ export default function AddMaterial(props: { handleClosePopup: () => void }) {
 
             if (response.ok) {
                 console.log("Course material added successfully!");
+                const responseData = await response.json();
+                console.log(responseData.data);
+                const newMaterial: CourseMaterialsWithFile = responseData.data;
+                props.setSelectedCourse(
+                    (prevSelectedCourse: CourseFull | undefined) => {
+                        console.log("D", newMaterial);
+                        if (prevSelectedCourse) {
+                            return {
+                                ...prevSelectedCourse,
+                                materials: [
+                                    ...(prevSelectedCourse.materials || []),
+                                    newMaterial,
+                                ] as CourseMaterialsWithFile[],
+                            };
+                        } else {
+                            return undefined;
+                        }
+                    }
+                );
                 props.handleClosePopup();
             } else {
                 console.log("Failed to add course material");
@@ -235,7 +247,7 @@ export default function AddMaterial(props: { handleClosePopup: () => void }) {
                         </div>
                         <div className="w-full flex flex-row gap-2 mt-4">
                             <Button
-                                type="submit"
+                                onClick={handleSubmit}
                                 className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold text-xl py-2 md:py-4"
                             >
                                 Save
