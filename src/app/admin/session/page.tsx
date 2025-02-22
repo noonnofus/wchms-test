@@ -29,6 +29,7 @@ export default function SessionsPage() {
                         <AddSession
                             handleClosePopup={handleClosePopup}
                             courseId={1} // would have to send in body.courseId when in place
+                            sessionId={5}
                         />
                     </div>
                 </div>

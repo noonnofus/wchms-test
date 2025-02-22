@@ -15,6 +15,13 @@
       "when": 1740074931248,
       "tag": "0001_wide_rattler",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1740256059157,
+      "tag": "0002_bumpy_peter_parker",
+      "breakpoints": true
     }
   ]
 }

@@ -23,6 +23,14 @@ export async function PUT(req: Request) {
             );
         }
 
+        const sessionId = Number(body.sessionId);
+        if (isNaN(sessionId)) {
+            return new Response(
+                JSON.stringify({ error: "Invalid session ID" }),
+                { status: 400 }
+            );
+        }
+
         const validStatuses = ["Draft", "Available", "Completed", "Archived"];
         if (!validStatuses.includes(body.status)) {
             return new Response(
@@ -60,7 +68,7 @@ export async function PUT(req: Request) {
         const session = await db
             .select()
             .from(Sessions)
-            .where(eq(Sessions.id, body.sessionId))
+            .where(eq(Sessions.id, sessionId))
             .then((res) => res[0]);
 
         if (!session) {
@@ -78,14 +86,25 @@ export async function PUT(req: Request) {
             );
         }
 
+        const today = new Date();
+        if (sessionDate < today) {
+            return new Response(
+                JSON.stringify({
+                    error: "Cannot update session to a past date",
+                }),
+                { status: 400 }
+            );
+        }
+
+        console.log(body);
         await db
             .update(Sessions)
             .set({
                 courseId: body.courseId,
                 instructorId: body.instructorId,
-                date: sessionDate,
-                startTime: body.startTime,
-                endTime: body.endTime || body.startTime,
+                date: new Date(body.date),
+                startTime: new Date(body.startTime),
+                endTime: new Date(body.endTime),
                 status: body.status,
             })
             .where(eq(Sessions.id, body.sessionId));
@@ -93,16 +112,11 @@ export async function PUT(req: Request) {
         const updatedSession = await db
             .select()
             .from(Sessions)
-            .where(eq(Sessions.id, body.sessionId))
-            .then((res) => res[0]);
+            .where(eq(Sessions.id, sessionId));
 
-        return new Response(
-            JSON.stringify({
-                message: "Session updated successfully",
-                session: updatedSession,
-            }),
-            { status: 200 }
-        );
+        return new Response(JSON.stringify({ session: updatedSession }), {
+            status: 200,
+        });
     } catch (error) {
         console.error("Error processing request:", error);
         return new Response(

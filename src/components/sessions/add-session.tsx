@@ -6,6 +6,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+import { getSessionById } from "@/db/queries/sessions";
 import { Clock } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -30,7 +31,6 @@ export default function AddSession(props: Props) {
             try {
                 const response = await fetch("/api/admin/instructor");
                 const data = await response.json();
-                console.log(data);
                 setInstructors(data);
             } catch (error) {
                 console.error("Error fetching instructors:", error);
@@ -45,24 +45,24 @@ export default function AddSession(props: Props) {
         if (props.sessionId) {
             const fetchSession = async () => {
                 try {
-                    const response = await fetch(
-                        `/api/sessions/${props.sessionId}`
-                    );
-                    const session = await response.json();
+                    if (props.sessionId !== undefined) {
+                        const response = await getSessionById(props.sessionId);
 
-                    const sessionDate = new Date(session.date);
-                    const startTime = new Date(session.startTime);
-                    const endTime = new Date(session.endTime);
+                        const sessionDate = new Date(response.date);
+                        const startTime = new Date(response.startTime);
+                        const endTime = new Date(response.endTime);
 
-                    setFormData({
-                        sessionId: session.id,
-                        courseId: session.courseId,
-                        instructorId: session.instructorId?.toString(),
-                        date: sessionDate,
-                        startTime: startTime.toTimeString().slice(0, 5),
-                        endTime: endTime.toTimeString().slice(0, 5),
-                        status: session.status,
-                    });
+                        setFormData({
+                            sessionId: response.id,
+                            courseId: response.courseId,
+                            instructorId:
+                                response.instructorId?.toString() || "",
+                            date: sessionDate,
+                            startTime: startTime.toTimeString().slice(0, 5),
+                            endTime: endTime.toTimeString().slice(0, 5),
+                            status: response.status,
+                        });
+                    }
                 } catch (error) {
                     console.error("Error fetching session data:", error);
                 }

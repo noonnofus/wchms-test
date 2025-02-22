@@ -1,5 +1,6 @@
 "use server";
 import db from "@/db";
+import { eq } from "drizzle-orm";
 import { Sessions } from "../schema/session";
 
 export async function addSession(
@@ -30,5 +31,19 @@ export async function addSession(
     } catch (error) {
         console.error("Error creating session:", error);
         throw new Error("Error creating session");
+    }
+}
+
+export async function getSessionById(sessionId: number) {
+    try {
+        const session = await db
+            .select()
+            .from(Sessions)
+            .where(eq(Sessions.id, sessionId))
+            .then((res) => res[0] || null);
+        return session;
+    } catch (error) {
+        console.error("Error fetching session:", error);
+        throw new Error("Error fetching session");
     }
 }
