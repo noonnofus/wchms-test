@@ -1,6 +1,5 @@
 import { int, mysqlEnum, mysqlTable, timestamp } from "drizzle-orm/mysql-core";
 import { Courses } from "./course";
-import { rooms } from "./room";
 import { users } from "./users";
 
 export const Sessions = mysqlTable("sessions", {
@@ -14,7 +13,7 @@ export const Sessions = mysqlTable("sessions", {
     date: timestamp("date").notNull(),
     startTime: timestamp("start").notNull(),
     endTime: timestamp("en").notNull(),
-    roomId: int("room_id").references(() => rooms.id, { onDelete: "set null" }),
+    // roomId: int("room_id").references(() => rooms.id, { onDelete: "set null" }),
     status: mysqlEnum("status", [
         "Draft",
         "Available",

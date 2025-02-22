@@ -23,7 +23,6 @@ export async function addSession(
             date: new Date(date),
             startTime: new Date(startTime),
             endTime: endTime ? new Date(endTime) : new Date(startTime),
-            roomId: roomId ?? 0,
             status,
         });
 

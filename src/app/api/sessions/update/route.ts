@@ -86,7 +86,6 @@ export async function PUT(req: Request) {
                 date: sessionDate,
                 startTime: body.startTime,
                 endTime: body.endTime || body.startTime,
-                roomId: body.roomId || null,
                 status: body.status,
             })
             .where(eq(Sessions.id, body.sessionId));

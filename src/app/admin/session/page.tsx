@@ -26,7 +26,10 @@ export default function SessionsPage() {
                         onClick={handleClosePopup}
                     ></div>
                     <div className="relative z-20 flex flex-col items-center bg-white rounded-lg overflow-y-auto w-full mx-4 max-h-[90vh]">
-                        <AddSession handleClosePopup={handleClosePopup} />
+                        <AddSession
+                            handleClosePopup={handleClosePopup}
+                            courseId={1} // would have to send in body.courseId when in place
+                        />
                     </div>
                 </div>
             )}

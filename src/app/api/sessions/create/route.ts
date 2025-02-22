@@ -1,8 +1,8 @@
 import db from "@/db";
-import { eq } from "drizzle-orm";
+import { addSession } from "@/db/queries/sessions";
 import { Courses } from "@/db/schema/course";
 import { users } from "@/db/schema/users";
-import { addSession } from "@/db/queries/sessions";
+import { eq } from "drizzle-orm";
 
 // TODO: secure route for admins only
 export async function POST(req: Request) {
@@ -22,18 +22,18 @@ export async function POST(req: Request) {
             );
         }
 
-        const startDate = new Date(body.courseStartDate);
-        const endDate = new Date(body.courseEndDate);
+        const today = new Date();
+        const startDate = new Date(body.date);
 
-        if (endDate <= startDate) {
+        if (startDate <= today) {
             return new Response(
                 JSON.stringify({
-                    error: "End date must be after the start date",
+                    error: "Cannot create a session in the past",
                 }),
                 { status: 400 }
             );
         }
-        if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+        if (isNaN(startDate.getTime()) || isNaN(today.getTime())) {
             return new Response(
                 JSON.stringify({
                     error: "Invalid date format",
@@ -49,10 +49,9 @@ export async function POST(req: Request) {
             .then((res) => res[0]);
 
         if (!course) {
-            return new Response(
-                JSON.stringify({ error: "No Course Id" }),
-                { status: 400 }
-            );
+            return new Response(JSON.stringify({ error: "No Course Id" }), {
+                status: 400,
+            });
         }
 
         const instructor = await db
@@ -62,10 +61,9 @@ export async function POST(req: Request) {
             .then((res) => res[0]);
 
         if (!instructor) {
-            return new Response(
-                JSON.stringify({ error: "No Instructor Id" }),
-                { status: 400 }
-            );
+            return new Response(JSON.stringify({ error: "No Instructor Id" }), {
+                status: 400,
+            });
         }
 
         const session = await addSession(

@@ -7,7 +7,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Clock } from "lucide-react";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { DatePicker } from "../ui/date-picker";
@@ -16,12 +16,11 @@ export const statuses = ["Draft", "Available", "Completed", "Archived"];
 
 interface Props {
     handleClosePopup: () => void;
-    courseId?: number;
+    courseId: number;
     sessionId?: number;
 }
 
 export default function AddSession(props: Props) {
-    const path = usePathname();
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
     const [instructors, setInstructors] = useState([]);
@@ -31,6 +30,7 @@ export default function AddSession(props: Props) {
             try {
                 const response = await fetch("/api/admin/instructor");
                 const data = await response.json();
+                console.log(data);
                 setInstructors(data);
             } catch (error) {
                 console.error("Error fetching instructors:", error);
@@ -106,6 +106,20 @@ export default function AddSession(props: Props) {
     };
 
     const handleDateChange = (name: string, date: Date | undefined) => {
+        if (date) {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            if (date < today) {
+                setErrors((prev) => ({
+                    ...prev,
+                    date: "Session date cannot be in the past",
+                }));
+                return;
+            }
+        }
+
+        setErrors((prev) => ({ ...prev, date: "" }));
         setFormData({
             ...formData,
             [name]: date,
@@ -115,6 +129,8 @@ export default function AddSession(props: Props) {
     const validateForm = () => {
         let isValid = true;
         let errorMessages: any = {};
+        const now = new Date();
+        now.setSeconds(0, 0);
 
         if (!formData.instructorId) {
             errorMessages.instructorId = "Instructor is required";
@@ -124,6 +140,13 @@ export default function AddSession(props: Props) {
         if (!formData.date) {
             errorMessages.date = "Date is required";
             isValid = false;
+        } else {
+            const sessionDate = new Date(formData.date);
+            sessionDate.setHours(0, 0, 0, 0);
+            if (sessionDate.getTime() < now.getTime()) {
+                errorMessages.date = "Session date cannot be in the past";
+                isValid = false;
+            }
         }
 
         if (!formData.startTime) {
@@ -134,6 +157,36 @@ export default function AddSession(props: Props) {
         if (!formData.endTime) {
             errorMessages.endTime = "End time is required";
             isValid = false;
+        }
+
+        if (formData.date && formData.startTime && formData.endTime) {
+            const sessionDate = new Date(formData.date);
+            const [startHours, startMinutes] = formData.startTime.split(":");
+            const [endHours, endMinutes] = formData.endTime.split(":");
+
+            const startTime = new Date(sessionDate);
+            startTime.setHours(
+                parseInt(startHours),
+                parseInt(startMinutes),
+                0,
+                0
+            );
+
+            const endTime = new Date(sessionDate);
+            endTime.setHours(parseInt(endHours), parseInt(endMinutes), 0, 0);
+
+            if (
+                startTime < now &&
+                sessionDate.toDateString() === now.toDateString()
+            ) {
+                errorMessages.startTime = "Start time cannot be in the past";
+                isValid = false;
+            }
+
+            if (endTime <= startTime) {
+                errorMessages.endTime = "End time must be after start time";
+                isValid = false;
+            }
         }
 
         if (!statuses.includes(formData.status)) {
@@ -289,7 +342,7 @@ export default function AddSession(props: Props) {
                                     key={instructor.id}
                                     value={String(instructor.id)}
                                 >
-                                    {instructor.name}
+                                    {instructor.firstName}
                                 </SelectItem>
                             ))}
                         </SelectContent>
