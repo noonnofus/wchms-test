@@ -33,39 +33,14 @@ export default function AdminCourses() {
             try {
                 const course = await getCourseById(
                     parseInt(id as string),
-                    false,
+                    true,
                     true
                 );
-                //TODO: update to be dynamic class materials and dynamic participants
+                //TODO: update to be dynamic class materials
                 if (course) {
                     setSelectedCourse({
                         ...course,
-                        participants: [
-                            {
-                                id: "1",
-                                firstName: "Annabelle",
-                                lastName: "Chen",
-                                city: "Vancouver",
-                            },
-                            {
-                                id: "2",
-                                firstName: "Kevin",
-                                lastName: "So",
-                                city: "Vancouver",
-                            },
-                            {
-                                id: "3",
-                                firstName: "Armaan",
-                                lastName: "Brar",
-                                city: "Surrey",
-                            },
-                            {
-                                id: "4",
-                                firstName: "Angus",
-                                lastName: "Ng",
-                                city: "Vancouver",
-                            },
-                        ],
+                        participants: course.participants || [],
                     });
                 }
             } catch (error) {
