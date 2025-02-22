@@ -27,7 +27,8 @@ export async function getAvailableCourses() {
                 description: coursesTable.description,
             })
             .from(coursesTable)
-            .where(eq(coursesTable.status, "Available"));
+            .where(eq(coursesTable.status, "Available"))
+            .orderBy(desc(coursesTable.id));
 
         const userCourses = await db
             .select({
@@ -197,7 +198,8 @@ export async function getCourseById(
                     uploadMedia,
                     eq(courseMaterials.uploadId, uploadMedia.id)
                 )
-                .where(eq(courseMaterials.courseId, courseId));
+                .where(eq(courseMaterials.courseId, courseId))
+                .orderBy(desc(courseMaterials.createdAt));
 
             course = {
                 ...course,

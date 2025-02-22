@@ -5,61 +5,31 @@ import CourseDetailsCard from "@/components/courses/course-details-card";
 import MaterialCard from "@/components/shared/material-card";
 import { useEffect, useState } from "react";
 import { getCourseById } from "@/db/queries/courses";
+import { CourseFull } from "@/db/schema/course";
 
 export default function Home() {
     const { id } = useParams();
     const [isLoading, setIsLoading] = useState(true);
-    const [selectedCourse, setSelectedCourse] = useState<any>({}); //TODO: update type, include materials and participant types
+    const [selectedCourse, setSelectedCourse] = useState<
+        CourseFull | undefined
+    >(undefined); //TODO: update type, include materials and participant types
     useEffect(() => {
         const fetchCourses = async () => {
             try {
-                const course = await getCourseById(parseInt(id as string));
+                const course = await getCourseById(
+                    parseInt(id as string),
+                    false,
+                    true
+                );
                 //TODO: update to be dynamic class materials and dynamic participants
-                setSelectedCourse({
-                    ...course[0],
-                    // materials: [
-                    //     {
-                    //         id: "4",
-                    //         type: "Simple Arithmetic" as const,
-                    //         difficulty: "Basic" as const,
-                    //         title: "Week 4: Just a file",
-                    //         content: null,
-                    //         createdAt: new Date(1738859550),
-                    //         file: "Week4.pdf",
-                    //     },
-                    //     {
-                    //         id: "3",
-                    //         type: "Physical Exercise" as const,
-                    //         difficulty: "Basic" as const,
-                    //         title: "Week 3",
-                    //         content: "No review materials this week",
-                    //         createdAt: new Date(1738859550),
-                    //         file: null,
-                    //     },
-                    //     {
-                    //         id: "2",
-                    //         type: "Reading Aloud" as const,
-                    //         difficulty: "Intermediate" as const,
-                    //         title: "Week 2",
-                    //         content:
-                    //             "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam id enim eget sem maximus accumsan. Pellentesque id varius mi, non sollicitudin orci. Donec eu condimentum justo. Donec vel sapien arcu. Quisque dapibus ligula non imperdiet malesuada.",
-                    //         createdAt: new Date(1738859545),
-                    //         file: "Week2.pdf",
-                    //     },
-                    //     {
-                    //         id: "1",
-                    //         type: "Reading Aloud" as const,
-                    //         difficulty: "Intermediate" as const,
-                    //         title: "Week 1: A really long title to see how it would look with multiple lines",
-                    //         content: "Some description",
-                    //         createdAt: new Date(1738859540),
-                    //         file: "Week1.pdf",
-                    //     },
-                    // ],
-                });
+                if (course) {
+                    setSelectedCourse({
+                        ...course,
+                    });
+                }
             } catch (error) {
                 console.error("Error fetching courses", error);
-                setSelectedCourse([]);
+                setSelectedCourse(undefined);
             } finally {
                 setIsLoading(false);
             }
@@ -84,7 +54,7 @@ export default function Home() {
                         ) : (
                             <CourseDetailsCard //TODO: Pass Zoom link
                                 name={selectedCourse.title}
-                                description={selectedCourse?.description}
+                                description={selectedCourse?.description || ""}
                                 variant="client"
                             />
                         )}
