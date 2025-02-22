@@ -6,11 +6,11 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+import { Clock } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { DatePicker } from "../ui/date-picker";
-import { Input } from "../ui/input";
 
 export const statuses = ["Draft", "Available", "Completed", "Archived"];
 
@@ -29,7 +29,7 @@ export default function AddSession(props: Props) {
     useEffect(() => {
         const fetchInstructors = async () => {
             try {
-                const response = await fetch("/api/instructors");
+                const response = await fetch("/api/admin/instructor");
                 const data = await response.json();
                 setInstructors(data);
             } catch (error) {
@@ -315,13 +315,31 @@ export default function AddSession(props: Props) {
                                 {errors.startTime}
                             </p>
                         )}
-                        <Input
-                            id="startTime"
-                            name="startTime"
-                            type="time"
+                        <Select
                             value={formData.startTime}
-                            onChange={handleChange}
-                        />
+                            onValueChange={(value) =>
+                                handleSelectChange("startTime", value)
+                            }
+                        >
+                            <SelectTrigger className="w-full">
+                                <div className="flex items-center gap-2">
+                                    <Clock className="h-4 w-4" />
+                                    <SelectValue placeholder="Select start time" />
+                                </div>
+                            </SelectTrigger>
+                            <SelectContent>
+                                {Array.from({ length: 48 }, (_, i) => {
+                                    const hour = Math.floor(i / 2);
+                                    const minute = i % 2 === 0 ? "00" : "30";
+                                    const time = `${hour.toString().padStart(2, "0")}:${minute}`;
+                                    return (
+                                        <SelectItem key={time} value={time}>
+                                            {time}
+                                        </SelectItem>
+                                    );
+                                })}
+                            </SelectContent>
+                        </Select>
                     </div>
                     <div className="flex flex-col flex-1 gap-2">
                         <label htmlFor="endTime">End Time</label>
@@ -330,13 +348,31 @@ export default function AddSession(props: Props) {
                                 {errors.endTime}
                             </p>
                         )}
-                        <Input
-                            id="endTime"
-                            name="endTime"
-                            type="time"
+                        <Select
                             value={formData.endTime}
-                            onChange={handleChange}
-                        />
+                            onValueChange={(value) =>
+                                handleSelectChange("endTime", value)
+                            }
+                        >
+                            <SelectTrigger className="w-full">
+                                <div className="flex items-center gap-2">
+                                    <Clock className="h-4 w-4" />
+                                    <SelectValue placeholder="Select end time" />
+                                </div>
+                            </SelectTrigger>
+                            <SelectContent>
+                                {Array.from({ length: 48 }, (_, i) => {
+                                    const hour = Math.floor(i / 2);
+                                    const minute = i % 2 === 0 ? "00" : "30";
+                                    const time = `${hour.toString().padStart(2, "0")}:${minute}`;
+                                    return (
+                                        <SelectItem key={time} value={time}>
+                                            {time}
+                                        </SelectItem>
+                                    );
+                                })}
+                            </SelectContent>
+                        </Select>
                     </div>
                 </div>
 
