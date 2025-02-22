@@ -71,7 +71,7 @@ export default function AddAdmin({
             newErrors.dateOfBirth = "Date of birth is required";
             valid = false;
         }
-        if (!password.trim() || /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(password)) {
+        if (!password.trim() || !/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(password)) {
             newErrors.password = "Password must be at least 8 characters long and include at least one uppercase letter, one number, and one special character.";
             valid = false;
         }

@@ -127,7 +127,7 @@ export default function ManageParticipant() {
 
     return (
         <div>
-            <div className="flex flex-col gap-10 w-full items-center">
+            <div className="flex flex-col gap-10 w-full items-center min-h-screen">
                 <h1 className="font-semibold text-4xl text-center">Manage</h1>
                 {showEditPopup && participantToEdit && (
                     <div className="fixed inset-0 flex items-end md:items-center justify-center z-10 overflow-y-auto">
@@ -223,14 +223,14 @@ export default function ManageParticipant() {
                         </div>
                     </CardHeader>
                     <CardContent className="w-full flex-grow overflow-auto">
-                        <Table className="w-full">
+                        <Table className="table-fixed w-full border-collapse">
                             <TableHeader>
-                                <TableRow className="grid grid-cols-[auto_auto_1fr_auto_auto] text-base md:text-xl font-semibold items-center">
-                                    <TableHead className="flex items-center gap-2 text-left text-black">
+                                <TableRow className="flex w-full text-base md:text-xl font-semibold">
+                                    <TableHead className="w-[300px] min-w-[200px] text-left">
                                         Participant
                                         <button
                                             onClick={handleSortChange}
-                                            className="flex items-center"
+                                            className="ml-2"
                                         >
                                             {sortOrder === "asc" ? (
                                                 <ChevronDownIcon className="text-primary-green" />
@@ -239,14 +239,14 @@ export default function ManageParticipant() {
                                             )}
                                         </button>
                                     </TableHead>
-                                    <TableHead className="flex items-center gap-2 text-left text-black">
+                                    <TableHead className="w-[250px] min-w-[120px] text-left">
                                         Course Assigned
                                     </TableHead>
                                     <TableCell className="flex-1"></TableCell>
-                                    <TableHead className="text-center text-black">
+                                    <TableHead className="w-[100px] min-w-[80px] text-center">
                                         Delete
                                     </TableHead>
-                                    <TableHead className="text-center text-black">
+                                    <TableHead className="w-[100px] min-w-[80px] text-center">
                                         Edit
                                     </TableHead>
                                 </TableRow>
@@ -254,75 +254,72 @@ export default function ManageParticipant() {
                             <TableBody>
                                 {isLoading
                                     ? [...Array(3)].map((_, index) => (
-                                          <TableRow
-                                              className="grid grid-cols-[auto_auto_1fr_auto_auto] items-center"
-                                              key={index}
-                                          >
-                                              <TableCell className="flex items-center gap-4 text-left text-base md:text-lg">
-                                                  <Skeleton className="hidden md:flex md:w-10 md:h-10 rounded-full" />
-                                                  <Skeleton className="h-4 w-24 rounded" />
-                                              </TableCell>
-                                              <TableCell>
-                                                  <Skeleton className="h-4 w-40 rounded" />
-                                              </TableCell>
-                                              <TableCell className="flex-1"></TableCell>
-                                              <TableCell className="flex justify-center items-center">
-                                                  <Skeleton className="h-6 w-6 rounded" />
-                                              </TableCell>
-                                              <TableCell className="flex justify-center items-center">
-                                                  <Skeleton className="h-6 w-6 rounded" />
-                                              </TableCell>
-                                          </TableRow>
-                                      ))
+                                        <TableRow className="flex w-full items-center" key={index}>
+                                            <TableCell className="w-[300px] min-w-[250px] flex items-center gap-4 text-left text-base md:text-lg">
+                                                <Skeleton className="hidden md:flex md:w-10 md:h-10 rounded-full" />
+                                                <Skeleton className="h-4 w-24 rounded" />
+                                            </TableCell>
+                                            <TableCell className="w-[200px] min-w-[120px]">
+                                                <Skeleton className="h-4 w-40 rounded" />
+                                            </TableCell>
+                                            <TableCell className="flex-1"></TableCell>
+                                            <TableCell className="w-[100px] min-w-[80px] flex justify-center items-center">
+                                                <Skeleton className="h-6 w-6 rounded" />
+                                            </TableCell>
+                                            <TableCell className="w-[100px] min-w-[80px] flex justify-center items-center">
+                                                <Skeleton className="h-6 w-6 rounded" />
+                                            </TableCell>
+                                        </TableRow>
+                                    ))
                                     : filteredParticipants.map(
-                                          (
-                                              participantCourse: ParticipantCourse
-                                          ) => {
-                                              return (
-                                                  <TableRow
-                                                      className="grid grid-cols-[auto_auto_1fr_auto_auto] items-center"
-                                                      key={
-                                                          participantCourse
-                                                              .participant.id
-                                                      }
-                                                  >
-                                                      <TableCell className="flex items-center gap-4 text-left text-base md:text-lg">
-                                                          <div className="hidden md:flex md:w-10 md:h-10 rounded-full bg-gray-200 items-center justify-center">
-                                                              {`${participantCourse.participant.firstName[0]}${participantCourse.participant.lastName[0]}`}
-                                                          </div>
-                                                          {`${participantCourse.participant.firstName} ${participantCourse.participant.lastName}`}
-                                                      </TableCell>
-                                                      <TableCell className="flex items-center gap-2 text-left text-base md:text-lg">
-                                                          {participantCourse.course ??
-                                                              "none"}
-                                                      </TableCell>
-                                                      <TableCell className="flex-1"></TableCell>
-                                                      <TableCell className="flex justify-center items-center">
-                                                          <button
-                                                              onClick={() => {
-                                                                  handleDeleteButtonClick(
-                                                                      participantCourse.participant
-                                                                  );
-                                                              }}
-                                                          >
-                                                              <DeleteIcon className="inline-flex text-center" />
-                                                          </button>
-                                                      </TableCell>
-                                                      <TableCell className="flex justify-center items-center">
-                                                          <button
-                                                              onClick={() => {
-                                                                  handleEditButtonClick(
-                                                                      participantCourse.participant
-                                                                  );
-                                                              }}
-                                                          >
-                                                              <Settings className="inline-flex text-center" />
-                                                          </button>
-                                                      </TableCell>
-                                                  </TableRow>
-                                              );
-                                          }
-                                      )}
+                                        (
+                                            participantCourse: ParticipantCourse
+                                        ) => {
+                                            return (
+                                                <TableRow
+                                                    className="flex w-full items-center"
+                                                    key={
+                                                        participantCourse
+                                                            .participant.id
+                                                    }
+                                                >
+                                                    <TableCell className="w-[300px] min-w-[200px] flex items-center gap-4 text-left text-base md:text-lg">
+                                                        <div className="hidden md:flex md:w-10 md:h-10 rounded-full bg-gray-200 items-center justify-center">
+                                                            {`${participantCourse.participant.firstName[0]}${participantCourse.participant.lastName[0]}`}
+                                                        </div>
+                                                        {`${participantCourse.participant.firstName} ${participantCourse.participant.lastName}`}
+                                                    </TableCell>
+                                                    <TableCell className="w-[250px] min-w-[120px] text-left text-base md:text-lg">
+                                                        {participantCourse.course ??
+                                                            "none"}
+                                                    </TableCell>
+                                                    <TableCell className="flex-1"></TableCell>
+                                                    <TableCell className="w-[100px] min-w-[80px] flex justify-center items-center">
+                                                        <button
+                                                            onClick={() => {
+                                                                handleDeleteButtonClick(
+                                                                    participantCourse.participant
+                                                                );
+                                                            }}
+                                                        >
+                                                            <DeleteIcon className="inline-flex text-center" />
+                                                        </button>
+                                                    </TableCell>
+                                                    <TableCell className="w-[100px] min-w-[80px] flex justify-center items-center">
+                                                        <button
+                                                            onClick={() => {
+                                                                handleEditButtonClick(
+                                                                    participantCourse.participant
+                                                                );
+                                                            }}
+                                                        >
+                                                            <Settings className="inline-flex text-center" />
+                                                        </button>
+                                                    </TableCell>
+                                                </TableRow>
+                                            );
+                                        }
+                                    )}
                             </TableBody>
                         </Table>
                     </CardContent>
