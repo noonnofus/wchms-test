@@ -64,22 +64,22 @@ export default function AddCourse(props: props) {
         if (props.courseId) {
             const fetchCourse = async () => {
                 try {
-                    const course = await getCourseById(props.courseId!).then(
-                        (res) => res[0]
-                    );
-                    setFormData({
-                        ...formData,
-                        courseId: course.id,
-                        courseName: course.title,
-                        courseDescription: course.description || "",
-                        courseStartDate: new Date(course.start),
-                        courseEndDate: new Date(course.end!),
-                        courseRoom: course.roomId?.toString(),
-                        courseLanguage: course.lang,
-                        courseType: course.kind,
-                        courseStatus: course.status,
-                        uploadId: course.uploadId?.toString() || null,
-                    });
+                    const course = await getCourseById(props.courseId!);
+                    if (course) {
+                        setFormData({
+                            ...formData,
+                            courseId: course.id,
+                            courseName: course.title,
+                            courseDescription: course.description || "",
+                            courseStartDate: new Date(course.start),
+                            courseEndDate: new Date(course.end!),
+                            courseRoom: course.roomId?.toString(),
+                            courseLanguage: course.lang,
+                            courseType: course.kind,
+                            courseStatus: course.status,
+                            uploadId: course.uploadId?.toString() || null,
+                        });
+                    }
                 } catch (error) {
                     console.error("Error fetching course data:", error);
                 }
