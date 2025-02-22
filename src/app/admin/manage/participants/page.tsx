@@ -45,7 +45,6 @@ export default function ManageParticipant() {
         fetch("/api/participants")
             .then((res) => res.json())
             .then((data) => {
-                console.log(data);
                 setParticipants(data);
                 setIsLoading(false);
             })

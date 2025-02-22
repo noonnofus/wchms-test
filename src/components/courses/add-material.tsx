@@ -1,6 +1,8 @@
-"use client";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { Input } from "../ui/input";
+import { Button } from "../ui/button";
+import TabsMenu from "../shared/tabs-menu";
+import { Textarea } from "../ui/textarea";
 import {
     Select,
     SelectContent,
@@ -8,21 +10,33 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { Textarea } from "../ui/textarea";
-import { Button } from "../ui/button";
-import TabsMenu from "../shared/tabs-menu";
-import CloseIcon from "../icons/close-icon";
+import { useParams } from "next/navigation";
+import { CourseFull } from "@/db/schema/course";
+import { CourseMaterialsWithFile } from "@/db/schema/courseMaterials";
 
 const activities = ["Simple Arithmetic", "Reading Aloud", "Physical Exercise"];
 const difficulties = ["Basic", "Intermediate"];
+type Errors = {
+    title?: string;
+    exerciseType?: string;
+    exerciseDifficulty?: string;
+    description?: string;
+};
 
-export default function AddMaterial(props: { handleClosePopup: () => void }) {
+export default function AddMaterial(props: {
+    handleClosePopup: () => void;
+    setSelectedCourse: Dispatch<SetStateAction<CourseFull | undefined>>;
+}) {
+    const courseId = useParams().id;
     const [selectedActivity, setSelectedActivity] = useState<string>(
         activities[0]
     );
     const [selectedDifficulty, setSelectedDifficulty] = useState<string>(
         difficulties[0]
     );
+    const [title, setTitle] = useState<string>("");
+    const [description, setDescription] = useState<string>("");
+    const [errors, setErrors] = useState<Errors>({});
 
     const handleActivitySelect = (activity: string) => {
         setSelectedActivity(activity);
@@ -30,6 +44,70 @@ export default function AddMaterial(props: { handleClosePopup: () => void }) {
 
     const handleDifficultySelect = (difficulty: string) => {
         setSelectedDifficulty(difficulty);
+    };
+
+    const validateForm = () => {
+        const newErrors: Errors = {};
+
+        if (!title) newErrors.title = "Title is required.";
+        if (!description) newErrors.description = "Description is required.";
+        if (!selectedActivity)
+            newErrors.exerciseType = "Please select an activity.";
+        if (!selectedDifficulty)
+            newErrors.exerciseDifficulty = "Please select a difficulty.";
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!validateForm()) {
+            return;
+        }
+        const data = {
+            title,
+            exerciseType: selectedActivity,
+            difficulty: selectedDifficulty,
+            description,
+            courseId,
+        };
+
+        try {
+            const response = await fetch("/api/courses/materials/create", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data),
+            });
+
+            if (response.ok) {
+                console.log("Course material added successfully!");
+                const responseData = await response.json();
+                const newMaterial: CourseMaterialsWithFile = responseData.data;
+                props.setSelectedCourse(
+                    (prevSelectedCourse: CourseFull | undefined) => {
+                        if (prevSelectedCourse) {
+                            return {
+                                ...prevSelectedCourse,
+                                materials: [
+                                    ...(prevSelectedCourse.materials || []),
+                                    newMaterial,
+                                ] as CourseMaterialsWithFile[],
+                            };
+                        } else {
+                            return undefined;
+                        }
+                    }
+                );
+                props.handleClosePopup();
+            } else {
+                console.log("Failed to add course material");
+            }
+        } catch (error) {
+            console.error("Error submitting form", error);
+        }
     };
 
     return (
@@ -42,13 +120,23 @@ export default function AddMaterial(props: { handleClosePopup: () => void }) {
                 leftLabel="Manual"
                 rightLabel="With AI"
                 leftChildren={
-                    <form className="flex flex-col gap-4 md:gap-6 w-full h-full md:text-2xl">
+                    <form
+                        className="flex flex-col gap-4 md:gap-6 w-full h-full md:text-2xl"
+                        onSubmit={handleSubmit}
+                    >
                         <div className="flex flex-col flex-1 gap-2">
                             <label htmlFor="title">Title</label>
+                            {errors.title && (
+                                <p className="text-red-500 text-sm">
+                                    {errors.title}
+                                </p>
+                            )}
                             <Input
                                 id="title"
                                 type="text"
                                 placeholder="ex. Week 1: In-class math activity"
+                                value={title}
+                                onChange={(e) => setTitle(e.target.value)}
                             />
                         </div>
                         <div className="flex flex-col md:flex-row gap-2 items-center w-full">
@@ -56,6 +144,11 @@ export default function AddMaterial(props: { handleClosePopup: () => void }) {
                                 <label htmlFor="exerciseType">
                                     Exercise Type
                                 </label>
+                                {errors.exerciseType && (
+                                    <p className="text-red-500 text-sm">
+                                        {errors.exerciseType}
+                                    </p>
+                                )}
                                 <Select onValueChange={handleActivitySelect}>
                                     <SelectTrigger>
                                         <SelectValue
@@ -79,6 +172,11 @@ export default function AddMaterial(props: { handleClosePopup: () => void }) {
                                 <label htmlFor="exerciseDifficulty">
                                     Exercise Difficulty
                                 </label>
+                                {errors.exerciseDifficulty && (
+                                    <p className="text-red-500 text-sm">
+                                        {errors.exerciseDifficulty}
+                                    </p>
+                                )}
                                 <Select onValueChange={handleDifficultySelect}>
                                     <SelectTrigger>
                                         <SelectValue
@@ -126,31 +224,36 @@ export default function AddMaterial(props: { handleClosePopup: () => void }) {
                                 id="courseMaterial"
                                 className="hidden"
                                 accept="application/pdf, image/*"
-                                onChange={(e) => {
-                                    const file = e.target.files
-                                        ? e.target.files[0]
-                                        : null;
-                                    console.log(file);
-                                }}
-                            ></Input>
+                                onChange={() => {}}
+                            />
                         </div>
                         <div className="flex flex-col flex-1 gap-2">
                             <label htmlFor="ExerciseInstructions">
                                 Exercise Instructions
                             </label>
+                            {errors.description && (
+                                <p className="text-red-500 text-sm">
+                                    {errors.description}
+                                </p>
+                            )}
                             <Textarea
                                 id="ExerciseInstructions"
                                 placeholder="Exercise Instructions (Optional)"
+                                value={description}
+                                onChange={(e) => setDescription(e.target.value)}
                             />
                         </div>
                         <div className="w-full flex flex-row gap-2 mt-4">
-                            <Button className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold md:text-xl py-2 md:py-4">
+                            <Button
+                                onClick={handleSubmit}
+                                className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold text-xl py-2 md:py-4"
+                            >
                                 Save
                             </Button>
                             <Button
                                 onClick={props.handleClosePopup}
                                 variant="outline"
-                                className="w-full h-full rounded-full bg-transparent border-primary-green text-primary-green hover:bg-primary-green hover:text-white font-semibold md:text-xl py-2 md:py-4"
+                                className="w-full h-full rounded-full bg-transparent border-primary-green text-primary-green hover:bg-primary-green hover:text-white font-semibold py-2 md:py-4"
                             >
                                 Cancel
                             </Button>

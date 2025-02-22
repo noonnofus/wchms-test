@@ -2,21 +2,16 @@ import Link from "next/link";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import EditIcon from "../icons/edit-icon";
-
-interface Material {
-    title: string;
-    content: string | null;
-    createdAt: Date;
-    file: string | null;
-}
+import { CourseMaterialsWithFile } from "@/db/schema/courseMaterials";
 
 export default function MaterialCard({
     material,
     handleEditButtonClick,
 }: {
-    material: Material;
+    material: CourseMaterialsWithFile;
     handleEditButtonClick?: () => void;
 }) {
+    //TODO: allow files to be downloaded
     return (
         <div className="flex flex-col items-center">
             <Card className="relative z-0">
@@ -26,15 +21,18 @@ export default function MaterialCard({
                     </CardTitle>
                 </CardHeader>
                 <CardContent className="text-left w-full flex flex-col gap-4">
-                    {material.content && <p>{material.content}</p>}
-                    {material.file && (
+                    {material.description && <p>{material.description}</p>}
+                    {material.uploadId && material.file && (
                         <Button
                             asChild
                             className="bg-primary-green hover:bg-[#045B47] rounded-full text-white w-full font-semibold text-base min-h-[45px]"
                         >
-                            <a href={material.file} download={material.file}>
-                                {/* File type needs to dynamically rendered when files are implemented */}
-                                Download File (PDF)
+                            <a
+                                href={material.file.fileName}
+                                download={material.file.fileName}
+                            >
+                                Download File (.
+                                {material.file?.fileName.split(".").pop()})
                             </a>
                         </Button>
                     )}

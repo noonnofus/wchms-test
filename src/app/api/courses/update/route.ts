@@ -6,7 +6,6 @@ import { rooms } from "@/db/schema/room";
 export async function PUT(req: Request) {
     try {
         const body = await req.json();
-        console.log(body);
         if (
             !body.courseId ||
             !body.courseName ||

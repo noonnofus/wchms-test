@@ -1,4 +1,10 @@
-import { int, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
+import {
+    int,
+    mysqlTable,
+    text,
+    timestamp,
+    varchar,
+} from "drizzle-orm/mysql-core";
 
 export const uploadMedia = mysqlTable("upload_media", {
     id: int("id").primaryKey().autoincrement(),
@@ -10,3 +16,5 @@ export const uploadMedia = mysqlTable("upload_media", {
     originId: int("origin_id").notNull(),
     uploadedAt: timestamp("uploaded_at").defaultNow(),
 });
+
+export type UploadMedia = typeof uploadMedia.$inferSelect;
