@@ -36,7 +36,6 @@ export default function AdminCourses() {
                     false,
                     true
                 );
-                console.log(course);
                 //TODO: update to be dynamic class materials and dynamic participants
                 if (course) {
                     setSelectedCourse({
@@ -312,6 +311,9 @@ export default function AdminCourses() {
                                                                     material.id.toString() ===
                                                                     editMaterialId
                                                             )[0]
+                                                        }
+                                                        setSelectedCourse={
+                                                            setSelectedCourse
                                                         }
                                                     />
                                                 )}

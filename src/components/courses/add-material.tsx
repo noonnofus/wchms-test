@@ -85,11 +85,9 @@ export default function AddMaterial(props: {
             if (response.ok) {
                 console.log("Course material added successfully!");
                 const responseData = await response.json();
-                console.log(responseData.data);
                 const newMaterial: CourseMaterialsWithFile = responseData.data;
                 props.setSelectedCourse(
                     (prevSelectedCourse: CourseFull | undefined) => {
-                        console.log("D", newMaterial);
                         if (prevSelectedCourse) {
                             return {
                                 ...prevSelectedCourse,

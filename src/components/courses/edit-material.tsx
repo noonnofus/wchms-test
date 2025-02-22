@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { Input } from "../ui/input";
 import {
     Select,
@@ -12,6 +12,7 @@ import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
 import CloseIcon from "../icons/close-icon";
 import { CourseMaterialsWithFile } from "@/db/schema/courseMaterials";
+import { CourseFull } from "@/db/schema/course";
 
 const activities = ["Simple Arithmetic", "Reading Aloud", "Physical Exercise"];
 const difficulties = ["Basic", "Intermediate"];
@@ -19,16 +20,23 @@ const difficulties = ["Basic", "Intermediate"];
 export default function EditMaterial({
     handleClosePopup,
     material,
+    setSelectedCourse,
 }: {
     handleClosePopup: () => void;
     material: CourseMaterialsWithFile;
+    setSelectedCourse: Dispatch<SetStateAction<CourseFull | undefined>>;
 }) {
+    const [title, setTitle] = useState<string>(material.title);
     const [selectedActivity, setSelectedActivity] = useState<string>(
         material.type
     );
     const [selectedDifficulty, setSelectedDifficulty] = useState<string>(
         material.difficulty
     );
+    const [description, setDescription] = useState<string>(
+        material.description || ""
+    );
+    const [file, setFile] = useState<File | null>(null);
 
     const handleActivitySelect = (activity: string) => {
         setSelectedActivity(activity);
@@ -38,19 +46,76 @@ export default function EditMaterial({
         setSelectedDifficulty(difficulty);
     };
 
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files ? e.target.files[0] : null;
+        setFile(file);
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        const data = {
+            id: material.id,
+            title,
+            exerciseType: selectedActivity,
+            difficulty: selectedDifficulty,
+            description,
+            uploadId: material.uploadId,
+            courseId: material.courseId,
+        };
+
+        const response = await fetch(`/api/courses/materials/update`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        });
+
+        if (response.ok) {
+            const responseData = await response.json();
+            console.log("Material updated successfully");
+            const updatedMaterial: CourseMaterialsWithFile =
+                responseData.data.updatedMaterial;
+            setSelectedCourse((prevSelectedCourse: CourseFull | undefined) => {
+                if (prevSelectedCourse) {
+                    return {
+                        ...prevSelectedCourse,
+                        materials: prevSelectedCourse.materials
+                            ? prevSelectedCourse.materials.map((material) =>
+                                  material.id === updatedMaterial.id
+                                      ? { ...material, ...updatedMaterial }
+                                      : material
+                              )
+                            : [],
+                    } as CourseFull;
+                } else {
+                    return undefined;
+                }
+            });
+            handleClosePopup();
+        } else {
+            console.error("Failed to update material");
+        }
+    };
+
     return (
         <div className="flex flex-col gap-12 w-full h-full py-8 px-6 rounded-lg bg-white items-center justify-center">
             <h1 className="font-semibold text-3xl md:text-4xl text-center">
                 Edit Course Material
             </h1>
-            <form className="flex flex-col gap-4 md:gap-6 w-full h-full md:text-2xl">
+            <form
+                className="flex flex-col gap-4 md:gap-6 w-full h-full md:text-2xl"
+                onSubmit={handleSubmit}
+            >
                 <div className="flex flex-col flex-1 gap-2">
                     <label htmlFor="title">Title</label>
                     <Input
                         id="title"
                         type="text"
                         placeholder="ex. Week 1: In-class math activity"
-                        defaultValue={material.title}
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
                     />
                 </div>
                 <div className="flex flex-col md:flex-row gap-2 items-center w-full">
@@ -58,10 +123,7 @@ export default function EditMaterial({
                         <label htmlFor="exerciseType">Exercise Type</label>
                         <Select onValueChange={handleActivitySelect}>
                             <SelectTrigger>
-                                <SelectValue
-                                    defaultValue={selectedActivity}
-                                    placeholder={selectedActivity}
-                                />
+                                <SelectValue placeholder={selectedActivity} />
                             </SelectTrigger>
                             <SelectContent>
                                 {activities.map((activity) => (
@@ -78,10 +140,7 @@ export default function EditMaterial({
                         </label>
                         <Select onValueChange={handleDifficultySelect}>
                             <SelectTrigger>
-                                <SelectValue
-                                    defaultValue={selectedDifficulty}
-                                    placeholder={selectedDifficulty}
-                                />
+                                <SelectValue placeholder={selectedDifficulty} />
                             </SelectTrigger>
                             <SelectContent>
                                 {difficulties.map((difficulty) => (
@@ -168,12 +227,7 @@ export default function EditMaterial({
                                 id="courseMaterial"
                                 className="hidden"
                                 accept="application/pdf, image/*"
-                                onChange={(e) => {
-                                    const file = e.target.files
-                                        ? e.target.files[0]
-                                        : null;
-                                    console.log(file);
-                                }}
+                                onChange={handleFileChange}
                             />
                         </>
                     )}
@@ -185,7 +239,8 @@ export default function EditMaterial({
                     <Textarea
                         id="ExerciseInstructions"
                         placeholder="Exercise Instructions (Optional)"
-                        defaultValue={material.description || ""}
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
                     />
                 </div>
                 <div className="w-full flex flex-row gap-2 mt-4">

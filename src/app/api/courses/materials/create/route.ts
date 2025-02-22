@@ -10,7 +10,6 @@ import { eq } from "drizzle-orm";
 export async function POST(req: Request) {
     try {
         const body = await req.json();
-        console.log(body);
         const {
             title,
             exerciseType,
@@ -66,7 +65,8 @@ export async function POST(req: Request) {
             })
             .from(courseMaterials)
             .leftJoin(uploadMedia, eq(courseMaterials.uploadId, uploadMedia.id))
-            .where(eq(courseMaterials.courseId, courseId));
+            .where(eq(courseMaterials.id, newMaterial.id))
+            .then((res) => res[0]);
 
         return new Response(
             JSON.stringify({
