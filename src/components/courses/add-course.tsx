@@ -16,6 +16,7 @@ import { DatePicker } from "../ui/date-picker";
 import ImageUpload from "../ui/image-upload";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
+import CloseIcon from "../icons/close-icon";
 
 const defaultRoomName = "Online via Zoom"; //name of room for default selection
 export const [languages, types, statuses] = [
@@ -296,8 +297,6 @@ export default function AddCourse(props: props) {
             }
         }
 
-        console.log(updatedFormData);
-
         const res = await fetch("/api/courses/update", {
             method: "PUT",
             headers: {
@@ -322,7 +321,7 @@ export default function AddCourse(props: props) {
     };
 
     return (
-        <div className="flex flex-col gap-12 w-full h-full py-8 px-6 rounded-lg bg-white items-center justify-center">
+        <div className="relative flex flex-col gap-12 w-full h-full py-8 px-6 rounded-lg bg-white items-center justify-center overf">
             <h1 className="font-semibold text-3xl md:text-4xl text-center">
                 {props.courseId ? "Edit Course" : "Add New Course"}
             </h1>

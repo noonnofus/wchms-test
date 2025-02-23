@@ -4,104 +4,80 @@ import AddMaterial from "@/components/courses/add-material";
 import CourseDetailsCard from "@/components/courses/course-details-card";
 import EditMaterial from "@/components/courses/edit-material";
 import ParticipantList from "@/components/courses/participant-list";
+import CloseIcon from "@/components/icons/close-icon";
 import MaterialCard from "@/components/shared/material-card";
 import TabsMenu from "@/components/shared/tabs-menu";
 import { Button } from "@/components/ui/button";
 import { getCourseById } from "@/db/queries/courses";
+import { CourseFull } from "@/db/schema/course";
+import { CourseMaterialsWithFile } from "@/db/schema/courseMaterials";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function AdminCourses() {
     const { id } = useParams();
     const [isLoading, setIsLoading] = useState(true);
-    const [selectedCourse, setSelectedCourse] = useState<any>({}); //TODO: update type, include materials and participant types
     const router = useRouter();
+    const [selectedCourse, setSelectedCourse] = useState<
+        CourseFull | undefined
+    >(undefined); //TODO: update type, include materials and participant types
+    const [unaddedParticipants, setUnaddedParticipants] = useState<string[]>(
+        []
+    );
+    const [showUnaddedOverlay, setShowUnaddedOverlay] = useState(false);
+    const [showAddPopup, setShowAddPopup] = useState(false);
+    const [showEditMaterialPopup, setShowEditMaterialPopup] = useState(false);
+    const [editMaterialId, setMaterialId] = useState("");
+    const [showEditCoursePopup, setShowEditCoursePopup] = useState(false);
     useEffect(() => {
         const fetchCourses = async () => {
             try {
-                const course = await getCourseById(parseInt(id as string));
+                const course = await getCourseById(
+                    parseInt(id as string),
+                    false,
+                    true
+                );
                 //TODO: update to be dynamic class materials and dynamic participants
-                setSelectedCourse({
-                    ...course[0],
-                    materials: [
-                        {
-                            id: "4",
-                            type: "Simple Arithmetic" as const,
-                            difficulty: "Basic" as const,
-                            title: "Week 4: Just a file",
-                            content: null,
-                            createdAt: new Date(1738859550),
-                            file: "Week4.pdf",
-                        },
-                        {
-                            id: "3",
-                            type: "Physical Exercise" as const,
-                            difficulty: "Basic" as const,
-                            title: "Week 3",
-                            content: "No review materials this week",
-                            createdAt: new Date(1738859550),
-                            file: null,
-                        },
-                        {
-                            id: "2",
-                            type: "Reading Aloud" as const,
-                            difficulty: "Intermediate" as const,
-                            title: "Week 2",
-                            content:
-                                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam id enim eget sem maximus accumsan. Pellentesque id varius mi, non sollicitudin orci. Donec eu condimentum justo. Donec vel sapien arcu. Quisque dapibus ligula non imperdiet malesuada.",
-                            createdAt: new Date(1738859545),
-                            file: "Week2.pdf",
-                        },
-                        {
-                            id: "1",
-                            type: "Reading Aloud" as const,
-                            difficulty: "Intermediate" as const,
-                            title: "Week 1: A really long title to see how it would look with multiple lines",
-                            content: "Some description",
-                            createdAt: new Date(1738859540),
-                            file: "Week1.pdf",
-                        },
-                    ],
-                    participants: [
-                        {
-                            id: "1",
-                            firstName: "Annabelle",
-                            lastName: "Chen",
-                            city: "Vancouver",
-                        },
-                        {
-                            id: "2",
-                            firstName: "Kevin",
-                            lastName: "So",
-                            city: "Vancouver",
-                        },
-                        {
-                            id: "3",
-                            firstName: "Armaan",
-                            lastName: "Brar",
-                            city: "Surrey",
-                        },
-                        {
-                            id: "4",
-                            firstName: "Angus",
-                            lastName: "Ng",
-                            city: "Vancouver",
-                        },
-                    ],
-                });
+                if (course) {
+                    setSelectedCourse({
+                        ...course,
+                        participants: [
+                            {
+                                id: "1",
+                                firstName: "Annabelle",
+                                lastName: "Chen",
+                                city: "Vancouver",
+                            },
+                            {
+                                id: "2",
+                                firstName: "Kevin",
+                                lastName: "So",
+                                city: "Vancouver",
+                            },
+                            {
+                                id: "3",
+                                firstName: "Armaan",
+                                lastName: "Brar",
+                                city: "Surrey",
+                            },
+                            {
+                                id: "4",
+                                firstName: "Angus",
+                                lastName: "Ng",
+                                city: "Vancouver",
+                            },
+                        ],
+                    });
+                }
             } catch (error) {
                 console.error("Error fetching courses", error);
-                setSelectedCourse([]);
+                setSelectedCourse(undefined);
             } finally {
                 setIsLoading(false);
             }
         };
         fetchCourses();
-    }, []);
-    const [unaddedParticipants, setUnaddedParticipants] = useState<string[]>(
-        []
-    );
-    const [showUnaddedOverlay, setShowUnaddedOverlay] = useState(false);
+    }, [id]);
 
     useEffect(() => {
         const storedData = sessionStorage.getItem("unaddedParticipants");
@@ -119,15 +95,12 @@ export default function AdminCourses() {
         return <div>No course found</div>;
     }
 
-    const [showAddPopup, setShowAddPopup] = useState(false);
     const handleAddButtonClick = () => {
         setShowAddPopup(true);
     };
     const handleClosePopup = () => {
         setShowAddPopup(false);
     };
-    const [showEditMaterialPopup, setShowEditMaterialPopup] = useState(false);
-    const [editMaterialId, setMaterialId] = useState("");
     const handleEditButtonClick = (id: string) => {
         setMaterialId(id);
         setShowEditMaterialPopup(true);
@@ -137,7 +110,6 @@ export default function AdminCourses() {
         setShowEditMaterialPopup(false);
     };
 
-    const [showEditCoursePopup, setShowEditCoursePopup] = useState(false);
     const handleEditCourseButtonClick = () => {
         setShowEditCoursePopup(true);
     };
@@ -161,7 +133,9 @@ export default function AdminCourses() {
                             <div className="flex flex-col gap-4">
                                 <CourseDetailsCard
                                     name={selectedCourse.title}
-                                    description={selectedCourse?.description}
+                                    description={
+                                        selectedCourse?.description || ""
+                                    }
                                     variant="admin"
                                     editAction={handleEditCourseButtonClick}
                                 />
@@ -181,18 +155,33 @@ export default function AdminCourses() {
                             </div>
                         )}
                         {showEditCoursePopup && (
-                            <div className="fixed inset-0 flex items-center justify-center z-30 overflow-y-auto">
+                            <div className="fixed inset-0 flex items-end md:items-center justify-center z-10 overflow-y-auto">
                                 <div
                                     className="absolute inset-0 bg-black opacity-50"
                                     onClick={handleCloseEditCoursePopup}
-                                />
-                                <div className="relative z-20 flex flex-col items-center bg-white rounded-lg overflow-y-auto w-full mx-4 max-h-[90vh]">
-                                    <AddCourse
-                                        handleClosePopup={
-                                            handleCloseEditCoursePopup
-                                        }
-                                        courseId={parseInt(id as string)}
-                                    />
+                                ></div>
+                                <div className="z-30 bg-white rounded-t-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
+                                    <div className="relative w-full">
+                                        <div className="flex justify-center items-center relative p-6">
+                                            <div className="w-1/3 md:hidden border-b-2 border-black"></div>
+                                            <button
+                                                onClick={
+                                                    handleCloseEditCoursePopup
+                                                }
+                                                className="absolute top-3 right-4"
+                                            >
+                                                <CloseIcon />
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div className="overflow-y-auto max-h-[calc(90vh-90px)]">
+                                        <AddCourse
+                                            handleClosePopup={
+                                                handleCloseEditCoursePopup
+                                            }
+                                            courseId={parseInt(id as string)}
+                                        />
+                                    </div>
                                 </div>
                             </div>
                         )}
@@ -207,24 +196,41 @@ export default function AdminCourses() {
                         ) : (
                             <div className="flex flex-col gap-4">
                                 {selectedCourse.materials?.length ? (
-                                    selectedCourse.materials.map((material) => {
-                                        return (
-                                            <MaterialCard
-                                                key={
-                                                    material.title +
-                                                    material.createdAt
-                                                }
-                                                material={material}
-                                                handleEditButtonClick={() =>
-                                                    handleEditButtonClick(
-                                                        material.id
-                                                    )
-                                                }
-                                            />
-                                        );
-                                    })
+                                    selectedCourse.materials.map(
+                                        (material: CourseMaterialsWithFile) => {
+                                            return (
+                                                <MaterialCard
+                                                    key={
+                                                        material.id +
+                                                        material.title
+                                                    }
+                                                    material={material}
+                                                    handleEditButtonClick={() =>
+                                                        handleEditButtonClick(
+                                                            material.id.toString()
+                                                        )
+                                                    }
+                                                />
+                                            );
+                                        }
+                                    )
                                 ) : (
-                                    <p>No course materials available.</p>
+                                    <div className="flex flex-col justify-center items-center py-10 gap-6">
+                                        <p className="text-center text-xl md:text-2xl font-semibold">
+                                            No materials available for this
+                                            course.
+                                        </p>
+                                        <p className="text-center md:text-xl">
+                                            Would you like to create new course
+                                            material?
+                                        </p>
+                                        <button
+                                            onClick={handleAddButtonClick}
+                                            className="px-6 py-2 bg-primary-green text-white rounded-lg"
+                                        >
+                                            Create New Course Material
+                                        </button>
+                                    </div>
                                 )}
                                 <button
                                     onClick={handleAddButtonClick}
@@ -247,40 +253,80 @@ export default function AdminCourses() {
                                     </svg>
                                 </button>
                                 {showAddPopup && (
-                                    <div className="fixed inset-0 flex items-center justify-center z-10">
+                                    <div className="fixed inset-0 flex items-end md:items-center justify-center z-10">
                                         <div
-                                            className="absolute inset-0 bg-black opacity-50 z-10"
+                                            className="absolute inset-0 bg-black opacity-50"
                                             onClick={handleClosePopup}
-                                        />
-                                        <div className="relative z-20 flex flex-col items-center bg-white rounded-lg overflow-y-auto w-full mx-4 max-h-[90vh]">
-                                            <AddMaterial
-                                                handleClosePopup={
-                                                    handleClosePopup
-                                                }
-                                            />
+                                        ></div>
+                                        <div className="z-30 bg-white rounded-t-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
+                                            <div className="relative w-full">
+                                                <div className="flex justify-center items-center relative pt-6">
+                                                    <div className="w-1/3 md:hidden border-b-2 border-black"></div>
+                                                    <button
+                                                        onClick={
+                                                            handleClosePopup
+                                                        }
+                                                        className="absolute top-3 right-4"
+                                                    >
+                                                        <CloseIcon />
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div className="overflow-y-auto max-h-[calc(90vh-90px)]">
+                                                <AddMaterial
+                                                    handleClosePopup={
+                                                        handleClosePopup
+                                                    }
+                                                    setSelectedCourse={
+                                                        setSelectedCourse
+                                                    }
+                                                />
+                                            </div>
                                         </div>
                                     </div>
                                 )}
-                                {showEditMaterialPopup && (
-                                    <div className="fixed inset-0 flex items-center justify-center z-10 overflow-y-auto">
-                                        <div
-                                            className="absolute inset-0 bg-black opacity-50 z-10"
-                                            onClick={handleCloseEditPopup}
-                                        />
 
-                                        <div className="relative z-20 flex flex-col items-center bg-white rounded-lg overflow-y-auto w-full mx-4 max-h-[90vh]">
-                                            <EditMaterial
-                                                handleClosePopup={
-                                                    handleCloseEditPopup
-                                                }
-                                                material={
-                                                    selectedCourse?.materials.filter(
-                                                        (material) =>
-                                                            material.id ===
-                                                            editMaterialId
-                                                    )[0]
-                                                }
-                                            />
+                                {showEditMaterialPopup && (
+                                    <div className="fixed inset-0 flex items-end md:items-center justify-center z-10 overflow-y-auto">
+                                        <div
+                                            className="absolute inset-0 bg-black opacity-50"
+                                            onClick={handleCloseEditPopup}
+                                        ></div>
+                                        <div className="z-30 bg-white rounded-t-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
+                                            <div className="relative w-full">
+                                                <div className="flex justify-center items-center relative pt-6">
+                                                    <div className="w-1/3 md:hidden border-b-2 border-black"></div>
+                                                    <button
+                                                        onClick={
+                                                            handleCloseEditPopup
+                                                        }
+                                                        className="absolute top-3 right-4"
+                                                    >
+                                                        <CloseIcon />
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div className="overflow-y-auto max-h-[calc(90vh-90px)]">
+                                                {selectedCourse?.materials && (
+                                                    <EditMaterial
+                                                        handleClosePopup={
+                                                            handleCloseEditPopup
+                                                        }
+                                                        material={
+                                                            selectedCourse?.materials?.filter(
+                                                                (
+                                                                    material: CourseMaterialsWithFile
+                                                                ) =>
+                                                                    material.id.toString() ===
+                                                                    editMaterialId
+                                                            )[0]
+                                                        }
+                                                        setSelectedCourse={
+                                                            setSelectedCourse
+                                                        }
+                                                    />
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
                                 )}
@@ -306,7 +352,7 @@ export default function AdminCourses() {
                         <div className="w-full flex justify-center">
                             <Button
                                 onClick={() => setShowUnaddedOverlay(false)}
-                                className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold text-xl py-3"
+                                className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold md:text-xl py-3"
                             >
                                 OK
                             </Button>

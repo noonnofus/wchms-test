@@ -68,6 +68,15 @@ export default function Courses() {
                             <div className="flex justify-center items-center py-10">
                                 <p>Loading Course Details...</p>
                             </div>
+                        ) : courses.enrolled.length === 0 ? (
+                            <div className="flex flex-col justify-center items-center py-10">
+                                <p className="text-center text-xl font-semibold mb-4">
+                                    No courses enrolled in yet.
+                                </p>
+                                <p className="text-center text-xl mb-4">
+                                    Browse all courses to get started.
+                                </p>
+                            </div>
                         ) : (
                             <div className="flex flex-col gap-4">
                                 {courses.enrolled.map((course) => (
@@ -93,6 +102,16 @@ export default function Courses() {
                         {isLoading ? (
                             <div className="flex justify-center items-center py-10">
                                 <p>Loading Course Materials...</p>
+                            </div>
+                        ) : courses.unenrolled.length === 0 ? (
+                            <div className="flex flex-col justify-center items-center py-10">
+                                <p className="text-center text-xl font-semibold mb-4">
+                                    No courses available.
+                                </p>
+                                <p className="text-center text-xl mb-4">
+                                    Please refresh the page or check back at a
+                                    later date.
+                                </p>
                             </div>
                         ) : (
                             <div className="flex flex-col gap-4">

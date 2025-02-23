@@ -34,6 +34,12 @@ export default function ParticipantConfirmation() {
         }
     };
 
+    const handleKeyPress = (event: React.KeyboardEvent) => {
+        if (event.key === "Enter") {
+            handleSignIn();
+        }
+    };
+
     return (
         <div className="flex flex-col gap-20 w-full h-full items-center justify-center">
             <h1 className="font-semibold text-4xl">Welcome back, {name}!</h1>
@@ -47,6 +53,7 @@ export default function ParticipantConfirmation() {
                     className="py-6"
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
+                    onKeyDown={handleKeyPress}
                 />
                 {error && <p className="text-red-500">{error}</p>}
             </div>

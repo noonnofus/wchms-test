@@ -1,6 +1,7 @@
 "use client";
 import AddCourse from "@/components/courses/add-course";
 import CourseCard from "@/components/courses/course-card";
+import CloseIcon from "@/components/icons/close-icon";
 import { fetchCourseImage, getAllCourses } from "@/db/queries/courses";
 import { type Course } from "@/db/schema/course";
 import { useEffect, useState } from "react";
@@ -18,14 +19,13 @@ export default function Courses() {
         setEditCourseId(courseId);
         setShowEditPopup(true);
     };
-    const handleCloseEditPopup = () => {
-        setShowEditPopup(false);
-    };
+
     const handleAddButtonClick = () => {
         setShowAddPopup(true);
     };
     const handleClosePopup = () => {
         setShowAddPopup(false);
+        setShowEditPopup(false);
     };
     const [isLoading, setIsLoading] = useState(true);
     const [courses, setCourses] = useState<CourseWithImage[]>([]);
@@ -55,38 +55,63 @@ export default function Courses() {
     }, []);
 
     return (
-        <div className="w-full h-full">
+        <div className="w-full min-h-screen">
             <h1 className="font-semibold text-4xl text-center mb-6">Courses</h1>
             {showAddPopup && (
-                <div className="fixed inset-0 flex items-center justify-center z-10 overflow-y-auto">
+                <div className="fixed inset-0 flex items-end md:items-center justify-center z-20">
                     <div
                         className="absolute inset-0 bg-black opacity-50"
                         onClick={handleClosePopup}
                     ></div>
-
-                    <div className="relative z-20 flex flex-col items-center bg-white rounded-lg overflow-y-auto w-full mx-4 max-h-[90vh]">
-                        <AddCourse handleClosePopup={handleClosePopup} />
+                    <div className="z-30 bg-white rounded-t-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
+                        <div className="relative w-full">
+                            <div className="flex justify-center items-center relative p-6">
+                                <div className="w-1/3 md:hidden border-b-2 border-black"></div>
+                                <button
+                                    onClick={handleClosePopup}
+                                    className="absolute top-3 right-4"
+                                >
+                                    <CloseIcon />
+                                </button>
+                            </div>
+                        </div>
+                        <div className="overflow-y-auto max-h-[calc(90vh-90px)]">
+                            <AddCourse handleClosePopup={handleClosePopup} />
+                        </div>
                     </div>
                 </div>
             )}
 
             {showEditPopup && (
-                <div className="fixed inset-0 flex items-center justify-center z-10 overflow-y-auto">
+                <div className="fixed inset-0 flex items-end md:items-center justify-center z-20 overflow-y-auto">
                     <div
                         className="absolute inset-0 bg-black opacity-50"
-                        onClick={handleCloseEditPopup}
+                        onClick={handleClosePopup}
                     />
-                    <div className="relative z-20 flex flex-col items-center bg-white rounded-lg overflow-y-auto w-full mx-4 max-h-[90vh]">
-                        <AddCourse
-                            handleClosePopup={handleCloseEditPopup}
-                            courseId={editCourseId}
-                        />
+                    <div className="z-30 bg-white rounded-t-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
+                        <div className="relative w-full">
+                            <div className="flex justify-center items-center relative p-6">
+                                <div className="w-1/3 md:hidden border-b-2 border-black"></div>
+                                <button
+                                    onClick={handleClosePopup}
+                                    className="absolute top-3 right-4"
+                                >
+                                    <CloseIcon />
+                                </button>
+                            </div>
+                        </div>
+                        <div className="overflow-y-auto max-h-[calc(90vh-90px)]">
+                            <AddCourse
+                                handleClosePopup={handleClosePopup}
+                                courseId={editCourseId}
+                            />
+                        </div>
                     </div>
                 </div>
             )}
 
             <button
-                className="absolute bottom-24 right-6 flex h-[72px] w-[72px] bg-primary-green shadow-lg border-4 border-white rounded-full justify-center items-center z-[1]"
+                className="absolute bottom-20 right-6 flex h-[72px] w-[72px] bg-primary-green shadow-lg border-4 border-white rounded-full justify-center items-center z-10"
                 onClick={handleAddButtonClick}
             >
                 <svg
@@ -105,6 +130,7 @@ export default function Courses() {
                     />
                 </svg>
             </button>
+
             {isLoading ? (
                 <div className="flex justify-center items-center py-10">
                     <p>Loading Courses...</p>
@@ -125,7 +151,18 @@ export default function Courses() {
                             />
                         ))
                     ) : (
-                        <p>No courses found.</p>
+                        <div className="flex flex-col items-center justify-center min-h-screen">
+                            <p className="text-center text-xl mb-4">
+                                No courses found. Would you like to create a new
+                                course?
+                            </p>
+                            <button
+                                onClick={handleAddButtonClick}
+                                className="px-6 py-2 bg-primary-green text-white rounded-lg"
+                            >
+                                Create New Course
+                            </button>
+                        </div>
                     )}
                 </div>
             )}

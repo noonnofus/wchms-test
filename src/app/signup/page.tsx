@@ -1,6 +1,7 @@
 "use client";
-import { useState, useEffect } from "react";
-import { Input } from "../ui/input";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Input } from "@/components/ui/input";
 import {
     Select,
     SelectContent,
@@ -8,66 +9,34 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { Button } from "../ui/button";
-import { DatePicker } from "../ui/date-picker";
-import { type Participant } from "@/db/schema/participants";
-import CloseIcon from "../icons/close-icon";
+import { Button } from "@/components/ui/button";
+import { DatePicker } from "@/components/ui/date-picker";
 
 const genders = ["Male", "Female", "Other"];
 
-export default function EditParticipant({
-    closePopup,
-    participantData,
-    onParticipantUpdated,
-}: {
-    closePopup: () => void;
-    participantData: Participant;
-    onParticipantUpdated: () => void;
-}) {
-    const [firstName, setFirstName] = useState(participantData.firstName);
-    const [lastName, setLastName] = useState(participantData.lastName);
-    const [email, setEmail] = useState(participantData.email);
-    const [selectedGender, setSelectedGender] = useState<string | null>(
-        participantData.gender
-    );
-    const [dateOfBirth, setDateOfBirth] = useState<Date | null>(
-        participantData.dateOfBirth
-    );
+export default function SignUp() {
+    const router = useRouter();
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
+    const [email, setEmail] = useState("");
+    const [selectedGender, setSelectedGender] = useState<string | null>(null);
+    const [dateOfBirth, setDateOfBirth] = useState<Date | null>(null);
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({
-        email: "",
-        gender: "",
         firstName: "",
         lastName: "",
+        email: "",
+        gender: "",
         dateOfBirth: "",
     });
 
-    useEffect(() => {
-        setFirstName(participantData.firstName);
-        setLastName(participantData.lastName);
-        setEmail(participantData.email);
-        setSelectedGender(participantData.gender);
-        setDateOfBirth(participantData.dateOfBirth);
-    }, [participantData]);
-
-    const handleGenderSelect = (gender: string) => {
-        setSelectedGender(gender);
-    };
-
-    const handleCancel = (e: React.FormEvent) => {
-        e.preventDefault();
-        closePopup();
-    };
-
     const validateFields = () => {
         let newErrors = {
-            email: "",
-            gender: "",
             firstName: "",
             lastName: "",
+            email: "",
+            gender: "",
             dateOfBirth: "",
-            role: "",
-            password: "",
         };
         let valid = true;
 
@@ -79,11 +48,11 @@ export default function EditParticipant({
             newErrors.lastName = "Last name is required";
             valid = false;
         }
-        if (!email?.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
             newErrors.email = "Valid email is required";
             valid = false;
         }
-        if (!selectedGender?.trim()) {
+        if (!selectedGender) {
             newErrors.gender = "Gender is required";
             valid = false;
         }
@@ -95,53 +64,78 @@ export default function EditParticipant({
         return valid;
     };
 
+    const handleGenderSelect = (gender: string) => {
+        setSelectedGender(gender);
+    };
 
-    const handleEditParticipantSubmit = async (e: React.FormEvent) => {
+    const handleCancel = (e: React.FormEvent) => {
         e.preventDefault();
+        setFirstName("");
+        setLastName("");
+        setEmail("");
+        setSelectedGender(null);
+        setDateOfBirth(null);
+        setErrors({
+            firstName: "",
+            lastName: "",
+            email: "",
+            gender: "",
+            dateOfBirth: "",
+        });
 
-        if (!validateFields()) return;
+        router.push("/");
+    };
 
+    const handleAddParticipantSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
         setLoading(true);
 
+        if (!validateFields()) {
+            setLoading(false);
+            return;
+        }
+
         try {
-            const response = await fetch(`/api/participants/update`, {
-                method: "PUT",
+            const response = await fetch("/api/participants/create", {
+                method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    participantId: participantData.id,
                     firstName,
                     lastName,
                     email,
                     gender: selectedGender,
-                    dateOfBirth,
+                    dateOfBirth: dateOfBirth?.toISOString().split("T")[0],
                 }),
             });
 
             if (!response.ok) {
-                throw new Error("Failed to update participant");
+                throw new Error("Failed to add participant");
             }
 
-            onParticipantUpdated();
-            console.log("Participant updated successfully");
-            closePopup();
+            console.log("Participant added successfully");
+
+            setFirstName("");
+            setLastName("");
+            setEmail("");
+            setSelectedGender(null);
+            setDateOfBirth(null);
+            router.push("/");
         } catch (error) {
-            console.error("Error updating participant:", error);
+            console.error(error);
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className="flex flex-col gap-6 overflow-y-auto overflow-x-hidden py-8 px-6 rounded-lg bg-white items-center justify-center">
-            <h1 className="font-semibold text-3xl md:text-4xl text-center mt-4">
-                Edit Participant
-            </h1>
+        <div className="flex flex-col gap-12 w-full h-full items-center">
+            <h1 className="font-semibold text-4xl">Signup</h1>
             <form
                 className="flex flex-col gap-4 md:gap-6 w-full h-full md:text-2xl"
                 method="POST"
-                onSubmit={handleEditParticipantSubmit}
+                onSubmit={handleAddParticipantSubmit}
             >
                 <div className="flex flex-row gap-2 w-full">
                     <div className="flex flex-col flex-1 gap-2">
@@ -187,7 +181,7 @@ export default function EditParticipant({
                             id="email"
                             type="email"
                             placeholder="Email"
-                            value={email ?? ""}
+                            value={email}
                             onChange={(e) => setEmail(e.target.value)}
                         />
                     </div>
@@ -236,7 +230,7 @@ export default function EditParticipant({
                         type="submit"
                         className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold md:text-xl py-2 md:py-4"
                     >
-                        {loading ? "Updating..." : "Update"}
+                        {loading ? "Creating account..." : "Signup"}
                     </Button>
                     <Button
                         variant="outline"

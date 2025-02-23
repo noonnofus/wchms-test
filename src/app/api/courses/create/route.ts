@@ -121,15 +121,12 @@ export async function POST(req: Request) {
                         )
                         .then((res) => res[0]);
 
-                    console.log("D", existingUser);
-
                     if (existingUser) {
                         await db.insert(CourseParticipant).values({
                             userId: existingUser.id,
                             courseId,
                         });
                     } else {
-                        console.log("A", firstName, lastName);
                         unaddedParticipants.push(
                             `${firstName} ${lastName}`.trim()
                         );
@@ -137,7 +134,6 @@ export async function POST(req: Request) {
                 })
             );
         }
-        console.log("YO", unaddedParticipants);
         //TODO: handle course participants
         return new Response(JSON.stringify({ courseId, unaddedParticipants }), {
             status: 200,

@@ -1,25 +1,30 @@
 import db from "@/db";
 import { eq } from "drizzle-orm";
-import { participants } from "@/db/schema/participants";
+import { users } from "@/db/schema/users";
+import bcrypt from "bcrypt";
 
 export async function PUT(req: Request) {
     try {
         const {
-            participantId,
+            id,
             firstName,
             lastName,
             email,
             gender,
             dateOfBirth,
+            password,
+            role,
         } = await req.json();
 
         if (
-            !participantId ||
+            !id ||
             !firstName ||
             !lastName ||
             !email ||
             !gender ||
-            !dateOfBirth
+            !dateOfBirth ||
+            !password ||
+            !role
         ) {
             return new Response(
                 JSON.stringify({ message: "Missing required fields" }),
@@ -37,29 +42,33 @@ export async function PUT(req: Request) {
 
         const participant = await db
             .select()
-            .from(participants)
-            .where(eq(participants.id, participantId));
+            .from(users)
+            .where(eq(users.id, id));
 
         if (!participant || participant.length === 0) {
             return new Response(
-                JSON.stringify({ error: "Participant not found" }),
+                JSON.stringify({ error: "Staff/Admin not found" }),
                 { status: 404 }
             );
         }
 
+        const hashedPassword = await hashPassword(password);
+
         await db
-            .update(participants)
+            .update(users)
             .set({
                 firstName,
                 lastName,
                 email,
                 gender,
                 dateOfBirth: formattedDate,
+                role: role,
+                password: hashedPassword,
             })
-            .where(eq(participants.id, participantId));
+            .where(eq(users.id, id));
 
         return new Response(
-            JSON.stringify({ message: "Participant updated successfully" }),
+            JSON.stringify({ message: "Staff/Admin updated successfully" }),
             { status: 200 }
         );
     } catch (error) {
@@ -70,4 +79,9 @@ export async function PUT(req: Request) {
             { status: 500 }
         );
     }
+}
+
+async function hashPassword(password: string): Promise<string> {
+    const salt = await bcrypt.genSalt(10);
+    return bcrypt.hash(password, salt);
 }

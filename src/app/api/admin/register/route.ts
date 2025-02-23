@@ -1,13 +1,8 @@
 import db from "@/db";
 import { users } from "@/db/schema/users";
-import bcrypt from "bcrypt";
+import { hashPassword } from "@/lib/hashing";
 import { eq } from "drizzle-orm";
 import { v4 as uuidv4 } from "uuid";
-
-async function hashPassword(password: string): Promise<string> {
-    const salt = await bcrypt.genSalt(10);
-    return bcrypt.hash(password, salt);
-}
 
 export async function POST(req: Request) {
     const { firstName, lastName, email, password, gender, role } =

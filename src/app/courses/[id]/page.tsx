@@ -17,45 +17,45 @@ export default function Home() {
                 //TODO: update to be dynamic class materials and dynamic participants
                 setSelectedCourse({
                     ...course[0],
-                    materials: [
-                        {
-                            id: "4",
-                            type: "Simple Arithmetic" as const,
-                            difficulty: "Basic" as const,
-                            title: "Week 4: Just a file",
-                            content: null,
-                            createdAt: new Date(1738859550),
-                            file: "Week4.pdf",
-                        },
-                        {
-                            id: "3",
-                            type: "Physical Exercise" as const,
-                            difficulty: "Basic" as const,
-                            title: "Week 3",
-                            content: "No review materials this week",
-                            createdAt: new Date(1738859550),
-                            file: null,
-                        },
-                        {
-                            id: "2",
-                            type: "Reading Aloud" as const,
-                            difficulty: "Intermediate" as const,
-                            title: "Week 2",
-                            content:
-                                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam id enim eget sem maximus accumsan. Pellentesque id varius mi, non sollicitudin orci. Donec eu condimentum justo. Donec vel sapien arcu. Quisque dapibus ligula non imperdiet malesuada.",
-                            createdAt: new Date(1738859545),
-                            file: "Week2.pdf",
-                        },
-                        {
-                            id: "1",
-                            type: "Reading Aloud" as const,
-                            difficulty: "Intermediate" as const,
-                            title: "Week 1: A really long title to see how it would look with multiple lines",
-                            content: "Some description",
-                            createdAt: new Date(1738859540),
-                            file: "Week1.pdf",
-                        },
-                    ],
+                    // materials: [
+                    //     {
+                    //         id: "4",
+                    //         type: "Simple Arithmetic" as const,
+                    //         difficulty: "Basic" as const,
+                    //         title: "Week 4: Just a file",
+                    //         content: null,
+                    //         createdAt: new Date(1738859550),
+                    //         file: "Week4.pdf",
+                    //     },
+                    //     {
+                    //         id: "3",
+                    //         type: "Physical Exercise" as const,
+                    //         difficulty: "Basic" as const,
+                    //         title: "Week 3",
+                    //         content: "No review materials this week",
+                    //         createdAt: new Date(1738859550),
+                    //         file: null,
+                    //     },
+                    //     {
+                    //         id: "2",
+                    //         type: "Reading Aloud" as const,
+                    //         difficulty: "Intermediate" as const,
+                    //         title: "Week 2",
+                    //         content:
+                    //             "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam id enim eget sem maximus accumsan. Pellentesque id varius mi, non sollicitudin orci. Donec eu condimentum justo. Donec vel sapien arcu. Quisque dapibus ligula non imperdiet malesuada.",
+                    //         createdAt: new Date(1738859545),
+                    //         file: "Week2.pdf",
+                    //     },
+                    //     {
+                    //         id: "1",
+                    //         type: "Reading Aloud" as const,
+                    //         difficulty: "Intermediate" as const,
+                    //         title: "Week 1: A really long title to see how it would look with multiple lines",
+                    //         content: "Some description",
+                    //         createdAt: new Date(1738859540),
+                    //         file: "Week1.pdf",
+                    //     },
+                    // ],
                 });
             } catch (error) {
                 console.error("Error fetching courses", error);
@@ -111,7 +111,15 @@ export default function Home() {
                                         );
                                     })
                                 ) : (
-                                    <p>No course materials available.</p>
+                                    <div className="flex flex-col gap-4 text-center py-10">
+                                        <p className="text-center text-xl md:text-2xl font-semibold">
+                                            No course materials available.
+                                        </p>
+                                        <p className="text-xl">
+                                            Try AI self-study for more
+                                            resources!
+                                        </p>
+                                    </div>
                                 )}
                             </div>
                         )}

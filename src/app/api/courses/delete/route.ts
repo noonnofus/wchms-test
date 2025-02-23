@@ -5,7 +5,6 @@ import db from "@/db";
 export async function DELETE(req: Request) {
     try {
         const body = await req.json();
-        console.log(body);
 
         // Validate that courseId is provided
         if (!body.courseId) {

@@ -12,12 +12,13 @@ import { Button } from "../ui/button";
 import { DatePicker } from "../ui/date-picker";
 
 const genders = ["Male", "Female", "Other"];
+const roles = ["Admin", "Staff"];
 
-export default function AddParticipant({
-    onParticipantAdded,
+export default function AddAdmin({
+    onAdminAdded,
     closePopup,
 }: {
-    onParticipantAdded: () => void;
+    onAdminAdded: () => void;
     closePopup: () => void;
 }) {
     const [firstName, setFirstName] = useState("");
@@ -25,6 +26,8 @@ export default function AddParticipant({
     const [email, setEmail] = useState("");
     const [selectedGender, setSelectedGender] = useState<string | null>(null);
     const [dateOfBirth, setDateOfBirth] = useState<Date | null>(null);
+    const [password, setPassword] = useState("");
+    const [role, setRole] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({
         firstName: "",
@@ -32,6 +35,8 @@ export default function AddParticipant({
         email: "",
         gender: "",
         dateOfBirth: "",
+        password: "",
+        role: "",
     });
 
     const validateFields = () => {
@@ -41,6 +46,8 @@ export default function AddParticipant({
             email: "",
             gender: "",
             dateOfBirth: "",
+            password: "",
+            role: "",
         };
         let valid = true;
 
@@ -64,6 +71,14 @@ export default function AddParticipant({
             newErrors.dateOfBirth = "Date of birth is required";
             valid = false;
         }
+        if (!password.trim() || /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(password)) {
+            newErrors.password = "Password must be at least 8 characters long and include at least one uppercase letter, one number, and one special character.";
+            valid = false;
+        }
+        if (!role) {
+            newErrors.role = "Role is required";
+            valid = false;
+        }
         setErrors(newErrors);
         return valid;
     };
@@ -72,6 +87,10 @@ export default function AddParticipant({
         setSelectedGender(gender);
     };
 
+    const handleRoleSelect = (role: string) => {
+        setRole(role);
+    }
+
     const handleCancel = (e: React.FormEvent) => {
         e.preventDefault();
         setFirstName("");
@@ -79,12 +98,16 @@ export default function AddParticipant({
         setEmail("");
         setSelectedGender(null);
         setDateOfBirth(null);
+        setPassword("");
+        setRole(null);
         setErrors({
             firstName: "",
             lastName: "",
             email: "",
             gender: "",
             dateOfBirth: "",
+            password: "",
+            role: "",
         });
         closePopup();
     };
@@ -99,7 +122,7 @@ export default function AddParticipant({
         }
 
         try {
-            const response = await fetch("/api/participants/create", {
+            const response = await fetch("/api/admin/create", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -110,21 +133,25 @@ export default function AddParticipant({
                     email,
                     gender: selectedGender,
                     dateOfBirth: dateOfBirth?.toISOString().split("T")[0],
+                    password,
+                    role
                 }),
             });
 
             if (!response.ok) {
-                throw new Error("Failed to add participant");
+                throw new Error("Failed to add admin");
             }
 
-            onParticipantAdded();
-            console.log("Participant added successfully");
+            onAdminAdded();
+            console.log("Admin added successfully");
 
             setFirstName("");
             setLastName("");
             setEmail("");
             setSelectedGender(null);
             setDateOfBirth(null);
+            setPassword("");
+            setRole(null);
             closePopup();
         } catch (error) {
             console.error(error);
@@ -134,15 +161,45 @@ export default function AddParticipant({
     };
 
     return (
-        <div className="flex flex-col gap-12 overflow-y-auto py-8 px-6 rounded-lg bg-white items-center justify-center">
-            <h1 className="font-semibold text-3xl md:text-4xl text-center">
-                Add New Participant
-            </h1>
+        <div className="flex flex-col gap-20 overflow-y-auto py-8 px-6 rounded-lg bg-white items-center justify-center">
+            <h1 className="font-semibold text-4xl">Add New Admin</h1>
             <form
-                className="flex flex-col gap-4 md:gap-6 w-full h-full md:text-2xl"
+                className="flex flex-col gap-4 w-full h-full md:text-2xl"
                 method="POST"
                 onSubmit={handleAddParticipantSubmit}
             >
+                <div className="flex flex-row gap-2 w-full">
+                    <div className="flex flex-col flex-1 gap-2">
+                        <label htmlFor="email">Email</label>
+                        {errors.email && (
+                            <p className="text-red-500 text-sm">
+                                {errors.email}
+                            </p>
+                        )}
+                        <Input
+                            id="email"
+                            type="email"
+                            placeholder="Email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                        />
+                    </div>
+                    <div className="flex flex-col flex-1 gap-2">
+                        <label htmlFor="password">Password</label>
+                        {errors.password && (
+                            <p className="text-red-500 text-sm">
+                                {errors.password}
+                            </p>
+                        )}
+                        <Input
+                            id="password"
+                            type="password"
+                            placeholder="Password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                        />
+                    </div>
+                </div>
                 <div className="flex flex-row gap-2 w-full">
                     <div className="flex flex-col flex-1 gap-2">
                         <label htmlFor="firstName">First Name</label>
@@ -177,21 +234,6 @@ export default function AddParticipant({
                 </div>
                 <div className="flex flex-row gap-2 w-full">
                     <div className="flex flex-col flex-1 gap-2">
-                        <label htmlFor="email">Email</label>
-                        {errors.email && (
-                            <p className="text-red-500 text-sm">
-                                {errors.email}
-                            </p>
-                        )}
-                        <Input
-                            id="email"
-                            type="email"
-                            placeholder="Email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                        />
-                    </div>
-                    <div className="flex flex-col flex-1 gap-2">
                         <label htmlFor="courseCategory">Gender</label>
                         {errors.gender && (
                             <p className="text-red-500 text-sm">
@@ -218,29 +260,60 @@ export default function AddParticipant({
                             </SelectContent>
                         </Select>
                     </div>
+                    <div className="flex flex-col flex-1 gap-2">
+                        <label htmlFor="dateOfBirth">Date of Birth</label>
+                        {errors.dateOfBirth && (
+                            <p className="text-red-500 text-sm">
+                                {errors.dateOfBirth}
+                            </p>
+                        )}
+                        <DatePicker
+                            selected={dateOfBirth}
+                            onChange={(date) => setDateOfBirth(date ?? null)}
+                        />
+                    </div>
                 </div>
-                <div className="flex flex-col flex-1 gap-2">
-                    <label htmlFor="dateOfBirth">Date of Birth</label>
-                    {errors.dateOfBirth && (
-                        <p className="text-red-500 text-sm">
-                            {errors.dateOfBirth}
-                        </p>
-                    )}
-                    <DatePicker
-                        selected={dateOfBirth}
-                        onChange={(date) => setDateOfBirth(date ?? null)}
-                    />
+                <div className="flex flex-row gap-2 w-full">
+                    <div className="flex flex-col flex-1 gap-2">
+                        <label htmlFor="roleCategory">Role</label>
+                        {errors.role && (
+                            <p className="text-red-500 text-sm">
+                                {errors.role}
+                            </p>
+                        )}
+                        <Select
+                            value={role ?? ""}
+                            onValueChange={handleRoleSelect}
+                        >
+                            <SelectTrigger>
+                                <SelectValue placeholder="Role" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {roles.map((role, index) => (
+                                    <SelectItem
+                                        key={index}
+                                        value={role}
+                                        className="capitalize"
+                                    >
+                                        {role}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    <div className="flex flex-col flex-1 gap-2">
+                    </div>
                 </div>
-                <div className="w-full flex flex-row gap-2 mt-4">
+                <div className="w-full flex flex-row gap-2">
                     <Button
                         type="submit"
-                        className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold md:text-xl py-2 md:py-4"
+                        className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold text-xl py-4"
                     >
                         {loading ? "Adding..." : "Add"}
                     </Button>
                     <Button
                         variant="outline"
-                        className="w-full h-full rounded-full bg-transparent border-primary-green text-primary-green hover:bg-primary-green hover:text-white font-semibold md:text-xl py-2 md:py-4"
+                        className="w-full h-full rounded-full bg-transparent border-primary-green text-primary-green hover:bg-primary-green hover:text-white font-semibold text-xl py-4"
                         onClick={handleCancel}
                     >
                         Cancel

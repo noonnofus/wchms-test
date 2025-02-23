@@ -2,7 +2,7 @@ import { getAllParticipants } from "@/db/queries/participants";
 
 export async function GET() {
     try {
-        const participantsFirstNames = await getAllParticipants();
+        const participantsFirstNames = await getAllParticipants(true);
         return new Response(JSON.stringify(participantsFirstNames), {
             status: 200,
         });
