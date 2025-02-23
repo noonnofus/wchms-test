@@ -8,6 +8,7 @@ interface SessionCardProps {
     startTime: string;
     endTime: string;
     onDelete: () => void;
+    isAdmin?: boolean;
 }
 
 export default function SessionCard({
@@ -48,13 +49,17 @@ export default function SessionCard({
     return (
         <div className="flex flex-col items-center w-full">
             {showConfirmation && (
-                <DeleteConfirmation
-                    title="Are you sure?"
-                    body="This action cannot be undone."
-                    actionLabel="Delete"
-                    handleSubmit={handleDelete}
-                    closePopup={() => setShowConfirmation(false)}
-                />
+                <div className="absolute inset-0 flex justify-center items-center min-h-[800px] min-w-[360px] w-full h-full bg-black bg-opacity-50 z-50">
+                    <div className="relative w-full max-w-lg bg-white rounded-lg p-6 overflow-auto">
+                        <DeleteConfirmation
+                            title="Are you sure?"
+                            body="This action cannot be undone."
+                            actionLabel="Delete"
+                            handleSubmit={handleDelete}
+                            closePopup={() => setShowConfirmation(false)}
+                        />
+                    </div>
+                </div>
             )}
 
             {!showConfirmation && (

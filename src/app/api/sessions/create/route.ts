@@ -24,8 +24,20 @@ export async function POST(req: Request) {
 
         const today = new Date();
         const startDate = new Date(body.date);
+        const startTime = new Date(`${body.date}T${body.startTime}`);
 
-        if (startDate <= today) {
+        const startDateWithoutTime = new Date(
+            startDate.getFullYear(),
+            startDate.getMonth(),
+            startDate.getDate()
+        );
+        const todayWithoutTime = new Date(
+            today.getFullYear(),
+            today.getMonth(),
+            today.getDate()
+        );
+
+        if (startDateWithoutTime < todayWithoutTime) {
             return new Response(
                 JSON.stringify({
                     error: "Cannot create a session in the past",
@@ -33,6 +45,7 @@ export async function POST(req: Request) {
                 { status: 400 }
             );
         }
+
         if (isNaN(startDate.getTime()) || isNaN(today.getTime())) {
             return new Response(
                 JSON.stringify({
@@ -41,7 +54,7 @@ export async function POST(req: Request) {
                 { status: 400 }
             );
         }
-        
+
         const course = await db
             .select()
             .from(Courses)

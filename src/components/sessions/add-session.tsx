@@ -142,8 +142,9 @@ export default function AddSession(props: Props) {
             isValid = false;
         } else {
             const sessionDate = new Date(formData.date);
-            sessionDate.setHours(0, 0, 0, 0);
-            if (sessionDate.getTime() < now.getTime()) {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            if (sessionDate < today) {
                 errorMessages.date = "Session date cannot be in the past";
                 isValid = false;
             }
@@ -176,10 +177,10 @@ export default function AddSession(props: Props) {
             endTime.setHours(parseInt(endHours), parseInt(endMinutes), 0, 0);
 
             if (
-                startTime < now &&
-                sessionDate.toDateString() === now.toDateString()
+                sessionDate.toDateString() === now.toDateString() &&
+                startTime.getTime() < now.getTime()
             ) {
-                errorMessages.startTime = "Start time cannot be in the past";
+                errorMessages.startTime = "Start time must be in the future";
                 isValid = false;
             }
 
@@ -252,7 +253,7 @@ export default function AddSession(props: Props) {
 
             const data = await res.json();
             console.log("Session created successfully");
-            router.push(`/admin/courses/${formData.courseId}`);
+            router.push(`/admin/session/${formData.courseId}`);
         } catch (error) {
             console.error("Error:", error);
             setErrors((prev) => ({
