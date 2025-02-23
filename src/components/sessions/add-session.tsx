@@ -254,6 +254,7 @@ export default function AddSession(props: Props) {
             const data = await res.json();
             console.log("Session created successfully");
             props.handleClosePopup();
+            router.refresh();
             router.push(`/admin/session/${formData.courseId}`);
         } catch (error) {
             console.error("Error:", error);
@@ -299,6 +300,7 @@ export default function AddSession(props: Props) {
 
             console.log("Session updated successfully");
             props.handleClosePopup();
+            router.refresh();
             router.push(`/admin/courses/${formData.courseId}`);
         } catch (error) {
             console.error("Error:", error);
