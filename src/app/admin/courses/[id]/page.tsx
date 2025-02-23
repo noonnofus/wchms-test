@@ -1,21 +1,21 @@
 "use client";
-import { useParams } from "next/navigation";
-import TabsMenu from "@/components/shared/tabs-menu";
-import CourseDetailsCard from "@/components/courses/course-details-card";
-import MaterialCard from "@/components/shared/material-card";
-import { useEffect, useState } from "react";
-import ParticipantList from "@/components/courses/participant-list";
-import AddMaterial from "@/components/courses/add-material";
-import EditMaterial from "@/components/courses/edit-material";
-import { getCourseById } from "@/db/queries/courses";
 import AddCourse from "@/components/courses/add-course";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import AddMaterial from "@/components/courses/add-material";
+import CourseDetailsCard from "@/components/courses/course-details-card";
+import EditMaterial from "@/components/courses/edit-material";
+import ParticipantList from "@/components/courses/participant-list";
+import MaterialCard from "@/components/shared/material-card";
+import TabsMenu from "@/components/shared/tabs-menu";
 import { Button } from "@/components/ui/button";
+import { getCourseById } from "@/db/queries/courses";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function AdminCourses() {
     const { id } = useParams();
     const [isLoading, setIsLoading] = useState(true);
     const [selectedCourse, setSelectedCourse] = useState<any>({}); //TODO: update type, include materials and participant types
+    const router = useRouter();
     useEffect(() => {
         const fetchCourses = async () => {
             try {
@@ -165,6 +165,14 @@ export default function AdminCourses() {
                                     variant="admin"
                                     editAction={handleEditCourseButtonClick}
                                 />
+                                <Button
+                                    className="bg-primary-green text-white rounded-full w-full font-semibold text-base hover:bg-[#045B47]"
+                                    onClick={() =>
+                                        router.push(`/admin/session/${id}`)
+                                    }
+                                >
+                                    All Sessions
+                                </Button>
                                 <ParticipantList
                                     participants={
                                         selectedCourse.participants || []
