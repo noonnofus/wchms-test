@@ -1,5 +1,5 @@
 import { Card } from "@/components/ui/card";
-import { Calendar, Edit, Trash2 } from "lucide-react";
+import { Calendar, Trash2 } from "lucide-react";
 import { useState } from "react";
 import DeleteConfirmation from "../shared/delete-confirmation";
 
@@ -7,18 +7,14 @@ interface SessionCardProps {
     date: string;
     startTime: string;
     endTime: string;
-    sessionId: number;
     onDelete: () => void;
-    onEdit: (sessionId: number) => void;
 }
 
 export default function SessionCard({
     date,
     startTime,
     endTime,
-    sessionId,
     onDelete,
-    onEdit,
 }: SessionCardProps) {
     const [showConfirmation, setShowConfirmation] = useState(false);
 
@@ -49,10 +45,6 @@ export default function SessionCard({
         setShowConfirmation(false);
     };
 
-    const handleEdit = () => {
-        onEdit(sessionId);
-    };
-
     return (
         <div className="flex flex-col items-center w-full">
             {showConfirmation && (
@@ -74,20 +66,12 @@ export default function SessionCard({
                             {formattedEndTime}
                         </span>
                     </div>
-                    <div className="flex gap-2">
-                        <button
-                            onClick={handleEdit}
-                            className="text-blue-500 hover:text-blue-700"
-                        >
-                            <Edit className="w-5 h-5" />
-                        </button>
-                        <button
-                            onClick={() => setShowConfirmation(true)}
-                            className="text-red-500 hover:text-red-700"
-                        >
-                            <Trash2 className="w-5 h-5" />
-                        </button>
-                    </div>
+                    <button
+                        onClick={() => setShowConfirmation(true)}
+                        className="text-red-500 hover:text-red-700"
+                    >
+                        <Trash2 className="w-5 h-5" />
+                    </button>
                 </Card>
             )}
         </div>
