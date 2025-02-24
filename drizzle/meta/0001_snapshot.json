@@ -1,8 +1,8 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "13ce837b-f517-4f64-857f-047ff057566e",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "3841521d-fe69-4c14-92ae-de69ea1dbde4",
+  "prevId": "13ce837b-f517-4f64-857f-047ff057566e",
   "tables": {
     "announcements": {
       "name": "announcements",
@@ -1359,7 +1359,7 @@
           "name": "instructor_id",
           "type": "int",
           "primaryKey": false,
-          "notNull": true,
+          "notNull": false,
           "autoincrement": false
         },
         "date": {

@@ -26,7 +26,7 @@ CREATE TABLE `assignments` (
 );
 --> statement-breakpoint
 CREATE TABLE `course_participants` (
-	`id` int NOT NULL,
+	`id` int AUTO_INCREMENT NOT NULL,
 	`user_id` int NOT NULL,
 	`course_id` int NOT NULL,
 	`status` varchar(50),
@@ -43,10 +43,7 @@ CREATE TABLE `courses` (
 	`kind` varchar(100) NOT NULL,
 	`status` varchar(100) NOT NULL,
 	`lang` varchar(10) NOT NULL,
-<<<<<<<< HEAD:drizzle/0000_tough_joshua_kane.sql
 	`upload_id` int,
-========
->>>>>>>> 5f9b510dd75d631562c2662115ca0e084063cead:drizzle/0000_dazzling_tana_nile.sql
 	`room_id` int,
 	CONSTRAINT `courses_id` PRIMARY KEY(`id`)
 );
@@ -209,6 +206,18 @@ CREATE TABLE `score_books` (
 	CONSTRAINT `score_books_score_book_id` PRIMARY KEY(`score_book_id`)
 );
 --> statement-breakpoint
+CREATE TABLE `sessions` (
+	`id` int AUTO_INCREMENT NOT NULL,
+	`course_id` int NOT NULL,
+	`instructor_id` int NOT NULL,
+	`date` timestamp NOT NULL,
+	`start` timestamp NOT NULL,
+	`en` timestamp NOT NULL,
+	`room_id` int,
+	`status` enum('Draft','Available','Completed','Archived') NOT NULL,
+	CONSTRAINT `sessions_id` PRIMARY KEY(`id`)
+);
+--> statement-breakpoint
 CREATE TABLE `session_availabilities` (
 	`session_availability_id` int NOT NULL,
 	`start` timestamp NOT NULL,
@@ -251,8 +260,8 @@ CREATE TABLE `users` (
 --> statement-breakpoint
 ALTER TABLE `course_participants` ADD CONSTRAINT `course_participants_user_id_participants_id_fk` FOREIGN KEY (`user_id`) REFERENCES `participants`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `course_participants` ADD CONSTRAINT `course_participants_course_id_courses_id_fk` FOREIGN KEY (`course_id`) REFERENCES `courses`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-<<<<<<<< HEAD:drizzle/0000_tough_joshua_kane.sql
 ALTER TABLE `courses` ADD CONSTRAINT `courses_upload_id_upload_media_id_fk` FOREIGN KEY (`upload_id`) REFERENCES `upload_media`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-========
->>>>>>>> 5f9b510dd75d631562c2662115ca0e084063cead:drizzle/0000_dazzling_tana_nile.sql
-ALTER TABLE `courses` ADD CONSTRAINT `courses_room_id_rooms_id_fk` FOREIGN KEY (`room_id`) REFERENCES `rooms`(`id`) ON DELETE no action ON UPDATE no action;
+ALTER TABLE `courses` ADD CONSTRAINT `courses_room_id_rooms_id_fk` FOREIGN KEY (`room_id`) REFERENCES `rooms`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `sessions` ADD CONSTRAINT `sessions_course_id_courses_id_fk` FOREIGN KEY (`course_id`) REFERENCES `courses`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `sessions` ADD CONSTRAINT `sessions_instructor_id_users_id_fk` FOREIGN KEY (`instructor_id`) REFERENCES `users`(`id`) ON DELETE set null ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `sessions` ADD CONSTRAINT `sessions_room_id_rooms_id_fk` FOREIGN KEY (`room_id`) REFERENCES `rooms`(`id`) ON DELETE set null ON UPDATE no action;

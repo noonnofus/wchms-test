@@ -1,8 +1,8 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "13ce837b-f517-4f64-857f-047ff057566e",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "46840d0d-01b1-4acf-9c40-a2466fa5796a",
+  "prevId": "3841521d-fe69-4c14-92ae-de69ea1dbde4",
   "tables": {
     "announcements": {
       "name": "announcements",
@@ -1359,7 +1359,7 @@
           "name": "instructor_id",
           "type": "int",
           "primaryKey": false,
-          "notNull": true,
+          "notNull": false,
           "autoincrement": false
         },
         "date": {
@@ -1381,13 +1381,6 @@
           "type": "timestamp",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
-        },
-        "room_id": {
-          "name": "room_id",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": false,
           "autoincrement": false
         },
         "status": {
@@ -1419,19 +1412,6 @@
           "tableTo": "users",
           "columnsFrom": [
             "instructor_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "set null",
-          "onUpdate": "no action"
-        },
-        "sessions_room_id_rooms_id_fk": {
-          "name": "sessions_room_id_rooms_id_fk",
-          "tableFrom": "sessions",
-          "tableTo": "rooms",
-          "columnsFrom": [
-            "room_id"
           ],
           "columnsTo": [
             "id"
