@@ -46,11 +46,19 @@ export default function SessionCard({
         setShowConfirmation(false);
     };
 
+    const handleClosePopup = () => {
+        setShowConfirmation(false);
+    };
+
     return (
         <div className="flex flex-col items-center w-full">
             {showConfirmation && (
-                <div className="absolute inset-0 flex justify-center items-center min-h-[800px] min-w-[360px] w-full h-full bg-black bg-opacity-50 z-50">
-                    <div className="relative w-full max-w-lg bg-white rounded-lg p-6 overflow-auto">
+                <div className="fixed inset-0 flex items-center justify-center z-10 overflow-y-auto">
+                    <div
+                        className="absolute inset-0 bg-black opacity-50"
+                        onClick={handleClosePopup}
+                    ></div>
+                    <div className="z-30 bg-white rounded-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
                         <DeleteConfirmation
                             title="Are you sure?"
                             body="This action cannot be undone."
