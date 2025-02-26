@@ -132,7 +132,7 @@ export default function ManageStaff() {
 
     return (
         <div>
-            <div className="flex flex-col gap-10 w-full items-center min-h-screen">
+            <div className="flex flex-col gap-10 w-full items-center h-full">
                 <h1 className="font-semibold text-4xl text-center">Manage</h1>
                 {showEditPopup && adminToEdit && (
                     <div className="absolute inset-0 flex justify-center items-center min-h-[800px] min-w-[360px] w-full h-full bg-black bg-opacity-50 z-50">
