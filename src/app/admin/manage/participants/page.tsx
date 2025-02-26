@@ -160,8 +160,12 @@ export default function ManageParticipant() {
                     </div>
                 )}
                 {showDeletePopup && participantToDelete && (
-                    <div className="absolute inset-0 flex justify-center items-center min-h-[800px] min-w-[360px] w-full h-full bg-black bg-opacity-50 z-50">
-                        <div className="relative w-full bg-white rounded-lg p-6 overflow-auto">
+                    <div className="fixed inset-0 flex items-center justify-center z-10 overflow-y-auto">
+                        <div
+                            className="absolute inset-0 bg-black opacity-50"
+                            onClick={handleClosePopup}
+                        ></div>
+                        <div className="z-30 bg-white rounded-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
                             <DeleteConfirmation
                                 title="Before you delete!"
                                 body={`Are you sure you want to delete ${participantToDelete.firstName}? You cannot undo this action.`}
@@ -254,72 +258,75 @@ export default function ManageParticipant() {
                             <TableBody>
                                 {isLoading
                                     ? [...Array(3)].map((_, index) => (
-                                        <TableRow className="flex w-full items-center" key={index}>
-                                            <TableCell className="w-[300px] min-w-[250px] flex items-center gap-4 text-left text-base md:text-lg">
-                                                <Skeleton className="hidden md:flex md:w-10 md:h-10 rounded-full" />
-                                                <Skeleton className="h-4 w-24 rounded" />
-                                            </TableCell>
-                                            <TableCell className="w-[200px] min-w-[120px]">
-                                                <Skeleton className="h-4 w-40 rounded" />
-                                            </TableCell>
-                                            <TableCell className="flex-1"></TableCell>
-                                            <TableCell className="w-[100px] min-w-[80px] flex justify-center items-center">
-                                                <Skeleton className="h-6 w-6 rounded" />
-                                            </TableCell>
-                                            <TableCell className="w-[100px] min-w-[80px] flex justify-center items-center">
-                                                <Skeleton className="h-6 w-6 rounded" />
-                                            </TableCell>
-                                        </TableRow>
-                                    ))
+                                          <TableRow
+                                              className="flex w-full items-center"
+                                              key={index}
+                                          >
+                                              <TableCell className="w-[300px] min-w-[250px] flex items-center gap-4 text-left text-base md:text-lg">
+                                                  <Skeleton className="hidden md:flex md:w-10 md:h-10 rounded-full" />
+                                                  <Skeleton className="h-4 w-24 rounded" />
+                                              </TableCell>
+                                              <TableCell className="w-[200px] min-w-[120px]">
+                                                  <Skeleton className="h-4 w-40 rounded" />
+                                              </TableCell>
+                                              <TableCell className="flex-1"></TableCell>
+                                              <TableCell className="w-[100px] min-w-[80px] flex justify-center items-center">
+                                                  <Skeleton className="h-6 w-6 rounded" />
+                                              </TableCell>
+                                              <TableCell className="w-[100px] min-w-[80px] flex justify-center items-center">
+                                                  <Skeleton className="h-6 w-6 rounded" />
+                                              </TableCell>
+                                          </TableRow>
+                                      ))
                                     : filteredParticipants.map(
-                                        (
-                                            participantCourse: ParticipantCourse
-                                        ) => {
-                                            return (
-                                                <TableRow
-                                                    className="flex w-full items-center"
-                                                    key={
-                                                        participantCourse
-                                                            .participant.id
-                                                    }
-                                                >
-                                                    <TableCell className="w-[300px] min-w-[200px] flex items-center gap-4 text-left text-base md:text-lg">
-                                                        <div className="hidden md:flex md:w-10 md:h-10 rounded-full bg-gray-200 items-center justify-center">
-                                                            {`${participantCourse.participant.firstName[0]}${participantCourse.participant.lastName[0]}`}
-                                                        </div>
-                                                        {`${participantCourse.participant.firstName} ${participantCourse.participant.lastName}`}
-                                                    </TableCell>
-                                                    <TableCell className="w-[250px] min-w-[120px] text-left text-base md:text-lg">
-                                                        {participantCourse.course ??
-                                                            "none"}
-                                                    </TableCell>
-                                                    <TableCell className="flex-1"></TableCell>
-                                                    <TableCell className="w-[100px] min-w-[80px] flex justify-center items-center">
-                                                        <button
-                                                            onClick={() => {
-                                                                handleDeleteButtonClick(
-                                                                    participantCourse.participant
-                                                                );
-                                                            }}
-                                                        >
-                                                            <DeleteIcon className="inline-flex text-center" />
-                                                        </button>
-                                                    </TableCell>
-                                                    <TableCell className="w-[100px] min-w-[80px] flex justify-center items-center">
-                                                        <button
-                                                            onClick={() => {
-                                                                handleEditButtonClick(
-                                                                    participantCourse.participant
-                                                                );
-                                                            }}
-                                                        >
-                                                            <Settings className="inline-flex text-center" />
-                                                        </button>
-                                                    </TableCell>
-                                                </TableRow>
-                                            );
-                                        }
-                                    )}
+                                          (
+                                              participantCourse: ParticipantCourse
+                                          ) => {
+                                              return (
+                                                  <TableRow
+                                                      className="flex w-full items-center"
+                                                      key={
+                                                          participantCourse
+                                                              .participant.id
+                                                      }
+                                                  >
+                                                      <TableCell className="w-[300px] min-w-[200px] flex items-center gap-4 text-left text-base md:text-lg">
+                                                          <div className="hidden md:flex md:w-10 md:h-10 rounded-full bg-gray-200 items-center justify-center">
+                                                              {`${participantCourse.participant.firstName[0]}${participantCourse.participant.lastName[0]}`}
+                                                          </div>
+                                                          {`${participantCourse.participant.firstName} ${participantCourse.participant.lastName}`}
+                                                      </TableCell>
+                                                      <TableCell className="w-[250px] min-w-[120px] text-left text-base md:text-lg">
+                                                          {participantCourse.course ??
+                                                              "none"}
+                                                      </TableCell>
+                                                      <TableCell className="flex-1"></TableCell>
+                                                      <TableCell className="w-[100px] min-w-[80px] flex justify-center items-center">
+                                                          <button
+                                                              onClick={() => {
+                                                                  handleDeleteButtonClick(
+                                                                      participantCourse.participant
+                                                                  );
+                                                              }}
+                                                          >
+                                                              <DeleteIcon className="inline-flex text-center" />
+                                                          </button>
+                                                      </TableCell>
+                                                      <TableCell className="w-[100px] min-w-[80px] flex justify-center items-center">
+                                                          <button
+                                                              onClick={() => {
+                                                                  handleEditButtonClick(
+                                                                      participantCourse.participant
+                                                                  );
+                                                              }}
+                                                          >
+                                                              <Settings className="inline-flex text-center" />
+                                                          </button>
+                                                      </TableCell>
+                                                  </TableRow>
+                                              );
+                                          }
+                                      )}
                             </TableBody>
                         </Table>
                     </CardContent>
