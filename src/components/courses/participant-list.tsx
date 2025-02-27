@@ -10,8 +10,8 @@ export default function ParticipantList(props: {
 }) {
     const { id } = useParams();
     return (
-        <div className="flex flex-col items-center w-full">
-            <Card className="overflow-hidden">
+        <div className="flex flex-col items-center w-full h-full">
+            <Card className="overflow-hidden mb-8">
                 <CardHeader className="w-full py-4 md:py-6">
                     <div className="flex justify-between items-center">
                         <CardTitle className="text-left text-2xl md:text-[32px]">

@@ -25,7 +25,7 @@ export default function RootLayout({
                 className={`${dmSans.variable} antialiased min-w-[360px] w-full h-full flex flex-col`}
             >
                 <TopNav />
-                <div className="flex-1 p-6 overflow-y-auto pb-20">
+                <div className="flex-1 p-6 overflow-y-auto mb-32">
                     {children}
                 </div>
                 <div className="flex-1 fixed bottom-0 right-0 left-0">
