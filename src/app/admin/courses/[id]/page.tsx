@@ -159,7 +159,7 @@ export default function AdminCourses() {
                     </>
                 }
                 rightChildren={
-                    <div className="w-full">
+                    <div className="w-full mb-8">
                         {isLoading ? (
                             <div className="flex justify-center items-center py-10">
                                 <p>Loading Courses...</p>

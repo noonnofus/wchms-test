@@ -13,7 +13,7 @@ export default function TabsMenu(props: {
         <Tabs
             defaultValue="leftLabel"
             className={twMerge(
-                "flex flex-col pb-6 gap-4 w-full h-full items-center",
+                "flex flex-col gap-4 w-full h-full items-center",
                 props.className
             )}
         >
