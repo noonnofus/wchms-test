@@ -71,8 +71,14 @@ export default function AddAdmin({
             newErrors.dateOfBirth = "Date of birth is required";
             valid = false;
         }
-        if (!password.trim() || !/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(password)) {
-            newErrors.password = "Password must be at least 8 characters long and include at least one uppercase letter, one number, and one special character.";
+        if (
+            !password.trim() ||
+            !/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(
+                password
+            )
+        ) {
+            newErrors.password =
+                "Password must be at least 8 characters long and include at least one uppercase letter, one number, and one special character.";
             valid = false;
         }
         if (!role) {
@@ -89,7 +95,7 @@ export default function AddAdmin({
 
     const handleRoleSelect = (role: string) => {
         setRole(role);
-    }
+    };
 
     const handleCancel = (e: React.FormEvent) => {
         e.preventDefault();
@@ -134,7 +140,7 @@ export default function AddAdmin({
                     gender: selectedGender,
                     dateOfBirth: dateOfBirth?.toISOString().split("T")[0],
                     password,
-                    role
+                    role,
                 }),
             });
 
@@ -161,10 +167,12 @@ export default function AddAdmin({
     };
 
     return (
-        <div className="flex flex-col gap-20 overflow-y-auto py-8 px-6 rounded-lg bg-white items-center justify-center">
-            <h1 className="font-semibold text-4xl">Add New Admin</h1>
+        <div className="flex flex-col gap-12 overflow-y-auto py-8 px-6 rounded-lg bg-white items-center justify-center">
+            <h1 className="font-semibold text-3xl md:text-4xl text-center">
+                Add New Admin
+            </h1>
             <form
-                className="flex flex-col gap-4 w-full h-full md:text-2xl"
+                className="flex flex-col gap-4 md:gap-6 w-full h-full md:text-2xl"
                 method="POST"
                 onSubmit={handleAddParticipantSubmit}
             >
@@ -301,19 +309,18 @@ export default function AddAdmin({
                             </SelectContent>
                         </Select>
                     </div>
-                    <div className="flex flex-col flex-1 gap-2">
-                    </div>
+                    <div className="flex flex-col flex-1 gap-2"></div>
                 </div>
-                <div className="w-full flex flex-row gap-2">
+                <div className="w-full flex flex-row gap-2 mt-4">
                     <Button
                         type="submit"
-                        className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold text-xl py-4"
+                        className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold md:text-xl py-2 md:py-4"
                     >
                         {loading ? "Adding..." : "Add"}
                     </Button>
                     <Button
                         variant="outline"
-                        className="w-full h-full rounded-full bg-transparent border-primary-green text-primary-green hover:bg-primary-green hover:text-white font-semibold text-xl py-4"
+                        className="w-full h-full rounded-full bg-transparent border-primary-green text-primary-green hover:bg-primary-green hover:text-white font-semibold md:text-xl py-2 md:py-4"
                         onClick={handleCancel}
                     >
                         Cancel
