@@ -1,7 +1,7 @@
 "use client";
 import ChevronDownIcon from "@/components/icons/chevron-down-icon";
 import ChevronUpIcon from "@/components/icons/chevron-up-icon";
-import { Settings, PlusIcon } from "lucide-react";
+import { Pen, PlusIcon } from "lucide-react";
 import DeleteIcon from "@/components/icons/delete-icon";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -19,6 +19,7 @@ import AddAdmin from "@/components/manage/add-admin";
 import DeleteConfirmation from "@/components/shared/delete-confirmation";
 import { type User } from "@/db/schema/users";
 import EditAdmin from "@/components/manage/edit-admin";
+import CloseIcon from "@/components/icons/close-icon";
 
 export default function ManageStaff() {
     const [admins, setAdmins] = useState<User[]>([]);
@@ -135,15 +136,32 @@ export default function ManageStaff() {
             <div className="flex flex-col gap-10 w-full items-center h-full">
                 <h1 className="font-semibold text-4xl text-center">Manage</h1>
                 {showEditPopup && adminToEdit && (
-                    <div className="absolute inset-0 flex justify-center items-center min-h-[800px] min-w-[360px] w-full h-full bg-black bg-opacity-50 z-50">
-                        <div className="relative w-full max-w-lg bg-white rounded-lg p-6 overflow-auto">
-                            <EditAdmin
-                                closePopup={handleClosePopup}
-                                adminData={adminToEdit}
-                                onAdminUpdated={() =>
-                                    setRefreshAdmins((prev) => !prev)
-                                }
-                            />
+                    <div className="fixed inset-0 flex items-end md:items-center justify-center z-10 overflow-y-auto">
+                        <div
+                            className="absolute inset-0 bg-black opacity-50"
+                            onClick={handleClosePopup}
+                        ></div>
+                        <div className="z-30 bg-white rounded-t-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
+                            <div className="relative w-full">
+                                <div className="flex justify-center items-center relative p-6">
+                                    <div className="w-1/3 md:hidden border-b-2 border-black"></div>
+                                    <button
+                                        onClick={handleClosePopup}
+                                        className="absolute top-3 right-4"
+                                    >
+                                        <CloseIcon />
+                                    </button>
+                                </div>
+                            </div>
+                            <div className="overflow-y-auto max-h-[calc(90vh-90px)]">
+                                <EditAdmin
+                                    closePopup={handleClosePopup}
+                                    adminData={adminToEdit}
+                                    onAdminUpdated={() =>
+                                        setRefreshAdmins((prev) => !prev)
+                                    }
+                                />
+                            </div>
                         </div>
                     </div>
                 )}
@@ -166,14 +184,31 @@ export default function ManageStaff() {
                     </div>
                 )}
                 {showAddPopup && (
-                    <div className="absolute inset-0 flex justify-center items-center min-h-[800px] min-w-[360px] w-full h-full bg-black bg-opacity-50 z-50">
-                        <div className="relative w-full max-w-lg bg-white rounded-lg p-6 overflow-auto">
-                            <AddAdmin
-                                closePopup={handleClosePopup}
-                                onAdminAdded={() =>
-                                    setRefreshAdmins((prev) => !prev)
-                                }
-                            />
+                    <div className="fixed inset-0 flex items-end md:items-center justify-center z-10 overflow-y-auto">
+                        <div
+                            className="absolute inset-0 bg-black opacity-50"
+                            onClick={handleClosePopup}
+                        ></div>
+                        <div className="z-30 bg-white rounded-t-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
+                            <div className="relative w-full">
+                                <div className="flex justify-center items-center relative p-6">
+                                    <div className="w-1/3 md:hidden border-b-2 border-black"></div>
+                                    <button
+                                        onClick={handleClosePopup}
+                                        className="absolute top-3 right-4"
+                                    >
+                                        <CloseIcon />
+                                    </button>
+                                </div>
+                            </div>
+                            <div className="overflow-y-auto max-h-[calc(90vh-90px)]">
+                                <AddAdmin
+                                    closePopup={handleClosePopup}
+                                    onAdminAdded={() =>
+                                        setRefreshAdmins((prev) => !prev)
+                                    }
+                                />
+                            </div>
                         </div>
                     </div>
                 )}
@@ -293,7 +328,7 @@ export default function ManageStaff() {
                                                           )
                                                       }
                                                   >
-                                                      <Settings className="inline-flex text-center" />
+                                                      <Pen className="inline-flex text-center" />
                                                   </button>
                                               </TableCell>
                                           </TableRow>
