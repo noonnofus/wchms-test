@@ -1,4 +1,5 @@
 "use client";
+import { Button } from "@/components/ui/button";
 import {
     Select,
     SelectContent,
@@ -6,22 +7,22 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import { useState, useEffect } from "react";
-import Link from "next/link";
-import { type Participant } from "@/db/schema/participants";
 import { getAllCourses } from "@/db/queries/courses";
 import { type Course } from "@/db/schema/course";
+import { type Participant } from "@/db/schema/participants";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export default function ParticipantLogin() {
     const [participants, setParticipants] = useState<
-        { name: string; courses: string[] }[]
+        { name: string; courses: { id: number; title: string }[] }[]
     >([]);
     const [allParticipants, setAllParticipants] = useState<
-        { name: string; courses: string[] }[]
+        { name: string; courses: { id: number; title: string }[] }[]
     >([]);
     const [courses, setCourses] = useState<
         {
+            id: number;
             title: string;
         }[]
     >([]);
@@ -31,6 +32,7 @@ export default function ParticipantLogin() {
             try {
                 const courses = await getAllCourses();
                 const courseData = courses.map((course: Course) => ({
+                    id: course.id,
                     title: course.title,
                 }));
                 setCourses(courseData);
@@ -48,7 +50,7 @@ export default function ParticipantLogin() {
 
                 const uniqueParticipants: {
                     name: string;
-                    courses: string[];
+                    courses: { id: number; title: string }[];
                 }[] = [];
 
                 const seenNames = new Set(); // stores unique first names to check for duplicates
@@ -56,17 +58,13 @@ export default function ParticipantLogin() {
                 participants.forEach(
                     (p: {
                         participant: Participant;
-                        course: string | null;
+                        course: { id: number; title: string } | null;
                     }) => {
                         const firstName = p.participant.firstName.toLowerCase();
 
                         if (!seenNames.has(firstName)) {
                             seenNames.add(firstName);
-                            const coursesArray = p.course
-                                ? p.course
-                                      .split(",")
-                                      .map((course) => course.trim())
-                                : [];
+                            const coursesArray = p.course ? [p.course] : [];
                             uniqueParticipants.push({
                                 name: firstName,
                                 courses: coursesArray,
@@ -76,13 +74,14 @@ export default function ParticipantLogin() {
                             const participant = uniqueParticipants.find(
                                 (p) => p.name === firstName
                             );
-                            if (participant) {
-                                const participantCourses = p.course
-                                    ? p.course
-                                          .split(",")
-                                          .map((course) => course.trim())
-                                    : [];
-                                participant.courses.push(...participantCourses);
+                            if (participant && p.course) {
+                                if (
+                                    !participant.courses.some(
+                                        (c) => c.id === p.course?.id
+                                    )
+                                ) {
+                                    participant.courses.push(p.course);
+                                }
                             }
                         }
                     }
@@ -103,8 +102,10 @@ export default function ParticipantLogin() {
         if (courseName === "All Courses") {
             setParticipants(allParticipants);
         } else {
+            const courseId = parseInt(courseName.split("|")[0]);
+
             const filteredParticipants = allParticipants.filter((p) =>
-                p.courses.includes(courseName)
+                p.courses.some((course) => course.id === courseId)
             );
             setParticipants(filteredParticipants);
         }
@@ -124,8 +125,11 @@ export default function ParticipantLogin() {
                             <SelectItem value="All Courses">
                                 All Courses
                             </SelectItem>
-                            {courses.map((course, index) => (
-                                <SelectItem key={index} value={course.title}>
+                            {courses.map((course) => (
+                                <SelectItem
+                                    key={course.id}
+                                    value={`${course.id}|${course.title}`}
+                                >
                                     {course.title}
                                 </SelectItem>
                             ))}
