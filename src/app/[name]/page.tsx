@@ -1,8 +1,8 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { useState } from "react";
-import { signIn } from "next-auth/react";
+import { useEffect, useState } from "react";
+import { signIn, useSession } from "next-auth/react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -12,13 +12,24 @@ export default function ParticipantConfirmation() {
     const { name } = useParams();
     const [lastName, setLastName] = useState("");
     const [error, setError] = useState("");
+    const [loading, setLoading] = useState(true);
+
+    const { data: session, status } = useSession();
+    useEffect(() => {
+        if (status === "authenticated") {
+            router.push("/landing");
+        } else if (status === "loading") {
+            setLoading(true);
+        } else {
+            setLoading(false);
+        }
+    }, [status, router]);
 
     const handleSignIn = async () => {
         if (!lastName) {
             setError("Please enter your last name.");
             return;
         }
-        console.log(name, lastName);
 
         const result = await signIn("credentials", {
             callbackUrl: "/Landing",
@@ -39,7 +50,7 @@ export default function ParticipantConfirmation() {
             handleSignIn();
         }
     };
-
+    if (loading) return null;
     return (
         <div className="flex flex-col gap-20 w-full h-full items-center justify-center">
             <h1 className="font-semibold text-4xl">Welcome back, {name}!</h1>

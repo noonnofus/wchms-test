@@ -1,6 +1,6 @@
 "use client";
-import { signIn } from "next-auth/react";
-import { useState } from "react";
+import { signIn, useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
 import {
     Card,
     CardHeader,
@@ -11,11 +11,31 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
+    const router = useRouter();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
+    const [loading, setLoading] = useState(true);
+
+    const { data: session, status } = useSession();
+    useEffect(() => {
+        if (status === "authenticated") {
+            if (
+                session.user.role === "Admin" ||
+                session.user.role === "Staff"
+            ) {
+                router.push("/admin/landing");
+            }
+            setLoading(false);
+        } else if (status === "loading") {
+            setLoading(true);
+        } else {
+            setLoading(false);
+        }
+    }, [status, router]);
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -31,10 +51,10 @@ export default function LoginPage() {
         if (res?.error) {
             setError("Invalid email or password");
         } else {
-            window.location.href = "/admin/landing";
+            router.push("/admin/landing");
         }
     };
-
+    if (loading) return null;
     return (
         <div className="fixed inset-0 h-screen flex items-center justify-center mt-20">
             <div className="w-full max-w-4xl relative -translate-y-28 p-6 mt-16">
