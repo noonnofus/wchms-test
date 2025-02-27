@@ -3,6 +3,8 @@ import { DM_Sans } from "next/font/google";
 import "./globals.css";
 import TopNav from "@/components/shared/top-nav";
 import AdminNav from "@/components/shared/admin-nav";
+import { SessionProvider } from "next-auth/react";
+import SessionProviderWrapper from "@/components/shared/session-provider-wrapper";
 
 const dmSans = DM_Sans({
     variable: "--font-dm-sans",
@@ -20,16 +22,18 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en" className="h-full w-full overflow-hidden">
-            <body
-                className={`${dmSans.variable} antialiased min-w-[360px] w-full h-full flex flex-col`}
-            >
-                <TopNav />
-                <div className="flex-1 p-6 overflow-y-auto">{children}</div>
-                <div className="flex-1 fixed bottom-0 right-0 left-0">
-                    <AdminNav />
-                </div>
-            </body>
-        </html>
+        <SessionProviderWrapper>
+            <html lang="en" className="h-full w-full overflow-hidden">
+                <body
+                    className={`${dmSans.variable} antialiased min-w-[360px] w-full h-full flex flex-col`}
+                >
+                    <TopNav />
+                    <div className="flex-1 p-6 overflow-y-auto">{children}</div>
+                    <div className="flex-1 fixed bottom-0 right-0 left-0">
+                        <AdminNav />
+                    </div>
+                </body>
+            </html>
+        </SessionProviderWrapper>
     );
 }

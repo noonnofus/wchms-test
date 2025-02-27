@@ -6,13 +6,6 @@ import NextAuth, { AuthOptions, DefaultSession } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { participants } from "./db/schema/participants";
 
-declare module "next-auth" {
-    interface Session {
-        user: {
-            id: string;
-        } & DefaultSession["user"];
-    }
-}
 export const authConfig: AuthOptions = {
     providers: [
         CredentialsProvider({
@@ -95,39 +88,27 @@ export const authConfig: AuthOptions = {
                         id: user.id.toString(),
                         firstName: user.firstName,
                         lastName: user.lastName,
+                        role: "Participant",
                     };
                 }
                 throw new Error("Invalid signin method");
             },
         }),
     ],
-
-    // callbacks: {
-    //     async session({ session, user }) {
-    //         session.user.id = user.id;
-    //         return session;
-    //     },
-    // authorized({ auth, request: { nextUrl } }: { auth: any; request: { nextUrl: URL } }) {
-    //     const isLoggedIn = !!auth?.user;
-    //     const paths = ["/staff", "/staff/dashboard", "/admin/dashboard"];
-
-    //     const isProtected = paths.some((path) =>
-    //         nextUrl.pathname.startsWith(path)
-    //     );
-
-    //     if (isProtected && !isLoggedIn) {
-    //         const redirectUrl = new URL("/api/auth/signin", nextUrl.origin);
-    //         redirectUrl.searchParams.append("callbackUrl", nextUrl.href);
-    //         return Response.redirect(redirectUrl);
-    //     }
-
-    //     return true;
-    // },
-    //},
     callbacks: {
-        async session({ session, user }) {
+        async jwt({ token, user }) {
             if (user) {
-                session.user.id = user.id;
+                token.id = user.id;
+                token.role = user.role;
+            }
+            return token;
+        },
+        // In the session callback, use token properties to set session values
+        async session({ session, token }) {
+            // Ensure that session has the token's values (id, role)
+            if (token) {
+                session.user.id = token.id as string;
+                session.user.role = token.role as string;
             }
             return session;
         },
