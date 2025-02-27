@@ -1,7 +1,7 @@
 "use client";
 import ChevronDownIcon from "@/components/icons/chevron-down-icon";
 import ChevronUpIcon from "@/components/icons/chevron-up-icon";
-import { Settings, PlusIcon } from "lucide-react";
+import { Pen, PlusIcon } from "lucide-react";
 import DeleteIcon from "@/components/icons/delete-icon";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -39,6 +39,8 @@ export default function ManageParticipant() {
     const [refreshParticipants, setRefreshParticipants] = useState(false);
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
     const [searchQuery, setSearchQuery] = useState("");
+    const [touchStart, setTouchStart] = useState(0);
+    const [touchEnd, setTouchEnd] = useState(0);
 
     useEffect(() => {
         setIsLoading(true);
@@ -98,6 +100,26 @@ export default function ManageParticipant() {
         setShowEditPopup(false);
     };
 
+    // handleTouchStart, handleTouchMove, handleTouchEnd -- for swiping to close modal
+    const handleTouchStart = (e: React.TouchEvent) => {
+        setTouchStart(e.touches[0].clientY);
+    };
+
+    const handleTouchMove = (e: React.TouchEvent) => {
+        setTouchEnd(e.touches[0].clientY);
+    };
+
+    const handleTouchEnd = () => {
+        const swipeDistance = touchEnd - touchStart;
+
+        if (swipeDistance > 50) {
+            handleClosePopup();
+        }
+
+        setTouchStart(0);
+        setTouchEnd(0);
+    };
+
     const handleSortChange = () => {
         setSortOrder((prevOrder) => (prevOrder === "asc" ? "desc" : "asc"));
     };
@@ -138,7 +160,12 @@ export default function ManageParticipant() {
                         <div className="z-30 bg-white rounded-t-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
                             <div className="relative w-full">
                                 <div className="flex justify-center items-center relative p-6">
-                                    <div className="w-1/3 md:hidden border-b-2 border-black"></div>
+                                    <div
+                                        className="w-1/3 md:hidden border-b-2 border-black"
+                                        onTouchStart={handleTouchStart}
+                                        onTouchMove={handleTouchMove}
+                                        onTouchEnd={handleTouchEnd}
+                                    ></div>
                                     <button
                                         onClick={handleClosePopup}
                                         className="absolute top-3 right-4"
@@ -185,7 +212,12 @@ export default function ManageParticipant() {
                         <div className="z-30 bg-white rounded-t-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
                             <div className="relative w-full">
                                 <div className="flex justify-center items-center relative p-6">
-                                    <div className="w-1/3 md:hidden border-b-2 border-black"></div>
+                                    <div
+                                        className="w-1/3 md:hidden border-b-2 border-black"
+                                        onTouchStart={handleTouchStart}
+                                        onTouchMove={handleTouchMove}
+                                        onTouchEnd={handleTouchEnd}
+                                    ></div>
                                     <button
                                         onClick={handleClosePopup}
                                         className="absolute top-3 right-4"
@@ -320,7 +352,7 @@ export default function ManageParticipant() {
                                                                   );
                                                               }}
                                                           >
-                                                              <Settings className="inline-flex text-center" />
+                                                              <Pen className="inline-flex text-center" />
                                                           </button>
                                                       </TableCell>
                                                   </TableRow>
