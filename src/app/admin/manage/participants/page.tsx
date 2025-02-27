@@ -20,6 +20,8 @@ import DeleteConfirmation from "@/components/shared/delete-confirmation";
 import { type Participant } from "@/db/schema/participants";
 import EditParticipant from "@/components/manage/edit-participant";
 import CloseIcon from "@/components/icons/close-icon";
+import { useSwipeable } from "react-swipeable";
+import CloseSwipe from "@/components/icons/close-swipe";
 
 interface ParticipantCourse {
     participant: Participant;
@@ -39,8 +41,14 @@ export default function ManageParticipant() {
     const [refreshParticipants, setRefreshParticipants] = useState(false);
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
     const [searchQuery, setSearchQuery] = useState("");
-    const [touchStart, setTouchStart] = useState(0);
-    const [touchEnd, setTouchEnd] = useState(0);
+
+    const swipeHandlers = useSwipeable({
+        onSwipedDown: () => {
+            handleClosePopup();
+        },
+        preventScrollOnSwipe: true,
+        trackMouse: true,
+    });
 
     useEffect(() => {
         setIsLoading(true);
@@ -100,26 +108,6 @@ export default function ManageParticipant() {
         setShowEditPopup(false);
     };
 
-    // handleTouchStart, handleTouchMove, handleTouchEnd -- for swiping to close modal
-    const handleTouchStart = (e: React.TouchEvent) => {
-        setTouchStart(e.touches[0].clientY);
-    };
-
-    const handleTouchMove = (e: React.TouchEvent) => {
-        setTouchEnd(e.touches[0].clientY);
-    };
-
-    const handleTouchEnd = () => {
-        const swipeDistance = touchEnd - touchStart;
-
-        if (swipeDistance > 50) {
-            handleClosePopup();
-        }
-
-        setTouchStart(0);
-        setTouchEnd(0);
-    };
-
     const handleSortChange = () => {
         setSortOrder((prevOrder) => (prevOrder === "asc" ? "desc" : "asc"));
     };
@@ -160,12 +148,13 @@ export default function ManageParticipant() {
                         <div className="z-30 bg-white rounded-t-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
                             <div className="relative w-full">
                                 <div className="flex justify-center items-center relative p-6">
+                                    {/* Swipe indicator */}
                                     <div
-                                        className="w-1/3 md:hidden border-b-2 border-black"
-                                        onTouchStart={handleTouchStart}
-                                        onTouchMove={handleTouchMove}
-                                        onTouchEnd={handleTouchEnd}
-                                    ></div>
+                                        className="absolute top-6 md:hidden"
+                                        {...swipeHandlers}
+                                    >
+                                        <CloseSwipe />
+                                    </div>
                                     <button
                                         onClick={handleClosePopup}
                                         className="absolute top-3 right-4"
@@ -212,12 +201,13 @@ export default function ManageParticipant() {
                         <div className="z-30 bg-white rounded-t-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
                             <div className="relative w-full">
                                 <div className="flex justify-center items-center relative p-6">
+                                    {/* Swipe indicator */}
                                     <div
-                                        className="w-1/3 md:hidden border-b-2 border-black"
-                                        onTouchStart={handleTouchStart}
-                                        onTouchMove={handleTouchMove}
-                                        onTouchEnd={handleTouchEnd}
-                                    ></div>
+                                        className="absolute top-6 md:hidden"
+                                        {...swipeHandlers}
+                                    >
+                                        <CloseSwipe />
+                                    </div>
                                     <button
                                         onClick={handleClosePopup}
                                         className="absolute top-3 right-4"
