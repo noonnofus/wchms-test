@@ -103,7 +103,6 @@ export const authConfig: AuthOptions = {
             }
             return token;
         },
-        // In the session callback, use token properties to set session values
         async session({ session, token }) {
             // Ensure that session has the token's values (id, role)
             if (token) {
