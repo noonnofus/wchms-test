@@ -3,9 +3,24 @@ import { eq, and } from "drizzle-orm";
 import { CourseParticipant, Courses } from "@/db/schema/course";
 import { rooms } from "@/db/schema/room";
 import { participants } from "@/db/schema/participants";
-//TODO: secure route for admins only
+import { getServerSession } from "next-auth";
+import { authConfig } from "@/auth";
+import { validateAdminOrStaff } from "@/lib/validation";
+
 export async function POST(req: Request) {
     try {
+        const session = await getServerSession(authConfig);
+
+        //Only admins and staff can create courses
+        if (!validateAdminOrStaff(session)) {
+            return new Response(
+                JSON.stringify({
+                    error: "Unauthorized: insufficient permissions",
+                }),
+                { status: 401 }
+            );
+        }
+
         const body = await req.json();
         if (
             !body.courseName ||
@@ -134,7 +149,7 @@ export async function POST(req: Request) {
                 })
             );
         }
-        //TODO: handle course participants
+
         return new Response(JSON.stringify({ courseId, unaddedParticipants }), {
             status: 200,
         });

@@ -12,7 +12,7 @@ export default function Home() {
     const [isLoading, setIsLoading] = useState(true);
     const [selectedCourse, setSelectedCourse] = useState<
         CourseFull | undefined
-    >(undefined); //TODO: update type, include materials and participant types
+    >(undefined);
     useEffect(() => {
         const fetchCourses = async () => {
             try {
@@ -21,11 +21,8 @@ export default function Home() {
                     false,
                     true
                 );
-                //TODO: update to be dynamic class materials and dynamic participants
                 if (course) {
-                    setSelectedCourse({
-                        ...course,
-                    });
+                    setSelectedCourse(course);
                 }
             } catch (error) {
                 console.error("Error fetching courses", error);

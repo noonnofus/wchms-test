@@ -1,10 +1,23 @@
 import { courseMaterials } from "@/db/schema/courseMaterials"; // Adjust according to your schema
 import { eq } from "drizzle-orm";
 import db from "@/db";
+import { getServerSession } from "next-auth";
+import { authConfig } from "@/auth";
+import { validateAdminOrStaff } from "@/lib/validation";
 
-//TODO: secure route to be admin only
 export async function DELETE(req: Request) {
     try {
+        const session = await getServerSession(authConfig);
+
+        //Only admins and staff can delete course materials
+        if (!validateAdminOrStaff(session)) {
+            return new Response(
+                JSON.stringify({
+                    error: "Unauthorized: insufficient permissions",
+                }),
+                { status: 401 }
+            );
+        }
         const body = await req.json();
 
         // Validate that courseMaterialId is provided
