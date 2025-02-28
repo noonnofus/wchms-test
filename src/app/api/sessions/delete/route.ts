@@ -1,10 +1,23 @@
 import db from "@/db";
 import { eq } from "drizzle-orm";
 import { Sessions } from "@/db/schema/session";
+import { getServerSession } from "next-auth";
+import { authConfig } from "@/auth";
+import { validateAdminOrStaff } from "@/lib/validation";
 
-// TODO: secure route for admins only
 export async function DELETE(req: Request) {
     try {
+        const session = await getServerSession(authConfig);
+
+        //Only admins and staff can delete course sessions
+        if (!validateAdminOrStaff(session)) {
+            return new Response(
+                JSON.stringify({
+                    error: "Unauthorized: insufficient permissions",
+                }),
+                { status: 401 }
+            );
+        }
         const body = await req.json();
 
         if (!body.sessionId) {
@@ -14,13 +27,13 @@ export async function DELETE(req: Request) {
             );
         }
 
-        const session = await db
+        const courseSession = await db
             .select()
             .from(Sessions)
             .where(eq(Sessions.id, body.sessionId))
             .then((res) => res[0]);
 
-        if (!session) {
+        if (!courseSession) {
             return new Response(
                 JSON.stringify({ error: "Session not found" }),
                 { status: 404 }

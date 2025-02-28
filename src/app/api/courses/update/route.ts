@@ -2,9 +2,23 @@ import db from "@/db";
 import { eq } from "drizzle-orm";
 import { Courses } from "@/db/schema/course";
 import { rooms } from "@/db/schema/room";
-//TODO: secure route for admins only
+import { getServerSession } from "next-auth";
+import { authConfig } from "@/auth";
+import { validateAdminOrStaff } from "@/lib/validation";
+
 export async function PUT(req: Request) {
     try {
+        const session = await getServerSession(authConfig);
+
+        //Only admins and staff can edit courses
+        if (!validateAdminOrStaff(session)) {
+            return new Response(
+                JSON.stringify({
+                    error: "Unauthorized: insufficient permissions",
+                }),
+                { status: 401 }
+            );
+        }
         const body = await req.json();
         if (
             !body.courseId ||
