@@ -7,8 +7,8 @@ import { Participant } from "@/db/schema/participants";
 
 export default function ParticipantList(props: {
     participants: Participant[];
+    courseId?: number;
 }) {
-    const { id } = useParams();
     return (
         <div className="flex flex-col items-center w-full h-full">
             <Card className="overflow-hidden mb-8">
@@ -17,7 +17,9 @@ export default function ParticipantList(props: {
                         <CardTitle className="text-left text-2xl md:text-[32px]">
                             Participant List
                         </CardTitle>
-                        <Link href={`/admin/courses/${id}/participants`}>
+                        <Link
+                            href={`/admin/courses/${props.courseId}/participants`}
+                        >
                             <p className="text-primary-green text-sm md:text-xl font-semibold">
                                 View All
                             </p>
@@ -37,9 +39,6 @@ export default function ParticipantList(props: {
                                           }
                                       >
                                           <p className="text-lg md:text-2xl font-semibold">{`${participant.firstName} ${participant.lastName[0]}.`}</p>
-                                          {/* <p className="text-[14px] md:text-base font-semibold">
-                                              {participant.city}
-                                          </p> */}
                                           <div className="my-2 md:my-4 self-center w-14 h-14 md:w-20 md:h-20 rounded-full bg-gray-300 flex flex-col items-center justify-center">{`${participant.firstName[0]}${participant.lastName[0]}`}</div>
                                           <Button
                                               asChild
@@ -52,19 +51,24 @@ export default function ParticipantList(props: {
                                           >
                                               <Link href="#">View Profile</Link>
                                           </Button>
-                                          <Button
-                                              asChild
-                                              key={
-                                                  participant.id +
-                                                  participant.firstName +
-                                                  "remove_action"
-                                              }
-                                              className="mt-2 bg-destructive-red text-destructive-text hover:bg-destructive-hover font-semibold text-xs md:text-base"
-                                          >
-                                              <Link href="#">
-                                                  Remove From Course
-                                              </Link>
-                                          </Button>
+
+                                          {props.courseId ? (
+                                              <Button
+                                                  asChild
+                                                  key={
+                                                      participant.id +
+                                                      participant.firstName +
+                                                      "remove_action"
+                                                  }
+                                                  className="mt-2 bg-destructive-red text-destructive-text hover:bg-destructive-hover font-semibold text-xs md:text-base"
+                                              >
+                                                  <Link href="#">
+                                                      Remove From Course
+                                                  </Link>
+                                              </Button>
+                                          ) : (
+                                              ""
+                                          )}
                                       </div>
                                   );
                               })

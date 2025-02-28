@@ -6,6 +6,7 @@ import MaterialCard from "@/components/shared/material-card";
 import { useEffect, useState } from "react";
 import { getCourseById } from "@/db/queries/courses";
 import { CourseFull } from "@/db/schema/course";
+import ParticipantList from "@/components/courses/participant-list";
 
 export default function Home() {
     const { id } = useParams();
@@ -18,7 +19,7 @@ export default function Home() {
             try {
                 const course = await getCourseById(
                     parseInt(id as string),
-                    false,
+                    true,
                     true
                 );
                 if (course) {
@@ -49,11 +50,20 @@ export default function Home() {
                                 <p>Loading Course Details...</p>
                             </div>
                         ) : (
-                            <CourseDetailsCard //TODO: Pass Zoom link
-                                name={selectedCourse.title}
-                                description={selectedCourse?.description || ""}
-                                variant="client"
-                            />
+                            <div className="flex flex-col gap-4">
+                                <CourseDetailsCard //TODO: Pass Zoom link
+                                    name={selectedCourse.title}
+                                    description={
+                                        selectedCourse?.description || ""
+                                    }
+                                    variant="client"
+                                />
+                                <ParticipantList
+                                    participants={
+                                        selectedCourse.participants || []
+                                    }
+                                />
+                            </div>
                         )}
                     </>
                 }
