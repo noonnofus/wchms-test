@@ -17,6 +17,7 @@ import { useSession } from "next-auth/react";
 import {
     checkCourseJoinRequestExists,
     createCourseJoinRequest,
+    deleteCourseJoinRequest,
 } from "@/db/queries/courses";
 import { useEffect, useState } from "react";
 
@@ -47,6 +48,7 @@ export default function CourseCard(
     const [isEnrolling, setIsEnrolling] = useState(false);
     const [error, setError] = useState("");
     const [requestExists, setRequestExists] = useState(false);
+    const [isRemoving, setIsRemoving] = useState(false);
 
     const courseLink =
         props.variant === "admin"
@@ -91,15 +93,28 @@ export default function CourseCard(
         }
     };
 
+    const handleRemoveClick = async () => {
+        if (!participantId) return;
+        setIsRemoving(true);
+        setError("");
+        try {
+            await deleteCourseJoinRequest(props.id, parseInt(participantId));
+            console.log("Join request successfully deleted");
+            setRequestExists(false);
+        } catch (error) {
+            console.error("Error removing request:", error);
+            setError("Something went wrong. Please try again later.");
+        } finally {
+            setIsRemoving(false);
+        }
+    };
+
     return (
         <div className="flex flex-col items-center justify-center relative">
             <Card
                 className="w-full relative cursor-pointer flex flex-col gap-4"
                 onClick={(e) => {
                     e.stopPropagation();
-                    if (requestExists) {
-                        return;
-                    }
                     router.push(courseLink);
                 }}
             >
@@ -145,9 +160,19 @@ export default function CourseCard(
                                         Details
                                     </Link>
                                 </Button>
-                                <p className="bg-gray-400 text-white rounded-full w-full font-semibold text-base p-2 text-center">
-                                    Requested to Join Course
-                                </p>
+                                <Button
+                                    variant="outline"
+                                    className="w-full font-semibold text-base rounded-full px-4 py-2 h-9 border-destructive-hover text-destructive-text hover:bg-destructive-hover hover:text-destructive-text"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleRemoveClick();
+                                    }}
+                                    disabled={isRemoving}
+                                >
+                                    {isRemoving
+                                        ? "Removing..."
+                                        : "Remove Request to Join Course"}
+                                </Button>
                             </div>
                         ) : (
                             <div className="w-full flex flex-col gap-2 pb-4">

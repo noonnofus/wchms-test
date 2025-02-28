@@ -305,10 +305,31 @@ export async function createCourseJoinRequest(
     }
 }
 
+export async function deleteCourseJoinRequest(
+    courseId: number,
+    participantId: number
+) {
+    "use server";
+    try {
+        await db
+            .delete(CourseJoinRequests)
+            .where(
+                and(
+                    eq(CourseJoinRequests.courseId, courseId),
+                    eq(CourseJoinRequests.participantId, participantId)
+                )
+            );
+    } catch (error) {
+        console.error("Error deleting course join request", error);
+        throw error;
+    }
+}
+
 export async function checkCourseJoinRequestExists(
     courseId: number,
     participantId: number
 ) {
+    "use server";
     try {
         const result = await db
             .select()

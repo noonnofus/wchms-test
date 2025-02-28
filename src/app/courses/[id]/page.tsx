@@ -13,11 +13,11 @@ export default function Home() {
     const { id } = useParams();
     const { data: session } = useSession();
     const participantId = session?.user.id;
-    console.log(participantId);
     const [isLoading, setIsLoading] = useState(true);
     const [selectedCourse, setSelectedCourse] = useState<
         CourseFull | undefined
     >(undefined);
+
     useEffect(() => {
         const fetchCourses = async () => {
             try {
@@ -26,7 +26,6 @@ export default function Home() {
                     true,
                     true
                 );
-                console.log(course?.participants);
                 if (course) {
                     setSelectedCourse(course);
                 }
@@ -39,6 +38,7 @@ export default function Home() {
         };
         fetchCourses();
     }, [id]);
+
     if (!selectedCourse) {
         return <div>No course found</div>;
     }
