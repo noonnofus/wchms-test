@@ -53,10 +53,15 @@ export default function Home() {
 
     if (!participantId) return;
 
+    const isParticipant = session.user.role === "Participant";
+
+    if (!isParticipant) {
+        return <div>Please register to view courses</div>;
+    }
+
     const isEnrolled = selectedCourse.participants?.some(
         (participant) => participant.id === parseInt(participantId)
     );
-    if (!isEnrolled) return;
 
     return (
         <div>
@@ -71,7 +76,7 @@ export default function Home() {
                             </div>
                         ) : (
                             <div className="flex flex-col gap-4">
-                                <CourseDetailsCard //TODO: Pass Zoom link
+                                <CourseDetailsCard // TODO: Pass Zoom link
                                     name={selectedCourse.title}
                                     description={
                                         selectedCourse?.description || ""
@@ -79,14 +84,12 @@ export default function Home() {
                                     variant="client"
                                     enrolled={isEnrolled}
                                 />
-                                {isEnrolled ? (
+                                {isParticipant && isEnrolled && (
                                     <ParticipantList
                                         participants={
                                             selectedCourse.participants || []
                                         }
                                     />
-                                ) : (
-                                    ""
                                 )}
                             </div>
                         )}
@@ -94,35 +97,38 @@ export default function Home() {
                 }
                 rightChildren={
                     <>
-                        {isLoading ? (
-                            <div className="flex justify-center items-center py-10">
-                                <p>Loading Course Materials...</p>
-                            </div>
+                        {isParticipant && isEnrolled ? (
+                            isLoading ? (
+                                <div className="flex justify-center items-center py-10">
+                                    <p>Loading Course Materials...</p>
+                                </div>
+                            ) : (
+                                <div className="flex flex-col gap-4">
+                                    {selectedCourse.materials?.length > 0 ? (
+                                        selectedCourse.materials.map(
+                                            (material) => (
+                                                <MaterialCard
+                                                    key={`${material.title}-${material.createdAt}`}
+                                                    material={material}
+                                                />
+                                            )
+                                        )
+                                    ) : (
+                                        <div className="flex flex-col gap-4 text-center py-10">
+                                            <p className="text-center text-xl md:text-2xl font-semibold">
+                                                No course materials available.
+                                            </p>
+                                            <p className="text-xl">
+                                                Try AI self-study for more
+                                                resources!
+                                            </p>
+                                        </div>
+                                    )}
+                                </div>
+                            )
                         ) : (
-                            <div className="flex flex-col gap-4">
-                                {selectedCourse.materials?.length ? (
-                                    selectedCourse.materials.map((material) => {
-                                        return (
-                                            <MaterialCard
-                                                key={
-                                                    material.title +
-                                                    material.createdAt
-                                                }
-                                                material={material}
-                                            />
-                                        );
-                                    })
-                                ) : (
-                                    <div className="flex flex-col gap-4 text-center py-10">
-                                        <p className="text-center text-xl md:text-2xl font-semibold">
-                                            No course materials available.
-                                        </p>
-                                        <p className="text-xl">
-                                            Try AI self-study for more
-                                            resources!
-                                        </p>
-                                    </div>
-                                )}
+                            <div>
+                                You must be enrolled to view course materials
                             </div>
                         )}
                     </>

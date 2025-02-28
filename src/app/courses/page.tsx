@@ -23,7 +23,7 @@ export default function Courses() {
     });
     const { data: session } = useSession();
     const participantId = session?.user.id;
-    console.log(session);
+    console.log("session", session);
     useEffect(() => {
         if (!participantId || status === "loading") return;
         const fetchCourses = async () => {
