@@ -1,5 +1,6 @@
 "use client";
 import { useParams } from "next/navigation";
+import { useSession } from "next-auth/react";
 import TabsMenu from "@/components/shared/tabs-menu";
 import CourseDetailsCard from "@/components/courses/course-details-card";
 import MaterialCard from "@/components/shared/material-card";
@@ -10,6 +11,9 @@ import ParticipantList from "@/components/courses/participant-list";
 
 export default function Home() {
     const { id } = useParams();
+    const { data: session } = useSession();
+    const participantId = session?.user.id;
+    console.log(participantId);
     const [isLoading, setIsLoading] = useState(true);
     const [selectedCourse, setSelectedCourse] = useState<
         CourseFull | undefined
@@ -22,6 +26,7 @@ export default function Home() {
                     true,
                     true
                 );
+                console.log(course?.participants);
                 if (course) {
                     setSelectedCourse(course);
                 }
@@ -33,10 +38,25 @@ export default function Home() {
             }
         };
         fetchCourses();
-    }, []);
+    }, [id]);
     if (!selectedCourse) {
         return <div>No course found</div>;
     }
+
+    if (isLoading) {
+        return <div>Loading...</div>;
+    }
+
+    if (!selectedCourse) {
+        return <div>No course found</div>;
+    }
+
+    if (!participantId) return;
+
+    const isEnrolled = selectedCourse.participants?.some(
+        (participant) => participant.id === parseInt(participantId)
+    );
+    if (!isEnrolled) return;
 
     return (
         <div>
@@ -57,12 +77,17 @@ export default function Home() {
                                         selectedCourse?.description || ""
                                     }
                                     variant="client"
+                                    enrolled={isEnrolled}
                                 />
-                                <ParticipantList
-                                    participants={
-                                        selectedCourse.participants || []
-                                    }
-                                />
+                                {isEnrolled ? (
+                                    <ParticipantList
+                                        participants={
+                                            selectedCourse.participants || []
+                                        }
+                                    />
+                                ) : (
+                                    ""
+                                )}
                             </div>
                         )}
                     </>

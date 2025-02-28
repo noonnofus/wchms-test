@@ -10,6 +10,7 @@ interface CourseDetailsProps {
     name: string;
     description: string;
     variant: "client" | "admin";
+    enrolled?: boolean;
     editAction?: () => void;
 }
 
@@ -47,11 +48,12 @@ export default function CourseDetailsCard(props: CourseDetailsProps) {
                     alt={`${props.name} course image`}
                     className="rounded-lg"
                 />
-                {props.variant == "client" && (
+                {props.variant === "client" && !props.enrolled && (
                     <Button className="bg-primary-green text-white rounded-full w-full font-semibold text-base hover:bg-[#045B47]">
                         Join Session
                     </Button>
                 )}
+
                 {props.variant == "admin" && (
                     <>
                         <div className="flex flex-col gap-2 md:gap-4 w-full">

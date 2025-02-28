@@ -23,7 +23,7 @@ export default function Courses() {
     });
     const { data: session } = useSession();
     const participantId = session?.user.id;
-    console.log(participantId);
+    console.log(session);
     useEffect(() => {
         if (!participantId || status === "loading") return;
         const fetchCourses = async () => {
@@ -39,7 +39,6 @@ export default function Courses() {
                         return { ...course, imageUrl };
                     })
                 );
-                console.log(enrolledCourses);
                 const unenrolledCourses = await Promise.all(
                     availableCourses.unenrolled.map(async (course) => {
                         const imageUrl = course.id
