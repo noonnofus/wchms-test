@@ -13,6 +13,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { twMerge } from "tailwind-merge";
 import EditIcon from "../icons/edit-icon";
+import { useSession } from "next-auth/react";
+import {
+    checkCourseJoinRequestExists,
+    createCourseJoinRequest,
+} from "@/db/queries/courses";
+import { useEffect, useState } from "react";
 
 interface CourseCardProps {
     id: number;
@@ -36,16 +42,66 @@ export default function CourseCard(
     props: ClientVariantProps | AdminVariantProps
 ) {
     const router = useRouter();
+    const { data: session } = useSession();
+    const participantId = session?.user.id;
+    const [isEnrolling, setIsEnrolling] = useState(false);
+    const [error, setError] = useState("");
+    const [requestExists, setRequestExists] = useState(false);
 
     const courseLink =
         props.variant === "admin"
             ? `/admin/courses/${props.id}`
             : `/courses/${props.id}`;
+
+    useEffect(() => {
+        const checkRequestStatus = async () => {
+            if (!participantId) return;
+            try {
+                const exists = await checkCourseJoinRequestExists(
+                    props.id,
+                    parseInt(participantId)
+                );
+                setRequestExists(exists);
+            } catch (error) {
+                console.error("Error checking request status:", error);
+            }
+        };
+
+        checkRequestStatus();
+    }, [participantId, props.id]);
+
+    const handleEnrollClick = async () => {
+        if (!participantId) return;
+        setIsEnrolling(true);
+
+        try {
+            if (requestExists) {
+                setError("Enrollment request already exists.");
+                setIsEnrolling(false);
+                return;
+            }
+
+            await createCourseJoinRequest(props.id, parseInt(participantId));
+            console.log("Join request successfully sent");
+        } catch (error) {
+            console.error("Error enrolling in course:", error);
+            setError("Something went wrong. Please try again later.");
+        } finally {
+            setIsEnrolling(false);
+        }
+    };
+
     return (
         <div className="flex flex-col items-center justify-center relative">
             <Card
                 className="w-full relative cursor-pointer flex flex-col gap-4"
-                onClick={() => router.push(courseLink)}
+                onClick={(e) => {
+                    e.stopPropagation();
+                    if (requestExists) {
+                        return;
+                    }
+                    router.push(courseLink);
+                }}
             >
                 <CardHeader>
                     <CardTitle
@@ -66,35 +122,58 @@ export default function CourseCard(
                         alt={props.imageAlt || `${props.name} Course Image`}
                     />
                 )}
-                {props.variant == "client" &&
-                    (props.enrolled ? (
-                        <Button
-                            asChild
-                            className="bg-primary-green hover:bg-[#045B47] text-white rounded-full w-full font-semibold text-base"
-                        >
-                            <Link href={`/courses/${props.id}`}>
-                                View Course
-                            </Link>
-                        </Button>
-                    ) : (
-                        <div className="w-full flex flex-col gap-2 pb-4">
-                            <Button
-                                asChild
-                                className="hover:bg-primary-green border-primary-green text-primary-green hover:text-white rounded-full w-full font-semibold text-base"
-                                variant="outline"
-                            >
-                                <Link href={`/courses/${props.id}`}>
-                                    Details
-                                </Link>
-                            </Button>
+                {props.variant == "client" && (
+                    <>
+                        <div className="text-red-500">{error}</div>
+                        {props.enrolled ? (
                             <Button
                                 asChild
                                 className="bg-primary-green hover:bg-[#045B47] text-white rounded-full w-full font-semibold text-base"
                             >
-                                <Link href="#">Enroll</Link>
+                                <Link href={`/courses/${props.id}`}>
+                                    View Course
+                                </Link>
                             </Button>
-                        </div>
-                    ))}
+                        ) : requestExists ? (
+                            <div className="w-full flex flex-col gap-2 pb-4">
+                                <Button
+                                    asChild
+                                    className="hover:bg-primary-green border-primary-green text-primary-green hover:text-white rounded-full w-full font-semibold text-base"
+                                    variant="outline"
+                                >
+                                    <Link href={`/courses/${props.id}`}>
+                                        Details
+                                    </Link>
+                                </Button>
+                                <p className="bg-gray-400 text-white rounded-full w-full font-semibold text-base p-2 text-center">
+                                    Requested to Join Course
+                                </p>
+                            </div>
+                        ) : (
+                            <div className="w-full flex flex-col gap-2 pb-4">
+                                <Button
+                                    asChild
+                                    className="hover:bg-primary-green border-primary-green text-primary-green hover:text-white rounded-full w-full font-semibold text-base"
+                                    variant="outline"
+                                >
+                                    <Link href={`/courses/${props.id}`}>
+                                        Details
+                                    </Link>
+                                </Button>
+                                <Button
+                                    className="bg-primary-green hover:bg-[#045B47] text-white rounded-full w-full font-semibold text-base"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleEnrollClick();
+                                    }}
+                                    disabled={isEnrolling}
+                                >
+                                    {isEnrolling ? "Enrolling..." : "Enroll"}
+                                </Button>
+                            </div>
+                        )}
+                    </>
+                )}
                 {props.variant == "admin" && (
                     <CardContent>
                         <p>{props.description}</p>

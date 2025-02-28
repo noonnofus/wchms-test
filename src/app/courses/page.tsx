@@ -63,15 +63,7 @@ export default function Courses() {
             }
         };
         fetchCourses();
-    }, [participantId, status]);
-
-    if (status === "loading") {
-        return (
-            <div className="flex justify-center items-center py-10">
-                Loading...
-            </div>
-        );
-    }
+    }, [participantId]);
 
     if (!session) {
         return (

@@ -5,11 +5,12 @@ import {
     CourseParticipant,
     Courses as coursesTable,
 } from "@/db/schema/course";
-import { desc, eq } from "drizzle-orm";
+import { desc, eq, and } from "drizzle-orm";
 import { uploadMedia } from "../schema/mediaUpload";
 import { courseMaterials } from "../schema/courseMaterials";
 import { participants } from "@/db/schema/participants";
 import { type Participant } from "../schema/participants";
+import { CourseJoinRequests } from "../schema/courseJoinRequests";
 
 export interface courseList {
     id: number;
@@ -20,7 +21,6 @@ export interface courseList {
 export async function getAvailableCourses(userId?: number) {
     /* page = 1, limit = 10 */ //Uncomment in the future for pagination functionality
     "use server";
-    console.log(userId);
     try {
         if (!userId) {
             throw new Error("User ID is required to fetch available courses.");
@@ -41,7 +41,6 @@ export async function getAvailableCourses(userId?: number) {
             })
             .from(CourseParticipant)
             .where(eq(CourseParticipant.userId, userId));
-        console.log(userCourses);
 
         const userCourseIds = userCourses.map((course) => course.courseId);
 
@@ -282,6 +281,49 @@ export async function updateCourseMedia(courseId: number, mediaId: number) {
         return true;
     } catch (error) {
         console.error("Error updating course media:", error);
+        throw error;
+    }
+}
+
+// COURSE JOIN REQUESTS
+
+export async function createCourseJoinRequest(
+    courseId: number,
+    participantId: number
+) {
+    "use server";
+    try {
+        await db.insert(CourseJoinRequests).values({
+            participantId: participantId,
+            courseId: courseId,
+        });
+
+        console.log("Course join request created successfully.");
+    } catch (error) {
+        console.error("Error creating course join request", error);
+        throw error;
+    }
+}
+
+export async function checkCourseJoinRequestExists(
+    courseId: number,
+    participantId: number
+) {
+    try {
+        const result = await db
+            .select()
+            .from(CourseJoinRequests)
+            .where(
+                and(
+                    eq(CourseJoinRequests.courseId, courseId),
+                    eq(CourseJoinRequests.participantId, participantId)
+                )
+            )
+            .limit(1);
+
+        return result.length > 0;
+    } catch (error) {
+        console.error("Error checking for course join request", error);
         throw error;
     }
 }
