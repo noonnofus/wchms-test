@@ -76,12 +76,12 @@ export default function Courses() {
                     ></div>
                     <div className="z-30 bg-white rounded-t-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
                         <div className="relative w-full">
-                            <div className="flex justify-center items-center relative p-6">
+                            <div
+                                className="flex justify-center items-center relative p-6 "
+                                {...swipeHandlers}
+                            >
                                 {/* Swipe indicator */}
-                                <div
-                                    className="absolute top-6 md:hidden"
-                                    {...swipeHandlers}
-                                >
+                                <div className="absolute top-6 md:hidden">
                                     <CloseSwipe />
                                 </div>
                                 <button
