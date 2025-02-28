@@ -153,21 +153,21 @@ export default function ManageStaff() {
                         ></div>
                         <div className="z-30 bg-white rounded-t-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
                             <div className="relative w-full">
-                                <div className="flex justify-center items-center relative p-6">
+                                <div
+                                    className="flex justify-center items-center p-6 md:hidden "
+                                    {...swipeHandlers}
+                                >
                                     {/* Swipe indicator */}
-                                    <div
-                                        className="absolute top-6 md:hidden"
-                                        {...swipeHandlers}
-                                    >
+                                    <div className="absolute top-6 md:hidden">
                                         <CloseSwipe />
                                     </div>
-                                    <button
-                                        onClick={handleClosePopup}
-                                        className="absolute top-3 right-4"
-                                    >
-                                        <CloseIcon />
-                                    </button>
                                 </div>
+                                <button
+                                    onClick={handleClosePopup}
+                                    className="absolute top-3 right-4"
+                                >
+                                    <CloseIcon />
+                                </button>
                             </div>
                             <div className="overflow-y-auto max-h-[calc(90vh-90px)]">
                                 <EditAdmin
@@ -207,21 +207,21 @@ export default function ManageStaff() {
                         ></div>
                         <div className="z-30 bg-white rounded-t-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
                             <div className="relative w-full">
-                                <div className="flex justify-center items-center relative p-6">
+                                <div
+                                    className="flex justify-center items-center p-6 md:hidden "
+                                    {...swipeHandlers}
+                                >
                                     {/* Swipe indicator */}
-                                    <div
-                                        className="absolute top-6 md:hidden"
-                                        {...swipeHandlers}
-                                    >
+                                    <div className="absolute top-6 md:hidden">
                                         <CloseSwipe />
                                     </div>
-                                    <button
-                                        onClick={handleClosePopup}
-                                        className="absolute top-3 right-4"
-                                    >
-                                        <CloseIcon />
-                                    </button>
                                 </div>
+                                <button
+                                    onClick={handleClosePopup}
+                                    className="absolute top-3 right-4"
+                                >
+                                    <CloseIcon />
+                                </button>
                             </div>
                             <div className="overflow-y-auto max-h-[calc(90vh-90px)]">
                                 <AddAdmin

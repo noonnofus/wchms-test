@@ -321,7 +321,7 @@ export default function AddCourse(props: props) {
     };
 
     return (
-        <div className="relative flex flex-col gap-12 w-full h-full py-8 px-6 rounded-lg bg-white items-center justify-center overf">
+        <div className="flex flex-col gap-12 w-full h-full py-8 px-6 rounded-lg bg-white items-center justify-center overf">
             <h1 className="font-semibold text-3xl md:text-4xl text-center">
                 {props.courseId ? "Edit Course" : "Add New Course"}
             </h1>
