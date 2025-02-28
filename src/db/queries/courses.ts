@@ -17,11 +17,14 @@ export interface courseList {
     description: string | null;
 }
 //Returns all courses that are available to users. Returns an object with an array of enrolled courses and unenrolled courses
-export async function getAvailableCourses() {
+export async function getAvailableCourses(userId?: number) {
     /* page = 1, limit = 10 */ //Uncomment in the future for pagination functionality
     "use server";
+    console.log(userId);
     try {
-        const userId = 1; //TODO: update to use current session user id
+        if (!userId) {
+            throw new Error("User ID is required to fetch available courses.");
+        }
         const availableCourses = await db
             .select({
                 id: coursesTable.id,
@@ -38,6 +41,7 @@ export async function getAvailableCourses() {
             })
             .from(CourseParticipant)
             .where(eq(CourseParticipant.userId, userId));
+        console.log(userCourses);
 
         const userCourseIds = userCourses.map((course) => course.courseId);
 

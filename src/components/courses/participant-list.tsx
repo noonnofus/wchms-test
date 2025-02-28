@@ -9,6 +9,7 @@ export default function ParticipantList(props: {
     participants: Participant[];
     courseId?: number;
 }) {
+    const { id } = useParams();
     return (
         <div className="flex flex-col items-center w-full h-full">
             <Card className="overflow-hidden mb-8">
@@ -17,13 +18,21 @@ export default function ParticipantList(props: {
                         <CardTitle className="text-left text-2xl md:text-[32px]">
                             Participant List
                         </CardTitle>
-                        <Link
-                            href={`/admin/courses/${props.courseId}/participants`}
-                        >
-                            <p className="text-primary-green text-sm md:text-xl font-semibold">
-                                View All
-                            </p>
-                        </Link>
+                        {props.courseId ? (
+                            <Link
+                                href={`/admin/courses/${props.courseId}/participants`}
+                            >
+                                <p className="text-primary-green text-sm md:text-xl font-semibold">
+                                    View All
+                                </p>
+                            </Link>
+                        ) : (
+                            <Link href={`/courses/${id}/participants`}>
+                                <p className="text-primary-green text-sm md:text-xl font-semibold">
+                                    View All
+                                </p>
+                            </Link>
+                        )}
                     </div>
                 </CardHeader>
                 <CardContent className="overflow-x-auto w-full">
