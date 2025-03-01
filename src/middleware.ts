@@ -11,14 +11,14 @@ export async function middleware(req: NextRequest) {
     }
 
     if (!token) {
-        if (pathname.startsWith("/admins/")) {
+        if (pathname.startsWith("/admin/")) {
             return NextResponse.redirect(new URL("/admin", req.url));
         }
 
         return NextResponse.redirect(new URL("/", req.url));
     }
 
-    if (pathname.startsWith("/admins/")) {
+    if (pathname.startsWith("/admin/")) {
         const userRole = token.role;
 
         if (userRole !== "Admin" && userRole !== "Staff") {
@@ -31,5 +31,5 @@ export async function middleware(req: NextRequest) {
 
 // Protected routes
 export const config = {
-    // matcher: ["/admin/:path*", "/landing", "/courses"],
+    matcher: ["/admin/:path*", "/landing", "/courses"],
 };
