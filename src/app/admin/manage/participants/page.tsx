@@ -1,11 +1,14 @@
 "use client";
 import ChevronDownIcon from "@/components/icons/chevron-down-icon";
 import ChevronUpIcon from "@/components/icons/chevron-up-icon";
-import { Settings, PlusIcon } from "lucide-react";
+import CloseIcon from "@/components/icons/close-icon";
 import DeleteIcon from "@/components/icons/delete-icon";
+import AddParticipant from "@/components/manage/add-participant";
+import EditParticipant from "@/components/manage/edit-participant";
+import DeleteConfirmation from "@/components/shared/delete-confirmation";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
     Table,
     TableBody,
@@ -14,12 +17,9 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { useState, useEffect } from "react";
-import AddParticipant from "@/components/manage/add-participant";
-import DeleteConfirmation from "@/components/shared/delete-confirmation";
 import { type Participant } from "@/db/schema/participants";
-import EditParticipant from "@/components/manage/edit-participant";
-import CloseIcon from "@/components/icons/close-icon";
+import { PlusIcon, Settings } from "lucide-react";
+import { useEffect, useState } from "react";
 
 interface ParticipantCourse {
     participant: Participant;
@@ -45,7 +45,15 @@ export default function ManageParticipant() {
         fetch("/api/participants")
             .then((res) => res.json())
             .then((data) => {
-                setParticipants(data);
+                const formattedParticipants = data.map(
+                    (item: ParticipantCourse) => ({
+                        ...item,
+                        course: item.course
+                            ? item.course.split(":")[1]
+                            : "none",
+                    })
+                );
+                setParticipants(formattedParticipants);
                 setIsLoading(false);
             })
             .catch((error) => {
