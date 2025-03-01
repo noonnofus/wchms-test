@@ -7,7 +7,7 @@ import {
     getAvailableCourses,
 } from "@/db/queries/courses";
 import { useEffect, useState } from "react";
-
+import { useSession } from "next-auth/react";
 export type CourseListWithImage = courseList & {
     imageUrl?: string | null;
 };
@@ -21,7 +21,10 @@ export default function Courses() {
         enrolled: [] as CourseListWithImage[],
         unenrolled: [] as CourseListWithImage[],
     });
+    const { data: session } = useSession();
+    const participantId = session?.user.id;
     useEffect(() => {
+        if (!participantId || status === "loading") return;
         const fetchCourses = async () => {
             try {
                 const availableCourses = await getAvailableCourses();
@@ -56,7 +59,7 @@ export default function Courses() {
             }
         };
         fetchCourses();
-    }, []);
+    }, [participantId]);
     return (
         <div className="">
             <TabsMenu

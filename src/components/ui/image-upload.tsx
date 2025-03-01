@@ -24,7 +24,6 @@ export default function ImageUpload({
                 try {
                     const url = await fetchCourseImage(Number(uploadId));
                     setPreviewUrl(url || "");
-                    console.log(url);
                 } catch (error) {
                     setInternalError("Error fetching image.");
                 }
