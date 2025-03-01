@@ -40,6 +40,7 @@ export default function ParticipantLogin() {
                 console.error("Error fetching courses", error);
             }
         };
+
         const fetchParticipants = async () => {
             try {
                 const response = await fetch("/api/participants");
@@ -58,13 +59,24 @@ export default function ParticipantLogin() {
                 participants.forEach(
                     (p: {
                         participant: Participant;
-                        course: { id: number; title: string } | null;
+                        course: string | null;
                     }) => {
                         const firstName = p.participant.firstName.toLowerCase();
 
                         if (!seenNames.has(firstName)) {
                             seenNames.add(firstName);
-                            const coursesArray = p.course ? [p.course] : [];
+
+                            const coursesArray = p.course
+                                ? p.course.split(",").map((courseStr) => {
+                                      const [idStr, ...titleParts] = courseStr
+                                          .trim()
+                                          .split(":");
+                                      const id = parseInt(idStr);
+                                      const title = titleParts.join(":").trim();
+                                      return { id, title };
+                                  })
+                                : [];
+
                             uniqueParticipants.push({
                                 name: firstName,
                                 courses: coursesArray,
@@ -74,14 +86,30 @@ export default function ParticipantLogin() {
                             const participant = uniqueParticipants.find(
                                 (p) => p.name === firstName
                             );
+
                             if (participant && p.course) {
-                                if (
-                                    !participant.courses.some(
-                                        (c) => c.id === p.course?.id
-                                    )
-                                ) {
-                                    participant.courses.push(p.course);
-                                }
+                                const newCourses = p.course
+                                    .split(",")
+                                    .map((courseStr) => {
+                                        const [idStr, ...titleParts] = courseStr
+                                            .trim()
+                                            .split(":");
+                                        const id = parseInt(idStr);
+                                        const title = titleParts
+                                            .join(":")
+                                            .trim();
+                                        return { id, title };
+                                    });
+
+                                newCourses.forEach((newCourse) => {
+                                    if (
+                                        !participant.courses.some(
+                                            (c) => c.id === newCourse.id
+                                        )
+                                    ) {
+                                        participant.courses.push(newCourse);
+                                    }
+                                });
                             }
                         }
                     }
@@ -98,15 +126,17 @@ export default function ParticipantLogin() {
         fetchCourses();
     }, []);
 
-    const handleCourseSelect = (courseName: string) => {
-        if (courseName === "All Courses") {
+    const handleCourseSelect = (courseValue: string) => {
+        if (courseValue === "All Courses") {
             setParticipants(allParticipants);
         } else {
-            const courseId = parseInt(courseName.split("|")[0]);
+            const [idStr, title] = courseValue.split("|");
+            const courseId = parseInt(idStr);
 
             const filteredParticipants = allParticipants.filter((p) =>
                 p.courses.some((course) => course.id === courseId)
             );
+
             setParticipants(filteredParticipants);
         }
     };
