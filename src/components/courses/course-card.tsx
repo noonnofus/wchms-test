@@ -110,9 +110,9 @@ export default function CourseCard(
     };
 
     return (
-        <div className="flex flex-col items-center justify-center relative">
+        <div className="relative w-full h-full flex flex-col items-center justify-center ">
             <Card
-                className="w-full relative cursor-pointer flex flex-col gap-4"
+                className="relative w-full cursor-pointer flex flex-col gap-4 py-6"
                 onClick={(e) => {
                     e.stopPropagation();
                     router.push(courseLink);
@@ -143,17 +143,17 @@ export default function CourseCard(
                         {props.enrolled ? (
                             <Button
                                 asChild
-                                className="bg-primary-green hover:bg-[#045B47] text-white rounded-full w-full font-semibold text-base"
+                                className="w-full md:text-xl py-2 md:py-4 rounded-full bg-primary-green hover:bg-[#045B47] text-white font-semibold text-base"
                             >
                                 <Link href={`/courses/${props.id}`}>
                                     View Course
                                 </Link>
                             </Button>
                         ) : requestExists ? (
-                            <div className="w-full flex flex-col gap-2 pb-4">
+                            <div className="w-full h-full flex flex-col gap-2 md:gap-6">
                                 <Button
                                     asChild
-                                    className="hover:bg-primary-green border-primary-green text-primary-green hover:text-white rounded-full w-full font-semibold text-base"
+                                    className="w-full md:text-xl py-2 md:py-4 rounded-full hover:bg-primary-green border-primary-green text-primary-green hover:text-white font-semibold text-base"
                                     variant="outline"
                                 >
                                     <Link href={`/courses/${props.id}`}>
@@ -162,7 +162,7 @@ export default function CourseCard(
                                 </Button>
                                 <Button
                                     variant="outline"
-                                    className="w-full font-semibold text-base rounded-full px-4 py-2 h-9 border-destructive-hover text-destructive-text hover:bg-destructive-hover hover:text-destructive-text"
+                                    className="w-full md:text-xl py-2 md:py-4 rounded-full border-destructive-hover text-destructive-text hover:bg-destructive-hover hover:text-destructive-text"
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         handleRemoveClick();
@@ -178,7 +178,7 @@ export default function CourseCard(
                             <div className="w-full flex flex-col gap-2 pb-4">
                                 <Button
                                     asChild
-                                    className="hover:bg-primary-green border-primary-green text-primary-green hover:text-white rounded-full w-full font-semibold text-base"
+                                    className="w-full md:text-xl py-2 md:py-4 rounded-full hover:bg-primary-green border-primary-green text-primary-green hover:text-white font-semibold text-base"
                                     variant="outline"
                                 >
                                     <Link href={`/courses/${props.id}`}>
@@ -186,7 +186,7 @@ export default function CourseCard(
                                     </Link>
                                 </Button>
                                 <Button
-                                    className="bg-primary-green hover:bg-[#045B47] text-white rounded-full w-full font-semibold text-base"
+                                    className="w-full md:text-xl py-2 md:py-4 rounded-full bg-primary-green hover:bg-[#045B47] text-white font-semibold text-base"
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         handleEnrollClick();
