@@ -55,21 +55,21 @@ export default function CourseCard(
             ? `/admin/courses/${props.id}`
             : `/courses/${props.id}`;
 
-    useEffect(() => {
-        const checkRequestStatus = async () => {
-            if (!participantId) return;
-            try {
-                const exists = await checkCourseJoinRequestExists(
-                    props.id,
-                    parseInt(participantId)
-                );
-                setRequestExists(exists);
-            } catch (error) {
-                console.error("Error checking request status:", error);
-            }
-        };
+    const fetchData = async () => {
+        if (!participantId) return;
+        try {
+            const exists = await checkCourseJoinRequestExists(
+                props.id,
+                parseInt(participantId)
+            );
+            setRequestExists(exists);
+        } catch (error) {
+            console.error("Error checking request status:", error);
+        }
+    };
 
-        checkRequestStatus();
+    useEffect(() => {
+        fetchData();
     }, [participantId, props.id]);
 
     const handleEnrollClick = async () => {
@@ -85,6 +85,7 @@ export default function CourseCard(
 
             await createCourseJoinRequest(props.id, parseInt(participantId));
             console.log("Join request successfully sent");
+            await fetchData();
         } catch (error) {
             console.error("Error enrolling in course:", error);
             setError("Something went wrong. Please try again later.");
