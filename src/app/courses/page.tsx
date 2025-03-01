@@ -23,14 +23,11 @@ export default function Courses() {
     });
     const { data: session } = useSession();
     const participantId = session?.user.id;
-    console.log("session", session);
     useEffect(() => {
         if (!participantId || status === "loading") return;
         const fetchCourses = async () => {
             try {
-                const availableCourses = await getAvailableCourses(
-                    parseInt(participantId)
-                );
+                const availableCourses = await getAvailableCourses();
                 const enrolledCourses = await Promise.all(
                     availableCourses.enrolled.map(async (course) => {
                         const imageUrl = course.id
@@ -51,7 +48,6 @@ export default function Courses() {
                     enrolled: enrolledCourses,
                     unenrolled: unenrolledCourses,
                 });
-                console.log(unenrolledCourses);
             } catch (error) {
                 console.error("Error fetching courses", error);
                 setCourses({
@@ -64,15 +60,6 @@ export default function Courses() {
         };
         fetchCourses();
     }, [participantId]);
-
-    if (!session) {
-        return (
-            <div className="flex justify-center items-center py-10">
-                Please log in to view courses.
-            </div>
-        );
-    }
-
     return (
         <div className="">
             <TabsMenu

@@ -11,6 +11,8 @@ import { courseMaterials } from "../schema/courseMaterials";
 import { participants } from "@/db/schema/participants";
 import { type Participant } from "../schema/participants";
 import { CourseJoinRequests } from "../schema/courseJoinRequests";
+import { getServerSession } from "next-auth";
+import { authConfig } from "@/auth";
 
 export interface courseList {
     id: number;
@@ -18,11 +20,12 @@ export interface courseList {
     description: string | null;
 }
 //Returns all courses that are available to users. Returns an object with an array of enrolled courses and unenrolled courses
-export async function getAvailableCourses(userId?: number) {
+export async function getAvailableCourses() {
     /* page = 1, limit = 10 */ //Uncomment in the future for pagination functionality
     "use server";
     try {
-        if (!userId) {
+        const session = await getServerSession(authConfig);
+        if (!session || !session.user.id) {
             throw new Error("User ID is required to fetch available courses.");
         }
         const availableCourses = await db
@@ -40,7 +43,7 @@ export async function getAvailableCourses(userId?: number) {
                 courseId: CourseParticipant.courseId,
             })
             .from(CourseParticipant)
-            .where(eq(CourseParticipant.userId, userId));
+            .where(eq(CourseParticipant.userId, parseInt(session.user.id)));
 
         const userCourseIds = userCourses.map((course) => course.courseId);
 
