@@ -2,6 +2,7 @@
 import ChevronDownIcon from "@/components/icons/chevron-down-icon";
 import ChevronUpIcon from "@/components/icons/chevron-up-icon";
 import CloseIcon from "@/components/icons/close-icon";
+import { Pen, PlusIcon, Settings } from "lucide-react";
 import DeleteIcon from "@/components/icons/delete-icon";
 import AddParticipant from "@/components/manage/add-participant";
 import EditParticipant from "@/components/manage/edit-participant";
@@ -18,8 +19,9 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { type Participant } from "@/db/schema/participants";
-import { PlusIcon, Settings } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useSwipeable } from "react-swipeable";
+import CloseSwipe from "@/components/icons/close-swipe";
 
 interface ParticipantCourse {
     participant: Participant;
@@ -39,6 +41,14 @@ export default function ManageParticipant() {
     const [refreshParticipants, setRefreshParticipants] = useState(false);
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
     const [searchQuery, setSearchQuery] = useState("");
+
+    const swipeHandlers = useSwipeable({
+        onSwipedDown: () => {
+            handleClosePopup();
+        },
+        preventScrollOnSwipe: true,
+        trackMouse: true,
+    });
 
     useEffect(() => {
         setIsLoading(true);
@@ -145,15 +155,21 @@ export default function ManageParticipant() {
                         ></div>
                         <div className="z-30 bg-white rounded-t-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
                             <div className="relative w-full">
-                                <div className="flex justify-center items-center relative p-6">
-                                    <div className="w-1/3 md:hidden border-b-2 border-black"></div>
-                                    <button
-                                        onClick={handleClosePopup}
-                                        className="absolute top-3 right-4"
-                                    >
-                                        <CloseIcon />
-                                    </button>
+                                <div
+                                    className="flex justify-center items-center p-6 md:hidden "
+                                    {...swipeHandlers}
+                                >
+                                    {/* Swipe indicator */}
+                                    <div className="absolute top-6 md:hidden">
+                                        <CloseSwipe />
+                                    </div>
                                 </div>
+                                <button
+                                    onClick={handleClosePopup}
+                                    className="absolute top-3 right-4"
+                                >
+                                    <CloseIcon />
+                                </button>
                             </div>
                             <div className="overflow-y-auto max-h-[calc(90vh-90px)]">
                                 <EditParticipant
@@ -192,15 +208,21 @@ export default function ManageParticipant() {
                         ></div>
                         <div className="z-30 bg-white rounded-t-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
                             <div className="relative w-full">
-                                <div className="flex justify-center items-center relative p-6">
-                                    <div className="w-1/3 md:hidden border-b-2 border-black"></div>
-                                    <button
-                                        onClick={handleClosePopup}
-                                        className="absolute top-3 right-4"
-                                    >
-                                        <CloseIcon />
-                                    </button>
+                                <div
+                                    className="flex justify-center items-center p-6 md:hidden "
+                                    {...swipeHandlers}
+                                >
+                                    {/* Swipe indicator */}
+                                    <div className="absolute top-6 md:hidden">
+                                        <CloseSwipe />
+                                    </div>
                                 </div>
+                                <button
+                                    onClick={handleClosePopup}
+                                    className="absolute top-3 right-4"
+                                >
+                                    <CloseIcon />
+                                </button>
                             </div>
                             <div className="overflow-y-auto max-h-[calc(90vh-90px)]">
                                 <AddParticipant
@@ -328,7 +350,7 @@ export default function ManageParticipant() {
                                                                   );
                                                               }}
                                                           >
-                                                              <Settings className="inline-flex text-center" />
+                                                              <Pen className="inline-flex text-center" />
                                                           </button>
                                                       </TableCell>
                                                   </TableRow>

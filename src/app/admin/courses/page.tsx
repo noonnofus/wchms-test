@@ -2,9 +2,11 @@
 import AddCourse from "@/components/courses/add-course";
 import CourseCard from "@/components/courses/course-card";
 import CloseIcon from "@/components/icons/close-icon";
+import CloseSwipe from "@/components/icons/close-swipe";
 import { fetchCourseImage, getAllCourses } from "@/db/queries/courses";
 import { type Course } from "@/db/schema/course";
 import { useEffect, useState } from "react";
+import { useSwipeable } from "react-swipeable";
 
 export type CourseWithImage = Course & {
     imageUrl?: string | null;
@@ -27,6 +29,15 @@ export default function Courses() {
         setShowAddPopup(false);
         setShowEditPopup(false);
     };
+
+    const swipeHandlers = useSwipeable({
+        onSwipedDown: () => {
+            handleClosePopup();
+        },
+        preventScrollOnSwipe: true,
+        trackMouse: true,
+    });
+
     const [isLoading, setIsLoading] = useState(true);
     const [courses, setCourses] = useState<CourseWithImage[]>([]);
 
@@ -65,15 +76,21 @@ export default function Courses() {
                     ></div>
                     <div className="z-30 bg-white rounded-t-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
                         <div className="relative w-full">
-                            <div className="flex justify-center items-center relative p-6">
-                                <div className="w-1/3 md:hidden border-b-2 border-black"></div>
-                                <button
-                                    onClick={handleClosePopup}
-                                    className="absolute top-3 right-4"
-                                >
-                                    <CloseIcon />
-                                </button>
+                            <div
+                                className="flex justify-center items-center p-6 md:hidden "
+                                {...swipeHandlers}
+                            >
+                                {/* Swipe indicator */}
+                                <div className="absolute top-6 md:hidden">
+                                    <CloseSwipe />
+                                </div>
                             </div>
+                            <button
+                                onClick={handleClosePopup}
+                                className="absolute top-3 right-4"
+                            >
+                                <CloseIcon />
+                            </button>
                         </div>
                         <div className="overflow-y-auto max-h-[calc(90vh-90px)]">
                             <AddCourse handleClosePopup={handleClosePopup} />
@@ -90,15 +107,21 @@ export default function Courses() {
                     />
                     <div className="z-30 bg-white rounded-t-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
                         <div className="relative w-full">
-                            <div className="flex justify-center items-center relative p-6">
-                                <div className="w-1/3 md:hidden border-b-2 border-black"></div>
-                                <button
-                                    onClick={handleClosePopup}
-                                    className="absolute top-3 right-4"
-                                >
-                                    <CloseIcon />
-                                </button>
+                            <div
+                                className="flex justify-center items-center p-6 md:hidden "
+                                {...swipeHandlers}
+                            >
+                                {/* Swipe indicator */}
+                                <div className="absolute top-6 md:hidden">
+                                    <CloseSwipe />
+                                </div>
                             </div>
+                            <button
+                                onClick={handleClosePopup}
+                                className="absolute top-3 right-4"
+                            >
+                                <CloseIcon />
+                            </button>
                         </div>
                         <div className="overflow-y-auto max-h-[calc(90vh-90px)]">
                             <AddCourse

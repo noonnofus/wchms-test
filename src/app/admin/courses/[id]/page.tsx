@@ -5,6 +5,7 @@ import CourseDetailsCard from "@/components/courses/course-details-card";
 import EditMaterial from "@/components/courses/edit-material";
 import ParticipantList from "@/components/courses/participant-list";
 import CloseIcon from "@/components/icons/close-icon";
+import CloseSwipe from "@/components/icons/close-swipe";
 import MaterialCard from "@/components/shared/material-card";
 import TabsMenu from "@/components/shared/tabs-menu";
 import { Button } from "@/components/ui/button";
@@ -13,6 +14,7 @@ import { CourseFull } from "@/db/schema/course";
 import { CourseMaterialsWithFile } from "@/db/schema/courseMaterials";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useSwipeable } from "react-swipeable";
 
 export default function AdminCourses() {
     const { id } = useParams();
@@ -29,6 +31,15 @@ export default function AdminCourses() {
     const [showEditMaterialPopup, setShowEditMaterialPopup] = useState(false);
     const [editMaterialId, setMaterialId] = useState("");
     const [showEditCoursePopup, setShowEditCoursePopup] = useState(false);
+
+    const swipeHandlers = useSwipeable({
+        onSwipedDown: () => {
+            handleClosePopup();
+            handleCloseEditPopup();
+        },
+        preventScrollOnSwipe: true,
+    });
+
     useEffect(() => {
         const fetchCourses = async () => {
             try {
@@ -71,6 +82,7 @@ export default function AdminCourses() {
     };
     const handleClosePopup = () => {
         setShowAddPopup(false);
+        setShowEditCoursePopup(false);
     };
     const handleEditButtonClick = (id: string) => {
         setMaterialId(id);
@@ -83,9 +95,6 @@ export default function AdminCourses() {
 
     const handleEditCourseButtonClick = () => {
         setShowEditCoursePopup(true);
-    };
-    const handleCloseEditCoursePopup = () => {
-        setShowEditCoursePopup(false);
     };
 
     return (
@@ -129,27 +138,29 @@ export default function AdminCourses() {
                             <div className="fixed inset-0 flex items-end md:items-center justify-center z-10 overflow-y-auto">
                                 <div
                                     className="absolute inset-0 bg-black opacity-50"
-                                    onClick={handleCloseEditCoursePopup}
+                                    onClick={handleClosePopup}
                                 ></div>
                                 <div className="z-30 bg-white rounded-t-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
                                     <div className="relative w-full">
-                                        <div className="flex justify-center items-center relative p-6">
-                                            <div className="w-1/3 md:hidden border-b-2 border-black"></div>
-                                            <button
-                                                onClick={
-                                                    handleCloseEditCoursePopup
-                                                }
-                                                className="absolute top-3 right-4"
-                                            >
-                                                <CloseIcon />
-                                            </button>
+                                        <div
+                                            className="flex justify-center items-center p-6 md:hidden "
+                                            {...swipeHandlers}
+                                        >
+                                            {/* Swipe indicator */}
+                                            <div className="absolute top-6 md:hidden">
+                                                <CloseSwipe />
+                                            </div>
                                         </div>
+                                        <button
+                                            onClick={handleClosePopup}
+                                            className="absolute top-3 right-4"
+                                        >
+                                            <CloseIcon />
+                                        </button>
                                     </div>
                                     <div className="overflow-y-auto max-h-[calc(90vh-90px)]">
                                         <AddCourse
-                                            handleClosePopup={
-                                                handleCloseEditCoursePopup
-                                            }
+                                            handleClosePopup={handleClosePopup}
                                             courseId={parseInt(id as string)}
                                         />
                                     </div>
@@ -231,8 +242,14 @@ export default function AdminCourses() {
                                         ></div>
                                         <div className="z-30 bg-white rounded-t-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
                                             <div className="relative w-full">
-                                                <div className="flex justify-center items-center relative pt-6">
-                                                    <div className="w-1/3 md:hidden border-b-2 border-black"></div>
+                                                <div
+                                                    className="flex justify-center items-center p-6 "
+                                                    {...swipeHandlers}
+                                                >
+                                                    {/* Swipe indicator */}
+                                                    <div className="absolute top-6 md:hidden">
+                                                        <CloseSwipe />
+                                                    </div>
                                                     <button
                                                         onClick={
                                                             handleClosePopup
@@ -265,17 +282,21 @@ export default function AdminCourses() {
                                         ></div>
                                         <div className="z-30 bg-white rounded-t-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
                                             <div className="relative w-full">
-                                                <div className="flex justify-center items-center relative pt-6">
-                                                    <div className="w-1/3 md:hidden border-b-2 border-black"></div>
-                                                    <button
-                                                        onClick={
-                                                            handleCloseEditPopup
-                                                        }
-                                                        className="absolute top-3 right-4"
-                                                    >
-                                                        <CloseIcon />
-                                                    </button>
+                                                <div
+                                                    className="flex justify-center items-center p-6 md:hidden "
+                                                    {...swipeHandlers}
+                                                >
+                                                    {/* Swipe indicator */}
+                                                    <div className="absolute top-6 md:hidden">
+                                                        <CloseSwipe />
+                                                    </div>
                                                 </div>
+                                                <button
+                                                    onClick={handleClosePopup}
+                                                    className="absolute top-3 right-4"
+                                                >
+                                                    <CloseIcon />
+                                                </button>
                                             </div>
                                             <div className="overflow-y-auto max-h-[calc(90vh-90px)]">
                                                 {selectedCourse?.materials && (

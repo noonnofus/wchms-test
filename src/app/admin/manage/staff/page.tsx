@@ -20,6 +20,8 @@ import DeleteConfirmation from "@/components/shared/delete-confirmation";
 import { type User } from "@/db/schema/users";
 import EditAdmin from "@/components/manage/edit-admin";
 import CloseIcon from "@/components/icons/close-icon";
+import { useSwipeable } from "react-swipeable";
+import CloseSwipe from "@/components/icons/close-swipe";
 
 export default function ManageStaff() {
     const [admins, setAdmins] = useState<User[]>([]);
@@ -34,6 +36,14 @@ export default function ManageStaff() {
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
     const [roleSort, setRoleSort] = useState<"asc" | "desc">("asc");
     const [searchQuery, setSearchQuery] = useState("");
+
+    const swipeHandlers = useSwipeable({
+        onSwipedDown: () => {
+            handleClosePopup();
+        },
+        preventScrollOnSwipe: true,
+        trackMouse: true,
+    });
 
     useEffect(() => {
         setIsLoading(true);
@@ -143,15 +153,21 @@ export default function ManageStaff() {
                         ></div>
                         <div className="z-30 bg-white rounded-t-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
                             <div className="relative w-full">
-                                <div className="flex justify-center items-center relative p-6">
-                                    <div className="w-1/3 md:hidden border-b-2 border-black"></div>
-                                    <button
-                                        onClick={handleClosePopup}
-                                        className="absolute top-3 right-4"
-                                    >
-                                        <CloseIcon />
-                                    </button>
+                                <div
+                                    className="flex justify-center items-center p-6 md:hidden "
+                                    {...swipeHandlers}
+                                >
+                                    {/* Swipe indicator */}
+                                    <div className="absolute top-6 md:hidden">
+                                        <CloseSwipe />
+                                    </div>
                                 </div>
+                                <button
+                                    onClick={handleClosePopup}
+                                    className="absolute top-3 right-4"
+                                >
+                                    <CloseIcon />
+                                </button>
                             </div>
                             <div className="overflow-y-auto max-h-[calc(90vh-90px)]">
                                 <EditAdmin
@@ -191,15 +207,21 @@ export default function ManageStaff() {
                         ></div>
                         <div className="z-30 bg-white rounded-t-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
                             <div className="relative w-full">
-                                <div className="flex justify-center items-center relative p-6">
-                                    <div className="w-1/3 md:hidden border-b-2 border-black"></div>
-                                    <button
-                                        onClick={handleClosePopup}
-                                        className="absolute top-3 right-4"
-                                    >
-                                        <CloseIcon />
-                                    </button>
+                                <div
+                                    className="flex justify-center items-center p-6 md:hidden "
+                                    {...swipeHandlers}
+                                >
+                                    {/* Swipe indicator */}
+                                    <div className="absolute top-6 md:hidden">
+                                        <CloseSwipe />
+                                    </div>
                                 </div>
+                                <button
+                                    onClick={handleClosePopup}
+                                    className="absolute top-3 right-4"
+                                >
+                                    <CloseIcon />
+                                </button>
                             </div>
                             <div className="overflow-y-auto max-h-[calc(90vh-90px)]">
                                 <AddAdmin
