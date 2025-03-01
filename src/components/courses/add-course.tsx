@@ -16,7 +16,6 @@ import { DatePicker } from "../ui/date-picker";
 import ImageUpload from "../ui/image-upload";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
-import CloseIcon from "../icons/close-icon";
 
 const defaultRoomName = "Online via Zoom"; //name of room for default selection
 export const [languages, types, statuses] = [
