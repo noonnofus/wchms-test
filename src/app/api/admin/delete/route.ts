@@ -1,6 +1,9 @@
 import db from "@/db";
 import { eq } from "drizzle-orm";
 import { users } from "@/db/schema/users";
+import { authConfig } from "@/auth";
+import { getServerSession } from "next-auth";
+import { validateAdmin } from "@/lib/validation";
 
 export async function DELETE(req: Request) {
     try {
@@ -9,6 +12,18 @@ export async function DELETE(req: Request) {
             return new Response(
                 JSON.stringify({ message: "Missing participant id" }),
                 { status: 400 }
+            );
+        }
+
+        const session = await getServerSession(authConfig);
+
+        //Only admins can delete admins/staff or they can delete themselves
+        if (!validateAdmin(session) && session?.user.id !== id.toString()) {
+            return new Response(
+                JSON.stringify({
+                    error: "Unauthorized: insufficient permissions",
+                }),
+                { status: 401 }
             );
         }
 

@@ -1,7 +1,21 @@
+import { authConfig } from "@/auth";
 import { addAdmin } from "@/db/queries/admins";
+import { validateAdmin } from "@/lib/validation";
+import { getServerSession } from "next-auth";
 
 export async function POST(req: Request) {
     try {
+        const session = await getServerSession(authConfig);
+
+        //Only admins can add new admins/staff
+        if (!validateAdmin(session)) {
+            return new Response(
+                JSON.stringify({
+                    error: "Unauthorized: insufficient permissions",
+                }),
+                { status: 401 }
+            );
+        }
         const body = await req.json();
         const {
             firstName,
