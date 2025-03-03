@@ -8,6 +8,14 @@ import ReadingCard from "@/components/homework/reading-card";
 import PhysicalCard from "@/components/homework/physical-card";
 import { redirect } from 'next/navigation'
 
+// topic recommendations for testing
+const reco = [
+    "Christmas",
+    "Fairy tales",
+    "Coffee",
+    "Chang Seung",
+]
+
 export default function ActivityPage() {
     const [correctCount, setCorrectCount] = useState(0);
 
@@ -17,7 +25,7 @@ export default function ActivityPage() {
     const activity = pathname.split("/").pop();
     const difficulty = searchParams.get("difficulty");
 
-    if (!activity) {
+    if (!activity || !difficulty) {
         redirect('/homework');
     }
 
@@ -57,7 +65,7 @@ export default function ActivityPage() {
                 onNext={handleNext}
             />
         ),
-        reading: <ReadingCard />,
+        reading: <ReadingCard difficulty={difficulty} topicRecommendations={reco} />,
         physical: <PhysicalCard />,
     };
 

@@ -18,7 +18,6 @@ export default function ParticipantConfirmation() {
             setError("Please enter your last name.");
             return;
         }
-        console.log(name, lastName);
 
         const result = await signIn("credentials", {
             callbackUrl: "/Landing",

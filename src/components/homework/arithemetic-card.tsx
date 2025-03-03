@@ -4,8 +4,8 @@ import {
     CardTitle,
     CardContent,
 } from "@/components/ui/card";
-import CongratulationPopUp from "./Congratulation-popup";
-import ClosePopUp from "./Close-popup";
+import CongratulationPopUp from "./congratulation-popup";
+import ClosePopUp from "./close-popup";
 import ResultPopup from "./result-popup";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
