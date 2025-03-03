@@ -16,6 +16,9 @@ const reco = [
     "Chang Seung",
 ]
 
+// video URL for physical activity to test it.
+const url = "https://www.youtube.com/watch?v=0xfDmrcI7OI";
+
 export default function ActivityPage() {
     const [correctCount, setCorrectCount] = useState(0);
 
@@ -66,7 +69,7 @@ export default function ActivityPage() {
             />
         ),
         reading: <ReadingCard difficulty={difficulty} topicRecommendations={reco} />,
-        physical: <PhysicalCard />,
+        physical: <PhysicalCard videoUrl={url} />,
     };
 
     return activityComponents[activity] || <p className="text-center">Invalid activity</p>;
