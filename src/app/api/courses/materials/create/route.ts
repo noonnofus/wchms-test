@@ -1,3 +1,4 @@
+import { authConfig } from "@/auth";
 import db from "@/db";
 import {
     courseMaterials,
@@ -5,10 +6,23 @@ import {
     MaterialType,
 } from "@/db/schema/courseMaterials";
 import { uploadMedia } from "@/db/schema/mediaUpload";
+import { validateAdminOrStaff } from "@/lib/validation";
 import { eq } from "drizzle-orm";
+import { getServerSession } from "next-auth";
 
 export async function POST(req: Request) {
     try {
+        const session = await getServerSession(authConfig);
+
+        //Only admins and staff can create course materials
+        if (!validateAdminOrStaff(session)) {
+            return new Response(
+                JSON.stringify({
+                    error: "Unauthorized: insufficient permissions",
+                }),
+                { status: 401 }
+            );
+        }
         const body = await req.json();
         const {
             title,

@@ -1,12 +1,25 @@
+import { authConfig } from "@/auth";
 import db from "@/db";
 import { addSession } from "@/db/queries/sessions";
 import { Courses } from "@/db/schema/course";
 import { users } from "@/db/schema/users";
+import { validateAdminOrStaff } from "@/lib/validation";
 import { eq } from "drizzle-orm";
+import { getServerSession } from "next-auth";
 
-// TODO: secure route for admins only
 export async function POST(req: Request) {
     try {
+        const session = await getServerSession(authConfig);
+
+        //Only admins and staff can create course sessions
+        if (!validateAdminOrStaff(session)) {
+            return new Response(
+                JSON.stringify({
+                    error: "Unauthorized: insufficient permissions",
+                }),
+                { status: 401 }
+            );
+        }
         const body = await req.json();
 
         if (
@@ -79,7 +92,7 @@ export async function POST(req: Request) {
             });
         }
 
-        const session = await addSession(
+        const courseSession = await addSession(
             body.courseId,
             body.instructorId,
             body.date,
@@ -92,7 +105,7 @@ export async function POST(req: Request) {
         return new Response(
             JSON.stringify({
                 message: "Session successfully created",
-                session,
+                courseSession,
             }),
             { status: 201 }
         );

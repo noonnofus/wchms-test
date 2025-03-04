@@ -13,15 +13,6 @@ export async function getAllAdmins() {
     }
 }
 
-export async function getAdminById(id: string) {
-    const admin = await db
-        .select()
-        .from(users)
-        .where(eq(users.id, Number(id)));
-
-    return admin;
-}
-
 export async function addAdmin(
     firstName: string,
     lastName: string,

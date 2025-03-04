@@ -65,8 +65,8 @@ export default function ParticipantLogin() {
                             seenNames.add(firstName);
                             const coursesArray = p.course
                                 ? p.course
-                                      .split(",")
-                                      .map((course) => course.trim())
+                                    .split(",")
+                                    .map((course) => course.trim())
                                 : [];
                             uniqueParticipants.push({
                                 name: firstName,
@@ -80,8 +80,8 @@ export default function ParticipantLogin() {
                             if (participant) {
                                 const participantCourses = p.course
                                     ? p.course
-                                          .split(",")
-                                          .map((course) => course.trim())
+                                        .split(",")
+                                        .map((course) => course.trim())
                                     : [];
                                 participant.courses.push(...participantCourses);
                             }
