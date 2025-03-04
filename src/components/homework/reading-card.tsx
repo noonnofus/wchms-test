@@ -50,15 +50,21 @@ export default function ReadingCard({
         }
     };
 
-    const handleSubmit = () => {
+    const handleExit = () => {
         router.push("/homework");
     }
 
     return (
         <div className="flex justify-center items-center">
             {showTopicPopup && (
-                <div className="absolute inset-0 flex justify-center items-center min-h-[800px] min-w-[360px] w-full h-full bg-black bg-opacity-50 z-50">
-                    <div className="relative max-w-[1000px] w-full bg-white rounded-lg p-6 overflow-auto">
+                <div
+                    className="absolute inset-0 flex justify-center items-center min-h-[800px] min-w-[360px] w-full h-full bg-black bg-opacity-50 z-50"
+                    onClick={handleExit}
+                >
+                    <div
+                        className="relative max-w-[1000px] w-full bg-white rounded-lg p-6 overflow-auto"
+                        onClick={(e) => e.stopPropagation()}
+                    >
                         <div className="flex flex-col gap-8">
                             <div className="flex flex-col justify-center items-center mt-4 gap-6">
                                 <div className="flex flex-col justify-center items-center gap-4">
@@ -111,7 +117,7 @@ export default function ReadingCard({
                     Reading Aloud Exercise
                 </h1>
                 <div className="flex justify-center items-center w-full px-6 mb-8">
-                    <span>【Please read it out loud <span className="text-red-500">twice</span> as soon as possible】</span>
+                    <span className="text-center">【Please read it out loud <span className="text-red-500">twice</span> as soon as possible】</span>
                 </div>
                 <Card className="p-8 w-full shadow-lg">
                     <CardHeader className="space-y-2">
@@ -124,7 +130,7 @@ export default function ReadingCard({
                             className="w-full flex flex-col items-center"
                             onSubmit={(e) => {
                                 e.preventDefault();
-                                handleSubmit();
+                                handleExit();
                             }}
                         >
                             <span>

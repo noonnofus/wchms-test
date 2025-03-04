@@ -68,22 +68,40 @@ export default function ArithemeticCard({
     return (
         <div className="flex flex-col gap-8 justify-center items-center">
             {showCongratPopup && (
-                <div className="absolute inset-0 flex justify-center items-center min-h-[800px] min-w-[360px] w-full h-full bg-black bg-opacity-50 z-50">
-                    <div className="relative max-w-[1000px] w-full bg-white rounded-lg p-6 overflow-auto">
+                <div
+                    className="absolute inset-0 flex justify-center items-center min-h-[800px] min-w-[360px] w-full h-full bg-black bg-opacity-50 z-50"
+                    onClick={handleNext}
+                >
+                    <div
+                        className="relative max-w-[1000px] w-full bg-white rounded-lg p-6 overflow-auto"
+                        onClick={(e) => e.stopPropagation()}
+                    >
                         <CongratulationPopUp handleNext={handleNext} handleExit={handleExit} />
                     </div>
                 </div>
             )}
             {showClosePopup && (
-                <div className="absolute inset-0 flex justify-center items-center min-h-[800px] min-w-[360px] w-full h-full bg-black bg-opacity-50 z-50">
-                    <div className="relative max-w-[1000px] w-full bg-white rounded-lg p-6 overflow-auto">
+                <div
+                    className="absolute inset-0 flex justify-center items-center min-h-[800px] min-w-[360px] w-full h-full bg-black bg-opacity-50 z-50"
+                    onClick={handleNext}
+                >
+                    <div
+                        className="relative max-w-[1000px] w-full bg-white rounded-lg p-6 overflow-auto"
+                        onClick={(e) => e.stopPropagation()}
+                    >
                         <ClosePopUp handleNext={handleNext} handleExit={handleExit} />
                     </div>
                 </div>
             )}
             {showResultPopup && (
-                <div className="absolute inset-0 flex justify-center items-center min-h-[800px] min-w-[360px] w-full h-full bg-black bg-opacity-50 z-50">
-                    <div className="relative max-w-[1000px] w-full bg-white rounded-lg p-6 overflow-auto">
+                <div
+                    className="absolute inset-0 flex justify-center items-center min-h-[800px] min-w-[360px] w-full h-full bg-black bg-opacity-50 z-50"
+                    onClick={handleExit}
+                >
+                    <div
+                        className="relative max-w-[1000px] w-full bg-white rounded-lg p-6 overflow-auto"
+                        onClick={(e) => e.stopPropagation()}
+                    >
                         <ResultPopup correctCount={correctCount} totalQuestions={totalQuestions} handleExit={handleExit} />
                     </div>
                 </div>
