@@ -39,7 +39,7 @@ export default function MaterialCard({
                         </Button>
                     )}
                 </CardContent>
-                <div className="absolute right-[2%] top-[8%] flex gap-2">
+                <div className="absolute right-[3%] top-[8%] flex gap-2">
                     {handleEditButtonClick && (
                         <button onClick={handleEditButtonClick}>
                             <EditIcon />
