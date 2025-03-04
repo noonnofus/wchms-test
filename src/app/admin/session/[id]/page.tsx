@@ -13,6 +13,7 @@ export default function SessionsPage() {
         { id: number; date: string; startTime: string; endTime: string }[]
     >([]);
     const [showAddPopup, setShowAddPopup] = useState(false);
+    const [refreshFlag, setRefreshFlag] = useState(0);
 
     useEffect(() => {
         async function fetchSessions() {
@@ -32,17 +33,23 @@ export default function SessionsPage() {
             }
         }
         fetchSessions();
-    }, [courseId]);
+    }, [courseId, refreshFlag]);
 
     const handleDeleteSession = async (sessionId: number) => {
         try {
             await deleteSession(sessionId);
+            setRefreshFlag((prev) => prev + 1);
             setSessions((prev) =>
                 prev.filter((session) => session.id !== sessionId)
             );
         } catch (error) {
             console.error("Error deleting session:", error);
         }
+    };
+
+    const handleClosePopup = () => {
+        setShowAddPopup(false);
+        setRefreshFlag((prev) => prev + 1);
     };
 
     return (
@@ -69,11 +76,11 @@ export default function SessionsPage() {
                 <div className="fixed inset-0 flex items-center justify-center z-10 overflow-y-auto">
                     <div
                         className="absolute inset-0 bg-black opacity-50"
-                        onClick={() => setShowAddPopup(false)}
+                        onClick={handleClosePopup}
                     ></div>
                     <div className="relative z-20 flex flex-col items-center bg-white rounded-lg overflow-y-auto w-full mx-4 max-h-[90vh]">
                         <AddSession
-                            handleClosePopup={() => setShowAddPopup(false)}
+                            handleClosePopup={handleClosePopup}
                             courseId={courseId}
                             sessionId={0}
                         />
