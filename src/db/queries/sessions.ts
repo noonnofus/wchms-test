@@ -2,7 +2,7 @@
 import { authConfig } from "@/auth";
 import db from "@/db";
 import { validateParticipant } from "@/lib/validation";
-import { and, asc, eq } from "drizzle-orm";
+import { and, asc, eq, gt } from "drizzle-orm";
 import { getServerSession } from "next-auth";
 import { CourseParticipant, Courses } from "../schema/course";
 import { Sessions } from "../schema/session";
@@ -84,6 +84,7 @@ export async function getNextSessionDate() {
     }
 
     try {
+        const nowDate = new Date();
         const nextSession = await db
             .select({
                 id: Sessions.id,
@@ -103,7 +104,8 @@ export async function getNextSessionDate() {
             .where(
                 and(
                     eq(CourseParticipant.userId, Number(userId)),
-                    eq(Sessions.status, "Available")
+                    eq(Sessions.status, "Available"),
+                    gt(Sessions.endTime, nowDate)
                 )
             )
             .orderBy(asc(Sessions.date))
@@ -113,8 +115,8 @@ export async function getNextSessionDate() {
             return {
                 ...nextSession,
                 date: nextSession.date.toISOString(),
-                startTime: nextSession.startTime,
-                endTime: nextSession.endTime,
+                startTime: nextSession.startTime.toISOString(),
+                endTime: nextSession.endTime.toISOString(),
             };
         }
         return null;

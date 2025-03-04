@@ -1,12 +1,26 @@
+import { getUserCourses } from "@/db/queries/courses";
 import { getNextSessionDate } from "@/db/queries/sessions";
+import { getSession } from "next-auth/react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function NextClass() {
-    const [daysTillSession, setDaysTillSession] = useState("");
+    const [daysTillSession, setDaysTillSession] = useState("No Classes");
 
     const nextSessionDate = async () => {
         try {
+            const session = await getSession();
+            const userId = Number(session?.user.id);
+            if (!userId) {
+                setDaysTillSession("No Classes");
+                return;
+            }
+            const classExists = await getUserCourses(userId);
+            if (!classExists || classExists.length === 0) {
+                setDaysTillSession("No Classes");
+                return;
+            }
+
             const nextSession = await getNextSessionDate();
             if (!nextSession || !("date" in nextSession)) {
                 setDaysTillSession("No Sessions");
@@ -15,12 +29,8 @@ export default function NextClass() {
 
             const now = new Date();
             const sessionDate = new Date(nextSession.date);
-            const startTime = new Date(
-                `${nextSession.date}T${nextSession.startTime}`
-            );
-            const endTime = new Date(
-                `${nextSession.date}T${nextSession.endTime}`
-            );
+            const startTime = new Date(nextSession.startTime);
+            const endTime = new Date(nextSession.endTime);
 
             if (now >= startTime && now <= endTime) {
                 setDaysTillSession("Zoom");
@@ -38,6 +48,8 @@ export default function NextClass() {
     useEffect(() => {
         nextSessionDate();
     }, []);
+
+    if (daysTillSession === "No Classes") return null;
 
     return (
         <div className="min-h-[7vh] border-2 border-primary-green rounded-lg flex items-center justify-center">
