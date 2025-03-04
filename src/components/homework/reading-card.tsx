@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input"
 import { useRouter } from "next/navigation";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
     Select,
     SelectContent,
@@ -16,30 +17,35 @@ import {
     CardContent,
 } from "@/components/ui/card";
 
-
+interface Recommendation {
+    topic: string
+}
 
 interface ReadingProps {
     difficulty: string;
-    topicRecommendations: string[];
+    topicRecommendations: Recommendation[] | null;
 }
 
 export default function ReadingCard({
     difficulty,
-    topicRecommendations
+    topicRecommendations,
 }: ReadingProps) {
     const [showTopicPopup, setShowTopicPopup] = useState(true);
     const [topic, setTopic] = useState<string | null>(null);
-    const [recommendations] = useState<string[] | null>(topicRecommendations);
+    const [recommendations, setRecommendations] = useState<Recommendation[] | null>(null);
     const [error, setError] = useState<string | null>();
 
     const router = useRouter();
 
     useEffect(() => {
         // 2. Fetch to "api/homework" to get a reading aloud question with topic value && difficulty.
-    }, [showTopicPopup])
+        if (topicRecommendations) {
+            setRecommendations(topicRecommendations);
+        }
+    }, [showTopicPopup, topicRecommendations]);
 
-    const handleCourseSelect = (topic: string) => {
-        setTopic(topic);
+    const handleCourseSelect = (selectedTopic: string) => {
+        setTopic(selectedTopic);
     };
 
     const hanldeOnClick = () => {
@@ -78,21 +84,22 @@ export default function ReadingCard({
                                     />
                                 </div>
 
-                                <div className="flex flex-col justify-center items-center gap-4">
-                                    <h1 className="font-medium text-3xl text-center text-primary-green text-left">Recommendation</h1>
+                                {recommendations ? (
                                     <Select onValueChange={handleCourseSelect}>
                                         <SelectTrigger>
                                             <SelectValue placeholder="All Recommendations" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            {recommendations?.map((recommendation, index) => (
-                                                <SelectItem key={index} value={recommendation}>
-                                                    {recommendation}
+                                            {recommendations.map((recommendation, index) => (
+                                                <SelectItem key={index} value={recommendation.topic}>
+                                                    {recommendation.topic}
                                                 </SelectItem>
                                             ))}
                                         </SelectContent>
                                     </Select>
-                                </div>
+                                ) : (
+                                    <Skeleton className="h-10 w-full rounded-md" />
+                                )}
                             </div>
 
                             {error && (

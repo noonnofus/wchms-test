@@ -5,30 +5,60 @@ const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
 });
 
+export async function GET(req: Request) {
+    const { searchParams } = new URL(req.url);
+    const level = searchParams.get("level");
+
+    try {
+        const completion = await openai.chat.completions.create({
+            model: "gpt-3.5-turbo",
+            messages: [
+                {
+                    role: "system",
+                    content: `
+                        You are an assistant for seniors doing reading aloud exercises to support preventing dementia. Based on the latest news, generate 5 ${level} level of reading aloud topics that are relevant, easy to understand, and encourage discussion.
+
+                        ### Instructions:
+                        - The topics should be related to recent news events but simplified for seniors.
+                        - Each topic should be short.
+                        - Each topic should be interesting and engaging.
+                        - Ensure the topics are suitable for casual discussion.
+                        - The response have to be JSON format.
+
+                        ### Example Output:
+                        {
+                            "topics": [
+                            { "topic": "" },
+                            { "topic": "" },
+                            { "topic": "" },
+                            { "topic": "" },
+                            { "topic": "" },
+                            ]
+                        }
+                    `,
+                },
+                {
+                    role: "user",
+                    content: "Generate 5 reading aloud topics",
+                },
+            ],
+            temperature: 0.7,
+        });
+
+        const result = completion.choices[0].message;
+        return NextResponse.json({ result: result.content }, { status: 200 });
+    } catch (error) {
+        return NextResponse.json({ error: error }, { status: 500 });
+    }
+}
+
 export async function POST(req: Request) {
     try {
         const body = await req.json();
         const topic = body.topic;
         const level = body.level || "basic";
 
-        let msg =
-            body.message === "mathematics"
-                ? `
-                    Generate 15 math questions of ${level} level for seniors in markdown.  
-                    The questions should be simple and focus on addition, subtraction, multiplication, or division.  
-                    Ensure that each question is clear, supports brain exercises, and follows these instructions:  
-                    
-                    - Questions should be unique and randomly generated every time.  
-                    - Format the output in markdown as:  
-                    
-                    \`\`\`markdown  
-                    1. Question  
-                    2. Question  
-                    3. Question  
-                    ...  
-                    \`\`\`  
-                `
-                : `
+        let msg = `
                     Generate a ${level} level reading exercise on ${topic} for seniors in markdown.  
                     The exercise should include a short passage (approximately 100-150 words) that is easy to understand.  
                     Ensure that the content is clear and designed to support cognitive health.  
@@ -57,7 +87,7 @@ export async function POST(req: Request) {
                 {
                     role: "system",
                     content:
-                        "You are an assistant for seniors who are doing brain exercises to prevent dementia. Your job is to generate simple reading or mathematics homework. Always provide tasks that are easy to solve and suitable for seniors.",
+                        "You are an assistant for seniors who are doing brain exercises to prevent dementia. Your job is to generate simple reading homework. Always provide tasks that are easy to solve and suitable for seniors.",
                 },
                 {
                     role: "user",
@@ -69,20 +99,8 @@ export async function POST(req: Request) {
 
         console.log(completion.choices[0].message);
         const result = completion.choices[0].message;
-        return NextResponse.json({ chat: result }, { status: 200 });
+        return NextResponse.json({ result: result }, { status: 200 });
     } catch (error) {
         return NextResponse.json({ error: error }, { status: 500 });
     }
 }
-
-// TODO: Need to get the arithemetic questions with following format below.
-/*
-{
-  "questions": [
-    { "question": "5 + 3", "answer": "8" },
-    { "question": "12 - 4", "answer": "8" },
-    { "question": "6 × 7", "answer": "42" },
-    { "question": "36 ÷ 6", "answer": "6" }
-  ]
-}
-*/

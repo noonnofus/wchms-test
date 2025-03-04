@@ -8,19 +8,18 @@ import ReadingCard from "@/components/homework/reading-card";
 import PhysicalCard from "@/components/homework/physical-card";
 import { redirect } from 'next/navigation'
 
-// topic recommendations for testing
-const reco = [
-    "Christmas",
-    "Fairy tales",
-    "Coffee",
-    "Chang Seung",
-]
+interface Recommendation {
+    topic: string;
+}
 
 // video URL for physical activity to test it.
 const url = "https://www.youtube.com/watch?v=0xfDmrcI7OI";
 
 export default function ActivityPage() {
     const [correctCount, setCorrectCount] = useState(0);
+    const [recommendations, setRecommendations] = useState<Recommendation[] | null>(null);
+    const [currentQuestion, setCurrentQuestion] = useState(0);
+    const [loading, setLoading] = useState(false);
 
     const pathname = usePathname();
     const searchParams = useSearchParams();
@@ -44,7 +43,6 @@ export default function ActivityPage() {
     };
 
     const [questions] = useState(generateMockQuestions());
-    const [currentQuestion, setCurrentQuestion] = useState(0);
 
     const handleNext = () => {
         if (currentQuestion < questions.length - 1) {
@@ -54,7 +52,46 @@ export default function ActivityPage() {
 
     useEffect(() => {
         // Fetch to get arithemetic questions to "api/homework" with activity type & difficulty
-    }, [activity, difficulty])
+
+        // const topic = activity === "arithemetic" ? "mathematics" : reco[Math.floor(Math.random() * reco.length)];
+
+        // const getArithmeticQuestions = async () => {
+        //     await fetch('/api/homework', {
+        //         method: 'POST',
+        //         body: JSON.stringify({
+        //             topic: topic,
+        //             level: difficulty,
+        //         }),
+        //         headers: new Headers({
+        //             'Content-Type': 'application/json; charset=UTF-8'
+        //         })
+        //     })
+        //         .then()
+        // }
+
+        // getArithmeticQuestions();
+
+        const topicGenerate = async () => {
+
+            const res = await fetch(`/api/homework/reading?level=${encodeURIComponent(difficulty)}`, {
+                method: 'GET',
+                headers: new Headers({
+                    'Content-Type': 'application/json; charset=UTF-8'
+                })
+            })
+            if (!res.ok) {
+                throw new Error(`HTTP error! Status: ${res.status}`);
+            }
+
+            const data = await res.json();
+
+            const topics = JSON.parse(data.result).topics.map((t: string) => t);
+
+            setRecommendations(topics);
+        }
+
+        topicGenerate()
+    }, [difficulty])
 
     const activityComponents: Record<string, React.ReactNode> = {
         arithemetic: (
@@ -68,7 +105,7 @@ export default function ActivityPage() {
                 onNext={handleNext}
             />
         ),
-        reading: <ReadingCard difficulty={difficulty} topicRecommendations={reco} />,
+        reading: <ReadingCard difficulty={difficulty} topicRecommendations={recommendations} />,
         physical: <PhysicalCard videoUrl={url} />,
     };
 
