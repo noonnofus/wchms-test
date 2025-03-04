@@ -1,9 +1,7 @@
 import db from "@/db";
-import { eq } from "drizzle-orm";
-import { sql } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
+import { CourseParticipant, Courses } from "../schema/course";
 import { participants } from "../schema/participants";
-import { Courses } from "../schema/course";
-import { CourseParticipant } from "../schema/course";
 
 export async function getAllParticipants(withCourses = false) {
     try {
@@ -11,7 +9,7 @@ export async function getAllParticipants(withCourses = false) {
             const allParticipants = await db
                 .select({
                     participant: participants,
-                    course: sql`GROUP_CONCAT(${Courses.title} SEPARATOR ', ')`.as(
+                    course: sql`GROUP_CONCAT(CONCAT(${Courses.id}, ':', ${Courses.title}) SEPARATOR ', ')`.as(
                         "courses"
                     ),
                 })
