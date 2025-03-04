@@ -1,4 +1,5 @@
 "use client";
+import NextClass from "@/components/courses/next-class";
 import BookIcon from "@/components/icons/book-icon";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -6,11 +7,7 @@ import Link from "next/link";
 export default function Home() {
     return (
         <div className="flex flex-col gap-4 w-full h-full">
-            <div className="min-h-[7vh] border-2 border-primary-green rounded-lg flex items-center justify-center">
-                <p className="text-primary-green text-xl md:text-2xl lg:text-3xl">
-                    Next Session in <strong>3 Days</strong>
-                </p>
-            </div>
+            <NextClass />
             <div className="flex flex-col gap-4">
                 <Button
                     asChild
