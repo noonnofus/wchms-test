@@ -1,4 +1,5 @@
 import { Courses } from "@/db/schema/course";
+import { courseMaterials } from "@/db/schema/courseMaterials";
 import { eq } from "drizzle-orm";
 import db from "@/db";
 import { getServerSession } from "next-auth";
@@ -38,10 +39,18 @@ export async function DELETE(req: Request) {
             });
         }
 
+        // Delete course's course materials
+        await db
+            .delete(courseMaterials)
+            .where(eq(courseMaterials.courseId, body.courseId));
+
+        // Delete course
         await db.delete(Courses).where(eq(Courses.id, body.courseId));
 
         return new Response(
-            JSON.stringify({ message: "Course deleted successfully" }),
+            JSON.stringify({
+                message: "Course and related materials deleted successfully",
+            }),
             { status: 200 }
         );
     } catch (error) {

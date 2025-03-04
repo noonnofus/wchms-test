@@ -10,7 +10,7 @@ import MaterialCard from "@/components/shared/material-card";
 import TabsMenu from "@/components/shared/tabs-menu";
 import { Button } from "@/components/ui/button";
 import { getCourseById } from "@/db/queries/courses";
-import { CourseFull } from "@/db/schema/course";
+import { Course, CourseFull } from "@/db/schema/course";
 import { CourseMaterialsWithFile } from "@/db/schema/courseMaterials";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -37,6 +37,7 @@ export default function AdminCourses() {
     const [materialToDelete, setMaterialToDelete] =
         useState<CourseMaterials | null>(null);
     const [refreshCourseMaterials, setRefreshCourseMaterials] = useState(false);
+    const [courseToDelete, setCourseToDelete] = useState<Course | null>(null);
 
     const swipeHandlers = useSwipeable({
         onSwipedDown: () => {
@@ -88,6 +89,36 @@ export default function AdminCourses() {
 
     const handleEditCourseButtonClick = () => {
         setShowEditCoursePopup(true);
+    };
+
+    const handleDeleteCourseButtonClick = () => {
+        setCourseToDelete(selectedCourse);
+        setShowDeletePopup(true);
+    };
+
+    const handleDeleteCourse = async () => {
+        if (!courseToDelete) return;
+
+        try {
+            const response = await fetch("/api/courses/delete", {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ courseId: selectedCourse.id }),
+            });
+
+            const data = await response.json();
+            console.log(data);
+            router.push("/admin/courses");
+
+            if (!response.ok) throw new Error(data.error || "Failed to delete");
+        } catch (error) {
+            console.error("Error deleting course: ", error);
+        } finally {
+            setShowDeletePopup(false);
+            setCourseToDelete(null);
+        }
     };
 
     const handleClosePopup = () => {
@@ -155,6 +186,9 @@ export default function AdminCourses() {
                                     }
                                     variant="admin"
                                     editAction={handleEditCourseButtonClick}
+                                    handleDeleteButtonClick={
+                                        handleDeleteCourseButtonClick
+                                    }
                                 />
                                 <Button
                                     className="bg-primary-green text-white rounded-full w-full font-semibold text-base hover:bg-[#045B47]"
@@ -202,6 +236,23 @@ export default function AdminCourses() {
                                             courseId={parseInt(id as string)}
                                         />
                                     </div>
+                                </div>
+                            </div>
+                        )}
+                        {showDeletePopup && courseToDelete && (
+                            <div className="fixed inset-0 flex items-center justify-center z-10 overflow-y-auto">
+                                <div
+                                    className="absolute inset-0 bg-black opacity-50"
+                                    onClick={handleClosePopup}
+                                ></div>
+                                <div className="z-30 bg-white rounded-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
+                                    <DeleteConfirmation
+                                        title="Delete Course"
+                                        body={`Are you sure you want to delete course "${selectedCourse.title}"? You cannot undo this action.`}
+                                        actionLabel="DELETE"
+                                        handleSubmit={handleDeleteCourse}
+                                        closePopup={handleClosePopup}
+                                    />
                                 </div>
                             </div>
                         )}
@@ -373,7 +424,7 @@ export default function AdminCourses() {
                                         ></div>
                                         <div className="z-30 bg-white rounded-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
                                             <DeleteConfirmation
-                                                title="Before you delete!"
+                                                title="Delete Course Material"
                                                 body={`Are you sure you want to delete course material "${materialToDelete.title}"? You cannot undo this action.`}
                                                 actionLabel="DELETE"
                                                 handleSubmit={
