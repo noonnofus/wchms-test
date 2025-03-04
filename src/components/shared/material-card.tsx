@@ -1,15 +1,17 @@
-import Link from "next/link";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import EditIcon from "../icons/edit-icon";
 import { CourseMaterialsWithFile } from "@/db/schema/courseMaterials";
+import DeleteIcon from "../icons/delete-icon";
 
 export default function MaterialCard({
     material,
     handleEditButtonClick,
+    handleDeleteButtonClick,
 }: {
     material: CourseMaterialsWithFile;
     handleEditButtonClick?: () => void;
+    handleDeleteButtonClick?: () => void;
 }) {
     //TODO: allow files to be downloaded
     return (
@@ -37,11 +39,18 @@ export default function MaterialCard({
                         </Button>
                     )}
                 </CardContent>
-                {handleEditButtonClick && (
-                    <button onClick={handleEditButtonClick}>
-                        <EditIcon className="absolute right-[2%] top-[8%]" />
-                    </button>
-                )}
+                <div className="absolute right-[2%] top-[8%] flex gap-2">
+                    {handleEditButtonClick && (
+                        <button onClick={handleEditButtonClick}>
+                            <EditIcon />
+                        </button>
+                    )}
+                    {handleDeleteButtonClick && (
+                        <button onClick={handleDeleteButtonClick}>
+                            <DeleteIcon />
+                        </button>
+                    )}
+                </div>
             </Card>
         </div>
     );
