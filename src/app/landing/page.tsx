@@ -27,7 +27,7 @@ export default function Home() {
                     asChild
                     className="min-h-[16vh] rounded-lg bg-homework-yellow hover:bg-[#E0A800]"
                 >
-                    <Link href="#">
+                    <Link href="/homework">
                         <div className="flex flex-col items-center justify-center">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"

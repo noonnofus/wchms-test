@@ -131,6 +131,7 @@ export default function AdminCourses() {
                                     participants={
                                         selectedCourse.participants || []
                                     }
+                                    courseId={parseInt(id as string)}
                                 />
                             </div>
                         )}

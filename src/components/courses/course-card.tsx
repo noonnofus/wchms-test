@@ -13,6 +13,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { twMerge } from "tailwind-merge";
 import EditIcon from "../icons/edit-icon";
+import { useSession } from "next-auth/react";
+import {
+    checkCourseJoinRequestExists,
+    createCourseJoinRequest,
+    deleteCourseJoinRequest,
+} from "@/db/queries/courses";
+import { useEffect, useState } from "react";
 
 interface CourseCardProps {
     id: number;
@@ -36,16 +43,81 @@ export default function CourseCard(
     props: ClientVariantProps | AdminVariantProps
 ) {
     const router = useRouter();
+    const { data: session } = useSession();
+    const participantId = session?.user.id;
+    const [isEnrolling, setIsEnrolling] = useState(false);
+    const [error, setError] = useState("");
+    const [requestExists, setRequestExists] = useState(false);
+    const [isRemoving, setIsRemoving] = useState(false);
 
     const courseLink =
         props.variant === "admin"
             ? `/admin/courses/${props.id}`
             : `/courses/${props.id}`;
+
+    const fetchData = async () => {
+        if (!participantId) return;
+        try {
+            const exists = await checkCourseJoinRequestExists(
+                props.id,
+                parseInt(participantId)
+            );
+            setRequestExists(exists);
+        } catch (error) {
+            console.error("Error checking request status:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchData();
+    }, [participantId, props.id]);
+
+    const handleEnrollClick = async () => {
+        if (!participantId) return;
+        setIsEnrolling(true);
+
+        try {
+            if (requestExists) {
+                setError("Enrollment request already exists.");
+                setIsEnrolling(false);
+                return;
+            }
+
+            await createCourseJoinRequest(props.id, parseInt(participantId));
+            console.log("Join request successfully sent");
+            await fetchData();
+        } catch (error) {
+            console.error("Error enrolling in course:", error);
+            setError("Something went wrong. Please try again later.");
+        } finally {
+            setIsEnrolling(false);
+        }
+    };
+
+    const handleRemoveClick = async () => {
+        if (!participantId) return;
+        setIsRemoving(true);
+        setError("");
+        try {
+            await deleteCourseJoinRequest(props.id, parseInt(participantId));
+            console.log("Join request successfully deleted");
+            setRequestExists(false);
+        } catch (error) {
+            console.error("Error removing request:", error);
+            setError("Something went wrong. Please try again later.");
+        } finally {
+            setIsRemoving(false);
+        }
+    };
+
     return (
-        <div className="flex flex-col items-center justify-center relative">
+        <div className="relative w-full h-full flex flex-col items-center justify-center ">
             <Card
-                className="w-full relative cursor-pointer flex flex-col gap-4"
-                onClick={() => router.push(courseLink)}
+                className="relative w-full cursor-pointer flex flex-col gap-4 py-6"
+                onClick={(e) => {
+                    e.stopPropagation();
+                    router.push(courseLink);
+                }}
             >
                 <CardHeader>
                     <CardTitle
@@ -66,35 +138,68 @@ export default function CourseCard(
                         alt={props.imageAlt || `${props.name} Course Image`}
                     />
                 )}
-                {props.variant == "client" &&
-                    (props.enrolled ? (
-                        <Button
-                            asChild
-                            className="bg-primary-green hover:bg-[#045B47] text-white rounded-full w-full font-semibold text-base"
-                        >
-                            <Link href={`/courses/${props.id}`}>
-                                View Course
-                            </Link>
-                        </Button>
-                    ) : (
-                        <div className="w-full flex flex-col gap-2 pb-4">
+                {props.variant == "client" && (
+                    <>
+                        <div className="text-red-500">{error}</div>
+                        {props.enrolled ? (
                             <Button
                                 asChild
-                                className="hover:bg-primary-green border-primary-green text-primary-green hover:text-white rounded-full w-full font-semibold text-base"
-                                variant="outline"
+                                className="w-full md:text-xl py-2 md:py-4 rounded-full bg-primary-green hover:bg-[#045B47] text-white font-semibold text-base"
                             >
                                 <Link href={`/courses/${props.id}`}>
-                                    Details
+                                    View Course
                                 </Link>
                             </Button>
-                            <Button
-                                asChild
-                                className="bg-primary-green hover:bg-[#045B47] text-white rounded-full w-full font-semibold text-base"
-                            >
-                                <Link href="#">Enroll</Link>
-                            </Button>
-                        </div>
-                    ))}
+                        ) : requestExists ? (
+                            <div className="w-full h-full flex flex-col gap-2 md:gap-6">
+                                <Button
+                                    asChild
+                                    className="w-full md:text-xl py-2 md:py-4 rounded-full hover:bg-primary-green border-primary-green text-primary-green hover:text-white font-semibold text-base"
+                                    variant="outline"
+                                >
+                                    <Link href={`/courses/${props.id}`}>
+                                        Details
+                                    </Link>
+                                </Button>
+                                <Button
+                                    variant="outline"
+                                    className="w-full md:text-xl py-2 md:py-4 rounded-full border-destructive-hover text-destructive-text hover:bg-destructive-hover hover:text-destructive-text"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleRemoveClick();
+                                    }}
+                                    disabled={isRemoving}
+                                >
+                                    {isRemoving
+                                        ? "Removing..."
+                                        : "Remove Request to Join Course"}
+                                </Button>
+                            </div>
+                        ) : (
+                            <div className="w-full flex flex-col gap-2 pb-4">
+                                <Button
+                                    asChild
+                                    className="w-full md:text-xl py-2 md:py-4 rounded-full hover:bg-primary-green border-primary-green text-primary-green hover:text-white font-semibold text-base"
+                                    variant="outline"
+                                >
+                                    <Link href={`/courses/${props.id}`}>
+                                        Details
+                                    </Link>
+                                </Button>
+                                <Button
+                                    className="w-full md:text-xl py-2 md:py-4 rounded-full bg-primary-green hover:bg-[#045B47] text-white font-semibold text-base"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleEnrollClick();
+                                    }}
+                                    disabled={isEnrolling}
+                                >
+                                    {isEnrolling ? "Enrolling..." : "Enroll"}
+                                </Button>
+                            </div>
+                        )}
+                    </>
+                )}
                 {props.variant == "admin" && (
                     <CardContent>
                         <p>{props.description}</p>
