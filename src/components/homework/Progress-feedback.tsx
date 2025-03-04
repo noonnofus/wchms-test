@@ -15,8 +15,8 @@ export default function ExercisePage({ isCorrect }: { isCorrect: boolean }) {
     return (
         <div className="flex flex-col items-center h-screen overflow-hidden p-4">
             <Image
-                src={isCorrect ? "/confetti-logo.png" : "/logo.png"}
-                width={isCorrect ? 150 : 100}
+                src={isCorrect ? "/confetti-logo.svg" : "/logo.png"}
+                width={isCorrect ? 140 : 100}
                 height={isCorrect ? 150 : 100}
                 alt="Exercise result icon"
                 className="mb-4"
