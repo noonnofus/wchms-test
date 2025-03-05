@@ -41,7 +41,7 @@ export const courseMaterials = mysqlTable("course_materials", {
     uploadId: int("upload_id").references(() => uploadMedia.id),
     courseId: int("course_id")
         .notNull()
-        .references(() => Courses.id),
+        .references(() => Courses.id, { onDelete: "cascade" }),
     createdAt: timestamp("createdAt").defaultNow(),
 });
 

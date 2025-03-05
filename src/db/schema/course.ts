@@ -21,10 +21,10 @@ export const CourseParticipant = mysqlTable("course_participants", {
     id: int("id").primaryKey().autoincrement(),
     userId: int("user_id")
         .notNull()
-        .references(() => participants.id),
+        .references(() => participants.id, { onDelete: "cascade" }),
     courseId: int("course_id")
         .notNull()
-        .references(() => Courses.id),
+        .references(() => Courses.id, { onDelete: "cascade" }),
     status: varchar("status", { length: 50 }),
     subscriptionId: int("subscription_id"),
 });
