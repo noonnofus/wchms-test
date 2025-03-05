@@ -53,7 +53,9 @@ export default function ParticipantConfirmation() {
     if (loading) return null;
     return (
         <div className="flex flex-col gap-20 w-full h-full items-center justify-center">
-            <h1 className="font-semibold text-4xl">Welcome back, {name}!</h1>
+            <h1 className="font-semibold text-4xl capitalize">
+                Welcome back, {name}!
+            </h1>
             <div className="w-full flex flex-col gap-4 items-center">
                 <h2 className="font-semibold text-2xl text-center">
                     To continue, please enter your last name:
