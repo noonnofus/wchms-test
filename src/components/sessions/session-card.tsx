@@ -16,6 +16,7 @@ export default function SessionCard({
     startTime,
     endTime,
     onDelete,
+    isAdmin,
 }: SessionCardProps) {
     const [showConfirmation, setShowConfirmation] = useState(false);
 
@@ -84,12 +85,14 @@ export default function SessionCard({
                             {formattedEndTime}
                         </span>
                     </div>
-                    <button
-                        onClick={() => setShowConfirmation(true)}
-                        className="text-red-500 hover:text-red-700"
-                    >
-                        <Trash2 className="w-5 h-5" />
-                    </button>
+                    {isAdmin && (
+                        <button
+                            onClick={() => setShowConfirmation(true)}
+                            className="text-red-500 hover:text-red-700"
+                        >
+                            <Trash2 className="w-5 h-5" />
+                        </button>
+                    )}
                 </Card>
             )}
         </div>

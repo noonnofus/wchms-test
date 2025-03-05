@@ -64,6 +64,7 @@ export default function SessionsPage() {
                             date={session.date}
                             startTime={session.startTime}
                             endTime={session.endTime}
+                            isAdmin={true}
                             onDelete={() => handleDeleteSession(session.id)}
                         />
                     ))
