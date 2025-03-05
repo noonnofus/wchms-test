@@ -11,7 +11,6 @@ export async function PUT(req: Request) {
     try {
         const session = await getServerSession(authConfig);
 
-        //Only admins and staff can create courses
         if (!validateAdminOrStaff(session)) {
             return new Response(
                 JSON.stringify({
