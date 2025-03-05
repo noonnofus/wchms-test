@@ -96,10 +96,10 @@ export default function AdminCourses() {
         setShowDeletePopup(true);
     };
 
-    const handleDeleteCourse = async () => {
+    const handleDeleteCourse = async (e: React.FormEvent) => {
         if (!courseToDelete) return;
-
         try {
+            e.preventDefault();
             const response = await fetch("/api/courses/delete", {
                 method: "DELETE",
                 headers: {
@@ -110,7 +110,7 @@ export default function AdminCourses() {
 
             const data = await response.json();
             console.log(data);
-            router.push("/admin/courses");
+            router.push("/admin/courses/");
 
             if (!response.ok) throw new Error(data.error || "Failed to delete");
         } catch (error) {
