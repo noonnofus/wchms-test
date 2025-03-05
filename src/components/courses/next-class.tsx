@@ -1,3 +1,4 @@
+"use client";
 import { getUserCourses } from "@/db/queries/courses";
 import { getNextSessionDate } from "@/db/queries/sessions";
 import { getSession } from "next-auth/react";
@@ -5,25 +6,32 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function NextClass() {
-    const [sessionCountdown, setSessionCountdown] = useState("No Classes");
+    const [sessionCountdown, setSessionCountdown] = useState<string | null>(
+        null
+    );
+    const [isLoading, setIsLoading] = useState(true);
 
     const nextSessionDate = async () => {
         try {
+            setIsLoading(true);
             const session = await getSession();
             const userId = Number(session?.user.id);
             if (!userId) {
                 setSessionCountdown("No Classes");
+                setIsLoading(false);
                 return;
             }
             const classExists = await getUserCourses(userId);
             if (!classExists || classExists.length === 0) {
                 setSessionCountdown("No Classes");
+                setIsLoading(false);
                 return;
             }
 
             const nextSession = await getNextSessionDate();
             if (!nextSession || !("date" in nextSession)) {
                 setSessionCountdown("No Sessions");
+                setIsLoading(false);
                 return;
             }
 
@@ -57,8 +65,11 @@ export default function NextClass() {
                 );
                 setSessionCountdown(`Next Session in ${daysTillSession} Days`);
             }
+            setIsLoading(false);
         } catch (error) {
             console.error("Error getting next session", error);
+            setSessionCountdown(null);
+            setIsLoading(false);
         }
     };
 
@@ -68,15 +79,31 @@ export default function NextClass() {
         return () => clearInterval(intervalId);
     }, []);
 
-    if (sessionCountdown === "No Classes") return null;
+    if (isLoading) {
+        return (
+            <div className="min-h-[7vh] border-2 border-primary-green/50 rounded-lg flex items-center justify-center">
+                <p className="text-primary-green/50 text-xl md:text-2xl lg:text-3xl animate-pulse">
+                    Loading...
+                </p>
+            </div>
+        );
+    }
+
+    if (sessionCountdown === "No Classes" || sessionCountdown === null)
+        return null;
 
     return (
         <div className="min-h-[7vh] border-2 border-primary-green rounded-lg flex items-center justify-center">
             {sessionCountdown === "Zoom" ? (
-                <Link href={"https://us02web.zoom.us/j/96976249949"}>
-                    <p className="text-primary-green text-xl md:text-2xl lg:text-3xl">
-                        Launch Zoom Now
-                    </p>
+                <Link
+                    href={"https://us02web.zoom.us/j/96976249949"}
+                    className="w-full text-center hover:bg-green-100 transition-colors duration-300 ease-in-out p-2 rounded-lg"
+                >
+                    <div className="flex items-center justify-center space-x-2">
+                        <p className="text-primary-green text-xl md:text-2xl lg:text-3xl font-semibold">
+                            Join Zoom Class Now
+                        </p>
+                    </div>
                 </Link>
             ) : sessionCountdown === "No Sessions" ? (
                 <p className="text-primary-green text-xl md:text-2xl lg:text-3xl">
