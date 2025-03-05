@@ -105,7 +105,6 @@ export async function POST(req: Request) {
             max_tokens: 1500,
         });
 
-        console.log(completion.choices[0].message);
         const result = completion.choices[0].message;
         return NextResponse.json({ result: result.content }, { status: 200 });
     } catch (error) {

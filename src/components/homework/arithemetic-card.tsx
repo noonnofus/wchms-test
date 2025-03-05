@@ -11,13 +11,14 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface ArithemeticProps {
-    question: string;
-    answer: string;
+    question: string | null;
+    answer: string | null;
     currentIndex: number;
     correctCount: number;
-    totalQuestions: number;
+    totalQuestions: number | 15;
     onNext: () => void;
     setCorrectCount: (count: number) => void;
 }
@@ -112,38 +113,54 @@ export default function ArithemeticCard({
             <h1 className="font-semibold text-4xl text-center">
                 15 Arithemetic Questions
             </h1>
-            <Card className="p-8 w-96 shadow-lg">
-                <CardHeader className="space-y-2">
-                    <CardTitle className="text-black text-2xl font-bold text-center">
-                        {question} = <span className="border px-3 py-1 rounded-md text-lg">?</span>
-                    </CardTitle>
-                </CardHeader>
-                <CardContent className="w-full flex flex-col items-center">
-                    <form
-                        className="w-full flex flex-col items-center"
-                        onSubmit={(e) => {
-                            e.preventDefault();
-                            handleSubmit();
-                        }}
-                    >
-                        <Input
-                            className="w-full p-3 text-center border-2 border-green-500 rounded-md"
-                            type="number"
-                            placeholder="Enter your answer"
-                            value={userAnswer}
-                            onChange={(e) => setUserAnswer(e.target.value)}
-                            required
-                        />
-                        <Button
-                            className="w-full mt-4 rounded-xl bg-primary-green hover:bg-[#046e5b]"
-                            type="submit"
+            {!question && !answer ? (
+                <Card className="p-8 w-96 shadow-lg">
+                    <CardHeader className="space-y-2">
+                        <CardTitle className="text-black text-2xl font-bold text-center">
+                            <Skeleton className="h-6 w-3/4 mx-auto" />
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent className="w-full flex flex-col items-center">
+                        <div className="w-full flex flex-col items-center space-y-4">
+                            <Skeleton className="w-full h-12 rounded-md" />
+                            <Skeleton className="w-full h-10 rounded-xl" />
+                        </div>
+                    </CardContent>
+                </Card>
+            ) : (
+                <Card className="p-8 w-96 shadow-lg">
+                    <CardHeader className="space-y-2">
+                        <CardTitle className="text-black text-2xl font-bold text-center">
+                            {question} = <span className="border px-3 py-1 rounded-md text-lg">?</span>
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent className="w-full flex flex-col items-center">
+                        <form
+                            className="w-full flex flex-col items-center"
+                            onSubmit={(e) => {
+                                e.preventDefault();
+                                handleSubmit();
+                            }}
                         >
-                            Confirm
-                        </Button>
-                    </form>
-                </CardContent>
+                            <Input
+                                className="w-full p-3 text-center border-2 border-green-500 rounded-md"
+                                type="number"
+                                placeholder="Enter your answer"
+                                value={userAnswer}
+                                onChange={(e) => setUserAnswer(e.target.value)}
+                                required
+                            />
+                            <Button
+                                className="w-full mt-4 rounded-xl bg-primary-green hover:bg-[#046e5b]"
+                                type="submit"
+                            >
+                                Confirm
+                            </Button>
+                        </form>
+                    </CardContent>
+                </Card>
+            )}
 
-            </Card>
         </div>
     );
 }

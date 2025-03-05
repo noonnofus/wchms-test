@@ -10,34 +10,35 @@ export async function POST(req: Request) {
         const body = await req.json();
         const level = body.level || "basic";
 
-        let msg = `
-                    Generate 15 math questions of ${level} level for seniors in markdown. 
-                    The questions should be simple and focus on addition, subtraction, multiplication, or division.  
-                    Ensure that each question is clear, supports brain exercises, and follows these instructions:  
-                    
-                    - Questions should be unique and randomly generated every time.  
-                    - Format the output in JSON as:
-                    {
+        const completion = await openai.chat.completions.create({
+            model: "gpt-3.5-turbo",
+            messages: [
+                {
+                    role: "system",
+                    content: `
+                        You are an assistant for seniors doing reading aloud exercises to support preventing dementia. Your job is to generate **15 mathematics questions with answers** based on the given level. Always provide tasks that are easy to solve and suitable for seniors.
+
+                        ### Instructions:
+                        - **Generate 15 mathematics questions with answers.**
+                        - The answer must be **integer**.
+                        - The questions must only be **add, subtract, multiply, and division**
+                        - The **Basic** level questions must only be contain **add and subtract**
+                        - The **Intermediate** level questions must also be contain **multiply and division**
+                        - The question should be engaging and suitable for casual discussion.
+                        - The response **must be in JSON format**.
+
+                        ### Example Output:
                         "questions": [
                           { "question": "5 + 3", "answer": "8" },
                           { "question": "12 - 4", "answer": "8" },
                           { "question": "6 × 7", "answer": "42" },
                           { "question": "36 ÷ 6", "answer": "6" }
                         ]
-                    }
-                `;
-
-        const completion = await openai.chat.completions.create({
-            model: "gpt-3.5-turbo",
-            messages: [
-                {
-                    role: "system",
-                    content:
-                        "You are an assistant for seniors who are doing brain exercises to prevent dementia. Your job is to generate simple reading or mathematics homework. Always provide tasks that are easy to solve and suitable for seniors.",
+                        `,
                 },
                 {
                     role: "user",
-                    content: `${msg}`,
+                    content: `Generate a ${level} level of 15 arithmetics exercise questions`,
                 },
             ],
             temperature: 0.7,
@@ -45,7 +46,7 @@ export async function POST(req: Request) {
 
         console.log(completion.choices[0].message);
         const result = completion.choices[0].message;
-        return NextResponse.json({ chat: result }, { status: 200 });
+        return NextResponse.json({ result: result.content }, { status: 200 });
     } catch (error) {
         return NextResponse.json({ error: error }, { status: 500 });
     }

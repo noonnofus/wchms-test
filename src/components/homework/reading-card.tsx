@@ -70,9 +70,7 @@ export default function ReadingCard({
 
             try {
                 const data = await res.json();
-
                 result = await JSON.parse(data.result);
-                console.log('result: ', result);
             } catch (e) {
                 console.error(e);
                 result = null;

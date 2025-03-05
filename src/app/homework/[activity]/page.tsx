@@ -12,12 +12,18 @@ interface Recommendation {
     topic: string;
 }
 
+interface MathQuestions {
+    question: string;
+    answer: string;
+}
+
 // video URL for physical activity to test it.
 const url = "https://www.youtube.com/watch?v=0xfDmrcI7OI";
 
 export default function ActivityPage() {
     const [correctCount, setCorrectCount] = useState(0);
     const [recommendations, setRecommendations] = useState<Recommendation[] | null>(null);
+    const [mathQuestions, setMathQuestions] = useState<MathQuestions[] | null>(null);
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [loading, setLoading] = useState(false);
 
@@ -42,39 +48,13 @@ export default function ActivityPage() {
         });
     };
 
-    const [questions] = useState(generateMockQuestions());
-
-    const handleNext = () => {
-        if (currentQuestion < questions.length - 1) {
-            setCurrentQuestion((prev) => prev + 1);
-        }
-    };
-
-    useEffect(() => {
-        // Fetch to get arithemetic questions to "api/homework" with activity type & difficulty
-
-        // const topic = activity === "arithemetic" ? "mathematics" : reco[Math.floor(Math.random() * reco.length)];
-
-        // const getArithmeticQuestions = async () => {
-        //     await fetch('/api/homework', {
-        //         method: 'POST',
-        //         body: JSON.stringify({
-        //             topic: topic,
-        //             level: difficulty,
-        //         }),
-        //         headers: new Headers({
-        //             'Content-Type': 'application/json; charset=UTF-8'
-        //         })
-        //     })
-        //         .then()
-        // }
-
-        // getArithmeticQuestions();
-
-        const generateTopic = async () => {
-
-            const res = await fetch(`/api/homework/reading?level=${encodeURIComponent(difficulty)}`, {
-                method: 'GET',
+    const getMathQuestions = async () => {
+        if (activity === "arithemetic") {
+            const res = await fetch("/api/homework/arithmetics", {
+                method: 'POST',
+                body: JSON.stringify({
+                    level: difficulty,
+                }),
                 headers: new Headers({
                     'Content-Type': 'application/json; charset=UTF-8'
                 })
@@ -83,23 +63,72 @@ export default function ActivityPage() {
                 throw new Error(`HTTP error! Status: ${res.status}`);
             }
 
-            const data = await res.json();
+            let result;
 
-            const topics = JSON.parse(data.result).topics.map((t: string) => t);
+            try {
+                const data = await res.json();
+                return await JSON.parse(data.result);
+            } catch (e) {
+                console.error(e);
+                result = null;
+            }
+        } else {
+            return;
+        }
+    }
 
-            setRecommendations(topics);
+    const handleNext = () => {
+        if (mathQuestions && currentQuestion < mathQuestions.length - 1) {
+            setCurrentQuestion((prev) => prev + 1);
+        }
+    };
+
+    useEffect(() => {
+        const fetchQuestions = async () => {
+            setLoading(true);
+            const data = await getMathQuestions();
+            if (data) {
+                setMathQuestions(data.questions);
+            }
+            setLoading(false);
+        };
+
+        fetchQuestions();
+    }, [activity, difficulty]);
+
+    useEffect(() => {
+        const generateTopic = async () => {
+            if (activity === "reading") {
+                const res = await fetch(`/api/homework/reading?level=${encodeURIComponent(difficulty)}`, {
+                    method: 'GET',
+                    headers: new Headers({
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    })
+                })
+                if (!res.ok) {
+                    throw new Error(`HTTP error! Status: ${res.status}`);
+                }
+
+                const data = await res.json();
+
+                const topics = JSON.parse(data.result).topics.map((t: string) => t);
+
+                setRecommendations(topics);
+            } else {
+                return;
+            }
         }
 
         generateTopic()
-    }, [difficulty])
+    }, [activity, difficulty])
 
     const activityComponents: Record<string, React.ReactNode> = {
         arithemetic: (
             <ArithemeticCard
-                question={questions[currentQuestion].question}
-                answer={questions[currentQuestion].answer}
+                question={mathQuestions ? mathQuestions[currentQuestion].question : null}
+                answer={mathQuestions ? mathQuestions[currentQuestion].answer : null}
                 currentIndex={currentQuestion}
-                totalQuestions={questions.length}
+                totalQuestions={mathQuestions ? mathQuestions.length : 15}
                 correctCount={correctCount}
                 setCorrectCount={setCorrectCount}
                 onNext={handleNext}

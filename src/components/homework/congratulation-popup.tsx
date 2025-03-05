@@ -8,7 +8,13 @@ export default function CongratulationPopUp({
     handleExit: () => void;
 }) {
     return (
-        <div className="flex flex-col gap-8">
+        <form
+            className="flex flex-col gap-8"
+            onSubmit={(e) => {
+                e.preventDefault(); // 기본 제출 방지
+                handleNext(); // Next Question 실행
+            }}
+        >
             <div className="flex flex-col justify-center items-center mt-4">
                 <Image
                     src="/activity-congratulation.svg"
@@ -28,17 +34,18 @@ export default function CongratulationPopUp({
                     variant="outline"
                     className="w-full h-[45px] rounded-full bg-transparent border-primary-green text-primary-green hover:bg-primary-green hover:text-white font-semibold text-base md:text-xl py-4"
                     onClick={handleExit}
+                    type="button" // Enter 눌러도 실행되지 않도록 설정
                 >
                     Exit Exercise
                 </Button>
                 <Button
                     variant="outline"
                     className="w-full h-[45px] rounded-full bg-primary-green text-white hover:bg-[#045B47] hover:text-white font-semibold text-base md:text-xl py-4"
-                    onClick={handleNext}
+                    type="submit"
                 >
                     Next Question
                 </Button>
             </div>
-        </div>
+        </form>
     );
 }
