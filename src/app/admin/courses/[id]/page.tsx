@@ -39,7 +39,7 @@ export default function AdminCourses() {
         useState<CourseMaterials | null>(null);
     const [refreshCourseMaterials, setRefreshCourseMaterials] = useState(false);
     const [courseToDelete, setCourseToDelete] = useState<Course | null>(null);
-    const [showAddSessionPopup, setShowAddSessionPopup] = useState(true);
+    const [showAddSessionPopup, setShowAddSessionPopup] = useState(false);
 
     const swipeHandlers = useSwipeable({
         onSwipedDown: () => {
