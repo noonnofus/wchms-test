@@ -20,6 +20,8 @@ import {
     deleteCourseJoinRequest,
 } from "@/db/queries/courses";
 import { useEffect, useState } from "react";
+import DeleteIcon from "../icons/delete-icon";
+import { Course } from "@/db/schema/course";
 
 interface CourseCardProps {
     id: number;
@@ -34,8 +36,10 @@ interface ClientVariantProps extends CourseCardProps {
 }
 
 interface AdminVariantProps extends CourseCardProps {
+    course: Course;
     description: string | null;
     handleEditButtonClick: (courseId: number) => void;
+    handleDeleteButtonClick: (course: Course) => void;
     variant: "admin";
 }
 
@@ -207,15 +211,24 @@ export default function CourseCard(
                 )}
 
                 {props.variant == "admin" && (
-                    <button
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            props.handleEditButtonClick(props.id);
-                        }}
-                        className="absolute right-5 top-4"
-                    >
-                        <EditIcon />
-                    </button>
+                    <div className="absolute right-[3%] top-[5%] flex gap-2">
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                props.handleEditButtonClick(props.id);
+                            }}
+                        >
+                            <EditIcon />
+                        </button>
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                props.handleDeleteButtonClick(props.course);
+                            }}
+                        >
+                            <DeleteIcon />
+                        </button>
+                    </div>
                 )}
 
                 {props.variant == "admin" && (

@@ -21,7 +21,7 @@ interface CourseDetailsProps {
     variant: "client" | "admin";
     enrolled?: boolean;
     editAction?: () => void;
-    handleDeleteButtonClick: () => void;
+    handleDeleteButtonClick?: () => void;
 }
 
 export default function CourseDetailsCard(props: CourseDetailsProps) {
@@ -163,20 +163,10 @@ export default function CourseDetailsCard(props: CourseDetailsProps) {
                             {isEnrolling ? "Enrolling..." : "Enroll"}
                         </Button>
                     ))}
-
                 {props.variant == "admin" && (
-                    <div className="flex flex-col gap-2 md:gap-4 w-full">
-                        <Button className="w-full md:text-xl py-2 md:py-4 rounded-full bg-primary-green text-white font-semibold text-base hover:bg-[#045B47]">
-                            Launch Zoom
-                        </Button>
-                        <Button
-                            onClick={props.editAction}
-                            variant="outline"
-                            className="w-full md:text-xl py-2 md:py-4 rounded-full border-primary-green text-primary-green font-semibold text-base hover:bg-primary-green hover:text-white"
-                        >
-                            Edit Course Details
-                        </Button>
-                    </div>
+                    <Button className="w-full md:text-xl py-2 md:py-4 rounded-full bg-primary-green text-white font-semibold text-base hover:bg-[#045B47]">
+                        Launch Zoom
+                    </Button>
                 )}
                 <CardContent>
                     <p>{props.description}</p>

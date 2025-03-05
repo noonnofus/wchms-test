@@ -109,7 +109,6 @@ export default function AdminCourses() {
             });
 
             const data = await response.json();
-            console.log(data);
             router.push("/admin/courses/");
 
             if (!response.ok) throw new Error(data.error || "Failed to delete");
