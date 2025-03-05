@@ -37,11 +37,12 @@ export async function DELETE(req: Request) {
                 status: 404,
             });
         }
-
         await db.delete(Courses).where(eq(Courses.id, body.courseId));
 
         return new Response(
-            JSON.stringify({ message: "Course deleted successfully" }),
+            JSON.stringify({
+                message: "Course and related materials deleted successfully",
+            }),
             { status: 200 }
         );
     } catch (error) {

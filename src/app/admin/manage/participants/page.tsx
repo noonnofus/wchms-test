@@ -87,14 +87,14 @@ export default function ManageParticipant() {
         if (!participantToDelete) return;
 
         try {
-            const res = await fetch("/api/participants/delete", {
+            const response = await fetch("/api/participants/delete", {
                 method: "DELETE",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ participantId: participantToDelete.id }),
             });
 
-            const data = await res.json();
-            if (!res.ok) throw new Error(data.error || "Failed to delete");
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.error || "Failed to delete");
 
             setRefreshParticipants((prev) => !prev);
         } catch (error) {

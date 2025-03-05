@@ -15,7 +15,7 @@ export const CourseJoinRequests = mysqlTable("course_join_requests", {
         .references(() => participants.id),
     courseId: int("course_id")
         .notNull()
-        .references(() => Courses.id),
+        .references(() => Courses.id, { onDelete: "cascade" }),
     status: mysqlEnum("status", ["pending", "approved", "rejected"])
         .notNull()
         .default("pending"),
