@@ -12,6 +12,8 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { useSession } from "next-auth/react";
+import EditIcon from "../icons/edit-icon";
+import DeleteIcon from "../icons/delete-icon";
 
 interface CourseDetailsProps {
     name: string;
@@ -19,6 +21,7 @@ interface CourseDetailsProps {
     variant: "client" | "admin";
     enrolled?: boolean;
     editAction?: () => void;
+    handleDeleteButtonClick?: () => void;
 }
 
 export default function CourseDetailsCard(props: CourseDetailsProps) {
@@ -106,7 +109,19 @@ export default function CourseDetailsCard(props: CourseDetailsProps) {
 
     return (
         <div className="flex flex-col items-center">
-            <Card className="flex flex-col gap-2 md:gap-8">
+            <Card className="relative flex flex-col gap-2 md:gap-8">
+                {props.variant === "admin" && (
+                    <div className="absolute right-[3%] top-[5%] flex gap-2">
+                        <button onClick={props.editAction}>
+                            <EditIcon />
+                        </button>
+                        {props.handleDeleteButtonClick && (
+                            <button onClick={props.handleDeleteButtonClick}>
+                                <DeleteIcon />
+                            </button>
+                        )}
+                    </div>
+                )}
                 <CardHeader>
                     <CardTitle>{props.name}</CardTitle>
                 </CardHeader>
@@ -148,22 +163,10 @@ export default function CourseDetailsCard(props: CourseDetailsProps) {
                             {isEnrolling ? "Enrolling..." : "Enroll"}
                         </Button>
                     ))}
-
                 {props.variant == "admin" && (
-                    <>
-                        <div className="flex flex-col gap-2 md:gap-4 w-full">
-                            <Button className="w-full md:text-xl py-2 md:py-4 rounded-full bg-primary-green text-white font-semibold text-base hover:bg-[#045B47]">
-                                Launch Zoom
-                            </Button>
-                            <Button
-                                onClick={props.editAction}
-                                variant="outline"
-                                className="w-full md:text-xl py-2 md:py-4 rounded-full border-primary-green text-primary-green font-semibold text-base hover:bg-primary-green hover:text-white"
-                            >
-                                Edit Course Details
-                            </Button>
-                        </div>
-                    </>
+                    <Button className="w-full md:text-xl py-2 md:py-4 rounded-full bg-primary-green text-white font-semibold text-base hover:bg-[#045B47]">
+                        Launch Zoom
+                    </Button>
                 )}
                 <CardContent>
                     <p>{props.description}</p>

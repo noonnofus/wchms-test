@@ -1,4 +1,4 @@
-import { courseMaterials } from "@/db/schema/courseMaterials"; // Adjust according to your schema
+import { courseMaterials } from "@/db/schema/courseMaterials";
 import { eq } from "drizzle-orm";
 import db from "@/db";
 import { getServerSession } from "next-auth";
@@ -9,7 +9,7 @@ export async function DELETE(req: Request) {
     try {
         const session = await getServerSession(authConfig);
 
-        //Only admins and staff can delete course materials
+        // Only admins and staff can delete course materials
         if (!validateAdminOrStaff(session)) {
             return new Response(
                 JSON.stringify({
