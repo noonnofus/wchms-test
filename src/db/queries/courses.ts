@@ -18,6 +18,7 @@ export interface courseList {
     id: number;
     title: string;
     description: string | null;
+    fileKey: string | null;
 }
 //Returns all courses that are available to users. Returns an object with an array of enrolled courses and unenrolled courses
 export async function getAvailableCourses() {
@@ -33,8 +34,10 @@ export async function getAvailableCourses() {
                 id: coursesTable.id,
                 title: coursesTable.title,
                 description: coursesTable.description,
+                fileKey: uploadMedia.fileKey,
             })
             .from(coursesTable)
+            .leftJoin(uploadMedia, eq(coursesTable.uploadId, uploadMedia.id))
             .where(eq(coursesTable.status, "Available"))
             .orderBy(desc(coursesTable.id));
 
@@ -76,10 +79,23 @@ export async function getAllCourses(/* page = 1, limit = 10 */) {
         // const offset = (page - 1) * limit;
 
         const courses = await db
-            .select()
+            .select({
+                id: coursesTable.id,
+                title: coursesTable.title,
+                description: coursesTable.description,
+                start: coursesTable.start,
+                end: coursesTable.end,
+                kind: coursesTable.kind,
+                status: coursesTable.status,
+                lang: coursesTable.lang,
+                roomId: coursesTable.roomId,
+                uploadId: coursesTable.uploadId,
+                fileKey: uploadMedia.fileKey,
+            })
             .from(coursesTable)
             // .limit(limit) //limit number of courses
             // .offset(offset); // Set the starting point of query
+            .leftJoin(uploadMedia, eq(coursesTable.uploadId, uploadMedia.id))
             .orderBy(desc(coursesTable.id));
 
         return courses;
@@ -88,27 +104,6 @@ export async function getAllCourses(/* page = 1, limit = 10 */) {
         return [];
     }
 }
-
-export const fetchCourseImage = async (uploadId: number) => {
-    try {
-        const result = await db
-            .select()
-            .from(uploadMedia)
-            .where(eq(uploadMedia.id, uploadId))
-            .limit(1);
-
-        if (result.length > 0) {
-            const { fileData, fileType } = result[0];
-            const imageUrl = `data:${fileType};base64,${fileData}`;
-            return imageUrl;
-        }
-
-        return null;
-    } catch (error) {
-        console.error("Error fetching course image", error);
-        return null;
-    }
-};
 
 export async function getUploadId(courseId: number) {
     try {
@@ -168,7 +163,7 @@ export async function getCourseById(
                 title: coursesTable.title,
                 description: coursesTable.description,
                 uploadId: coursesTable.uploadId,
-                imageFileName: uploadMedia.fileName,
+                fileKey: uploadMedia.fileKey,
                 start: coursesTable.start,
                 end: coursesTable.end,
                 roomId: coursesTable.roomId,
@@ -198,7 +193,7 @@ export async function getCourseById(
                         fileName: uploadMedia.fileName,
                         fileType: uploadMedia.fileType,
                         fileSize: uploadMedia.fileSize,
-                        fileData: uploadMedia.fileData,
+                        fileKey: uploadMedia.fileKey,
                     },
                 })
                 .from(courseMaterials)

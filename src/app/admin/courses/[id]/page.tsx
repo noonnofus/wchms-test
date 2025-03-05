@@ -112,10 +112,7 @@ export default function AdminCourses() {
                         ) : (
                             <div className="flex flex-col gap-4">
                                 <CourseDetailsCard
-                                    name={selectedCourse.title}
-                                    description={
-                                        selectedCourse?.description || ""
-                                    }
+                                    course={selectedCourse}
                                     variant="admin"
                                     editAction={handleEditCourseButtonClick}
                                 />

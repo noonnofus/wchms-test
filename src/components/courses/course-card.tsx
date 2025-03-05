@@ -20,12 +20,11 @@ import {
     deleteCourseJoinRequest,
 } from "@/db/queries/courses";
 import { useEffect, useState } from "react";
+import { type CourseWithImage } from "@/app/admin/courses/page";
+import { type CourseListWithImage } from "@/app/courses/page";
 
 interface CourseCardProps {
-    id: number;
-    name: string;
-    image?: string;
-    imageAlt?: string;
+    course: CourseWithImage | CourseListWithImage;
 }
 
 interface ClientVariantProps extends CourseCardProps {
@@ -34,7 +33,6 @@ interface ClientVariantProps extends CourseCardProps {
 }
 
 interface AdminVariantProps extends CourseCardProps {
-    description: string | null;
     handleEditButtonClick: (courseId: number) => void;
     variant: "admin";
 }
@@ -52,14 +50,14 @@ export default function CourseCard(
 
     const courseLink =
         props.variant === "admin"
-            ? `/admin/courses/${props.id}`
-            : `/courses/${props.id}`;
+            ? `/admin/courses/${props.course.id}`
+            : `/courses/${props.course.id}`;
 
     const fetchData = async () => {
         if (!participantId) return;
         try {
             const exists = await checkCourseJoinRequestExists(
-                props.id,
+                props.course.id,
                 parseInt(participantId)
             );
             setRequestExists(exists);
@@ -70,7 +68,7 @@ export default function CourseCard(
 
     useEffect(() => {
         fetchData();
-    }, [participantId, props.id]);
+    }, [participantId, props.course.id]);
 
     const handleEnrollClick = async () => {
         if (!participantId) return;
@@ -83,7 +81,10 @@ export default function CourseCard(
                 return;
             }
 
-            await createCourseJoinRequest(props.id, parseInt(participantId));
+            await createCourseJoinRequest(
+                props.course.id,
+                parseInt(participantId)
+            );
             console.log("Join request successfully sent");
             await fetchData();
         } catch (error) {
@@ -99,7 +100,10 @@ export default function CourseCard(
         setIsRemoving(true);
         setError("");
         try {
-            await deleteCourseJoinRequest(props.id, parseInt(participantId));
+            await deleteCourseJoinRequest(
+                props.course.id,
+                parseInt(participantId)
+            );
             console.log("Join request successfully deleted");
             setRequestExists(false);
         } catch (error) {
@@ -127,15 +131,15 @@ export default function CourseCard(
                                 : ""
                         )}
                     >
-                        {props.name}
+                        {props.course.title}
                     </CardTitle>
                 </CardHeader>
-                {props.image && (
+                {props.course.imageUrl && (
                     <Image
-                        src={props.image}
+                        src={props.course.imageUrl}
                         width={200}
                         height={200}
-                        alt={props.imageAlt || `${props.name} Course Image`}
+                        alt={`${props.course.title} Course Image`}
                     />
                 )}
                 {props.variant == "client" && (
@@ -146,7 +150,7 @@ export default function CourseCard(
                                 asChild
                                 className="w-full md:text-xl py-2 md:py-4 rounded-full bg-primary-green hover:bg-[#045B47] text-white font-semibold text-base"
                             >
-                                <Link href={`/courses/${props.id}`}>
+                                <Link href={`/courses/${props.course.id}`}>
                                     View Course
                                 </Link>
                             </Button>
@@ -157,7 +161,7 @@ export default function CourseCard(
                                     className="w-full md:text-xl py-2 md:py-4 rounded-full hover:bg-primary-green border-primary-green text-primary-green hover:text-white font-semibold text-base"
                                     variant="outline"
                                 >
-                                    <Link href={`/courses/${props.id}`}>
+                                    <Link href={`/courses/${props.course.id}`}>
                                         Details
                                     </Link>
                                 </Button>
@@ -182,7 +186,7 @@ export default function CourseCard(
                                     className="w-full md:text-xl py-2 md:py-4 rounded-full hover:bg-primary-green border-primary-green text-primary-green hover:text-white font-semibold text-base"
                                     variant="outline"
                                 >
-                                    <Link href={`/courses/${props.id}`}>
+                                    <Link href={`/courses/${props.course.id}`}>
                                         Details
                                     </Link>
                                 </Button>
@@ -202,7 +206,7 @@ export default function CourseCard(
                 )}
                 {props.variant == "admin" && (
                     <CardContent>
-                        <p>{props.description}</p>
+                        <p>{props.course.description}</p>
                     </CardContent>
                 )}
 
@@ -210,7 +214,7 @@ export default function CourseCard(
                     <button
                         onClick={(e) => {
                             e.stopPropagation();
-                            props.handleEditButtonClick(props.id);
+                            props.handleEditButtonClick(props.course.id);
                         }}
                         className="absolute right-5 top-4"
                     >
@@ -220,7 +224,7 @@ export default function CourseCard(
 
                 {props.variant == "admin" && (
                     <Link
-                        href={`/admin/courses/${props.id}`}
+                        href={`/admin/courses/${props.course.id}`}
                         className="absolute right-2 top-1/2 transform -translate-y-1/2"
                     >
                         <svg

@@ -3,13 +3,15 @@ import AddCourse from "@/components/courses/add-course";
 import CourseCard from "@/components/courses/course-card";
 import CloseIcon from "@/components/icons/close-icon";
 import CloseSwipe from "@/components/icons/close-swipe";
-import { fetchCourseImage, getAllCourses } from "@/db/queries/courses";
+import { getAllCourses } from "@/db/queries/courses";
 import { type Course } from "@/db/schema/course";
+import { getSignedUrlFromFileKey } from "@/lib/s3";
 import { useEffect, useState } from "react";
 import { useSwipeable } from "react-swipeable";
 
 export type CourseWithImage = Course & {
-    imageUrl?: string | null;
+    fileKey: string | null;
+    imageUrl: string | null;
 };
 
 export default function Courses() {
@@ -48,8 +50,8 @@ export default function Courses() {
                 const coursesWithImages = await Promise.all(
                     allCourses.map(async (course) => {
                         const imageUrl =
-                            course.uploadId !== null
-                                ? await fetchCourseImage(course.uploadId)
+                            course.fileKey !== null
+                                ? await getSignedUrlFromFileKey(course.fileKey)
                                 : null;
                         return { ...course, imageUrl };
                     })
@@ -163,12 +165,8 @@ export default function Courses() {
                     {courses.length ? (
                         courses.map((course) => (
                             <CourseCard
+                                course={course}
                                 key={course.id}
-                                id={course.id}
-                                name={course.title}
-                                image={course.imageUrl || "/course-image.png"}
-                                imageAlt={`${course.title} Cover Image`}
-                                description={course.description}
                                 variant="admin"
                                 handleEditButtonClick={handleEditButtonClick}
                             />

@@ -1,5 +1,9 @@
+import { authConfig } from "@/auth";
 import db from "@/db";
 import { uploadMedia } from "@/db/schema/mediaUpload";
+import { uploadToS3 } from "@/lib/s3";
+import { validateAdminOrStaff } from "@/lib/validation";
+import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 import sharp from "sharp";
 
@@ -13,6 +17,17 @@ export async function POST(request: Request) {
             return NextResponse.json(
                 { error: "No file provided" },
                 { status: 400 }
+            );
+        }
+        const session = await getServerSession(authConfig);
+
+        //Only admin or staff can upload
+        if (!validateAdminOrStaff(session)) {
+            return new Response(
+                JSON.stringify({
+                    error: "Unauthorized: insufficient permissions",
+                }),
+                { status: 401 }
             );
         }
 
@@ -66,16 +81,23 @@ export async function POST(request: Request) {
             }
         }
 
-        const [mediaRecord] = await db.insert(uploadMedia).values({
-            fileName: file.name,
-            fileType: file.type,
-            fileSize: file.size,
-            fileData: base64Data,
-            mediaOrigin: "course",
-            originId: 0,
-        });
+        const { success, fileName } = await uploadToS3(file);
+        if (!success) {
+            throw new Error("Failed to upload to S3.");
+        }
 
-        return NextResponse.json({ id: mediaRecord.insertId });
+        if (fileName) {
+            const [mediaRecord] = await db.insert(uploadMedia).values({
+                fileName: file.name,
+                fileType: file.type,
+                fileSize: file.size,
+                fileKey: fileName,
+                mediaOrigin: "course",
+                ownerId: parseInt(session!.user.id), //session is checked in admin/staff validation
+            });
+
+            return NextResponse.json({ id: mediaRecord.insertId });
+        }
     } catch (error) {
         console.error("Error uploading file:", error);
         return NextResponse.json(
