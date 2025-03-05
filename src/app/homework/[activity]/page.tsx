@@ -71,7 +71,7 @@ export default function ActivityPage() {
 
         // getArithmeticQuestions();
 
-        const topicGenerate = async () => {
+        const generateTopic = async () => {
 
             const res = await fetch(`/api/homework/reading?level=${encodeURIComponent(difficulty)}`, {
                 method: 'GET',
@@ -90,7 +90,7 @@ export default function ActivityPage() {
             setRecommendations(topics);
         }
 
-        topicGenerate()
+        generateTopic()
     }, [difficulty])
 
     const activityComponents: Record<string, React.ReactNode> = {

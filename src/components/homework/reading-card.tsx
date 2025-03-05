@@ -32,17 +32,58 @@ export default function ReadingCard({
 }: ReadingProps) {
     const [showTopicPopup, setShowTopicPopup] = useState(true);
     const [topic, setTopic] = useState<string | null>(null);
+    const [topicLoading, setTopicLoading] = useState(true);
     const [recommendations, setRecommendations] = useState<Recommendation[] | null>(null);
+    const [readingQuestion, setReadingQuestion] = useState<string[] | null>(null);
     const [error, setError] = useState<string | null>();
 
     const router = useRouter();
 
     useEffect(() => {
-        // 2. Fetch to "api/homework" to get a reading aloud question with topic value && difficulty.
         if (topicRecommendations) {
             setRecommendations(topicRecommendations);
         }
-    }, [showTopicPopup, topicRecommendations]);
+    }, [topicRecommendations])
+
+    useEffect(() => {
+
+        const getReadingQuestion = async () => {
+            if (topicLoading) {
+                return;
+            }
+
+            const res = await fetch("/api/homework/reading", {
+                method: 'POST',
+                body: JSON.stringify({
+                    topic: topic,
+                    level: difficulty,
+                }),
+                headers: new Headers({
+                    'Content-Type': 'application/json; charset=UTF-8'
+                })
+            })
+            if (!res.ok) {
+                throw new Error(`HTTP error! Status: ${res.status}`);
+            }
+
+            let result;
+
+            try {
+                const data = await res.json();
+
+                result = await JSON.parse(data.result);
+                console.log('result: ', result);
+            } catch (e) {
+                console.error(e);
+                result = null;
+            }
+
+            setReadingQuestion(result.reading);
+        }
+
+        getReadingQuestion();
+    }, [showTopicPopup, topicLoading]);
+
 
     const handleCourseSelect = (selectedTopic: string) => {
         setTopic(selectedTopic);
@@ -83,22 +124,33 @@ export default function ReadingCard({
                                         onChange={(e) => setTopic(e.target.value)}
                                     />
                                 </div>
-
                                 {recommendations ? (
-                                    <Select onValueChange={handleCourseSelect}>
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="All Recommendations" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            {recommendations.map((recommendation, index) => (
-                                                <SelectItem key={index} value={recommendation.topic}>
-                                                    {recommendation.topic}
-                                                </SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
+                                    <div
+                                        className="flex w-full justify-center item-center"
+                                    >
+                                        <Select onValueChange={handleCourseSelect}>
+                                            <SelectTrigger className="w-[300px]">
+                                                <SelectValue placeholder="All Recommendations" />
+                                            </SelectTrigger>
+                                            <SelectContent
+                                                className="w-full w-[300px]"
+                                            >
+                                                {recommendations.map((recommendation, index) => (
+                                                    <SelectItem
+                                                        key={index}
+                                                        value={recommendation.topic}
+                                                        className="w-full w-[300px]"
+                                                    >
+                                                        <p className="overflow-hidden text-ellipsis w-full">
+                                                            {recommendation.topic}
+                                                        </p>
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
                                 ) : (
-                                    <Skeleton className="h-10 w-full rounded-md" />
+                                    <Skeleton className="h-10 w-[300px] rounded-md" />
                                 )}
                             </div>
 
@@ -110,7 +162,10 @@ export default function ReadingCard({
                                 <Button
                                     variant="outline"
                                     className="w-full h-[45px] rounded-full bg-primary-green text-white hover:bg-[#045B47] hover:text-white font-semibold text-base md:text-xl py-4"
-                                    onClick={hanldeOnClick}
+                                    onClick={() => {
+                                        hanldeOnClick();
+                                        setTopicLoading(false);
+                                    }}
                                 >
                                     Select Topic
                                 </Button>
@@ -140,17 +195,15 @@ export default function ReadingCard({
                                 handleExit();
                             }}
                         >
-                            <span>
-                                {/* Reading question here */}
-                                埼玉県は、1962年から50年以上連続で雛人形の出荷額日本一を誇っています。
-                                江戸時代、三代将軍家光が実施した日光東照宮の大改修で、全国から腕の良い
-                                職人たちが集められました。当時、宿場町として栄えていた岩槻 (現 さいたま市
-                                岩槻区)には、職人たちが住み着くようになります。
-                                江戸時代に雛人形が流行したおかげで、幕末には人形が岩槻藩主の専売品にさ
-                                れるほど重要な産業となり、今でも人形づくり日本一の町として受け継がれてい
-                                ます。実に何百という工程を経て作られる人形ですが、今でも熟練の人形師が心
-                                を込めて手作業しています。
-                            </span>
+                            {Array.isArray(readingQuestion) ? (
+                                <div>
+                                    {readingQuestion.map((reading, i) => (
+                                        <span key={i}>{reading}</span>
+                                    ))}
+                                </div>
+                            ) : (
+                                <Skeleton className="h-[150px] w-full rounded-md" />
+                            )}
                             <Button
                                 className="w-full mt-4 rounded-xl bg-primary-green hover:bg-[#046e5b]"
                                 type="submit"

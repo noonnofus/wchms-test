@@ -28,11 +28,11 @@ export async function GET(req: Request) {
                         ### Example Output:
                         {
                             "topics": [
-                            { "topic": "" },
-                            { "topic": "" },
-                            { "topic": "" },
-                            { "topic": "" },
-                            { "topic": "" },
+                                { "topic": "" },
+                                { "topic": "" },
+                                { "topic": "" },
+                                { "topic": "" },
+                                { "topic": "" },
                             ]
                         }
                     `,
@@ -58,48 +58,56 @@ export async function POST(req: Request) {
         const topic = body.topic;
         const level = body.level || "basic";
 
-        let msg = `
-                    Generate a ${level} level reading exercise on ${topic} for seniors in markdown.  
-                    The exercise should include a short passage (approximately 100-150 words) that is easy to understand.  
-                    Ensure that the content is clear and designed to support cognitive health.  
-                    
-                    Format the passage in markdown.  
-                    - Use **bold** formatting for one or two sentences in the passage that seniors should read aloud.  
-                    - Keep the language simple and engaging.  
-                    - The topic should be relevant to seniors and encourage discussion.  
-                    
-                    Example output:  
-                    
-                    \`\`\`markdown  
-                    ## Easy Level Reading Exercise: The Benefits of Walking  
-                    
-                    Walking is a simple yet powerful way to stay healthy. It helps keep the heart strong and improves mood. Doctors recommend walking at least 30 minutes a day to maintain good health.  
-                    
-                    **"Walking outside in fresh air can make you feel more energetic and happy."**  
-                    
-                    Many seniors find that walking with friends makes the activity more enjoyable. It is a great way to stay connected with others while staying active.  
-                    \`\`\`
-                `;
+        if (!topic || !level) {
+            return;
+        }
 
         const completion = await openai.chat.completions.create({
             model: "gpt-3.5-turbo",
             messages: [
                 {
                     role: "system",
-                    content:
-                        "You are an assistant for seniors who are doing brain exercises to prevent dementia. Your job is to generate simple reading homework. Always provide tasks that are easy to solve and suitable for seniors.",
+                    content: `
+                        You are an assistant for seniors doing reading aloud exercises to support preventing dementia. 
+                        Your job is to generate **one reading passage** based on the given topic and level. 
+                        The passage should be relevant, easy to understand, and encourage discussion.
+
+                        ### Instructions:
+                        - **Generate exactly one passage.**
+                        - The **Basic** passage must be between **170 and 230 tokens.**
+                        - The **Intermediate** passage must be between **230 and 290 tokens.**
+                        - Ensure the passage **length is consistent** and does not go **below 170 tokens**.
+                        - If the response is too short, **extend it with additional details, examples, or explanations.**
+                        - The passage should be engaging and suitable for casual discussion.
+                        - The response **must be in JSON format**.
+
+                        ### Example Output:
+                        {
+                            "reading": [
+                                "Saitama Prefecture has been proud of Japan's highest Hina dolls for more than 50 consecutive years since 1962.
+                                In the Edo period, the 3rd Shogun Iemitsu conducted a major renovation of Nikko Toshogu Shrine, which has excellent skills from all over the country
+                                The craftsmen were gathered together. Iwatsuki (now Saitama City) flourished as an inn town at that time
+                                In Iwatsuki Ward, craftsmen will live there.
+                                Hina dolls became popular in the Edo period, and at the end of the Edo period, dolls became exclusive products of the lord of the Iwatsuki domain."
+                                It has become such an important industry that it is still handed down as the best town in Japan to make dolls."
+                                Yes. It is a doll made through hundreds of processes, but even now, skilled puppeteers still have the heart
+                                I'm working on it manually."
+                            ]
+                        }
+                        `,
                 },
                 {
                     role: "user",
-                    content: `${msg}`,
+                    content: `Generate a ${level} level of reading aloud exercise question of the topic ${topic}`,
                 },
             ],
-            temperature: 0.7,
+            temperature: 1.2,
+            max_tokens: 1500,
         });
 
         console.log(completion.choices[0].message);
         const result = completion.choices[0].message;
-        return NextResponse.json({ result: result }, { status: 200 });
+        return NextResponse.json({ result: result.content }, { status: 200 });
     } catch (error) {
         return NextResponse.json({ error: error }, { status: 500 });
     }
