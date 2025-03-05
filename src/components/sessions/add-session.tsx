@@ -255,7 +255,6 @@ export default function AddSession(props: Props) {
             console.log("Session created successfully");
             props.handleClosePopup();
             router.refresh();
-            router.push(`/admin/session/${formData.courseId}`);
         } catch (error) {
             console.error("Error:", error);
             setErrors((prev) => ({
@@ -301,7 +300,6 @@ export default function AddSession(props: Props) {
             console.log("Session updated successfully");
             props.handleClosePopup();
             router.refresh();
-            router.push(`/admin/courses/${formData.courseId}`);
         } catch (error) {
             console.error("Error:", error);
             setErrors((prev) => ({

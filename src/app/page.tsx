@@ -1,4 +1,5 @@
 "use client";
+import { Button } from "@/components/ui/button";
 import {
     Select,
     SelectContent,
@@ -6,22 +7,22 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import { useState, useEffect } from "react";
-import Link from "next/link";
-import { type Participant } from "@/db/schema/participants";
 import { getAllCourses } from "@/db/queries/courses";
 import { type Course } from "@/db/schema/course";
+import { type Participant } from "@/db/schema/participants";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export default function ParticipantLogin() {
     const [participants, setParticipants] = useState<
-        { name: string; courses: string[] }[]
+        { name: string; courses: { id: number; title: string }[] }[]
     >([]);
     const [allParticipants, setAllParticipants] = useState<
-        { name: string; courses: string[] }[]
+        { name: string; courses: { id: number; title: string }[] }[]
     >([]);
     const [courses, setCourses] = useState<
         {
+            id: number;
             title: string;
         }[]
     >([]);
@@ -31,6 +32,7 @@ export default function ParticipantLogin() {
             try {
                 const courses = await getAllCourses();
                 const courseData = courses.map((course: Course) => ({
+                    id: course.id,
                     title: course.title,
                 }));
                 setCourses(courseData);
@@ -38,6 +40,7 @@ export default function ParticipantLogin() {
                 console.error("Error fetching courses", error);
             }
         };
+
         const fetchParticipants = async () => {
             try {
                 const response = await fetch("/api/participants");
@@ -48,7 +51,7 @@ export default function ParticipantLogin() {
 
                 const uniqueParticipants: {
                     name: string;
-                    courses: string[];
+                    courses: { id: number; title: string }[];
                 }[] = [];
 
                 const seenNames = new Set(); // stores unique first names to check for duplicates
@@ -62,11 +65,18 @@ export default function ParticipantLogin() {
 
                         if (!seenNames.has(firstName)) {
                             seenNames.add(firstName);
+
                             const coursesArray = p.course
-                                ? p.course
-                                    .split(",")
-                                    .map((course) => course.trim())
+                                ? p.course.split(",").map((courseStr) => {
+                                      const [idStr, ...titleParts] = courseStr
+                                          .trim()
+                                          .split(":");
+                                      const id = parseInt(idStr);
+                                      const title = titleParts.join(":").trim();
+                                      return { id, title };
+                                  })
                                 : [];
+
                             uniqueParticipants.push({
                                 name: firstName,
                                 courses: coursesArray,
@@ -76,13 +86,30 @@ export default function ParticipantLogin() {
                             const participant = uniqueParticipants.find(
                                 (p) => p.name === firstName
                             );
-                            if (participant) {
-                                const participantCourses = p.course
-                                    ? p.course
-                                        .split(",")
-                                        .map((course) => course.trim())
-                                    : [];
-                                participant.courses.push(...participantCourses);
+
+                            if (participant && p.course) {
+                                const newCourses = p.course
+                                    .split(",")
+                                    .map((courseStr) => {
+                                        const [idStr, ...titleParts] = courseStr
+                                            .trim()
+                                            .split(":");
+                                        const id = parseInt(idStr);
+                                        const title = titleParts
+                                            .join(":")
+                                            .trim();
+                                        return { id, title };
+                                    });
+
+                                newCourses.forEach((newCourse) => {
+                                    if (
+                                        !participant.courses.some(
+                                            (c) => c.id === newCourse.id
+                                        )
+                                    ) {
+                                        participant.courses.push(newCourse);
+                                    }
+                                });
                             }
                         }
                     }
@@ -99,13 +126,17 @@ export default function ParticipantLogin() {
         fetchCourses();
     }, []);
 
-    const handleCourseSelect = (courseName: string) => {
-        if (courseName === "All Courses") {
+    const handleCourseSelect = (courseValue: string) => {
+        if (courseValue === "All Courses") {
             setParticipants(allParticipants);
         } else {
+            const [idStr, title] = courseValue.split("|");
+            const courseId = parseInt(idStr);
+
             const filteredParticipants = allParticipants.filter((p) =>
-                p.courses.includes(courseName)
+                p.courses.some((course) => course.id === courseId)
             );
+
             setParticipants(filteredParticipants);
         }
     };
@@ -124,8 +155,11 @@ export default function ParticipantLogin() {
                             <SelectItem value="All Courses">
                                 All Courses
                             </SelectItem>
-                            {courses.map((course, index) => (
-                                <SelectItem key={index} value={course.title}>
+                            {courses.map((course) => (
+                                <SelectItem
+                                    key={course.id}
+                                    value={`${course.id}|${course.title}`}
+                                >
                                     {course.title}
                                 </SelectItem>
                             ))}
