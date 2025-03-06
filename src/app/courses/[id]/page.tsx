@@ -8,8 +8,11 @@ import { useEffect, useState } from "react";
 import { getCourseById } from "@/db/queries/courses";
 import { CourseFull } from "@/db/schema/course";
 import ParticipantList from "@/components/courses/participant-list";
+import SessionCard from "@/components/sessions/session-card";
+import { getFutureSessions } from "@/db/queries/sessions";
+import { Session } from "@/db/schema/session";
 
-export default function Home() {
+export default function CoursePage() {
     const { id } = useParams();
     const { data: session } = useSession();
     const participantId = session?.user.id;
@@ -17,6 +20,7 @@ export default function Home() {
     const [selectedCourse, setSelectedCourse] = useState<
         CourseFull | undefined
     >(undefined);
+    const [sessions, setSessions] = useState<Session[] | null>(null);
 
     useEffect(() => {
         const fetchCourses = async () => {
@@ -37,6 +41,20 @@ export default function Home() {
             }
         };
         fetchCourses();
+    }, [id]);
+
+    useEffect(() => {
+        const fetchSessions = async () => {
+            try {
+                const sessions = await getFutureSessions(
+                    parseInt(id as string)
+                );
+                setSessions(sessions);
+            } catch (error) {
+                console.error("Error fetching sessions", error);
+            }
+        };
+        fetchSessions();
     }, [id]);
 
     if (!selectedCourse) {
@@ -91,6 +109,25 @@ export default function Home() {
                                         }
                                     />
                                 )}
+                                <div className="flex flex-col items-start gap-4">
+                                    <h2 className="font-semibold text-primary-green tracking-tight text-left text-2xl md:text-[32px]">
+                                        Next Sessions
+                                    </h2>
+                                    {sessions ? (
+                                        sessions.map((session) => (
+                                            <SessionCard
+                                                key={session.id}
+                                                date={session.date}
+                                                startTime={session.startTime}
+                                                endTime={session.endTime}
+                                            />
+                                        ))
+                                    ) : (
+                                        <p className="text-gray-500">
+                                            No sessions available.
+                                        </p>
+                                    )}
+                                </div>
                             </div>
                         )}
                     </>
