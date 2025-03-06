@@ -51,7 +51,12 @@ export async function getSessionById(sessionId: number) {
 export async function getAllSessionsByCourseId(courseId: number) {
     try {
         const sessions = await db
-            .select()
+            .select({
+                id: Sessions.id,
+                date: Sessions.date,
+                startTime: Sessions.startTime,
+                endTime: Sessions.endTime,
+            })
             .from(Sessions)
             .where(eq(Sessions.courseId, courseId))
             .orderBy(desc(Sessions.endTime));

@@ -12,6 +12,8 @@ import SessionCard from "@/components/sessions/session-card";
 import { getFutureSessions } from "@/db/queries/sessions";
 import { Session } from "@/db/schema/session";
 
+type SessionPreview = Omit<Session, "status" | "courseId" | "instructorId">;
+
 export default function CoursePage() {
     const { id } = useParams();
     const { data: session } = useSession();
@@ -20,7 +22,7 @@ export default function CoursePage() {
     const [selectedCourse, setSelectedCourse] = useState<
         CourseFull | undefined
     >(undefined);
-    const [sessions, setSessions] = useState<Session[] | null>(null);
+    const [sessions, setSessions] = useState<SessionPreview[] | null>(null);
 
     useEffect(() => {
         const fetchCourses = async () => {
@@ -115,12 +117,7 @@ export default function CoursePage() {
                                     </h2>
                                     {sessions ? (
                                         sessions.map((session) => (
-                                            <SessionCard
-                                                key={session.id}
-                                                date={session.date}
-                                                startTime={session.startTime}
-                                                endTime={session.endTime}
-                                            />
+                                            <SessionCard session={session} />
                                         ))
                                     ) : (
                                         <p className="text-gray-500">

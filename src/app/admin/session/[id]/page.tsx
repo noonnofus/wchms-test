@@ -3,15 +3,16 @@
 import AddSession from "@/components/sessions/add-session";
 import SessionCard from "@/components/sessions/session-card";
 import { deleteSession, getAllSessionsByCourseId } from "@/db/queries/sessions";
+import { Session } from "@/db/schema/session";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+
+type SessionPreview = Omit<Session, "status" | "courseId" | "instructorId">;
 
 export default function SessionsPage() {
     const { id } = useParams();
     const courseId = Number(id);
-    const [sessions, setSessions] = useState<
-        { id: number; date: string; startTime: string; endTime: string }[]
-    >([]);
+    const [sessions, setSessions] = useState<SessionPreview[]>([]);
     const [showAddPopup, setShowAddPopup] = useState(false);
     const [refreshFlag, setRefreshFlag] = useState(0);
 
@@ -20,14 +21,7 @@ export default function SessionsPage() {
             try {
                 const fetchedSessions =
                     await getAllSessionsByCourseId(courseId);
-                setSessions(
-                    fetchedSessions.map((session) => ({
-                        id: session.id,
-                        date: session.date.toISOString(),
-                        startTime: session.startTime.toISOString(),
-                        endTime: session.endTime.toISOString(),
-                    }))
-                );
+                setSessions(fetchedSessions);
             } catch (error) {
                 console.error("Failed to fetch sessions:", error);
             }
@@ -53,19 +47,16 @@ export default function SessionsPage() {
     };
 
     return (
-        <div className="w-full h-full flex flex-col gap-4">
-            <h2 className="text-xl font-semibold">All Sessions</h2>
+        <div className="w-full h-full">
+            <h2 className="text-xl font-semibold">Next Session</h2>
 
             <div className="flex flex-col items-center gap-4">
                 {sessions.length > 0 ? (
                     sessions.map((session) => (
                         <SessionCard
-                            key={session.id}
-                            date={session.date}
-                            startTime={session.startTime}
-                            endTime={session.endTime}
-                            isAdmin={true}
+                            session={session}
                             onDelete={() => handleDeleteSession(session.id)}
+                            isAdmin={true}
                         />
                     ))
                 ) : (
