@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
     Card,
     CardHeader,
@@ -9,7 +10,7 @@ import {
 } from "@/components/ui/card";
 
 interface PhysicalProps {
-    videoUrl: string;
+    videoUrl: string | null;
 }
 
 export default function PhysicalCard({
@@ -17,17 +18,21 @@ export default function PhysicalCard({
 }: PhysicalProps) {
     const [videoTitle, setVideoTitle] = useState("");
     const [videoId, setVideoId] = useState("");
+    const [error, setError] = useState<string | null>(null);
 
     const router = useRouter();
 
     useEffect(() => {
-        const id = videoUrl.split("v=")[1]?.split("&")[0];
-        if (id) {
+        // console.log(videoUrl);
+        const id = videoUrl?.split("v=")[1]?.split("&")[0];
+        if (videoUrl !== null && id) {
             setVideoId(id);
             fetch(`https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${id}&format=json`)
                 .then((res) => res.json())
                 .then((data) => setVideoTitle(data.title))
                 .catch((err) => console.error("Error fetching video title:", err));
+        } else {
+            setError(videoUrl);
         }
     }, [videoUrl]);
 
@@ -60,8 +65,10 @@ export default function PhysicalCard({
                                         allowFullScreen
                                     ></iframe>
                                 </div>
+                            ) : error ? (
+                                <p className="text-red-500 text-center">{error}</p>
                             ) : (
-                                <p>Please wait until the video is ready</p>
+                                <Skeleton className="md:h-[500px] sm:h-[500px] sm:w-[400px] max-h-[500px] md:w-[1000px] max-w-[1200px] rounded-md" />
                             )}
                         </CardContent>
                     </Card>

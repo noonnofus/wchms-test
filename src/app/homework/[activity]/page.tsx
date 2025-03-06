@@ -7,6 +7,7 @@ import ArithemeticCard from "@/components/homework/arithemetic-card";
 import ReadingCard from "@/components/homework/reading-card";
 import PhysicalCard from "@/components/homework/physical-card";
 import { redirect } from 'next/navigation'
+import { getLatestPhysicalMaterial } from "@/db/queries/courses";
 
 interface Recommendation {
     topic: string;
@@ -26,6 +27,7 @@ export default function ActivityPage() {
     const [mathQuestions, setMathQuestions] = useState<MathQuestions[] | null>(null);
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [loading, setLoading] = useState(false);
+    const [physicalUrl, setPhysicalUrl] = useState<string | null>(null);
 
     const pathname = usePathname();
     const searchParams = useSearchParams();
@@ -37,43 +39,28 @@ export default function ActivityPage() {
         redirect('/homework');
     }
 
-    const generateMockQuestions = () => {
-        return Array.from({ length: 15 }, () => {
-            const num1 = Math.floor(Math.random() * 50) + 1;
-            const num2 = Math.floor(Math.random() * 50) + 1;
-            return {
-                question: `${num1} + ${num2}`,
-                answer: (num1 + num2).toString(),
-            };
-        });
-    };
-
     const getMathQuestions = async () => {
-        if (activity === "arithemetic") {
-            const res = await fetch("/api/homework/arithmetics", {
-                method: 'POST',
-                body: JSON.stringify({
-                    level: difficulty,
-                }),
-                headers: new Headers({
-                    'Content-Type': 'application/json; charset=UTF-8'
-                })
+        const res = await fetch("/api/homework/arithmetics", {
+            method: 'POST',
+            body: JSON.stringify({
+                level: difficulty,
+            }),
+            headers: new Headers({
+                'Content-Type': 'application/json; charset=UTF-8'
             })
-            if (!res.ok) {
-                throw new Error(`HTTP error! Status: ${res.status}`);
-            }
+        })
+        if (!res.ok) {
+            throw new Error(`HTTP error! Status: ${res.status}`);
+        }
 
-            let result;
+        let result;
 
-            try {
-                const data = await res.json();
-                return await JSON.parse(data.result);
-            } catch (e) {
-                console.error(e);
-                result = null;
-            }
-        } else {
-            return;
+        try {
+            const data = await res.json();
+            return await JSON.parse(data.result);
+        } catch (e) {
+            console.error(e);
+            result = null;
         }
     }
 
@@ -85,12 +72,14 @@ export default function ActivityPage() {
 
     useEffect(() => {
         const fetchQuestions = async () => {
-            setLoading(true);
-            const data = await getMathQuestions();
-            if (data) {
-                setMathQuestions(data.questions);
+            if (activity === "arithemetic") {
+                setLoading(true);
+                const data = await getMathQuestions();
+                if (data) {
+                    setMathQuestions(data.questions);
+                }
+                setLoading(false);
             }
-            setLoading(false);
         };
 
         fetchQuestions();
@@ -122,6 +111,21 @@ export default function ActivityPage() {
         generateTopic()
     }, [activity, difficulty])
 
+    useEffect(() => {
+        const getVideoUrl = async () => {
+            const res = await getLatestPhysicalMaterial();
+            const url = res[0].url;
+            if (url) {
+                setPhysicalUrl(url);
+            } else {
+                setPhysicalUrl("No available video for you, please try again later.");
+            }
+        }
+
+        getVideoUrl();
+
+    }, [activity, difficulty])
+
     const activityComponents: Record<string, React.ReactNode> = {
         arithemetic: (
             <ArithemeticCard
@@ -135,7 +139,7 @@ export default function ActivityPage() {
             />
         ),
         reading: <ReadingCard difficulty={difficulty} topicRecommendations={recommendations} />,
-        physical: <PhysicalCard videoUrl={url} />,
+        physical: <PhysicalCard videoUrl={physicalUrl} />,
     };
 
     return activityComponents[activity] || <p className="text-center">Invalid activity</p>;
