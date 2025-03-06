@@ -5,7 +5,7 @@ import CloseSwipe from "@/components/icons/close-swipe";
 import AddSession from "@/components/sessions/add-session";
 import SessionCard from "@/components/sessions/session-card";
 import DeleteConfirmation from "@/components/shared/delete-confirmation";
-import { deleteSession, getAllSessionsByCourseId } from "@/db/queries/sessions";
+import { getAllSessionsByCourseId } from "@/db/queries/sessions";
 import { Session } from "@/db/schema/session";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -21,6 +21,8 @@ export default function SessionsPage() {
         null
     );
     const [showDeletePopup, setShowDeletePopup] = useState(false);
+    const [showEditSessionPopup, setShowEditSessionPopup] = useState(false);
+    const [sessionToEdit, setSessionToEdit] = useState<Session | null>(null);
 
     useEffect(() => {
         async function fetchSessions() {
@@ -35,6 +37,11 @@ export default function SessionsPage() {
         fetchSessions();
     }, [courseId, refreshFlag]);
 
+    const handleEditSessionButtonClick = (session: Session) => {
+        setSessionToEdit(session);
+        setShowEditSessionPopup(true);
+    };
+
     const handleDeleteSessionButtonClick = (sessionId: number) => {
         setSessionIdToDelete(sessionId);
         setShowDeletePopup(true);
@@ -45,20 +52,17 @@ export default function SessionsPage() {
         try {
             const response = await fetch("/api/sessions/delete", {
                 method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ sessionId: sessionIdToDelete }),
             });
 
-            const data = await response.json();
-
-            if (!response.ok) throw new Error(data.error || "Failed to delete");
+            if (!response.ok) throw new Error("Failed to delete session");
 
             setSessions((prev) =>
                 prev.filter((session) => session.id !== sessionIdToDelete)
             );
-            setRefreshFlag((prev) => prev + 1);
+            setSessionIdToDelete(null);
+            setShowDeletePopup(false);
         } catch (error) {
             console.error("Error deleting session:", error);
         }
@@ -69,6 +73,8 @@ export default function SessionsPage() {
         setRefreshFlag((prev) => prev + 1);
         setSessionIdToDelete(null);
         setShowDeletePopup(false);
+        setSessionToEdit(null);
+        setShowEditSessionPopup(false);
     };
 
     const swipeHandlers = useSwipeable({
@@ -93,6 +99,7 @@ export default function SessionsPage() {
                             handleDeleteButtonClick={
                                 handleDeleteSessionButtonClick
                             }
+                            handleEditButtonClick={handleEditSessionButtonClick}
                             isAdmin={true}
                         />
                     ))
@@ -100,6 +107,41 @@ export default function SessionsPage() {
                     <p className="text-gray-500">No sessions available.</p>
                 )}
             </div>
+
+            {sessionToEdit && showEditSessionPopup && (
+                <div className="fixed inset-0 flex items-end md:items-center justify-center z-20 overflow-y-auto">
+                    <div
+                        className="absolute inset-0 bg-black opacity-50"
+                        onClick={handleClosePopup}
+                    />
+                    <div className="z-30 bg-white rounded-t-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
+                        <div className="relative w-full">
+                            <div
+                                className="flex justify-center items-center p-6 md:hidden "
+                                {...swipeHandlers}
+                            >
+                                {/* Swipe indicator */}
+                                <div className="absolute top-6 md:hidden">
+                                    <CloseSwipe />
+                                </div>
+                            </div>
+                            <button
+                                onClick={handleClosePopup}
+                                className="absolute top-3 right-4"
+                            >
+                                <CloseIcon />
+                            </button>
+                        </div>
+                        <div className="overflow-y-auto max-h-[calc(90vh-90px)]">
+                            <AddSession
+                                courseId={sessionToEdit.courseId}
+                                sessionId={sessionToEdit.id}
+                                handleClosePopup={handleClosePopup}
+                            />
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {showDeletePopup && sessionIdToDelete && (
                 <div className="fixed inset-0 flex items-center justify-center z-10 overflow-y-auto">
