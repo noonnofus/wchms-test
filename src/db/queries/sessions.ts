@@ -51,6 +51,20 @@ export async function getSessionById(sessionId: number) {
 export async function getAllSessionsByCourseId(courseId: number) {
     try {
         const sessions = await db
+            .select()
+            .from(Sessions)
+            .where(eq(Sessions.courseId, courseId))
+            .orderBy(desc(Sessions.endTime));
+        return sessions;
+    } catch (error) {
+        console.error("Error fetching sessions:", error);
+        throw new Error("Error fetching sessions");
+    }
+}
+
+export async function getAllSessionPreviewsByCourseId(courseId: number) {
+    try {
+        const sessions = await db
             .select({
                 id: Sessions.id,
                 date: Sessions.date,

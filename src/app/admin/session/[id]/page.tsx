@@ -1,18 +1,19 @@
 "use client";
 
+import CloseIcon from "@/components/icons/close-icon";
+import CloseSwipe from "@/components/icons/close-swipe";
 import AddSession from "@/components/sessions/add-session";
 import SessionCard from "@/components/sessions/session-card";
 import { deleteSession, getAllSessionsByCourseId } from "@/db/queries/sessions";
 import { Session } from "@/db/schema/session";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-
-type SessionPreview = Omit<Session, "status" | "courseId" | "instructorId">;
+import { useSwipeable } from "react-swipeable";
 
 export default function SessionsPage() {
     const { id } = useParams();
     const courseId = Number(id);
-    const [sessions, setSessions] = useState<SessionPreview[]>([]);
+    const [sessions, setSessions] = useState<Session[]>([]);
     const [showAddPopup, setShowAddPopup] = useState(false);
     const [refreshFlag, setRefreshFlag] = useState(0);
 
@@ -46,14 +47,24 @@ export default function SessionsPage() {
         setRefreshFlag((prev) => prev + 1);
     };
 
+    const swipeHandlers = useSwipeable({
+        onSwipedDown: () => {
+            handleClosePopup();
+        },
+        preventScrollOnSwipe: true,
+    });
+
     return (
-        <div className="w-full h-full">
-            <h2 className="text-xl font-semibold">Next Session</h2>
+        <div className="w-full h-full flex flex-col gap-4">
+            <h1 className="font-semibold text-3xl md:text-4xl text-start">
+                All Sessions
+            </h1>
 
             <div className="flex flex-col items-center gap-4">
                 {sessions.length > 0 ? (
                     sessions.map((session) => (
                         <SessionCard
+                            key={session.id}
                             session={session}
                             onDelete={() => handleDeleteSession(session.id)}
                             isAdmin={true}
@@ -65,17 +76,35 @@ export default function SessionsPage() {
             </div>
 
             {showAddPopup && (
-                <div className="fixed inset-0 flex items-center justify-center z-10 overflow-y-auto">
+                <div className="fixed inset-0 flex items-end md:items-center justify-center z-10 overflow-y-auto">
                     <div
                         className="absolute inset-0 bg-black opacity-50"
                         onClick={handleClosePopup}
                     ></div>
-                    <div className="relative z-20 flex flex-col items-center bg-white rounded-lg overflow-y-auto w-full mx-4 max-h-[90vh]">
-                        <AddSession
-                            handleClosePopup={handleClosePopup}
-                            courseId={courseId}
-                            sessionId={0}
-                        />
+                    <div className="z-30 bg-white rounded-t-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
+                        <div className="relative w-full">
+                            <div
+                                className="flex justify-center items-center p-6 md:hidden"
+                                {...swipeHandlers}
+                            >
+                                {/* Swipe indicator */}
+                                <div className="absolute top-6 md:hidden">
+                                    <CloseSwipe />
+                                </div>
+                            </div>
+                            <button
+                                onClick={handleClosePopup}
+                                className="absolute top-3 right-4"
+                            >
+                                <CloseIcon />
+                            </button>
+                        </div>
+                        <div className="overflow-y-auto max-h-[calc(90vh-90px)]">
+                            <AddSession
+                                handleClosePopup={handleClosePopup}
+                                courseId={courseId}
+                            />
+                        </div>
                     </div>
                 </div>
             )}

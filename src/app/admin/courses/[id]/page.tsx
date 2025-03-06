@@ -235,7 +235,7 @@ export default function AdminCourses() {
                             </div>
                         )}
                         {showAddSessionPopup && (
-                            <div className="fixed inset-0 flex items-end md:items-center justify-center z-20">
+                            <div className="fixed inset-0 flex items-end md:items-center justify-center z-10 overflow-y-auto">
                                 <div
                                     className="absolute inset-0 bg-black opacity-50"
                                     onClick={handleClosePopup}
