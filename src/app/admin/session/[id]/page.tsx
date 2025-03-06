@@ -4,6 +4,7 @@ import CloseIcon from "@/components/icons/close-icon";
 import CloseSwipe from "@/components/icons/close-swipe";
 import AddSession from "@/components/sessions/add-session";
 import SessionCard from "@/components/sessions/session-card";
+import DeleteConfirmation from "@/components/shared/delete-confirmation";
 import { deleteSession, getAllSessionsByCourseId } from "@/db/queries/sessions";
 import { Session } from "@/db/schema/session";
 import { useParams } from "next/navigation";
@@ -16,6 +17,10 @@ export default function SessionsPage() {
     const [sessions, setSessions] = useState<Session[]>([]);
     const [showAddPopup, setShowAddPopup] = useState(false);
     const [refreshFlag, setRefreshFlag] = useState(0);
+    const [sessionIdToDelete, setSessionIdToDelete] = useState<number | null>(
+        null
+    );
+    const [showDeletePopup, setShowDeletePopup] = useState(false);
 
     useEffect(() => {
         async function fetchSessions() {
@@ -30,13 +35,30 @@ export default function SessionsPage() {
         fetchSessions();
     }, [courseId, refreshFlag]);
 
-    const handleDeleteSession = async (sessionId: number) => {
+    const handleDeleteSessionButtonClick = (sessionId: number) => {
+        setSessionIdToDelete(sessionId);
+        setShowDeletePopup(true);
+    };
+
+    const handleDeleteSession = async () => {
+        if (!sessionIdToDelete) return;
         try {
-            await deleteSession(sessionId);
-            setRefreshFlag((prev) => prev + 1);
+            const response = await fetch("/api/sessions/delete", {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ sessionId: sessionIdToDelete }),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) throw new Error(data.error || "Failed to delete");
+
             setSessions((prev) =>
-                prev.filter((session) => session.id !== sessionId)
+                prev.filter((session) => session.id !== sessionIdToDelete)
             );
+            setRefreshFlag((prev) => prev + 1);
         } catch (error) {
             console.error("Error deleting session:", error);
         }
@@ -45,6 +67,8 @@ export default function SessionsPage() {
     const handleClosePopup = () => {
         setShowAddPopup(false);
         setRefreshFlag((prev) => prev + 1);
+        setSessionIdToDelete(null);
+        setShowDeletePopup(false);
     };
 
     const swipeHandlers = useSwipeable({
@@ -66,7 +90,9 @@ export default function SessionsPage() {
                         <SessionCard
                             key={session.id}
                             session={session}
-                            onDelete={() => handleDeleteSession(session.id)}
+                            handleDeleteButtonClick={
+                                handleDeleteSessionButtonClick
+                            }
                             isAdmin={true}
                         />
                     ))
@@ -74,6 +100,24 @@ export default function SessionsPage() {
                     <p className="text-gray-500">No sessions available.</p>
                 )}
             </div>
+
+            {showDeletePopup && sessionIdToDelete && (
+                <div className="fixed inset-0 flex items-center justify-center z-10 overflow-y-auto">
+                    <div
+                        className="absolute inset-0 bg-black opacity-50"
+                        onClick={handleClosePopup}
+                    ></div>
+                    <div className="z-30 bg-white rounded-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
+                        <DeleteConfirmation
+                            title="Are you sure?"
+                            body="This action cannot be undone."
+                            actionLabel="Delete"
+                            handleSubmit={handleDeleteSession}
+                            closePopup={handleClosePopup}
+                        />
+                    </div>
+                </div>
+            )}
 
             {showAddPopup && (
                 <div className="fixed inset-0 flex items-end md:items-center justify-center z-10 overflow-y-auto">

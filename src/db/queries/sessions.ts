@@ -100,13 +100,3 @@ export async function getFutureSessions(courseId: number) {
         throw new Error("Error fetching future sessions");
     }
 }
-
-export async function deleteSession(sessionId: number) {
-    try {
-        await db.delete(Sessions).where(eq(Sessions.id, sessionId));
-        return { success: true };
-    } catch (error) {
-        console.error("Error deleting session:", error);
-        throw new Error("Failed to delete session");
-    }
-}
