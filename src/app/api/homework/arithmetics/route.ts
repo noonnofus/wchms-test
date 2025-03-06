@@ -44,22 +44,9 @@ export async function POST(req: Request) {
             temperature: 0.7,
         });
 
-        console.log(completion.choices[0].message);
         const result = completion.choices[0].message;
         return NextResponse.json({ result: result.content }, { status: 200 });
     } catch (error) {
         return NextResponse.json({ error: error }, { status: 500 });
     }
 }
-
-// TODO: Need to get the arithemetic questions with following format below.
-/*
-{
-  "questions": [
-    { "question": "5 + 3", "answer": "8" },
-    { "question": "12 - 4", "answer": "8" },
-    { "question": "6 × 7", "answer": "42" },
-    { "question": "36 ÷ 6", "answer": "6" }
-  ]
-}
-*/

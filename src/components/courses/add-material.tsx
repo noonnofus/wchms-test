@@ -14,6 +14,7 @@ import { useParams } from "next/navigation";
 import { CourseFull } from "@/db/schema/course";
 import { CourseMaterialsWithFile } from "@/db/schema/courseMaterials";
 import PDFDocument from "./reading-material-pdf";
+import PDFMath from "./arithmetic-material-pdf";
 import { pdf } from "@react-pdf/renderer";
 
 const activities = ["Simple Arithmetic", "Reading Aloud", "Physical Exercise"];
@@ -43,6 +44,8 @@ export default function AddMaterial(props: {
     const [url, setUrl] = useState<string>("");
     const [topic, setTopic] = useState<string>("");
     const [errors, setErrors] = useState<Errors>({});
+    const [loading, setLoading] = useState<boolean>(false);
+
 
     const handleActivitySelect = (activity: string) => {
         setSelectedActivity(activity);
@@ -84,22 +87,34 @@ export default function AddMaterial(props: {
     };
 
     const handleAiBtnSubmit = async (e: React.FormEvent) => {
-
         e.preventDefault();
         if (!validateFormForAi()) {
             return;
         }
 
-        const fetchUrl = selectedActivity === "Reading Aloud"
-            ? "/api/homework/reading"
-            : "/api/homework/arithmetics";
+        setLoading(true);
+
+        const activityConfig: Record<string, { url: string; payload: any }> = {
+            "Reading Aloud": {
+                url: "/api/homework/reading",
+                payload: { level: selectedDifficulty, topic: topic }
+            },
+            "Simple Arithmetic": {
+                url: "/api/homework/arithmetics",
+                payload: { level: selectedDifficulty }
+            }
+        };
+
+        const { url: fetchUrl, payload } = activityConfig[selectedActivity] || {};
+
+        if (!fetchUrl) {
+            console.error("Invalid activity type");
+            return;
+        }
 
         const res = await fetch(fetchUrl, {
             method: 'POST',
-            body: JSON.stringify({
-                level: selectedDifficulty,
-                topic: topic,
-            }),
+            body: JSON.stringify(payload),
             headers: new Headers({
                 'Content-Type': 'application/json; charset=UTF-8'
 
@@ -107,19 +122,18 @@ export default function AddMaterial(props: {
         })
 
         const data = await res.json();
-        const result = await JSON.parse(data.result);
+        const result = JSON.parse(data.result);
 
-        const readingContent = result.reading.join("\n\n");
+        const pdfComponent = selectedActivity === "Reading Aloud"
+            ? <PDFDocument title={title} content={result.reading.join("\n\n")} />
+            : <PDFMath title={title} difficulty={selectedDifficulty} contents={result.questions} />;
 
-        const pdfDoc = <PDFDocument title={title} content={readingContent} />;
-        const pdfBlob = await pdf(pdfDoc).toBlob();
+        const pdfBlob = await pdf(pdfComponent).toBlob();
 
         const formData = new FormData();
         formData.append("file", pdfBlob, `document_${Date.now()}.pdf`);
 
         const filePath = await fetchMaterialPDF(formData);
-
-        console.log('file path: ', filePath);
 
         handleSubmit(e, filePath);
     }
@@ -142,14 +156,10 @@ export default function AddMaterial(props: {
 
     const handleSubmit = async (e: React.FormEvent, filePath?: string) => {
         e.preventDefault();
-        console.log(title, selectedActivity, selectedDifficulty, description, courseId, url);
 
         if (!validateForm()) {
-            console.log('validation error');
             return;
         }
-
-        console.log('hit after validation')
 
         const data = {
             title,
@@ -170,7 +180,6 @@ export default function AddMaterial(props: {
             });
 
             if (response.ok) {
-                console.log("Course material added successfully!");
                 const responseData = await response.json();
                 const newMaterial: CourseMaterialsWithFile = responseData.data;
                 props.setSelectedCourse(
@@ -188,9 +197,10 @@ export default function AddMaterial(props: {
                         }
                     }
                 );
+                setLoading(false);
                 props.handleClosePopup();
             } else {
-                console.log("Failed to add course material");
+                throw new Error("Failed to add course material");
             }
         } catch (error) {
             console.error("Error submitting form", error);
@@ -465,8 +475,9 @@ export default function AddMaterial(props: {
                             <Button
                                 className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold text-xl py-2 md:py-4"
                                 onClick={handleAiBtnSubmit}
+                                disabled={loading}
                             >
-                                Save
+                                {loading ? "Generating..." : "Save"}
                             </Button>
                             <Button
                                 onClick={props.handleClosePopup}
