@@ -41,7 +41,7 @@ export default function SessionCard({
     const currentDateTime = new Date().toISOString();
 
     const handleDelete = () => {
-        onDelete();
+        onDelete?.();
         setShowConfirmation(false);
     };
 
