@@ -4,14 +4,12 @@ import { useState } from "react";
 import DeleteConfirmation from "../shared/delete-confirmation";
 import { Session } from "@/db/schema/session";
 
-type SessionPreview = Omit<Session, "status" | "courseId" | "instructorId">;
-
 export default function SessionCard({
     session,
     onDelete,
     isAdmin,
 }: {
-    session: SessionPreview;
+    session: Session;
     onDelete?: () => void;
     isAdmin?: boolean;
 }) {

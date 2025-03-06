@@ -7,12 +7,10 @@ import { Session } from "@/db/schema/session";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
-type SessionPreview = Omit<Session, "status" | "courseId" | "instructorId">;
-
 export default function SessionsPage() {
     const { id } = useParams();
     const courseId = Number(id);
-    const [sessions, setSessions] = useState<SessionPreview[]>([]);
+    const [sessions, setSessions] = useState<Session[]>([]);
     const [showAddPopup, setShowAddPopup] = useState(false);
     const [refreshFlag, setRefreshFlag] = useState(0);
 
