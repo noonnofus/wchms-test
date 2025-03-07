@@ -1,41 +1,28 @@
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
-import React, { useCallback, useState, useEffect } from "react";
-import { fetchCourseImage } from "@/db/queries/courses";
+import React, { useCallback, useEffect, useState } from "react";
 
 interface ImageUploadProps {
-    uploadId?: string;
+    fileUrl: string | null;
     onImageSelect?: (file: File | null) => void;
     error?: string;
 }
 
 export default function ImageUpload({
-    uploadId,
+    fileUrl,
     onImageSelect,
     error: externalError,
 }: ImageUploadProps) {
     const [dragActive, setDragActive] = useState(false);
-    const [previewUrl, setPreviewUrl] = useState<string>("");
+    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const [internalError, setInternalError] = useState<string>("");
-
     useEffect(() => {
-        if (uploadId) {
-            const getImage = async () => {
-                try {
-                    const url = await fetchCourseImage(Number(uploadId));
-                    setPreviewUrl(url || "");
-                } catch (error) {
-                    setInternalError("Error fetching image.");
-                }
-            };
-            getImage();
-        }
-    }, [uploadId]);
-
+        setPreviewUrl(fileUrl || null);
+    }, [fileUrl]);
     const handleFile = useCallback(
         (file: File | null) => {
             if (!file) {
-                setPreviewUrl("");
+                setPreviewUrl(null);
                 onImageSelect?.(null);
                 return;
             }

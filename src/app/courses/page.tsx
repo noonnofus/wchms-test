@@ -1,15 +1,12 @@
 "use client";
 import CourseCard from "@/components/courses/course-card";
 import TabsMenu from "@/components/shared/tabs-menu";
-import {
-    courseList,
-    fetchCourseImage,
-    getAvailableCourses,
-} from "@/db/queries/courses";
+import { courseList, getAvailableCourses } from "@/db/queries/courses";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
+import { getSignedUrlFromFileKey } from "@/lib/s3";
 export type CourseListWithImage = courseList & {
-    imageUrl?: string | null;
+    imageUrl: string | null;
 };
 
 export default function Courses() {
@@ -30,17 +27,19 @@ export default function Courses() {
                 const availableCourses = await getAvailableCourses();
                 const enrolledCourses = await Promise.all(
                     availableCourses.enrolled.map(async (course) => {
-                        const imageUrl = course.id
-                            ? await fetchCourseImage(course.id)
-                            : "/course-image.png";
+                        const imageUrl =
+                            course.fileKey !== null
+                                ? await getSignedUrlFromFileKey(course.fileKey)
+                                : null;
                         return { ...course, imageUrl };
                     })
                 );
                 const unenrolledCourses = await Promise.all(
                     availableCourses.unenrolled.map(async (course) => {
-                        const imageUrl = course.id
-                            ? await fetchCourseImage(course.id)
-                            : "/course-image.png";
+                        const imageUrl =
+                            course.fileKey !== null
+                                ? await getSignedUrlFromFileKey(course.fileKey)
+                                : null;
                         return { ...course, imageUrl };
                     })
                 );
@@ -84,14 +83,8 @@ export default function Courses() {
                             <div className="flex flex-col gap-4">
                                 {courses.enrolled.map((course) => (
                                     <CourseCard
+                                        course={course}
                                         key={course.id}
-                                        id={course.id}
-                                        name={course.title}
-                                        image={
-                                            course.imageUrl ||
-                                            "/course-image.png"
-                                        }
-                                        imageAlt={`${course.title} Cover Image`}
                                         variant="client"
                                         enrolled={true}
                                     />
@@ -120,14 +113,8 @@ export default function Courses() {
                             <div className="flex flex-col gap-4">
                                 {courses.unenrolled.map((course) => (
                                     <CourseCard
+                                        course={course}
                                         key={course.id}
-                                        id={course.id}
-                                        name={course.title}
-                                        image={
-                                            course.imageUrl ||
-                                            "/course-image.png"
-                                        }
-                                        imageAlt={`${course.title} Cover Image`}
                                         variant="client"
                                         enrolled={false}
                                     />

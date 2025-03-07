@@ -7,4 +7,15 @@ const nextConfig: NextConfig = {
     },
 };
 
+module.exports = {
+    images: {
+        remotePatterns: [
+            {
+                protocol: "https",
+                hostname: `${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_BUCKET_REGION}.amazonaws.com`,
+            },
+        ],
+    },
+};
+
 export default nextConfig;

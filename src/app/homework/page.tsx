@@ -13,25 +13,20 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 
-// TODO: Implement course materials tab. 
+// TODO: Implement course materials tab.
 
-const difficulties = [
-    "Basic",
-    "Intermediate",
-]
+const difficulties = ["Basic", "Intermediate"];
 
 export default function HomeworkPage() {
-    // Make it true after implemting getting materials.
+    // Make it true after implementing getting materials.
     const [isLoading, setIsLoading] = useState(false);
     const [difficulty, setDifficulty] = useState("Basic");
     const [selectedCourse, setSelectedCourse] = useState<
         CourseFull[] | undefined
     >(undefined);
 
-
     useEffect(() => {
         const fetchCourses = async () => {
-
             const fetchCourses = async () => {
                 try {
                     const course = await getAllCourses();
@@ -59,7 +54,7 @@ export default function HomeworkPage() {
 
     const handleDifficultySelect = (difficulty: string) => {
         setDifficulty(difficulty);
-    }
+    };
 
     return (
         <div>
@@ -70,7 +65,7 @@ export default function HomeworkPage() {
                     <>
                         {isLoading ? (
                             <div className="flex justify-center items-center py-10">
-                                <p>Loading Course Metarials...</p>
+                                <p>Loading Course Materials...</p>
                             </div>
                         ) : (
                             <>
@@ -97,7 +92,8 @@ export default function HomeworkPage() {
                                         ) : (
                                             <div className="flex flex-col gap-4 text-center py-10">
                                                 <p className="text-center text-xl md:text-2xl font-semibold">
-                                                    No course materials available.
+                                                    No course materials
+                                                    available.
                                                 </p>
                                                 <p className="text-xl">
                                                     Try AI self-study for more
@@ -113,24 +109,42 @@ export default function HomeworkPage() {
                 }
                 rightChildren={
                     <div className="flex flex-col items-center gap-6">
-                        <div className="flex justify-center max-w-[1000px] w-full items-center gap-4 w-full">
+                        <div className="flex justify-center max-w-[1000px] w-full items-center gap-4">
                             <p className="text-2xl">Difficulty:</p>
-                            <Select value={difficulty} onValueChange={handleDifficultySelect}>
+                            <Select
+                                value={difficulty}
+                                onValueChange={handleDifficultySelect}
+                            >
                                 <SelectTrigger className="w-full">
                                     <SelectValue placeholder="Select difficulty" />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {difficulties.map((difficulty, index) => (
-                                        <SelectItem key={index} value={difficulty}>
+                                        <SelectItem
+                                            key={index}
+                                            value={difficulty}
+                                        >
                                             {difficulty}
                                         </SelectItem>
                                     ))}
                                 </SelectContent>
                             </Select>
                         </div>
-                        <HomeworkCard title="Physical Activity" activity="physical" difficulty={difficulty} />
-                        <HomeworkCard title="Reading Aloud Activity" activity="reading" difficulty={difficulty} />
-                        <HomeworkCard title="Simple Arithemetic Activity" activity="arithemetic" difficulty={difficulty} />
+                        <HomeworkCard
+                            title="Physical Activity"
+                            activity="physical"
+                            difficulty={difficulty}
+                        />
+                        <HomeworkCard
+                            title="Reading Aloud Activity"
+                            activity="reading"
+                            difficulty={difficulty}
+                        />
+                        <HomeworkCard
+                            title="Simple Arithmetic Activity"
+                            activity="arithmetic"
+                            difficulty={difficulty}
+                        />
                     </div>
                 }
             />
