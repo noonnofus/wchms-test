@@ -5,11 +5,12 @@ import { getSession } from "next-auth/react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-export default function NextClass() {
+export default function NextClass({ whenLoaded }: { whenLoaded: () => void }) {
     const [sessionCountdown, setSessionCountdown] = useState<string | null>(
-        null
+        "No Upcoming Sessions"
     );
-    const [isLoading, setIsLoading] = useState(true);
+    const [courseTitle, setCourseTitle] = useState<string>("");
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     const nextSessionDate = async () => {
         try {
@@ -17,23 +18,29 @@ export default function NextClass() {
             const session = await getSession();
             const userId = Number(session?.user.id);
             if (!userId) {
-                setSessionCountdown("No Classes");
+                setSessionCountdown("No Upcoming Sessions");
                 setIsLoading(false);
+                whenLoaded();
                 return;
             }
+
             const classExists = await getUserCourses(userId);
             if (!classExists || classExists.length === 0) {
-                setSessionCountdown("No Classes");
+                setSessionCountdown("No Upcoming Sessions");
                 setIsLoading(false);
+                whenLoaded();
                 return;
             }
 
             const nextSession = await getNextSessionDate();
             if (!nextSession || !("date" in nextSession)) {
-                setSessionCountdown("No Sessions");
+                setSessionCountdown("No Upcoming Sessions");
                 setIsLoading(false);
+                whenLoaded();
                 return;
             }
+
+            setCourseTitle(nextSession.courseTitle || "Class");
 
             const now = new Date();
             const sessionDate = new Date(nextSession.date);
@@ -65,11 +72,14 @@ export default function NextClass() {
                 );
                 setSessionCountdown(`Next Session in ${daysTillSession} Days`);
             }
+
             setIsLoading(false);
+            whenLoaded();
         } catch (error) {
             console.error("Error getting next session", error);
-            setSessionCountdown(null);
+            setSessionCountdown("No Upcoming Sessions");
             setIsLoading(false);
+            whenLoaded();
         }
     };
 
@@ -79,38 +89,25 @@ export default function NextClass() {
         return () => clearInterval(intervalId);
     }, []);
 
-    if (isLoading) {
-        return (
-            <div className="min-h-[7vh] border-2 border-primary-green/50 rounded-lg flex items-center justify-center">
+    return (
+        <div className="min-h-[7vh] border-2 border-primary-green rounded-lg flex items-center justify-center">
+            {isLoading ? (
                 <p className="text-primary-green/50 text-xl md:text-2xl lg:text-3xl animate-pulse">
                     Loading...
                 </p>
-            </div>
-        );
-    }
-
-    if (sessionCountdown === "No Classes" || sessionCountdown === null)
-        return null;
-
-    return (
-        <div className="min-h-[7vh] border-2 border-primary-green rounded-lg flex items-center justify-center">
-            {sessionCountdown === "Zoom" ? (
+            ) : sessionCountdown === "Zoom" ? (
                 <Link
                     href={"https://us02web.zoom.us/j/96976249949"}
-                    className="w-full text-center hover:bg-green-100 transition-colors duration-300 ease-in-out p-2 rounded-lg"
+                    className="w-full h-full block"
                 >
-                    <div className="flex items-center justify-center space-x-2">
+                    <div className="w-full h-full flex items-center justify-center hover:bg-green-100 transition-colors duration-300 ease-in-out rounded-lg">
                         <p className="text-primary-green text-xl md:text-2xl lg:text-3xl font-semibold">
-                            Join Zoom Class Now
+                            Join {courseTitle} Zoom Class Now
                         </p>
                     </div>
                 </Link>
-            ) : sessionCountdown === "No Sessions" ? (
-                <p className="text-primary-green text-xl md:text-2xl lg:text-3xl">
-                    No Upcoming Sessions
-                </p>
             ) : (
-                <p className="text-primary-green text-xl md:text-2xl lg:text-3xl">
+                <p className="text-primary-green text-xl md:text-2xl lg:text-3xl text-center py-2">
                     {sessionCountdown}
                 </p>
             )}

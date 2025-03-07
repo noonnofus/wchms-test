@@ -94,6 +94,7 @@ export async function getNextSessionDate() {
                 startTime: Sessions.startTime,
                 endTime: Sessions.endTime,
                 status: Sessions.status,
+                courseTitle: Courses.title,
             })
             .from(Sessions)
             .innerJoin(Courses, eq(Sessions.courseId, Courses.id))
