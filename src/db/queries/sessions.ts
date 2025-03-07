@@ -1,11 +1,11 @@
 "use server";
-import { authConfig } from "@/auth";
 import db from "@/db";
 import { validateParticipant } from "@/lib/validation";
 import { getServerSession } from "next-auth";
 import { CourseParticipant, Courses } from "../schema/course";
 import { eq, desc, and, gt, asc } from "drizzle-orm";
 import { Sessions } from "../schema/session";
+import { authConfig } from "@/auth";
 
 export async function addSession(
     courseId: number,
