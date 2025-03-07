@@ -194,6 +194,7 @@ export async function getCourseById(
                     courseId: courseMaterials.courseId,
                     createdAt: courseMaterials.createdAt,
                     uploadId: courseMaterials.uploadId,
+                    url: courseMaterials.url,
                     file: {
                         fileName: uploadMedia.fileName,
                         fileType: uploadMedia.fileType,
@@ -244,6 +245,60 @@ export async function getCourseById(
         console.error("Error fetching courses", error);
         return undefined;
     }
+}
+
+export async function getLatestPhysicalMaterial() {
+    //TODO: Get user Id to validate the course is a course user assigned.
+
+    // It's returns Undefined right now
+    const session = await getServerSession(authConfig);
+    const userId = session?.user.id;
+    // console.log(session);
+    // console.log(userId);
+
+    const latestCourse = await db
+        .select({
+            id: coursesTable.id,
+            title: coursesTable.title,
+            description: coursesTable.description,
+            uploadId: coursesTable.uploadId,
+            imageFileName: uploadMedia.fileName,
+            start: coursesTable.start,
+            end: coursesTable.end,
+            roomId: coursesTable.roomId,
+            lang: coursesTable.lang,
+            kind: coursesTable.kind,
+            status: coursesTable.status,
+        })
+        .from(coursesTable)
+        .leftJoin(uploadMedia, eq(coursesTable.uploadId, uploadMedia.id))
+        .orderBy(desc(coursesTable.start))
+        .then((res) => res[0]);
+
+    const material = await db
+        .select({
+            id: courseMaterials.id,
+            title: courseMaterials.title,
+            type: courseMaterials.type,
+            difficulty: courseMaterials.difficulty,
+            description: courseMaterials.description,
+            courseId: courseMaterials.courseId,
+            createdAt: courseMaterials.createdAt,
+            uploadId: courseMaterials.uploadId,
+            url: courseMaterials.url,
+            file: {
+                fileName: uploadMedia.fileName,
+                fileType: uploadMedia.fileType,
+                fileSize: uploadMedia.fileSize,
+                fileData: uploadMedia.fileData,
+            },
+        })
+        .from(courseMaterials)
+        .leftJoin(uploadMedia, eq(courseMaterials.uploadId, uploadMedia.id))
+        .where(eq(courseMaterials.courseId, latestCourse.id))
+        .orderBy(desc(courseMaterials.createdAt));
+
+    return material;
 }
 
 export async function createCourseWithMedia(courseData: any, mediaId?: number) {
@@ -348,6 +403,21 @@ export async function checkCourseJoinRequestExists(
         return result.length > 0;
     } catch (error) {
         console.error("Error checking for course join request", error);
+        throw error;
+    }
+}
+
+export async function getAllCourseJoinRequests(courseId: number) {
+    "use server";
+    try {
+        const requests = await db
+            .select()
+            .from(CourseJoinRequests)
+            .where(eq(CourseJoinRequests.courseId, courseId));
+
+        return requests;
+    } catch (error) {
+        console.error("Error fetching course join requests", error);
         throw error;
     }
 }

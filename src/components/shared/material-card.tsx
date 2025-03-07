@@ -13,7 +13,9 @@ export default function MaterialCard({
     handleEditButtonClick?: () => void;
     handleDeleteButtonClick?: () => void;
 }) {
+    console.log(material);
     //TODO: allow files to be downloaded
+    //TODO: Only show reading aloud and arithmetic materials
     return (
         <div className="flex flex-col items-center">
             <Card className="relative z-0">
@@ -35,6 +37,19 @@ export default function MaterialCard({
                             >
                                 Download File (.
                                 {material.file?.fileName.split(".").pop()})
+                            </a>
+                        </Button>
+                    )}
+                    {material.url && !/^https?:\/\//.test(material.url) && (
+                        <Button
+                            asChild
+                            className="bg-primary-green hover:bg-[#045B47] rounded-full text-white w-full font-semibold text-base min-h-[45px]"
+                        >
+                            <a
+                                href={material.url}
+                                download={material.url}
+                            >
+                                Download File
                             </a>
                         </Button>
                     )}

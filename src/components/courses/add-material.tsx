@@ -13,6 +13,9 @@ import {
 import { useParams } from "next/navigation";
 import { CourseFull } from "@/db/schema/course";
 import { CourseMaterialsWithFile } from "@/db/schema/courseMaterials";
+import PDFDocument from "./reading-material-pdf";
+import PDFMath from "./arithmetic-material-pdf";
+import { pdf } from "@react-pdf/renderer";
 
 const activities = ["Simple Arithmetic", "Reading Aloud", "Physical Exercise"];
 const difficulties = ["Basic", "Intermediate"];
@@ -21,6 +24,8 @@ type Errors = {
     exerciseType?: string;
     exerciseDifficulty?: string;
     description?: string;
+    exerciseUrl?: string;
+    topic?: string;
 };
 
 export default function AddMaterial(props: {
@@ -36,7 +41,11 @@ export default function AddMaterial(props: {
     );
     const [title, setTitle] = useState<string>("");
     const [description, setDescription] = useState<string>("");
+    const [url, setUrl] = useState<string>("");
+    const [topic, setTopic] = useState<string>("");
     const [errors, setErrors] = useState<Errors>({});
+    const [loading, setLoading] = useState<boolean>(false);
+
 
     const handleActivitySelect = (activity: string) => {
         setSelectedActivity(activity);
@@ -50,27 +59,115 @@ export default function AddMaterial(props: {
         const newErrors: Errors = {};
 
         if (!title) newErrors.title = "Title is required.";
-        if (!description) newErrors.description = "Description is required.";
         if (!selectedActivity)
             newErrors.exerciseType = "Please select an activity.";
         if (!selectedDifficulty)
             newErrors.exerciseDifficulty = "Please select a difficulty.";
+        if (url && !/^((https?|ftp|smtp):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/.test(url))
+            newErrors.exerciseUrl = "Please type valid URL."
 
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const validateFormForAi = () => {
+        const newErrors: Errors = {};
+
+        if (!title) newErrors.title = "Title is required.";
+        if (!selectedActivity)
+            newErrors.exerciseType = "Please select an activity.";
+        if (!selectedDifficulty)
+            newErrors.exerciseDifficulty = "Please select a difficulty.";
+        if (selectedActivity === "Reading Aloud" && !topic) {
+            newErrors.topic = "Please enter a topic.";
+        }
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
+    const handleAiBtnSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (!validateFormForAi()) {
+            return;
+        }
+
+        setLoading(true);
+
+        const activityConfig: Record<string, { url: string; payload: any }> = {
+            "Reading Aloud": {
+                url: "/api/homework/reading",
+                payload: { level: selectedDifficulty, topic: topic }
+            },
+            "Simple Arithmetic": {
+                url: "/api/homework/arithmetics",
+                payload: { level: selectedDifficulty }
+            }
+        };
+
+        const { url: fetchUrl, payload } = activityConfig[selectedActivity] || {};
+
+        if (!fetchUrl) {
+            console.error("Invalid activity type");
+            return;
+        }
+
+        const res = await fetch(fetchUrl, {
+            method: 'POST',
+            body: JSON.stringify(payload),
+            headers: new Headers({
+                'Content-Type': 'application/json; charset=UTF-8'
+
+            })
+        })
+
+        const data = await res.json();
+        const result = JSON.parse(data.result);
+
+        const pdfComponent = selectedActivity === "Reading Aloud"
+            ? <PDFDocument title={title} content={result.reading.join("\n\n")} />
+            : <PDFMath title={title} difficulty={selectedDifficulty} contents={result.questions} />;
+
+        const pdfBlob = await pdf(pdfComponent).toBlob();
+
+        const formData = new FormData();
+        formData.append("file", pdfBlob, `document_${Date.now()}.pdf`);
+
+        const filePath = await fetchMaterialPDF(formData);
+
+        handleSubmit(e, filePath);
+    }
+
+    const fetchMaterialPDF = async (formData: FormData) => {
+        try {
+            const res = await fetch("/api/courses/materials/upload", {
+                method: 'POST',
+                body: formData,
+            })
+
+            const data = await res.json();
+            return data.filePath;
+        } catch (error) {
+            console.error(error);
+            return;
+        }
+    }
+
+
+    const handleSubmit = async (e: React.FormEvent, filePath?: string) => {
+        e.preventDefault();
+
         if (!validateForm()) {
             return;
         }
+
         const data = {
             title,
             exerciseType: selectedActivity,
             difficulty: selectedDifficulty,
             description,
             courseId,
+            url: filePath ? filePath : url,
         };
 
         try {
@@ -83,7 +180,6 @@ export default function AddMaterial(props: {
             });
 
             if (response.ok) {
-                console.log("Course material added successfully!");
                 const responseData = await response.json();
                 const newMaterial: CourseMaterialsWithFile = responseData.data;
                 props.setSelectedCourse(
@@ -101,9 +197,10 @@ export default function AddMaterial(props: {
                         }
                     }
                 );
+                setLoading(false);
                 props.handleClosePopup();
             } else {
-                console.log("Failed to add course material");
+                throw new Error("Failed to add course material");
             }
         } catch (error) {
             console.error("Error submitting form", error);
@@ -224,9 +321,26 @@ export default function AddMaterial(props: {
                                 id="courseMaterial"
                                 className="hidden"
                                 accept="application/pdf, image/*"
-                                onChange={() => {}}
+                                onChange={() => { }}
                             />
                         </div>
+                        {selectedActivity === "Physical Exercise" && (
+                            <div className="flex flex-col flex-1 gap-2">
+                                <label htmlFor="url">Video URL</label>
+                                {errors.exerciseUrl && (
+                                    <p className="text-red-500 text-sm">
+                                        {errors.exerciseUrl}
+                                    </p>
+                                )}
+                                <Input
+                                    id="url"
+                                    value={url}
+                                    type="url"
+                                    placeholder="ex. https://www.example.com"
+                                    onChange={(e) => setUrl(e.target.value)}
+                                />
+                            </div>
+                        )}
                         <div className="flex flex-col flex-1 gap-2">
                             <label htmlFor="ExerciseInstructions">
                                 Exercise Instructions
@@ -264,10 +378,17 @@ export default function AddMaterial(props: {
                     <form className="flex flex-col gap-4 w-full h-full md:text-2xl">
                         <div className="flex flex-col flex-1 gap-2">
                             <label htmlFor="title">Title</label>
+                            {errors.title && (
+                                <p className="text-red-500 text-sm">
+                                    {errors.title}
+                                </p>
+                            )}
                             <Input
                                 id="title"
                                 type="text"
+                                value={title}
                                 placeholder="ex. Week 1: In-class math activity"
+                                onChange={(e) => setTitle(e.target.value)}
                             />
                         </div>
                         <div className="flex flex-col md:flex-row gap-2 items-center w-full">
@@ -275,6 +396,11 @@ export default function AddMaterial(props: {
                                 <label htmlFor="exerciseType">
                                     Exercise Type
                                 </label>
+                                {errors.exerciseType && (
+                                    <p className="text-red-500 text-sm">
+                                        {errors.exerciseType}
+                                    </p>
+                                )}
                                 <Select onValueChange={handleActivitySelect}>
                                     <SelectTrigger>
                                         <SelectValue
@@ -304,6 +430,11 @@ export default function AddMaterial(props: {
                                 <label htmlFor="exerciseDifficulty">
                                     Exercise Difficulty
                                 </label>
+                                {errors.exerciseDifficulty && (
+                                    <p className="text-red-500 text-sm">
+                                        {errors.exerciseDifficulty}
+                                    </p>
+                                )}
                                 <Select onValueChange={handleDifficultySelect}>
                                     <SelectTrigger>
                                         <SelectValue
@@ -327,15 +458,26 @@ export default function AddMaterial(props: {
                         {selectedActivity === "Reading Aloud" && (
                             <div className="flex flex-col flex-1 gap-2">
                                 <label htmlFor="topic">Topic</label>
+                                {errors.topic && (
+                                    <p className="text-red-500 text-sm">
+                                        {errors.topic}
+                                    </p>
+                                )}
                                 <Textarea
                                     id="topic"
                                     placeholder="Topic for the reading exercise"
+                                    value={topic}
+                                    onChange={(e) => setTopic(e.target.value)}
                                 />
                             </div>
                         )}
                         <div className="w-full flex flex-row gap-2 mt-4">
-                            <Button className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold text-xl py-2 md:py-4">
-                                Save
+                            <Button
+                                className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold text-xl py-2 md:py-4"
+                                onClick={handleAiBtnSubmit}
+                                disabled={loading}
+                            >
+                                {loading ? "Generating..." : "Save"}
                             </Button>
                             <Button
                                 onClick={props.handleClosePopup}

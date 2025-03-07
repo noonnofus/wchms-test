@@ -3,6 +3,7 @@ import { uploadMedia } from "./mediaUpload";
 import { Participant, participants } from "./participants";
 import { rooms } from "./room";
 import { CourseMaterialsWithFile } from "./courseMaterials";
+import { CourseJoinRequest } from "./courseJoinRequests";
 
 export const Courses = mysqlTable("courses", {
     id: int("id").primaryKey().autoincrement(),
@@ -34,4 +35,5 @@ export type Course = typeof Courses.$inferSelect;
 export interface CourseFull extends Course {
     materials?: CourseMaterialsWithFile[] | null;
     participants?: Participant[] | null;
+    courseJoinRequests?: CourseJoinRequest[] | null;
 }
