@@ -1,5 +1,5 @@
 "use client";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Input } from "../ui/input";
 import {
     Select,
@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
-import CloseIcon from "../icons/close-icon";
 import { CourseMaterialsWithFile } from "@/db/schema/courseMaterials";
 import { CourseFull } from "@/db/schema/course";
 
@@ -36,7 +35,14 @@ export default function EditMaterial({
     const [description, setDescription] = useState<string>(
         material.description || ""
     );
+    const [url, setUrl] = useState<string>(
+        material.url || ""
+    );
     const [file, setFile] = useState<File | null>(null);
+
+    useEffect(() => {
+        console.log('material at edit material: ', material);
+    }, [])
 
     const handleActivitySelect = (activity: string) => {
         setSelectedActivity(activity);
@@ -62,6 +68,7 @@ export default function EditMaterial({
             description,
             uploadId: material.uploadId,
             courseId: material.courseId,
+            url: url,
         };
 
         const response = await fetch(`/api/courses/materials/update`, {
@@ -83,10 +90,10 @@ export default function EditMaterial({
                         ...prevSelectedCourse,
                         materials: prevSelectedCourse.materials
                             ? prevSelectedCourse.materials.map((material) =>
-                                  material.id === updatedMaterial.id
-                                      ? { ...material, ...updatedMaterial }
-                                      : material
-                              )
+                                material.id === updatedMaterial.id
+                                    ? { ...material, ...updatedMaterial }
+                                    : material
+                            )
                             : [],
                     } as CourseFull;
                 } else {
@@ -232,6 +239,18 @@ export default function EditMaterial({
                         </>
                     )}
                 </div>
+                {selectedActivity === "Physical Exercise" && (
+                    <div className="flex flex-col flex-1 gap-2">
+                        <label htmlFor="url">Video URL</label>
+                        <Input
+                            id="url"
+                            value={url}
+                            type="url"
+                            placeholder="ex. https://www.example.com"
+                            onChange={(e) => setUrl(e.target.value)}
+                        />
+                    </div>
+                )}
                 <div className="flex flex-col flex-1 gap-2">
                     <label htmlFor="ExerciseInstructions">
                         Exercise Instructions

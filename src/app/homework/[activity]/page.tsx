@@ -7,20 +7,27 @@ import ArithemeticCard from "@/components/homework/arithemetic-card";
 import ReadingCard from "@/components/homework/reading-card";
 import PhysicalCard from "@/components/homework/physical-card";
 import { redirect } from 'next/navigation'
+import { getLatestPhysicalMaterial } from "@/db/queries/courses";
 
-// topic recommendations for testing
-const reco = [
-    "Christmas",
-    "Fairy tales",
-    "Coffee",
-    "Chang Seung",
-]
+interface Recommendation {
+    topic: string;
+}
+
+interface MathQuestions {
+    question: string;
+    answer: string;
+}
 
 // video URL for physical activity to test it.
 const url = "https://www.youtube.com/watch?v=0xfDmrcI7OI";
 
 export default function ActivityPage() {
     const [correctCount, setCorrectCount] = useState(0);
+    const [recommendations, setRecommendations] = useState<Recommendation[] | null>(null);
+    const [mathQuestions, setMathQuestions] = useState<MathQuestions[] | null>(null);
+    const [currentQuestion, setCurrentQuestion] = useState(0);
+    const [loading, setLoading] = useState(false);
+    const [physicalUrl, setPhysicalUrl] = useState<string | null>(null);
 
     const pathname = usePathname();
     const searchParams = useSearchParams();
@@ -32,44 +39,107 @@ export default function ActivityPage() {
         redirect('/homework');
     }
 
-    const generateMockQuestions = () => {
-        return Array.from({ length: 15 }, () => {
-            const num1 = Math.floor(Math.random() * 50) + 1;
-            const num2 = Math.floor(Math.random() * 50) + 1;
-            return {
-                question: `${num1} + ${num2}`,
-                answer: (num1 + num2).toString(),
-            };
-        });
-    };
+    const getMathQuestions = async () => {
+        const res = await fetch("/api/homework/arithmetics", {
+            method: 'POST',
+            body: JSON.stringify({
+                level: difficulty,
+            }),
+            headers: new Headers({
+                'Content-Type': 'application/json; charset=UTF-8'
+            })
+        })
+        if (!res.ok) {
+            throw new Error(`HTTP error! Status: ${res.status}`);
+        }
 
-    const [questions] = useState(generateMockQuestions());
-    const [currentQuestion, setCurrentQuestion] = useState(0);
+        let result;
+
+        try {
+            const data = await res.json();
+            return await JSON.parse(data.result);
+        } catch (e) {
+            console.error(e);
+            result = null;
+        }
+    }
 
     const handleNext = () => {
-        if (currentQuestion < questions.length - 1) {
+        if (mathQuestions && currentQuestion < mathQuestions.length - 1) {
             setCurrentQuestion((prev) => prev + 1);
         }
     };
 
     useEffect(() => {
-        // Fetch to get arithemetic questions to "api/homework" with activity type & difficulty
+        const fetchQuestions = async () => {
+            if (activity === "arithemetic") {
+                setLoading(true);
+                const data = await getMathQuestions();
+                if (data) {
+                    setMathQuestions(data.questions);
+                }
+                setLoading(false);
+            }
+        };
+
+        fetchQuestions();
+    }, [activity, difficulty]);
+
+    useEffect(() => {
+        const generateTopic = async () => {
+            if (activity === "reading") {
+                const res = await fetch(`/api/homework/reading?level=${encodeURIComponent(difficulty)}`, {
+                    method: 'GET',
+                    headers: new Headers({
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    })
+                })
+                if (!res.ok) {
+                    throw new Error(`HTTP error! Status: ${res.status}`);
+                }
+
+                const data = await res.json();
+
+                const topics = JSON.parse(data.result).topics.map((t: string) => t);
+
+                setRecommendations(topics);
+            } else {
+                return;
+            }
+        }
+
+        generateTopic()
+    }, [activity, difficulty])
+
+    useEffect(() => {
+        const getVideoUrl = async () => {
+            const res = await getLatestPhysicalMaterial();
+            const url = res[0].url;
+            if (url) {
+                setPhysicalUrl(url);
+            } else {
+                setPhysicalUrl("No available video for you, please try again later.");
+            }
+        }
+
+        getVideoUrl();
+
     }, [activity, difficulty])
 
     const activityComponents: Record<string, React.ReactNode> = {
         arithemetic: (
             <ArithemeticCard
-                question={questions[currentQuestion].question}
-                answer={questions[currentQuestion].answer}
+                question={mathQuestions ? mathQuestions[currentQuestion].question : null}
+                answer={mathQuestions ? mathQuestions[currentQuestion].answer : null}
                 currentIndex={currentQuestion}
-                totalQuestions={questions.length}
+                totalQuestions={mathQuestions ? mathQuestions.length : 15}
                 correctCount={correctCount}
                 setCorrectCount={setCorrectCount}
                 onNext={handleNext}
             />
         ),
-        reading: <ReadingCard difficulty={difficulty} topicRecommendations={reco} />,
-        physical: <PhysicalCard videoUrl={url} />,
+        reading: <ReadingCard difficulty={difficulty} topicRecommendations={recommendations} />,
+        physical: <PhysicalCard videoUrl={physicalUrl} />,
     };
 
     return activityComponents[activity] || <p className="text-center">Invalid activity</p>;
