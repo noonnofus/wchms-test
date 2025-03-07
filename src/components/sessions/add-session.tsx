@@ -90,14 +90,6 @@ export default function AddSession(props: Props) {
         status: "",
     });
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setFormData({
-            ...formData,
-            [name]: value,
-        });
-    };
-
     const handleSelectChange = (name: string, value: string) => {
         setFormData({
             ...formData,
@@ -250,8 +242,6 @@ export default function AddSession(props: Props) {
                 const error = await res.json();
                 throw new Error(error.error || "Failed to create session");
             }
-
-            const data = await res.json();
             console.log("Session created successfully");
             props.handleClosePopup();
             router.refresh();
@@ -471,7 +461,7 @@ export default function AddSession(props: Props) {
                             disabled={isLoading}
                             className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold md:text-xl py-2 md:py-4"
                         >
-                            {isLoading ? "Saving..." : "Save"}
+                            {isLoading ? "Adding..." : "Add"}
                         </Button>
                     )}
                     <Button

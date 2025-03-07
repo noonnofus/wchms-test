@@ -31,7 +31,10 @@ export async function POST(req: Request) {
             description,
             uploadId,
             courseId,
+            url,
         } = body;
+
+        console.log(url);
 
         if (
             !title ||
@@ -56,6 +59,7 @@ export async function POST(req: Request) {
                 description,
                 uploadId,
                 courseId,
+                url,
             })
             .$returningId()
             .then((res) => res[0]);
@@ -76,6 +80,7 @@ export async function POST(req: Request) {
                     fileSize: uploadMedia.fileSize,
                     fileData: uploadMedia.fileData,
                 },
+                url: courseMaterials.url,
             })
             .from(courseMaterials)
             .leftJoin(uploadMedia, eq(courseMaterials.uploadId, uploadMedia.id))
