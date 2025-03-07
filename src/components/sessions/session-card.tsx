@@ -16,6 +16,7 @@ export default function SessionCard({
     startTime,
     endTime,
     onDelete,
+    isAdmin,
 }: SessionCardProps) {
     const [showConfirmation, setShowConfirmation] = useState(false);
 
@@ -40,6 +41,7 @@ export default function SessionCard({
     const formattedDate = formatDate(date);
     const formattedStartTime = formatTime(startTime);
     const formattedEndTime = formatTime(endTime);
+    const currentDateTime = new Date().toISOString();
 
     const handleDelete = () => {
         onDelete();
@@ -71,7 +73,11 @@ export default function SessionCard({
             )}
 
             {!showConfirmation && (
-                <Card className="flex flex-row justify-between items-center gap-4 p-4 shadow-lg rounded-lg bg-white">
+                <Card
+                    className={`flex flex-row justify-between items-center gap-4 p-4 shadow-lg rounded-lg ${
+                        currentDateTime > endTime ? "bg-gray-200" : "bg-white"
+                    }`}
+                >
                     <div className="flex items-center gap-2 text-gray-700">
                         <Calendar className="w-5 h-5 text-gray-500" />
                         <span>
@@ -79,12 +85,14 @@ export default function SessionCard({
                             {formattedEndTime}
                         </span>
                     </div>
-                    <button
-                        onClick={() => setShowConfirmation(true)}
-                        className="text-red-500 hover:text-red-700"
-                    >
-                        <Trash2 className="w-5 h-5" />
-                    </button>
+                    {isAdmin && (
+                        <button
+                            onClick={() => setShowConfirmation(true)}
+                            className="text-red-500 hover:text-red-700"
+                        >
+                            <Trash2 className="w-5 h-5" />
+                        </button>
+                    )}
                 </Card>
             )}
         </div>

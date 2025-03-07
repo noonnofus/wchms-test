@@ -53,8 +53,8 @@ export default function SessionsPage() {
     };
 
     return (
-        <div className="w-full h-full">
-            <h2 className="text-xl font-semibold">Next Session</h2>
+        <div className="w-full h-full flex flex-col gap-4">
+            <h2 className="text-xl font-semibold">All Sessions</h2>
 
             <div className="flex flex-col items-center gap-4">
                 {sessions.length > 0 ? (
@@ -64,6 +64,7 @@ export default function SessionsPage() {
                             date={session.date}
                             startTime={session.startTime}
                             endTime={session.endTime}
+                            isAdmin={true}
                             onDelete={() => handleDeleteSession(session.id)}
                         />
                     ))
