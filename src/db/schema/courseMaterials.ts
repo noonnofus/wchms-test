@@ -43,7 +43,7 @@ export const courseMaterials = mysqlTable("course_materials", {
     }),
     courseId: int("course_id")
         .notNull()
-        .references(() => Courses.id),
+        .references(() => Courses.id, { onDelete: "cascade" }),
     createdAt: timestamp("createdAt").defaultNow(),
 });
 

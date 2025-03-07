@@ -7,6 +7,8 @@ import { getAllCourses } from "@/db/queries/courses";
 import { type Course } from "@/db/schema/course";
 import { useEffect, useState } from "react";
 import { useSwipeable } from "react-swipeable";
+import { useRouter } from "next/navigation";
+import DeleteConfirmation from "@/components/shared/delete-confirmation";
 
 export type CourseWithImage = Course & {
     fileKey: string | null;
@@ -14,9 +16,13 @@ export type CourseWithImage = Course & {
 };
 
 export default function Courses() {
+    const router = useRouter();
     const [showAddPopup, setShowAddPopup] = useState(false);
     const [showEditPopup, setShowEditPopup] = useState(false);
     const [editCourseId, setEditCourseId] = useState(-1);
+    const [courseToDelete, setCourseToDelete] = useState<Course | null>(null);
+    const [showDeletePopup, setShowDeletePopup] = useState(false);
+    const [refreshCourses, setRefreshCourses] = useState(false);
 
     const handleEditButtonClick = (courseId: number) => {
         setEditCourseId(courseId);
@@ -26,9 +32,41 @@ export default function Courses() {
     const handleAddButtonClick = () => {
         setShowAddPopup(true);
     };
+
     const handleClosePopup = () => {
         setShowAddPopup(false);
         setShowEditPopup(false);
+        setCourseToDelete(null);
+        setShowDeletePopup(false);
+    };
+
+    const handleDeleteButtonClick = (course: Course) => {
+        setCourseToDelete(course);
+        setShowDeletePopup(true);
+    };
+
+    const handleDeleteCourse = async (e: React.FormEvent) => {
+        if (!courseToDelete) return;
+        try {
+            e.preventDefault();
+            const response = await fetch("/api/courses/delete", {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ courseId: courseToDelete.id }),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) throw new Error(data.error || "Failed to delete");
+            setRefreshCourses(true);
+        } catch (error) {
+            console.error("Error deleting course: ", error);
+        } finally {
+            setShowDeletePopup(false);
+            setCourseToDelete(null);
+        }
     };
 
     const swipeHandlers = useSwipeable({
@@ -52,11 +90,12 @@ export default function Courses() {
             setCourses([]);
         } finally {
             setIsLoading(false);
+            setRefreshCourses(false);
         }
     };
     useEffect(() => {
         fetchCourses();
-    }, []);
+    }, [refreshCourses]);
 
     return (
         <div className="w-full h-full">
@@ -126,6 +165,24 @@ export default function Courses() {
                 </div>
             )}
 
+            {showDeletePopup && courseToDelete && (
+                <div className="fixed inset-0 flex items-center justify-center z-10 overflow-y-auto">
+                    <div
+                        className="absolute inset-0 bg-black opacity-50"
+                        onClick={handleClosePopup}
+                    ></div>
+                    <div className="z-30 bg-white rounded-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
+                        <DeleteConfirmation
+                            title="Delete Course"
+                            body={`Are you sure you want to delete course "${courseToDelete.title}"? You cannot undo this action.`}
+                            actionLabel="DELETE"
+                            handleSubmit={handleDeleteCourse}
+                            closePopup={handleClosePopup}
+                        />
+                    </div>
+                </div>
+            )}
+
             <button
                 className="absolute bottom-20 right-6 flex h-[72px] w-[72px] bg-primary-green shadow-lg border-4 border-white rounded-full justify-center items-center z-10"
                 onClick={handleAddButtonClick}
@@ -160,6 +217,9 @@ export default function Courses() {
                                 key={course.id}
                                 variant="admin"
                                 handleEditButtonClick={handleEditButtonClick}
+                                handleDeleteButtonClick={
+                                    handleDeleteButtonClick
+                                }
                             />
                         ))
                     ) : (

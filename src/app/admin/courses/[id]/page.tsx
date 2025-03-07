@@ -10,11 +10,14 @@ import MaterialCard from "@/components/shared/material-card";
 import TabsMenu from "@/components/shared/tabs-menu";
 import { Button } from "@/components/ui/button";
 import { getCourseById } from "@/db/queries/courses";
-import { CourseFull } from "@/db/schema/course";
+import { Course, CourseFull } from "@/db/schema/course";
 import { CourseMaterialsWithFile } from "@/db/schema/courseMaterials";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useSwipeable } from "react-swipeable";
+import DeleteConfirmation from "@/components/shared/delete-confirmation";
+import { type CourseMaterials } from "@/db/schema/courseMaterials";
+import AddSession from "@/components/sessions/add-session";
 
 export default function AdminCourses() {
     const { id } = useParams();
@@ -29,13 +32,18 @@ export default function AdminCourses() {
     const [showUnaddedOverlay, setShowUnaddedOverlay] = useState(false);
     const [showAddPopup, setShowAddPopup] = useState(false);
     const [showEditMaterialPopup, setShowEditMaterialPopup] = useState(false);
-    const [editMaterialId, setMaterialId] = useState("");
+    const [editMaterialId, setEditMaterialId] = useState("");
     const [showEditCoursePopup, setShowEditCoursePopup] = useState(false);
+    const [showDeletePopup, setShowDeletePopup] = useState(false);
+    const [materialToDelete, setMaterialToDelete] =
+        useState<CourseMaterials | null>(null);
+    const [refreshCourseMaterials, setRefreshCourseMaterials] = useState(false);
+    const [courseToDelete, setCourseToDelete] = useState<Course | null>(null);
+    const [showAddSessionPopup, setShowAddSessionPopup] = useState(true);
 
     const swipeHandlers = useSwipeable({
         onSwipedDown: () => {
             handleClosePopup();
-            handleCloseEditPopup();
         },
         preventScrollOnSwipe: true,
     });
@@ -81,21 +89,87 @@ export default function AdminCourses() {
     const handleAddButtonClick = () => {
         setShowAddPopup(true);
     };
-    const handleClosePopup = () => {
-        setShowAddPopup(false);
-        setShowEditCoursePopup(false);
-    };
-    const handleEditButtonClick = (id: string) => {
-        setMaterialId(id);
-        setShowEditMaterialPopup(true);
-    };
-    const handleCloseEditPopup = () => {
-        setMaterialId("");
-        setShowEditMaterialPopup(false);
-    };
 
     const handleEditCourseButtonClick = () => {
         setShowEditCoursePopup(true);
+    };
+
+    const handleDeleteCourseButtonClick = () => {
+        setCourseToDelete(selectedCourse);
+        setShowDeletePopup(true);
+    };
+
+    const handleDeleteCourse = async (e: React.FormEvent) => {
+        if (!courseToDelete) return;
+        try {
+            e.preventDefault();
+            const response = await fetch("/api/courses/delete", {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ courseId: selectedCourse.id }),
+            });
+
+            const data = await response.json();
+            router.push("/admin/courses/");
+
+            if (!response.ok) throw new Error(data.error || "Failed to delete");
+        } catch (error) {
+            console.error("Error deleting course: ", error);
+        } finally {
+            setShowDeletePopup(false);
+            setCourseToDelete(null);
+        }
+    };
+
+    const handleClosePopup = () => {
+        setShowAddPopup(false);
+        setShowEditCoursePopup(false);
+        setShowDeletePopup(false);
+        setEditMaterialId("");
+        setShowEditMaterialPopup(false);
+        setShowAddSessionPopup(false);
+    };
+    const handleEditButtonClick = (id: string) => {
+        setEditMaterialId(id);
+        setShowEditMaterialPopup(true);
+    };
+
+    const handleMaterialDeleteButtonClick = (
+        courseMaterial: CourseMaterials
+    ) => {
+        setMaterialToDelete(courseMaterial);
+        setShowDeletePopup(true);
+    };
+
+    const handleDeleteCourseMaterial = async () => {
+        if (!materialToDelete) return;
+
+        try {
+            const response = await fetch("/api/courses/materials/delete", {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ courseMaterialId: materialToDelete.id }),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) throw new Error(data.error || "Failed to delete");
+
+            setRefreshCourseMaterials((prev) => !prev);
+        } catch (error) {
+            console.error("Error deleting course material:", error);
+        } finally {
+            setShowDeletePopup(false);
+            setMaterialToDelete(null);
+        }
+    };
+
+    const handleAddSessionButtonClick = () => {
+        setShowAddSessionPopup(true);
     };
 
     return (
@@ -116,6 +190,9 @@ export default function AdminCourses() {
                                     course={selectedCourse}
                                     variant="admin"
                                     editAction={handleEditCourseButtonClick}
+                                    handleDeleteButtonClick={
+                                        handleDeleteCourseButtonClick
+                                    }
                                 />
                                 <Button
                                     className="bg-primary-green text-white rounded-full w-full font-semibold text-base hover:bg-[#045B47]"
@@ -131,6 +208,59 @@ export default function AdminCourses() {
                                     }
                                     courseId={parseInt(id as string)}
                                 />
+                                <button
+                                    className="absolute bottom-20 right-6 flex h-[72px] w-[72px] bg-primary-green shadow-lg border-4 border-white rounded-full justify-center items-center z-10"
+                                    onClick={handleAddSessionButtonClick}
+                                >
+                                    <svg
+                                        width="32"
+                                        height="32"
+                                        viewBox="0 0 32 32"
+                                        fill="none"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                        <path
+                                            d="M16 5.33334V26.6667M26.6667 16L5.33334 16"
+                                            stroke="white"
+                                            strokeWidth="4"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                        />
+                                    </svg>
+                                </button>
+                            </div>
+                        )}
+                        {showAddSessionPopup && (
+                            <div className="fixed inset-0 flex items-end md:items-center justify-center z-20">
+                                <div
+                                    className="absolute inset-0 bg-black opacity-50"
+                                    onClick={handleClosePopup}
+                                ></div>
+                                <div className="z-30 bg-white rounded-t-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
+                                    <div className="relative w-full">
+                                        <div
+                                            className="flex justify-center items-center p-6 md:hidden "
+                                            {...swipeHandlers}
+                                        >
+                                            {/* Swipe indicator */}
+                                            <div className="absolute top-6 md:hidden">
+                                                <CloseSwipe />
+                                            </div>
+                                        </div>
+                                        <button
+                                            onClick={handleClosePopup}
+                                            className="absolute top-3 right-4"
+                                        >
+                                            <CloseIcon />
+                                        </button>
+                                    </div>
+                                    <div className="overflow-y-auto max-h-[calc(90vh-90px)]">
+                                        <AddSession
+                                            courseId={selectedCourse.id}
+                                            handleClosePopup={handleClosePopup}
+                                        />
+                                    </div>
+                                </div>
                             </div>
                         )}
                         {showEditCoursePopup && (
@@ -166,6 +296,23 @@ export default function AdminCourses() {
                                 </div>
                             </div>
                         )}
+                        {showDeletePopup && courseToDelete && (
+                            <div className="fixed inset-0 flex items-center justify-center z-10 overflow-y-auto">
+                                <div
+                                    className="absolute inset-0 bg-black opacity-50"
+                                    onClick={handleClosePopup}
+                                ></div>
+                                <div className="z-30 bg-white rounded-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
+                                    <DeleteConfirmation
+                                        title="Delete Course"
+                                        body={`Are you sure you want to delete course "${selectedCourse.title}"? You cannot undo this action.`}
+                                        actionLabel="DELETE"
+                                        handleSubmit={handleDeleteCourse}
+                                        closePopup={handleClosePopup}
+                                    />
+                                </div>
+                            </div>
+                        )}
                     </>
                 }
                 rightChildren={
@@ -189,6 +336,11 @@ export default function AdminCourses() {
                                                     handleEditButtonClick={() =>
                                                         handleEditButtonClick(
                                                             material.id.toString()
+                                                        )
+                                                    }
+                                                    handleDeleteButtonClick={() =>
+                                                        handleMaterialDeleteButtonClick(
+                                                            material
                                                         )
                                                     }
                                                 />
@@ -215,7 +367,7 @@ export default function AdminCourses() {
                                 )}
                                 <button
                                     onClick={handleAddButtonClick}
-                                    className="absolute bottom-24 right-2 md:bottom-24 md:right-6 flex h-[72px] w-[72px] bg-primary-green shadow-lg border-4 border-white rounded-full justify-center items-center z-[1]"
+                                    className="absolute bottom-20 right-6 flex h-[72px] w-[72px] bg-primary-green shadow-lg border-4 border-white rounded-full justify-center items-center z-10"
                                 >
                                     <svg
                                         width="32"
@@ -277,7 +429,7 @@ export default function AdminCourses() {
                                     <div className="fixed inset-0 flex items-end md:items-center justify-center z-10 overflow-y-auto">
                                         <div
                                             className="absolute inset-0 bg-black opacity-50"
-                                            onClick={handleCloseEditPopup}
+                                            onClick={handleClosePopup}
                                         ></div>
                                         <div className="z-30 bg-white rounded-t-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
                                             <div className="relative w-full">
@@ -301,7 +453,7 @@ export default function AdminCourses() {
                                                 {selectedCourse?.materials && (
                                                     <EditMaterial
                                                         handleClosePopup={
-                                                            handleCloseEditPopup
+                                                            handleClosePopup
                                                         }
                                                         material={
                                                             selectedCourse?.materials?.filter(
@@ -318,6 +470,25 @@ export default function AdminCourses() {
                                                     />
                                                 )}
                                             </div>
+                                        </div>
+                                    </div>
+                                )}
+                                {showDeletePopup && materialToDelete && (
+                                    <div className="fixed inset-0 flex items-center justify-center z-10 overflow-y-auto">
+                                        <div
+                                            className="absolute inset-0 bg-black opacity-50"
+                                            onClick={handleClosePopup}
+                                        ></div>
+                                        <div className="z-30 bg-white rounded-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
+                                            <DeleteConfirmation
+                                                title="Delete Course Material"
+                                                body={`Are you sure you want to delete course material "${materialToDelete.title}"? You cannot undo this action.`}
+                                                actionLabel="DELETE"
+                                                handleSubmit={
+                                                    handleDeleteCourseMaterial
+                                                }
+                                                closePopup={handleClosePopup}
+                                            />
                                         </div>
                                     </div>
                                 )}

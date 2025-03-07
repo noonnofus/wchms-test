@@ -10,7 +10,7 @@ export default function DeleteConfirmation({
     title: string;
     body: string;
     actionLabel: String;
-    handleSubmit: () => void;
+    handleSubmit: (e: React.FormEvent) => void;
     closePopup: () => void;
 }) {
     const handleCancel = (e: React.FormEvent) => {
@@ -25,7 +25,7 @@ export default function DeleteConfirmation({
             </h1>
             <form
                 className="flex flex-col items-center justify-center gap-8 md:gap-12 w-full h-full md:text-xl"
-                onSubmit={handleSubmit}
+                onSubmit={(event) => handleSubmit(event)}
             >
                 <div className="">
                     <p className="text-center text-xl md:text-2xl">{body}</p>

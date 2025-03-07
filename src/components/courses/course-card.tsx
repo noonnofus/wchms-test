@@ -22,19 +22,23 @@ import {
 import { useEffect, useState } from "react";
 import { type CourseWithImage } from "@/app/admin/courses/page";
 import { type CourseListWithImage } from "@/app/courses/page";
+import DeleteIcon from "../icons/delete-icon";
 
 interface CourseCardProps {
-    course: CourseWithImage | CourseListWithImage;
+    //Shared props
 }
 
 interface ClientVariantProps extends CourseCardProps {
     variant: "client";
     enrolled: boolean;
+    course: CourseListWithImage;
 }
 
 interface AdminVariantProps extends CourseCardProps {
     handleEditButtonClick: (courseId: number) => void;
+    handleDeleteButtonClick: (course: CourseWithImage) => void;
     variant: "admin";
+    course: CourseWithImage;
 }
 
 export default function CourseCard(
@@ -212,15 +216,24 @@ export default function CourseCard(
                 )}
 
                 {props.variant == "admin" && (
-                    <button
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            props.handleEditButtonClick(props.course.id);
-                        }}
-                        className="absolute right-5 top-4"
-                    >
-                        <EditIcon />
-                    </button>
+                    <div className="absolute right-[3%] top-[5%] flex gap-2">
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                props.handleEditButtonClick(props.course.id);
+                            }}
+                        >
+                            <EditIcon />
+                        </button>
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                props.handleDeleteButtonClick(props.course);
+                            }}
+                        >
+                            <DeleteIcon />
+                        </button>
+                    </div>
                 )}
 
                 {props.variant == "admin" && (
