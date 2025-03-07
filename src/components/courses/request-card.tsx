@@ -8,8 +8,10 @@ import { Participant } from "@/db/schema/participants";
 
 export default function RequestCard({
     request,
+    onReject,
 }: {
     request: CourseJoinRequest;
+    onReject: (requestId: number) => void;
 }) {
     const [participant, setParticipant] = useState<Participant | null>(null);
 
@@ -30,8 +32,6 @@ export default function RequestCard({
 
     const handleApproveRequest = () => {};
 
-    const handleRejectRequest = () => {};
-
     return (
         <Card className="w-full flex flex-row">
             <CardHeader className="w-full py-4 md:py-6">
@@ -50,7 +50,10 @@ export default function RequestCard({
                         Approve
                     </Button>
                     <Button
-                        onClick={handleRejectRequest}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onReject(request.id);
+                        }}
                         className="w-full h-full font-semibold md:text-xl py-2 md:py-4 rounded-full bg-destructive-red border border-destructive-hover text-destructive-text hover:bg-destructive-hover hover:text-destructive-text"
                     >
                         Reject

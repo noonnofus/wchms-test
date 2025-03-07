@@ -20,6 +20,9 @@ export default function RequestOverviewCard({
     const [courseJoinRequests, setCourseJoinRequests] =
         useState<CourseJoinRequest[]>();
     const [participants, setParticipants] = useState<Participant[]>([]);
+    const [showDeletePopup, setShowDeletePopup] = useState(false);
+    const [requestToDelete, setRequestToDelete] =
+        useState<CourseJoinRequest | null>(null);
 
     useEffect(() => {
         if (!requests || requests.length === 0) return;
@@ -59,15 +62,21 @@ export default function RequestOverviewCard({
         fetchJoinRequests();
     }, [id]);
 
+    const handleAcceptRequest = () => {};
+
+    const handleRejectRequestClick = (request: CourseJoinRequest) => {
+        setShowDeletePopup(true);
+        setRequestToDelete(request);
+    };
+
     return (
-        <div className="flex flex-col items-center w-full h-full">
-            <Card className="w-full max-w-none overflow-hidden mb-8">
+        <div className="flex flex-col items-center w-full">
+            <Card className="w-full max-w-none overflow-hidden">
                 <CardHeader className="w-full py-4 md:py-6">
                     <div className="flex justify-between items-center">
                         <CardTitle className="text-left text-2xl md:text-[32px]">
                             Join Requests
                         </CardTitle>
-
                         <Link href={`/admin/courses/${id}/requests`}>
                             <p className="text-primary-green text-sm md:text-xl font-semibold">
                                 View All
@@ -77,7 +86,7 @@ export default function RequestOverviewCard({
                 </CardHeader>
                 <CardContent className="overflow-x-auto w-full h-full">
                     <div className="flex overflow-x-auto min-w-max space-x-4">
-                        {participants.length > 0 ? (
+                        {courseJoinRequests && participants.length > 0 ? (
                             participants.map((participant) => (
                                 <div
                                     className="flex flex-col gap-4 w-40 md:w-52 h-auto border-2 border-primary-green rounded-lg p-2 md:p-4"
@@ -92,10 +101,18 @@ export default function RequestOverviewCard({
 
                                     {id && (
                                         <div className="w-full h-full flex gap-2 items-center justify-center">
-                                            <Button className="w-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold text-sm md:text-base">
+                                            <Button
+                                                onClick={handleAcceptRequest}
+                                                className="w-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold text-sm md:text-base"
+                                            >
                                                 <Check />
                                             </Button>
-                                            <Button className="w-full rounded-full bg-destructive-red text-destructive-text hover:bg-destructive-hover font-semibold text-sm md:text-base">
+                                            <Button
+                                                // onClick={
+                                                //     handleRejectRequestClick(CourseJoin)
+                                                // }
+                                                className="w-full rounded-full bg-destructive-red text-destructive-text hover:bg-destructive-hover font-semibold text-sm md:text-base"
+                                            >
                                                 <CloseIcon />
                                             </Button>
                                         </div>
@@ -103,7 +120,7 @@ export default function RequestOverviewCard({
                                 </div>
                             ))
                         ) : (
-                            <p>No participants registered</p>
+                            <p>No course join requests</p>
                         )}
                     </div>
                 </CardContent>

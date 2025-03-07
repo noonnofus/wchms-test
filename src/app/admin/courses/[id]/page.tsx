@@ -206,7 +206,7 @@ export default function AdminCourses() {
                             </div>
                         ) : (
                             <div className="h-full w-full">
-                                <div className="flex flex-col gap-4">
+                                <div className="flex flex-col gap-6 md:gap-8">
                                     <CourseDetailsCard
                                         name={selectedCourse.title}
                                         description={
