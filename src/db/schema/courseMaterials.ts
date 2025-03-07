@@ -55,6 +55,7 @@ export interface CourseMaterialsWithFile extends CourseMaterials {
         fileName: UploadMedia["fileName"];
         fileType: UploadMedia["fileType"];
         fileSize: UploadMedia["fileSize"];
+        fileKey: UploadMedia["fileKey"];
     } | null;
     url: string | null;
 }

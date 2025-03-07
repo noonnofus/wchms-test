@@ -13,7 +13,6 @@ export default function MaterialCard({
     handleEditButtonClick?: () => void;
     handleDeleteButtonClick?: () => void;
 }) {
-    console.log(material);
     //TODO: allow files to be downloaded
     //TODO: Only show reading aloud and arithmetic materials
     return (

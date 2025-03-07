@@ -6,6 +6,8 @@ import {
     MaterialType,
 } from "@/db/schema/courseMaterials";
 import { uploadMedia } from "@/db/schema/mediaUpload";
+import { validateFile } from "@/lib/fileUploads";
+import { getSignedUrlFromFileKey, uploadToS3 } from "@/lib/s3";
 import { validateAdminOrStaff } from "@/lib/validation";
 import { eq } from "drizzle-orm";
 import { getServerSession } from "next-auth";
@@ -23,16 +25,18 @@ export async function PUT(req: Request) {
                 { status: 401 }
             );
         }
-        const body = await req.json();
-        const {
-            id,
-            title,
-            exerciseType,
-            difficulty,
-            description,
-            uploadId,
-            courseId,
-        } = body;
+        const formData = await req.formData();
+        const id = parseInt(formData.get("id") as string);
+        const title = formData.get("title") as string;
+        const exerciseType = formData.get("exerciseType") as MaterialType;
+        const difficulty = formData.get("difficulty") as Difficulty;
+        const description = formData.get("description") as string;
+        let uploadId: string | number | undefined = formData
+            .get("uploadId")
+            ?.toString();
+        const courseId = parseInt(formData.get("courseId") as string);
+        const file = formData.get("file") as File | null;
+        let fileKey = formData.get("fileKey") as string;
 
         if (!id) {
             return new Response(
@@ -54,18 +58,60 @@ export async function PUT(req: Request) {
                 { status: 400 }
             );
         }
-
+        let url: undefined | string;
+        if (file) {
+            const validationError = validateFile(file);
+            if (validationError) {
+                return new Response(
+                    JSON.stringify({
+                        validationError,
+                    }),
+                    { status: 400 }
+                );
+            }
+            //
+            const { success, fileName } = await uploadToS3(file, fileKey);
+            if (!success) {
+                throw new Error("Failed to upload to S3.");
+            }
+            if (fileKey && uploadId) {
+                await db
+                    .update(uploadMedia)
+                    .set({
+                        fileName: file.name,
+                        fileType: file.type,
+                        fileSize: file.size,
+                    })
+                    .where(eq(uploadMedia.id, Number(uploadId)));
+            }
+            if (fileName && !fileKey) {
+                uploadId = await db
+                    .insert(uploadMedia)
+                    .values({
+                        fileName: file.name,
+                        fileType: file.type,
+                        fileSize: file.size,
+                        fileKey: fileName,
+                        mediaOrigin: "course_materials",
+                        ownerId: parseInt(session!.user.id),
+                    })
+                    .$returningId()
+                    .then((res) => res[0].id);
+                url = await getSignedUrlFromFileKey(fileName, true, file.name);
+            }
+        }
+        const newData = {
+            title,
+            type: exerciseType,
+            difficulty,
+            description,
+            uploadId: Number(uploadId),
+            courseId,
+        };
         // Update the course material
         await db
             .update(courseMaterials)
-            .set({
-                title,
-                type: exerciseType,
-                difficulty,
-                description,
-                uploadId,
-                courseId,
-            })
+            .set(newData)
             .where(eq(courseMaterials.id, id));
 
         const updatedMaterial = await db
@@ -93,7 +139,7 @@ export async function PUT(req: Request) {
         return new Response(
             JSON.stringify({
                 message: "Course material updated successfully",
-                data: { updatedMaterial },
+                data: { ...updatedMaterial, url },
             }),
             { status: 200 }
         );

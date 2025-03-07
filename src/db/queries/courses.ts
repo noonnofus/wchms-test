@@ -5,7 +5,7 @@ import {
     CourseParticipant,
     Courses as coursesTable,
 } from "@/db/schema/course";
-import { desc, eq, and, sql } from "drizzle-orm";
+import { desc, eq, and } from "drizzle-orm";
 import { uploadMedia } from "../schema/mediaUpload";
 import {
     courseMaterials,
@@ -17,8 +17,6 @@ import { CourseJoinRequests } from "../schema/courseJoinRequests";
 import { getServerSession } from "next-auth";
 import { authConfig } from "@/auth";
 import { getSignedUrlFromFileKey } from "@/lib/s3";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { CourseWithImage } from "@/app/admin/courses/page";
 
 export interface courseList {
     id: number;

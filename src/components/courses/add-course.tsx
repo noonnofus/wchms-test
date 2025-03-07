@@ -189,7 +189,6 @@ export default function AddCourse(props: props) {
                     "Participants must be a comma-separated list of names (e.g., 'John Kim, Kelly Zo')";
                 isValid = false;
             }
-            console.log(formData.courseParticipants);
         }
 
         if (!formData.courseRoom || formData.courseRoom === "-1") {

@@ -71,7 +71,7 @@ export async function POST(req: Request) {
                         fileType: file.type,
                         fileSize: file.size,
                         fileKey: fileName,
-                        mediaOrigin: "course",
+                        mediaOrigin: "course_materials",
                         ownerId: parseInt(session!.user.id),
                     })
                     .$returningId()
