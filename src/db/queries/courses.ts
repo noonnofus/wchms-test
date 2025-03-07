@@ -256,48 +256,6 @@ export async function getCourseById(
     }
 }
 
-// export async function createCourseWithMedia(courseData: any, mediaId?: number) {
-//     "use server";
-//     try {
-//         const [course] = await db.insert(coursesTable).values({
-//             ...courseData,
-//             uploadId: mediaId,
-//         });
-
-//         if (mediaId) {
-//             await db
-//                 .update(uploadMedia)
-//                 .set({ originId: course.insertId })
-//                 .where(eq(uploadMedia.id, mediaId));
-//         }
-
-//         return course;
-//     } catch (error) {
-//         console.error("Error creating course with media:", error);
-//         throw error;
-//     }
-// }
-
-// export async function updateCourseMedia(courseId: number, mediaId: number) {
-//     "use server";
-//     try {
-//         await db
-//             .update(coursesTable)
-//             .set({ uploadId: mediaId })
-//             .where(eq(coursesTable.id, courseId));
-
-//         await db
-//             .update(uploadMedia)
-//             .set({ originId: courseId })
-//             .where(eq(uploadMedia.id, mediaId));
-
-//         return true;
-//     } catch (error) {
-//         console.error("Error updating course media:", error);
-//         throw error;
-//     }
-// }
-
 // COURSE JOIN REQUESTS
 
 export async function createCourseJoinRequest(

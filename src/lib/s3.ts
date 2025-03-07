@@ -3,6 +3,7 @@ import {
     S3Client,
     PutObjectCommand,
     GetObjectCommand,
+    DeleteObjectCommand,
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import crypto from "crypto";
@@ -37,6 +38,19 @@ export const uploadToS3 = async (file: File, fileKey = "") => {
         } else {
             console.error("Unknown error during file upload", err);
         }
+        return { success: false };
+    }
+};
+
+export const deleteFromS3 = async (fileKey: string) => {
+    try {
+        const command = new DeleteObjectCommand({
+            Bucket: process.env.AWS_BUCKET_NAME,
+            Key: fileKey,
+        });
+        await s3.send(command);
+    } catch (err) {
+        console.error("Error deleting from S3", err);
         return { success: false };
     }
 };

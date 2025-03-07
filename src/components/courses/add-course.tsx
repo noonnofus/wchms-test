@@ -16,7 +16,6 @@ import { DatePicker } from "../ui/date-picker";
 import ImageUpload from "../ui/image-upload";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
-import { getSignedUrlFromFileKey } from "@/lib/s3";
 
 const defaultRoomName = "Online via Zoom"; //name of room for default selection
 export const [languages, types, statuses] = [
@@ -35,7 +34,6 @@ export default function AddCourse(props: props) {
     const path = usePathname();
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(true);
-    const [isUploading, setIsUploading] = useState(false);
     const [rooms, setRooms] = useState<Room[]>([]);
     const [formData, setFormData] = useState({
         courseId: null as number | null,
@@ -210,7 +208,6 @@ export default function AddCourse(props: props) {
             return;
         }
 
-        setIsUploading(true);
         try {
             const updatedFormData = new FormData();
             Object.entries(formData).forEach(([key, value]) => {
@@ -249,7 +246,6 @@ export default function AddCourse(props: props) {
                         : "Failed to process image",
             }));
         } finally {
-            setIsUploading(false);
         }
     };
 

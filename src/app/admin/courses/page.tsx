@@ -5,7 +5,6 @@ import CloseIcon from "@/components/icons/close-icon";
 import CloseSwipe from "@/components/icons/close-swipe";
 import { getAllCourses } from "@/db/queries/courses";
 import { type Course } from "@/db/schema/course";
-import { getSignedUrlFromFileKey } from "@/lib/s3";
 import { useEffect, useState } from "react";
 import { useSwipeable } from "react-swipeable";
 
