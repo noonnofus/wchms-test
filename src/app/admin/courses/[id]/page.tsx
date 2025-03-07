@@ -9,7 +9,7 @@ import CloseSwipe from "@/components/icons/close-swipe";
 import MaterialCard from "@/components/shared/material-card";
 import TabsMenu from "@/components/shared/tabs-menu";
 import { Button } from "@/components/ui/button";
-import { getCourseById } from "@/db/queries/courses";
+import { getAllCourseJoinRequests, getCourseById } from "@/db/queries/courses";
 import { Course, CourseFull } from "@/db/schema/course";
 import { CourseMaterialsWithFile } from "@/db/schema/courseMaterials";
 import { useParams, useRouter } from "next/navigation";
@@ -18,6 +18,7 @@ import { useSwipeable } from "react-swipeable";
 import DeleteConfirmation from "@/components/shared/delete-confirmation";
 import { type CourseMaterials } from "@/db/schema/courseMaterials";
 import AddSession from "@/components/sessions/add-session";
+import { CourseJoinRequest } from "@/db/schema/courseJoinRequests";
 
 export default function AdminCourses() {
     const { id } = useParams();
@@ -40,6 +41,7 @@ export default function AdminCourses() {
     const [refreshCourseMaterials, setRefreshCourseMaterials] = useState(false);
     const [courseToDelete, setCourseToDelete] = useState<Course | null>(null);
     const [showAddSessionPopup, setShowAddSessionPopup] = useState(true);
+    const [requests, setRequests] = useState<CourseJoinRequest[] | null>(null);
 
     const swipeHandlers = useSwipeable({
         onSwipedDown: () => {
@@ -80,6 +82,24 @@ export default function AdminCourses() {
             }
         }
     }, []);
+
+    useEffect(() => {
+        if (!id) return;
+        const fetchJoinRequests = async () => {
+            try {
+                const requests = await getAllCourseJoinRequests(
+                    parseInt(id as string)
+                );
+                if (requests) {
+                    setRequests(requests);
+                }
+            } catch (error) {
+                console.error("Error fetching join requests", error);
+                setRequests(null);
+            }
+        };
+        fetchJoinRequests();
+    }, [id]);
 
     if (!selectedCourse) {
         return <div>No course found</div>;
@@ -204,6 +224,16 @@ export default function AdminCourses() {
                                         }
                                     >
                                         All Sessions
+                                    </Button>
+                                    <Button
+                                        className="bg-primary-green text-white rounded-full w-full font-semibold text-base hover:bg-[#045B47]"
+                                        onClick={() =>
+                                            router.push(
+                                                `/admin/courses/${id}/requests`
+                                            )
+                                        }
+                                    >
+                                        View Course Enrollment Requests
                                     </Button>
                                     <ParticipantList
                                         participants={
