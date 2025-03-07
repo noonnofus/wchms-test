@@ -3,11 +3,19 @@ import NextClass from "@/components/courses/next-class";
 import BookIcon from "@/components/icons/book-icon";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { useState } from "react";
 
 export default function Home() {
+    const [isComponentLoaded, setIsComponentLoaded] = useState(true);
+
+    const handleComponentLoaded = () => {
+        setIsComponentLoaded(true);
+    };
+
     return (
         <div className="flex flex-col gap-4 w-full h-full">
-            <NextClass />
+            <NextClass whenLoaded={handleComponentLoaded} />
+
             <div className="flex flex-col gap-4">
                 <Button
                     asChild
