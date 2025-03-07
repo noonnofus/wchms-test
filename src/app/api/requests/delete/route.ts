@@ -20,9 +20,12 @@ export async function DELETE(req: Request) {
         const body = await req.json();
 
         if (!body.requestId) {
-            return new Response(JSON.stringify({ error: "Missing courseId" }), {
-                status: 400,
-            });
+            return new Response(
+                JSON.stringify({ error: "Missing requestId" }),
+                {
+                    status: 400,
+                }
+            );
         }
 
         const request = await db
@@ -30,9 +33,12 @@ export async function DELETE(req: Request) {
             .from(CourseJoinRequests)
             .where(eq(CourseJoinRequests.id, body.requestId));
         if (!request || request.length === 0) {
-            return new Response(JSON.stringify({ error: "Course not found" }), {
-                status: 404,
-            });
+            return new Response(
+                JSON.stringify({ error: "Request not found" }),
+                {
+                    status: 404,
+                }
+            );
         }
         await db
             .delete(CourseJoinRequests)

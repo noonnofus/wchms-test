@@ -1,6 +1,6 @@
 "use client";
 import RequestCard from "@/components/courses/request-card";
-import { getAllCourseJoinRequests } from "@/db/queries/courses";
+import { getAllCourseJoinRequests, getCourseById } from "@/db/queries/courses";
 import { CourseJoinRequest } from "@/db/schema/courseJoinRequests";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
@@ -34,6 +34,48 @@ export default function Requests() {
         };
         fetchJoinRequests();
     }, [id, refreshRequests]);
+
+    const handleApproveRequest = async (
+        request: CourseJoinRequest,
+        participant: Participant
+    ) => {
+        if (!id) return;
+        try {
+            // Add participant to course
+            const response = await fetch("/api/courses/participants/add", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    userId: participant.id,
+                    courseId: id,
+                }),
+            });
+
+            if (!response.ok)
+                throw new Error("Failed to add participant to course");
+
+            const data = await response.json();
+
+            // Delete course join request
+            const deleteResponse = await fetch("/api/requests/delete", {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ requestId: request.id }),
+            });
+
+            const deleteData = await deleteResponse.json();
+            if (!deleteResponse.ok)
+                throw new Error(deleteData.error || "Failed to delete request");
+
+            setRefreshRequests((prev) => !prev);
+        } catch (error) {
+            console.error("Error approving request", error);
+        }
+    };
 
     const handleRejectRequest = (
         requestId: number,
@@ -85,6 +127,7 @@ export default function Requests() {
                               key={request.id}
                               request={request}
                               onReject={handleRejectRequest}
+                              onApprove={handleApproveRequest}
                           />
                       ))
                     : null}

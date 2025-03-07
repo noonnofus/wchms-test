@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import {
     deleteCourseJoinRequest,
     getAllCourseJoinRequests,
+    getCourseById,
 } from "@/db/queries/courses";
 import { Participant } from "@/db/schema/participants";
 import { getParticipantById } from "@/db/queries/participants";
@@ -51,7 +52,7 @@ export default function RequestOverviewCard({
         };
 
         fetchParticipants();
-    }, [requests]);
+    }, [courseJoinRequests]);
 
     useEffect(() => {
         const fetchJoinRequests = async () => {
@@ -64,9 +65,48 @@ export default function RequestOverviewCard({
             }
         };
         fetchJoinRequests();
-    }, [id]);
+    }, [id, requests]);
 
-    const handleAcceptRequest = () => {};
+    const handleApproveRequest = async (
+        request: CourseJoinRequest,
+        participant: Participant
+    ) => {
+        if (!id) return;
+        try {
+            // Add participant to course
+            const response = await fetch("/api/courses/participants/add", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    userId: participant.id,
+                    courseId: id,
+                }),
+            });
+
+            if (!response.ok)
+                throw new Error("Failed to add participant to course");
+
+            const data = await response.json();
+
+            // Delete course join request
+            await fetch("/api/requests/delete", {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ requestId: request.id }),
+            });
+
+            const updatedRequests = await getAllCourseJoinRequests(
+                parseInt(id as string)
+            );
+            setCourseJoinRequests(updatedRequests);
+        } catch (error) {
+            console.error("Error approving request", error);
+        }
+    };
 
     const handleRejectRequestClick = (request: CourseJoinRequest) => {
         setShowDeletePopup(true);
@@ -142,8 +182,11 @@ export default function RequestOverviewCard({
                                         {id && (
                                             <div className="w-full h-full flex gap-2 items-center justify-center">
                                                 <Button
-                                                    onClick={
-                                                        handleAcceptRequest
+                                                    onClick={() =>
+                                                        handleApproveRequest(
+                                                            request,
+                                                            participant
+                                                        )
                                                     }
                                                     className="w-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold text-sm md:text-base"
                                                 >

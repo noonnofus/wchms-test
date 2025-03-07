@@ -9,9 +9,11 @@ import { Participant } from "@/db/schema/participants";
 export default function RequestCard({
     request,
     onReject,
+    onApprove,
 }: {
     request: CourseJoinRequest;
     onReject: (requestId: number, participant: Participant) => void;
+    onApprove: (request: CourseJoinRequest, participant: Participant) => void;
 }) {
     const [participant, setParticipant] = useState<Participant | null>(null);
 
@@ -30,8 +32,6 @@ export default function RequestCard({
         fetchParticipant();
     }, [request?.participantId]);
 
-    const handleApproveRequest = () => {};
-
     return (
         <Card className="w-full flex flex-row">
             <CardHeader className="w-full py-4 md:py-6">
@@ -44,7 +44,12 @@ export default function RequestCard({
             <CardContent className="overflow-x-auto w-full">
                 <div className="flex flex-row gap-2 items-center justify-between">
                     <Button
-                        onClick={handleApproveRequest}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            if (!request) return;
+                            if (!participant) return;
+                            onApprove(request, participant);
+                        }}
                         className="w-full h-full font-semibold md:text-xl py-2 md:py-4 rounded-full bg-primary-green text-white"
                     >
                         Approve
@@ -52,6 +57,8 @@ export default function RequestCard({
                     <Button
                         onClick={(e) => {
                             e.stopPropagation();
+                            if (!request) return;
+                            if (!participant) return;
                             onReject(request.id, participant);
                         }}
                         className="w-full h-full font-semibold md:text-xl py-2 md:py-4 rounded-full bg-destructive-red border border-destructive-hover text-destructive-text hover:bg-destructive-hover hover:text-destructive-text"
