@@ -11,8 +11,8 @@ export default function SessionCard({
     isAdmin,
 }: {
     session: Session;
-    handleDeleteButtonClick: (sessionId: number) => void;
-    handleEditButtonClick: (session: Session) => void;
+    handleDeleteButtonClick?: (sessionId: number) => void;
+    handleEditButtonClick?: (session: Session) => void;
     isAdmin?: boolean;
 }) {
     const formatDate = (dateString: string) => {
@@ -56,19 +56,25 @@ export default function SessionCard({
                         </span>
                     </div>
                 </div>
-                {isAdmin && (
-                    <div className="flex flex-row gap-2">
-                        <button onClick={() => handleEditButtonClick(session)}>
-                            <EditIcon />
-                        </button>
-                        <button
-                            onClick={() => handleDeleteButtonClick(session.id)}
-                            className="text-red-500 hover:text-red-700"
-                        >
-                            <DeleteIcon />
-                        </button>
-                    </div>
-                )}
+                {isAdmin &&
+                    handleDeleteButtonClick &&
+                    handleEditButtonClick && (
+                        <div className="flex flex-row gap-2">
+                            <button
+                                onClick={() => handleEditButtonClick(session)}
+                            >
+                                <EditIcon />
+                            </button>
+                            <button
+                                onClick={() =>
+                                    handleDeleteButtonClick(session.id)
+                                }
+                                className="text-red-500 hover:text-red-700"
+                            >
+                                <DeleteIcon />
+                            </button>
+                        </div>
+                    )}
             </Card>
         </div>
     );

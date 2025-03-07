@@ -3,6 +3,7 @@ import { uploadMedia } from "./mediaUpload";
 import { Participant, participants } from "./participants";
 import { rooms } from "./room";
 import { CourseMaterialsWithFile } from "./courseMaterials";
+import { CourseJoinRequest } from "./courseJoinRequests";
 
 export const Courses = mysqlTable("courses", {
     id: int("id").primaryKey().autoincrement(),
@@ -38,4 +39,5 @@ export interface CourseFull extends Course {
     imageUrl?: string | null;
     materials?: CourseMaterialsWithFile[] | null;
     participants?: Participant[] | null;
+    courseJoinRequests?: CourseJoinRequest[] | null;
 }

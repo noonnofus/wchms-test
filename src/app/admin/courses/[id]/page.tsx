@@ -9,7 +9,7 @@ import CloseSwipe from "@/components/icons/close-swipe";
 import MaterialCard from "@/components/shared/material-card";
 import TabsMenu from "@/components/shared/tabs-menu";
 import { Button } from "@/components/ui/button";
-import { getCourseById } from "@/db/queries/courses";
+import { getAllCourseJoinRequests, getCourseById } from "@/db/queries/courses";
 import { Course, CourseFull } from "@/db/schema/course";
 import { CourseMaterialsWithFile } from "@/db/schema/courseMaterials";
 import { useParams, useRouter } from "next/navigation";
@@ -18,6 +18,8 @@ import { useSwipeable } from "react-swipeable";
 import DeleteConfirmation from "@/components/shared/delete-confirmation";
 import { type CourseMaterials } from "@/db/schema/courseMaterials";
 import AddSession from "@/components/sessions/add-session";
+import { CourseJoinRequest } from "@/db/schema/courseJoinRequests";
+import RequestList from "@/components/courses/request-list";
 
 export default function AdminCourses() {
     const { id } = useParams();
@@ -40,6 +42,7 @@ export default function AdminCourses() {
     const [refreshCourseMaterials, setRefreshCourseMaterials] = useState(false);
     const [courseToDelete, setCourseToDelete] = useState<Course | null>(null);
     const [showAddSessionPopup, setShowAddSessionPopup] = useState(false);
+    const [requests, setRequests] = useState<CourseJoinRequest[] | null>(null);
 
     const swipeHandlers = useSwipeable({
         onSwipedDown: () => {
@@ -81,6 +84,24 @@ export default function AdminCourses() {
             }
         }
     }, []);
+
+    useEffect(() => {
+        if (!id) return;
+        const fetchJoinRequests = async () => {
+            try {
+                const requests = await getAllCourseJoinRequests(
+                    parseInt(id as string)
+                );
+                if (requests) {
+                    setRequests(requests);
+                }
+            } catch (error) {
+                console.error("Error fetching join requests", error);
+                setRequests(null);
+            }
+        };
+        fetchJoinRequests();
+    }, [id]);
 
     if (!selectedCourse) {
         return <div>No course found</div>;
@@ -185,7 +206,7 @@ export default function AdminCourses() {
                                 <p>Loading Courses...</p>
                             </div>
                         ) : (
-                            <div className="flex flex-col gap-4">
+                            <div className="flex flex-col gap-6 md:gap-8">
                                 <CourseDetailsCard
                                     course={selectedCourse}
                                     variant="admin"
@@ -202,6 +223,9 @@ export default function AdminCourses() {
                                 >
                                     All Sessions
                                 </Button>
+                                {requests ? (
+                                    <RequestList requests={requests} />
+                                ) : null}
                                 <ParticipantList
                                     participants={
                                         selectedCourse.participants || []

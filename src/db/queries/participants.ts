@@ -1,9 +1,11 @@
+"use server";
 import db from "@/db";
 import { eq, sql } from "drizzle-orm";
 import { CourseParticipant, Courses } from "../schema/course";
 import { participants } from "../schema/participants";
 
 export async function getAllParticipants(withCourses = false) {
+    "use server";
     try {
         if (withCourses) {
             const allParticipants = await db
@@ -32,13 +34,20 @@ export async function getAllParticipants(withCourses = false) {
     }
 }
 
-export async function getParticipantById(id: string) {
-    const participant = await db
-        .select()
-        .from(participants)
-        .where(eq(participants.id, Number(id)));
+export async function getParticipantById(id: number) {
+    "use server";
+    try {
+        const result = await db
+            .select()
+            .from(participants)
+            .where(eq(participants.id, Number(id)));
 
-    return participant;
+        if (result.length === 0) return null;
+        return result[0];
+    } catch (error) {
+        console.error("Error fetching participant", error);
+        return null;
+    }
 }
 
 export async function addParticipant(
@@ -48,6 +57,7 @@ export async function addParticipant(
     gender: "Male" | "Female" | "Other",
     dateOfBirth: Date
 ) {
+    "use server";
     try {
         const existingUser = await db
             .select()
@@ -75,6 +85,7 @@ export async function addParticipant(
 }
 
 export async function deleteParticipant(participantId: number) {
+    "use server";
     try {
         const result = await db
             .delete(participants)

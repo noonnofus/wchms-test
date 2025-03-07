@@ -398,3 +398,18 @@ export async function checkCourseJoinRequestExists(
         throw error;
     }
 }
+
+export async function getAllCourseJoinRequests(courseId: number) {
+    "use server";
+    try {
+        const requests = await db
+            .select()
+            .from(CourseJoinRequests)
+            .where(eq(CourseJoinRequests.courseId, courseId));
+
+        return requests;
+    } catch (error) {
+        console.error("Error fetching course join requests", error);
+        throw error;
+    }
+}

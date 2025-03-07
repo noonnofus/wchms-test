@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "9ec0a6be-32e7-4987-9fa5-93a8d79d3e06",
+  "id": "f7b20647-9ae7-430e-9bde-1bc73b38c3e2",
   "prevId": "0b856ab1-3f07-4981-ae96-1c8461b25659",
   "tables": {
     "announcements": {
@@ -1477,8 +1477,8 @@
           "notNull": true,
           "autoincrement": false
         },
-        "en": {
-          "name": "en",
+        "end": {
+          "name": "end",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": true,
