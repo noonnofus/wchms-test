@@ -2,22 +2,17 @@ import { Card } from "@/components/ui/card";
 import { Calendar, Trash2 } from "lucide-react";
 import { useState } from "react";
 import DeleteConfirmation from "../shared/delete-confirmation";
-
-interface SessionCardProps {
-    date: string;
-    startTime: string;
-    endTime: string;
-    onDelete: () => void;
-    isAdmin?: boolean;
-}
+import { Session } from "@/db/schema/session";
 
 export default function SessionCard({
-    date,
-    startTime,
-    endTime,
+    session,
     onDelete,
     isAdmin,
-}: SessionCardProps) {
+}: {
+    session: Session;
+    onDelete?: () => void;
+    isAdmin?: boolean;
+}) {
     const [showConfirmation, setShowConfirmation] = useState(false);
 
     const formatDate = (dateString: string) => {
@@ -38,13 +33,13 @@ export default function SessionCard({
         return new Date(timeString).toLocaleTimeString("en-US", options);
     };
 
-    const formattedDate = formatDate(date);
-    const formattedStartTime = formatTime(startTime);
-    const formattedEndTime = formatTime(endTime);
+    const formattedDate = formatDate(session.date.toISOString());
+    const formattedStartTime = formatTime(session.startTime.toISOString());
+    const formattedEndTime = formatTime(session.endTime.toISOString());
     const currentDateTime = new Date().toISOString();
 
     const handleDelete = () => {
-        onDelete();
+        onDelete?.();
         setShowConfirmation(false);
     };
 
@@ -75,7 +70,9 @@ export default function SessionCard({
             {!showConfirmation && (
                 <Card
                     className={`flex flex-row justify-between items-center gap-4 p-4 shadow-lg rounded-lg ${
-                        currentDateTime > endTime ? "bg-gray-200" : "bg-white"
+                        currentDateTime > session.endTime.toISOString()
+                            ? "bg-gray-200"
+                            : "bg-white"
                     }`}
                 >
                     <div className="flex items-center gap-2 text-gray-700">
