@@ -65,7 +65,7 @@ export default function RequestOverviewCard({
                 <CardHeader className="w-full py-4 md:py-6">
                     <div className="flex justify-between items-center">
                         <CardTitle className="text-left text-2xl md:text-[32px]">
-                            Course Enrollment Requests
+                            Join Requests
                         </CardTitle>
 
                         <Link href={`/admin/courses/${id}/requests`}>
