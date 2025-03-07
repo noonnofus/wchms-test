@@ -26,33 +26,34 @@ export default function MaterialCard({
                 </CardHeader>
                 <CardContent className="text-left w-full flex flex-col gap-4">
                     {material.description && <p>{material.description}</p>}
-                    {material.uploadId && material.file && (
-                        <Button
-                            asChild
-                            className="bg-primary-green hover:bg-[#045B47] rounded-full text-white w-full font-semibold text-base min-h-[45px]"
-                        >
-                            <a
-                                href={material.file.fileName}
-                                download={material.file.fileName}
-                            >
-                                Download File (.
-                                {material.file?.fileName.split(".").pop()})
-                            </a>
-                        </Button>
-                    )}
-                    {material.url && !/^https?:\/\//.test(material.url) && (
+                    {material.uploadId && material.file && material.url ? (
                         <Button
                             asChild
                             className="bg-primary-green hover:bg-[#045B47] rounded-full text-white w-full font-semibold text-base min-h-[45px]"
                         >
                             <a
                                 href={material.url}
-                                download={material.url}
+                                download={material.file.fileName} // Automatically downloads with the file name
+                                rel="noopener noreferrer"
                             >
-                                Download File
+                                Download File (.
+                                {material.file?.fileName.split(".").pop()})
                             </a>
                         </Button>
-                    )}
+                    ) : material.url ? (
+                        <Button
+                            asChild
+                            className="bg-primary-green hover:bg-[#045B47] rounded-full text-white w-full font-semibold text-base min-h-[45px]"
+                        >
+                            <a
+                                href={material.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                View
+                            </a>
+                        </Button>
+                    ) : null}
                 </CardContent>
                 <div className="absolute right-[3%] top-[8%] flex gap-2">
                     {handleEditButtonClick && (

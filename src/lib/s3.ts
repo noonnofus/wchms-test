@@ -20,7 +20,7 @@ const s3 = new S3Client({
 });
 
 //File Key is used for updating existing resources
-export const uploadToS3 = async (file: File, fileKey = "") => {
+export const uploadToS3 = async (file: File | Blob, fileKey = "") => {
     try {
         const fileName = fileKey || randomImageName();
         const command = new PutObjectCommand({
@@ -55,10 +55,18 @@ export const deleteFromS3 = async (fileKey: string) => {
     }
 };
 
-export const getSignedUrlFromFileKey = async (fileKey: string) => {
+export const getSignedUrlFromFileKey = async (
+    fileKey: string,
+    asAttachment = false,
+    fileName = ""
+) => {
+    let attachmentConfig = {
+        ResponseContentDisposition: `attachment; fileName=${fileName}`,
+    };
     const getObjectParams = {
         Bucket: process.env.AWS_BUCKET_NAME,
         Key: fileKey,
+        ...(asAttachment ? attachmentConfig : {}),
     };
     const command = new GetObjectCommand(getObjectParams);
     const url = await getSignedUrl(s3, command, { expiresIn: 3600 }); //valid for an hour

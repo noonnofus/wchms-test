@@ -16,9 +16,7 @@ export const Courses = mysqlTable("courses", {
     uploadId: int("upload_id").references(() => uploadMedia.id, {
         onDelete: "set null",
     }),
-    roomId: int("room_id")
-        .references(() => rooms.id)
-        .notNull(),
+    roomId: int("room_id").references(() => rooms.id),
 });
 
 export const CourseParticipant = mysqlTable("course_participants", {

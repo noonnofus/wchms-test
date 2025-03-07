@@ -7,13 +7,18 @@ import {
 } from "@/db/schema/course";
 import { desc, eq, and, sql } from "drizzle-orm";
 import { uploadMedia } from "../schema/mediaUpload";
-import { courseMaterials } from "../schema/courseMaterials";
+import {
+    courseMaterials,
+    CourseMaterialsWithFile,
+} from "../schema/courseMaterials";
 import { participants } from "@/db/schema/participants";
 import { type Participant } from "../schema/participants";
 import { CourseJoinRequests } from "../schema/courseJoinRequests";
 import { getServerSession } from "next-auth";
 import { authConfig } from "@/auth";
 import { getSignedUrlFromFileKey } from "@/lib/s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { CourseWithImage } from "@/app/admin/courses/page";
 
 export interface courseList {
     id: number;
@@ -220,9 +225,30 @@ export async function getCourseById(
                 .where(eq(courseMaterials.courseId, courseId))
                 .orderBy(desc(courseMaterials.createdAt));
 
+            let materialsWithUrl: CourseMaterialsWithFile[] | undefined;
+
+            if (materials) {
+                materialsWithUrl = await Promise.all(
+                    materials.map(async (material) =>
+                        material.url
+                            ? material
+                            : {
+                                  ...material,
+                                  url: material.file?.fileKey
+                                      ? await getSignedUrlFromFileKey(
+                                            material.file.fileKey,
+                                            true,
+                                            material.file.fileName
+                                        )
+                                      : null,
+                              }
+                    )
+                );
+            }
+
             course = {
                 ...course,
-                materials,
+                materials: materialsWithUrl,
             };
         }
 

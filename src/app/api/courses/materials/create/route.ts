@@ -6,6 +6,7 @@ import {
     MaterialType,
 } from "@/db/schema/courseMaterials";
 import { uploadMedia } from "@/db/schema/mediaUpload";
+import { getSignedUrlFromFileKey } from "@/lib/s3";
 import { validateAdminOrStaff } from "@/lib/validation";
 import { eq } from "drizzle-orm";
 import { getServerSession } from "next-auth";
@@ -33,8 +34,7 @@ export async function POST(req: Request) {
             courseId,
             url,
         } = body;
-
-        console.log(url);
+        console.log(body);
 
         if (
             !title ||
@@ -50,17 +50,19 @@ export async function POST(req: Request) {
             );
         }
 
+        const insertData = {
+            title,
+            type: exerciseType,
+            difficulty,
+            description: description ? description : null,
+            uploadId,
+            courseId,
+            url: url ? url : null,
+        };
+
         const newMaterial = await db
             .insert(courseMaterials)
-            .values({
-                title,
-                type: exerciseType,
-                difficulty,
-                description,
-                uploadId,
-                courseId,
-                url,
-            })
+            .values(insertData)
             .$returningId()
             .then((res) => res[0]);
 
@@ -78,7 +80,7 @@ export async function POST(req: Request) {
                     fileName: uploadMedia.fileName,
                     fileType: uploadMedia.fileType,
                     fileSize: uploadMedia.fileSize,
-                    fileData: uploadMedia.fileData,
+                    fileKey: uploadMedia.fileKey,
                 },
                 url: courseMaterials.url,
             })
@@ -86,7 +88,15 @@ export async function POST(req: Request) {
             .leftJoin(uploadMedia, eq(courseMaterials.uploadId, uploadMedia.id))
             .where(eq(courseMaterials.id, newMaterial.id))
             .then((res) => res[0]);
-
+        if (!insertedMaterial.url) {
+            if (insertedMaterial.file) {
+                insertedMaterial.url = await getSignedUrlFromFileKey(
+                    insertedMaterial.file.fileKey,
+                    true,
+                    insertedMaterial.file.fileName
+                );
+            }
+        }
         return new Response(
             JSON.stringify({
                 message: "Course material created",

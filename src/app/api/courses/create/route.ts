@@ -25,7 +25,6 @@ export async function POST(req: Request) {
         }
 
         const formData = await req.formData();
-        console.log(formData);
         const courseName = formData.get("courseName") as string;
         const courseRoom = formData.get("courseRoom") as string;
         const courseDescription = formData.get("courseDescription") as string;

@@ -82,7 +82,7 @@ export async function PUT(req: Request) {
                     fileName: uploadMedia.fileName,
                     fileType: uploadMedia.fileType,
                     fileSize: uploadMedia.fileSize,
-                    fileData: uploadMedia.fileData,
+                    fileKey: uploadMedia.fileKey,
                 },
             })
             .from(courseMaterials)
