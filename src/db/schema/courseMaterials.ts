@@ -45,6 +45,7 @@ export const courseMaterials = mysqlTable("course_materials", {
         .notNull()
         .references(() => Courses.id, { onDelete: "cascade" }),
     createdAt: timestamp("createdAt").defaultNow(),
+    url: varchar("url", { length: 2083 }),
 });
 
 export type CourseMaterials = typeof courseMaterials.$inferSelect;

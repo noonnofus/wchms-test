@@ -7,7 +7,6 @@ import { getAllCourses } from "@/db/queries/courses";
 import { type Course } from "@/db/schema/course";
 import { useEffect, useState } from "react";
 import { useSwipeable } from "react-swipeable";
-import { useRouter } from "next/navigation";
 import DeleteConfirmation from "@/components/shared/delete-confirmation";
 
 export type CourseWithImage = Course & {
@@ -16,7 +15,6 @@ export type CourseWithImage = Course & {
 };
 
 export default function Courses() {
-    const router = useRouter();
     const [showAddPopup, setShowAddPopup] = useState(false);
     const [showEditPopup, setShowEditPopup] = useState(false);
     const [editCourseId, setEditCourseId] = useState(-1);

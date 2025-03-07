@@ -1,6 +1,6 @@
 "use server";
 import db from "@/db";
-import { eq } from "drizzle-orm";
+import { eq, desc, and, gt } from "drizzle-orm";
 import { Sessions } from "../schema/session";
 
 export async function addSession(
@@ -53,7 +53,8 @@ export async function getAllSessionsByCourseId(courseId: number) {
         const sessions = await db
             .select()
             .from(Sessions)
-            .where(eq(Sessions.courseId, courseId));
+            .where(eq(Sessions.courseId, courseId))
+            .orderBy(desc(Sessions.endTime));
         return sessions;
     } catch (error) {
         console.error("Error fetching sessions:", error);
@@ -61,12 +62,41 @@ export async function getAllSessionsByCourseId(courseId: number) {
     }
 }
 
-export async function deleteSession(sessionId: number) {
+export async function getAllSessionPreviewsByCourseId(courseId: number) {
     try {
-        await db.delete(Sessions).where(eq(Sessions.id, sessionId));
-        return { success: true };
+        const sessions = await db
+            .select({
+                id: Sessions.id,
+                date: Sessions.date,
+                startTime: Sessions.startTime,
+                endTime: Sessions.endTime,
+            })
+            .from(Sessions)
+            .where(eq(Sessions.courseId, courseId))
+            .orderBy(desc(Sessions.endTime));
+        return sessions;
     } catch (error) {
-        console.error("Error deleting session:", error);
-        throw new Error("Failed to delete session");
+        console.error("Error fetching sessions:", error);
+        throw new Error("Error fetching sessions");
+    }
+}
+
+export async function getFutureSessions(courseId: number) {
+    const currentDate = new Date();
+    try {
+        const sessions = await db
+            .select()
+            .from(Sessions)
+            .where(
+                and(
+                    eq(Sessions.courseId, courseId),
+                    gt(Sessions.endTime, currentDate)
+                )
+            )
+            .orderBy(desc(Sessions.endTime));
+        return sessions;
+    } catch (error) {
+        console.error("Error fetching future sessions: ", error);
+        throw new Error("Error fetching future sessions");
     }
 }
