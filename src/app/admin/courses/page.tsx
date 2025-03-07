@@ -43,27 +43,19 @@ export default function Courses() {
     const [isLoading, setIsLoading] = useState(true);
     const [courses, setCourses] = useState<CourseWithImage[]>([]);
 
+    const fetchCourses = async () => {
+        try {
+            const allCourses = (await getAllCourses(true)) as CourseWithImage[];
+            console.log(allCourses);
+            setCourses(allCourses);
+        } catch (error) {
+            console.error("Error fetching courses", error);
+            setCourses([]);
+        } finally {
+            setIsLoading(false);
+        }
+    };
     useEffect(() => {
-        const fetchCourses = async () => {
-            try {
-                const allCourses = await getAllCourses();
-                const coursesWithImages = await Promise.all(
-                    allCourses.map(async (course) => {
-                        const imageUrl =
-                            course.fileKey !== null
-                                ? await getSignedUrlFromFileKey(course.fileKey)
-                                : null;
-                        return { ...course, imageUrl };
-                    })
-                );
-                setCourses(coursesWithImages);
-            } catch (error) {
-                console.error("Error fetching courses", error);
-                setCourses([]);
-            } finally {
-                setIsLoading(false);
-            }
-        };
         fetchCourses();
     }, []);
 

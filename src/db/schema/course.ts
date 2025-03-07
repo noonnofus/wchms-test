@@ -16,7 +16,9 @@ export const Courses = mysqlTable("courses", {
     uploadId: int("upload_id").references(() => uploadMedia.id, {
         onDelete: "set null",
     }),
-    roomId: int("room_id").references(() => rooms.id),
+    roomId: int("room_id")
+        .references(() => rooms.id)
+        .notNull(),
 });
 
 export const CourseParticipant = mysqlTable("course_participants", {
@@ -35,6 +37,7 @@ export type Course = typeof Courses.$inferSelect;
 
 export interface CourseFull extends Course {
     fileKey: string | null;
+    imageUrl?: string | null;
     materials?: CourseMaterialsWithFile[] | null;
     participants?: Participant[] | null;
 }

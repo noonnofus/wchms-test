@@ -45,6 +45,7 @@ export default function AdminCourses() {
             try {
                 const course = await getCourseById(
                     parseInt(id as string),
+                    false,
                     true,
                     true
                 );

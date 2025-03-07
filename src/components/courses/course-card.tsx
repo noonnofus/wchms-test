@@ -53,6 +53,7 @@ export default function CourseCard(
             ? `/admin/courses/${props.course.id}`
             : `/courses/${props.course.id}`;
 
+    //TODO: this needs to be changed, it makes a POST request per course card for participants
     const fetchData = async () => {
         if (!participantId) return;
         try {
@@ -67,8 +68,8 @@ export default function CourseCard(
     };
 
     useEffect(() => {
-        fetchData();
-    }, [participantId, props.course.id]);
+        props.variant === "admin" ? null : fetchData();
+    }, [participantId]);
 
     const handleEnrollClick = async () => {
         if (!participantId) return;

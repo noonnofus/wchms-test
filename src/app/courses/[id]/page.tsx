@@ -23,6 +23,7 @@ export default function Home() {
             try {
                 const course = await getCourseById(
                     parseInt(id as string),
+                    false,
                     true,
                     true
                 );

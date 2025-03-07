@@ -1,10 +1,13 @@
 import db from "@/db";
 import { eq } from "drizzle-orm";
-import { Courses } from "@/db/schema/course";
+import { type Course, Courses } from "@/db/schema/course";
 import { rooms } from "@/db/schema/room";
 import { getServerSession } from "next-auth";
 import { authConfig } from "@/auth";
 import { validateAdminOrStaff } from "@/lib/validation";
+import { uploadToS3 } from "@/lib/s3";
+import { uploadMedia } from "@/db/schema/mediaUpload";
+import { validateImage } from "@/lib/fileUploads";
 
 export async function PUT(req: Request) {
     try {
@@ -19,13 +22,27 @@ export async function PUT(req: Request) {
                 { status: 401 }
             );
         }
-        const body = await req.json();
+        const formData = await req.formData();
+        const courseId = parseInt(formData.get("courseId") as string);
+        const courseName = formData.get("courseName") as string;
+        const courseRoom = formData.get("courseRoom") as string;
+        const courseDescription = formData.get("courseDescription") as string;
+        const courseStartDate = new Date(
+            formData.get("courseStartDate") as string
+        );
+        const courseEndDate = new Date(formData.get("courseEndDate") as string);
+        const courseLanguage = formData.get("courseLanguage") as string;
+        const courseStatus = formData.get("courseStatus") as string;
+        const courseType = formData.get("courseType") as string;
+
+        const courseImage = formData.get("courseImage") as File | null;
+        const fileKey = formData.get("fileKey") as string;
         if (
-            !body.courseId ||
-            !body.courseName ||
-            !body.courseDescription ||
-            !body.courseStartDate ||
-            !body.courseEndDate
+            !courseId ||
+            !courseName ||
+            !courseDescription ||
+            !courseStartDate ||
+            !courseEndDate
         ) {
             return new Response(
                 JSON.stringify({ error: "Missing required fields" }),
@@ -33,10 +50,7 @@ export async function PUT(req: Request) {
             );
         }
 
-        if (
-            body.courseName.length > 255 ||
-            body.courseDescription.length > 255
-        ) {
+        if (courseName.length > 255 || courseDescription.length > 255) {
             return new Response(
                 JSON.stringify({
                     error: "Course Name/Description character limit exceeded",
@@ -46,8 +60,8 @@ export async function PUT(req: Request) {
         }
 
         // Check for valid start and end dates
-        const startDate = new Date(body.courseStartDate);
-        const endDate = new Date(body.courseEndDate);
+        const startDate = new Date(courseStartDate);
+        const endDate = new Date(courseEndDate);
         if (endDate <= startDate) {
             return new Response(
                 JSON.stringify({
@@ -66,7 +80,7 @@ export async function PUT(req: Request) {
         }
 
         // Validate Room Id
-        const roomId = parseInt(body.courseRoom);
+        const roomId = parseInt(courseRoom);
         if (!roomId || roomId === -1) {
             return new Response(
                 JSON.stringify({
@@ -91,7 +105,7 @@ export async function PUT(req: Request) {
         const course = await db
             .select()
             .from(Courses)
-            .where(eq(Courses.id, body.courseId));
+            .where(eq(Courses.id, courseId));
         if (!course || course.length === 0) {
             return new Response(
                 JSON.stringify({
@@ -100,27 +114,63 @@ export async function PUT(req: Request) {
                 { status: 404 }
             );
         }
-        // TODO: Handle image upload (if required)
-
+        let uploadId: number | null = null;
+        if (courseImage) {
+            const validationError = validateImage(courseImage);
+            if (validationError) {
+                return new Response(
+                    JSON.stringify({
+                        validationError,
+                    }),
+                    { status: 400 }
+                );
+            }
+            const { success, fileName } = await uploadToS3(
+                courseImage,
+                fileKey
+            );
+            if (!success) {
+                throw new Error("Failed to upload to S3.");
+            }
+            if (fileName && !fileKey) {
+                uploadId = await db
+                    .insert(uploadMedia)
+                    .values({
+                        fileName: courseImage.name,
+                        fileType: courseImage.type,
+                        fileSize: courseImage.size,
+                        fileKey: fileName,
+                        mediaOrigin: "course",
+                        ownerId: parseInt(session!.user.id),
+                    })
+                    .$returningId()
+                    .then((res) => res[0].id);
+            }
+        }
+        const updatedData: Omit<Course, "id"> = {
+            title: courseName,
+            description: courseDescription,
+            start: startDate,
+            end: endDate,
+            lang: courseLanguage,
+            status: courseStatus,
+            kind: courseType,
+            uploadId,
+            roomId,
+        };
+        if (uploadId) {
+            updatedData.uploadId = uploadId;
+        }
         // Update Course
         await db
             .update(Courses)
-            .set({
-                title: body.courseName,
-                description: body.courseDescription,
-                start: startDate,
-                end: endDate,
-                lang: body.courseLanguage,
-                status: body.courseStatus,
-                kind: body.courseType,
-                roomId,
-            })
-            .where(eq(Courses.id, body.courseId));
+            .set(updatedData)
+            .where(eq(Courses.id, courseId));
 
         const updatedCourse = await db
             .select()
             .from(Courses)
-            .where(eq(Courses.id, body.courseId));
+            .where(eq(Courses.id, courseId));
 
         // Respond with the updated course id
         return new Response(JSON.stringify({ courseId: updatedCourse[0].id }), {

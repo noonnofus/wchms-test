@@ -18,9 +18,10 @@ const s3 = new S3Client({
     },
 });
 
-export const uploadToS3 = async (file: File) => {
+//File Key is used for updating existing resources
+export const uploadToS3 = async (file: File, fileKey = "") => {
     try {
-        const fileName = randomImageName();
+        const fileName = fileKey || randomImageName();
         const command = new PutObjectCommand({
             Bucket: process.env.AWS_BUCKET_NAME,
             Key: fileName,
@@ -41,7 +42,6 @@ export const uploadToS3 = async (file: File) => {
 };
 
 export const getSignedUrlFromFileKey = async (fileKey: string) => {
-    console.log(process.env.AWS_BUCKET_REGION);
     const getObjectParams = {
         Bucket: process.env.AWS_BUCKET_NAME,
         Key: fileKey,

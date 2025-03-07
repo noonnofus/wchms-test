@@ -16,6 +16,7 @@ import { DatePicker } from "../ui/date-picker";
 import ImageUpload from "../ui/image-upload";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
+import { getSignedUrlFromFileKey } from "@/lib/s3";
 
 const defaultRoomName = "Online via Zoom"; //name of room for default selection
 export const [languages, types, statuses] = [
@@ -36,58 +37,6 @@ export default function AddCourse(props: props) {
     const [isLoading, setIsLoading] = useState(true);
     const [isUploading, setIsUploading] = useState(false);
     const [rooms, setRooms] = useState<Room[]>([]);
-    useEffect(() => {
-        const fetchRooms = async () => {
-            try {
-                const availableRooms = await getAvailableRooms();
-                setRooms(availableRooms);
-                setFormData({
-                    ...formData,
-                    courseRoom:
-                        availableRooms
-                            .find((room) => room.name === defaultRoomName)
-                            ?.id.toString() || "-1",
-                });
-            } catch (error) {
-                console.error("Error fetching rooms:", error);
-                setRooms([]);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        fetchRooms();
-    }, []);
-
-    useEffect(() => {
-        if (props.courseId) {
-            const fetchCourse = async () => {
-                try {
-                    const course = await getCourseById(props.courseId!);
-                    if (course) {
-                        setFormData({
-                            ...formData,
-                            courseId: course.id,
-                            courseName: course.title,
-                            courseDescription: course.description || "",
-                            courseStartDate: new Date(course.start),
-                            courseEndDate: new Date(course.end!),
-                            courseRoom: course.roomId?.toString(),
-                            courseLanguage: course.lang,
-                            courseType: course.kind,
-                            courseStatus: course.status,
-                            uploadId: course.uploadId?.toString() || null,
-                        });
-                    }
-                } catch (error) {
-                    console.error("Error fetching course data:", error);
-                }
-            };
-
-            fetchCourse();
-        }
-    }, [props.courseId]);
-
     const [formData, setFormData] = useState({
         courseId: null as number | null,
         courseName: "",
@@ -101,6 +50,8 @@ export default function AddCourse(props: props) {
         courseStatus: "Available",
         courseParticipants: "",
         uploadId: null as string | null,
+        fileKey: null as string | null,
+        fileUrl: null as string | null,
     });
 
     const [errors, setErrors] = useState({
@@ -111,6 +62,56 @@ export default function AddCourse(props: props) {
         courseEndDate: "",
         courseParticipants: "",
     });
+    const fetchRooms = async () => {
+        try {
+            const availableRooms = await getAvailableRooms();
+            setRooms(availableRooms);
+            setFormData({
+                ...formData,
+                courseRoom:
+                    availableRooms
+                        .find((room) => room.name === defaultRoomName)
+                        ?.id.toString() || "-1",
+            });
+        } catch (error) {
+            console.error("Error fetching rooms:", error);
+            setRooms([]);
+        }
+    };
+    const fetchCourse = async () => {
+        try {
+            const course = await getCourseById(props.courseId!, true);
+            if (course) {
+                await setFormData({
+                    ...formData,
+                    courseId: course.id,
+                    courseName: course.title,
+                    courseDescription: course.description || "",
+                    courseStartDate: new Date(course.start),
+                    courseEndDate: new Date(course.end!),
+                    courseRoom: course.roomId?.toString(),
+                    courseLanguage: course.lang,
+                    courseType: course.kind,
+                    courseStatus: course.status,
+                    uploadId: course.uploadId?.toString() || null,
+                    fileKey: course.fileKey || null,
+                    fileUrl: course.imageUrl || null,
+                });
+            }
+        } catch (error) {
+            console.error("Error fetching course data:", error);
+        }
+    };
+
+    useEffect(() => {
+        try {
+            fetchRooms();
+            fetchCourse();
+        } catch (err) {
+        } finally {
+            setIsLoading(false);
+        }
+    }, []);
 
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -211,32 +212,20 @@ export default function AddCourse(props: props) {
 
         setIsUploading(true);
         try {
-            let updatedFormData = { ...formData };
-
-            // Only upload image if there's a new image to upload
-            if (formData.courseImage) {
-                const imageFormData = new FormData();
-                imageFormData.append("file", formData.courseImage);
-
-                const uploadRes = await fetch("/api/upload", {
-                    method: "POST",
-                    body: imageFormData,
-                });
-
-                if (!uploadRes.ok) {
-                    throw new Error("Failed to upload image");
+            const updatedFormData = new FormData();
+            Object.entries(formData).forEach(([key, value]) => {
+                if (value instanceof Date) {
+                    updatedFormData.append(key, value.toISOString());
+                } else if (value instanceof File) {
+                    updatedFormData.append(key, value);
+                } else if (value !== null && value !== undefined) {
+                    updatedFormData.append(key, value.toString());
                 }
-
-                const uploadData = await uploadRes.json();
-                updatedFormData.uploadId = uploadData.id;
-            }
+            });
 
             const res = await fetch("/api/courses/create", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(updatedFormData),
+                body: updatedFormData,
             });
 
             if (res.ok) {
@@ -271,37 +260,27 @@ export default function AddCourse(props: props) {
             return;
         }
 
-        let updatedFormData = { ...formData };
-
         if (formData.courseImage instanceof File) {
-            const imageFormData = new FormData();
-            imageFormData.append("file", formData.courseImage);
-            imageFormData.append("courseId", String(formData.courseId));
-
             try {
-                const uploadRes = await fetch("/api/updateImage", {
-                    method: "POST",
-                    body: imageFormData,
-                });
-
-                if (!uploadRes.ok) {
-                    throw new Error("Failed to upload image");
-                }
-
-                const uploadData = await uploadRes.json();
-                updatedFormData.uploadId = uploadData.id;
             } catch (error) {
                 console.error("Error uploading image:", error);
                 return;
             }
         }
+        const updatedFormData = new FormData();
+        Object.entries(formData).forEach(([key, value]) => {
+            if (value instanceof Date) {
+                updatedFormData.append(key, value.toISOString());
+            } else if (value instanceof File) {
+                updatedFormData.append(key, value);
+            } else if (value !== null && value !== undefined) {
+                updatedFormData.append(key, value.toString());
+            }
+        });
 
         const res = await fetch("/api/courses/update", {
             method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(updatedFormData),
+            body: updatedFormData,
         });
 
         if (res.ok) {
@@ -353,15 +332,13 @@ export default function AddCourse(props: props) {
                             {errors.courseImage}
                         </p>
                     )}
-                    <ImageUpload
-                        uploadId={
-                            formData.uploadId
-                                ? String(formData.uploadId)
-                                : undefined
-                        }
-                        onImageSelect={handleImageSelect}
-                        error={errors.courseImage}
-                    />
+                    {!isLoading && (
+                        <ImageUpload
+                            fileUrl={formData.fileUrl}
+                            onImageSelect={handleImageSelect}
+                            error={errors.courseImage}
+                        />
+                    )}
                 </div>
                 <div className="flex flex-col flex-1 gap-2">
                     <label htmlFor="courseDescription">

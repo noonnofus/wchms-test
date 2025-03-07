@@ -32,6 +32,7 @@ export default function ClassParticipants() {
                 const course = await getCourseById(
                     parseInt(id as string),
                     false,
+                    false,
                     true
                 );
                 if (course) {
