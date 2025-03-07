@@ -11,7 +11,6 @@ export default function Requests() {
         CourseJoinRequest[] | null
     >(null);
 
-    console.log(id);
     useEffect(() => {
         const fetchJoinRequests = async () => {
             try {

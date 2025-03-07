@@ -19,6 +19,7 @@ import DeleteConfirmation from "@/components/shared/delete-confirmation";
 import { type CourseMaterials } from "@/db/schema/courseMaterials";
 import AddSession from "@/components/sessions/add-session";
 import { CourseJoinRequest } from "@/db/schema/courseJoinRequests";
+import RequestList from "@/components/courses/request-list";
 
 export default function AdminCourses() {
     const { id } = useParams();
@@ -225,16 +226,9 @@ export default function AdminCourses() {
                                     >
                                         All Sessions
                                     </Button>
-                                    <Button
-                                        className="bg-primary-green text-white rounded-full w-full font-semibold text-base hover:bg-[#045B47]"
-                                        onClick={() =>
-                                            router.push(
-                                                `/admin/courses/${id}/requests`
-                                            )
-                                        }
-                                    >
-                                        View Course Enrollment Requests
-                                    </Button>
+                                    {requests ? (
+                                        <RequestList requests={requests} />
+                                    ) : null}
                                     <ParticipantList
                                         participants={
                                             selectedCourse.participants || []
