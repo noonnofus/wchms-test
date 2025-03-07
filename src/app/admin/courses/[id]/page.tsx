@@ -41,7 +41,7 @@ export default function AdminCourses() {
         useState<CourseMaterials | null>(null);
     const [refreshCourseMaterials, setRefreshCourseMaterials] = useState(false);
     const [courseToDelete, setCourseToDelete] = useState<Course | null>(null);
-    const [showAddSessionPopup, setShowAddSessionPopup] = useState(true);
+    const [showAddSessionPopup, setShowAddSessionPopup] = useState(false);
     const [requests, setRequests] = useState<CourseJoinRequest[] | null>(null);
 
     const swipeHandlers = useSwipeable({
@@ -259,7 +259,7 @@ export default function AdminCourses() {
                             </div>
                         )}
                         {showAddSessionPopup && (
-                            <div className="fixed inset-0 flex items-end md:items-center justify-center z-20">
+                            <div className="fixed inset-0 flex items-end md:items-center justify-center z-10 overflow-y-auto">
                                 <div
                                     className="absolute inset-0 bg-black opacity-50"
                                     onClick={handleClosePopup}
