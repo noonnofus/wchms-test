@@ -12,7 +12,7 @@ export const Sessions = mysqlTable("sessions", {
     }),
     date: timestamp("date").notNull(),
     startTime: timestamp("start").notNull(),
-    endTime: timestamp("en").notNull(),
+    endTime: timestamp("end").notNull(),
     // roomId: int("room_id").references(() => rooms.id, { onDelete: "set null" }),
     status: mysqlEnum("status", [
         "Draft",

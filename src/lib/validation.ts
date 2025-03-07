@@ -25,3 +25,16 @@ export const validateAdmin = (session: Session | null) => {
 
     return true;
 };
+
+//Returns true when user is participant
+export const validateParticipant = (session: Session | null) => {
+    if (!session) {
+        return false;
+    }
+
+    if (session.user.role !== "Participant") {
+        return false;
+    }
+
+    return true;
+};
