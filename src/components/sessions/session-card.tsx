@@ -1,20 +1,20 @@
 import { Card } from "@/components/ui/card";
-import { Calendar, Trash2 } from "lucide-react";
-import { useState } from "react";
-import DeleteConfirmation from "../shared/delete-confirmation";
+import { Calendar } from "lucide-react";
 import { Session } from "@/db/schema/session";
+import EditIcon from "../icons/edit-icon";
+import DeleteIcon from "../icons/delete-icon";
 
 export default function SessionCard({
     session,
-    onDelete,
+    handleDeleteButtonClick,
+    handleEditButtonClick,
     isAdmin,
 }: {
     session: Session;
-    onDelete?: () => void;
+    handleDeleteButtonClick: (sessionId: number) => void;
+    handleEditButtonClick: (session: Session) => void;
     isAdmin?: boolean;
 }) {
-    const [showConfirmation, setShowConfirmation] = useState(false);
-
     const formatDate = (dateString: string) => {
         const options: Intl.DateTimeFormatOptions = {
             month: "short",
@@ -38,60 +38,38 @@ export default function SessionCard({
     const formattedEndTime = formatTime(session.endTime.toISOString());
     const currentDateTime = new Date().toISOString();
 
-    const handleDelete = () => {
-        onDelete?.();
-        setShowConfirmation(false);
-    };
-
-    const handleClosePopup = () => {
-        setShowConfirmation(false);
-    };
-
     return (
         <div className="flex flex-col items-center w-full">
-            {showConfirmation && (
-                <div className="fixed inset-0 flex items-center justify-center z-10 overflow-y-auto">
-                    <div
-                        className="absolute inset-0 bg-black opacity-50"
-                        onClick={handleClosePopup}
-                    ></div>
-                    <div className="z-30 bg-white rounded-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
-                        <DeleteConfirmation
-                            title="Are you sure?"
-                            body="This action cannot be undone."
-                            actionLabel="Delete"
-                            handleSubmit={handleDelete}
-                            closePopup={() => setShowConfirmation(false)}
-                        />
-                    </div>
-                </div>
-            )}
-
-            {!showConfirmation && (
-                <Card
-                    className={`flex flex-row justify-between items-center gap-4 p-4 shadow-lg rounded-lg ${
-                        currentDateTime > session.endTime.toISOString()
-                            ? "bg-gray-200"
-                            : "bg-white"
-                    }`}
-                >
-                    <div className="flex items-center gap-2 text-gray-700">
-                        <Calendar className="w-5 h-5 text-gray-500" />
+            <Card
+                className={`flex flex-row justify-between items-center gap-4 p-4 shadow-lg rounded-lg ${
+                    currentDateTime > session.endTime.toISOString()
+                        ? "bg-gray-200"
+                        : "bg-white"
+                }`}
+            >
+                <div className="flex items-center gap-4 text-gray-700">
+                    <Calendar className="w-6 h-6 text-gray-500" />
+                    <div className="flex flex-col justify-center">
+                        <span className="font-semibold">{formattedDate}</span>
                         <span>
-                            {formattedDate} | {formattedStartTime} -{" "}
-                            {formattedEndTime}
+                            {formattedStartTime} - {formattedEndTime}
                         </span>
                     </div>
-                    {isAdmin && (
+                </div>
+                {isAdmin && (
+                    <div className="flex flex-row gap-2">
+                        <button onClick={() => handleEditButtonClick(session)}>
+                            <EditIcon />
+                        </button>
                         <button
-                            onClick={() => setShowConfirmation(true)}
+                            onClick={() => handleDeleteButtonClick(session.id)}
                             className="text-red-500 hover:text-red-700"
                         >
-                            <Trash2 className="w-5 h-5" />
+                            <DeleteIcon />
                         </button>
-                    )}
-                </Card>
-            )}
+                    </div>
+                )}
+            </Card>
         </div>
     );
 }

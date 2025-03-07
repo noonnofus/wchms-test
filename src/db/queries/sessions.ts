@@ -62,6 +62,25 @@ export async function getAllSessionsByCourseId(courseId: number) {
     }
 }
 
+export async function getAllSessionPreviewsByCourseId(courseId: number) {
+    try {
+        const sessions = await db
+            .select({
+                id: Sessions.id,
+                date: Sessions.date,
+                startTime: Sessions.startTime,
+                endTime: Sessions.endTime,
+            })
+            .from(Sessions)
+            .where(eq(Sessions.courseId, courseId))
+            .orderBy(desc(Sessions.endTime));
+        return sessions;
+    } catch (error) {
+        console.error("Error fetching sessions:", error);
+        throw new Error("Error fetching sessions");
+    }
+}
+
 export async function getFutureSessions(courseId: number) {
     const currentDate = new Date();
     try {
@@ -79,15 +98,5 @@ export async function getFutureSessions(courseId: number) {
     } catch (error) {
         console.error("Error fetching future sessions: ", error);
         throw new Error("Error fetching future sessions");
-    }
-}
-
-export async function deleteSession(sessionId: number) {
-    try {
-        await db.delete(Sessions).where(eq(Sessions.id, sessionId));
-        return { success: true };
-    } catch (error) {
-        console.error("Error deleting session:", error);
-        throw new Error("Failed to delete session");
     }
 }
