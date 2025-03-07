@@ -11,7 +11,7 @@ export default function RequestCard({
     onReject,
 }: {
     request: CourseJoinRequest;
-    onReject: (requestId: number) => void;
+    onReject: (requestId: number, participant: Participant) => void;
 }) {
     const [participant, setParticipant] = useState<Participant | null>(null);
 
@@ -52,7 +52,7 @@ export default function RequestCard({
                     <Button
                         onClick={(e) => {
                             e.stopPropagation();
-                            onReject(request.id);
+                            onReject(request.id, participant);
                         }}
                         className="w-full h-full font-semibold md:text-xl py-2 md:py-4 rounded-full bg-destructive-red border border-destructive-hover text-destructive-text hover:bg-destructive-hover hover:text-destructive-text"
                     >

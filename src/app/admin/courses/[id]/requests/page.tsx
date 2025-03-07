@@ -5,6 +5,7 @@ import { CourseJoinRequest } from "@/db/schema/courseJoinRequests";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import DeleteConfirmation from "@/components/shared/delete-confirmation";
+import { Participant } from "@/db/schema/participants";
 
 export default function Requests() {
     const { id } = useParams();
@@ -14,6 +15,8 @@ export default function Requests() {
     const [requestIdToDelete, setRequestIdToDelete] = useState<number | null>(
         null
     );
+    const [participantRequestToDelete, setParticipantRequestToDelete] =
+        useState<Participant | null>(null);
     const [showDeletePopup, setShowDeletePopup] = useState(false);
     const [refreshRequests, setRefreshRequests] = useState(false);
 
@@ -32,9 +35,13 @@ export default function Requests() {
         fetchJoinRequests();
     }, [id, refreshRequests]);
 
-    const handleRejectRequest = (requestId: number) => {
+    const handleRejectRequest = (
+        requestId: number,
+        participant: Participant
+    ) => {
         setShowDeletePopup(true);
         setRequestIdToDelete(requestId);
+        setParticipantRequestToDelete(participant);
     };
 
     const handleDeleteJoinRequest = async (e: React.FormEvent) => {
@@ -91,7 +98,7 @@ export default function Requests() {
                     <div className="z-30 bg-white rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
                         <DeleteConfirmation
                             title="Reject Course Join Request"
-                            body="Are you sure you want to reject this request? This action cannot be undone."
+                            body={`Are you sure you want to reject ${participantRequestToDelete?.firstName} ${participantRequestToDelete?.lastName}'s request? This action cannot be undone.`}
                             actionLabel="REJECT"
                             handleSubmit={handleDeleteJoinRequest}
                             closePopup={handleClosePopup}
