@@ -81,7 +81,6 @@ export default function Courses() {
     const fetchCourses = async () => {
         try {
             const allCourses = (await getAllCourses(true)) as CourseWithImage[];
-            console.log(allCourses);
             setCourses(allCourses);
         } catch (error) {
             console.error("Error fetching courses", error);

@@ -35,14 +35,12 @@ export default function EditMaterial({
     const [description, setDescription] = useState<string>(
         material.description || ""
     );
-    const [url, setUrl] = useState<string>(
-        material.url || ""
-    );
+    const [url, setUrl] = useState<string>(material.url || "");
     const [file, setFile] = useState<File | null>(null);
 
     useEffect(() => {
-        console.log('material at edit material: ', material);
-    }, [])
+        console.log("material at edit material: ", material);
+    }, []);
 
     const handleActivitySelect = (activity: string) => {
         setSelectedActivity(activity);
@@ -90,10 +88,10 @@ export default function EditMaterial({
                         ...prevSelectedCourse,
                         materials: prevSelectedCourse.materials
                             ? prevSelectedCourse.materials.map((material) =>
-                                material.id === updatedMaterial.id
-                                    ? { ...material, ...updatedMaterial }
-                                    : material
-                            )
+                                  material.id === updatedMaterial.id
+                                      ? { ...material, ...updatedMaterial }
+                                      : material
+                              )
                             : [],
                     } as CourseFull;
                 } else {

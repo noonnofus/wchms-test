@@ -16,6 +16,7 @@ import { CourseMaterialsWithFile } from "@/db/schema/courseMaterials";
 import PDFDocument from "./reading-material-pdf";
 import PDFMath from "./arithmetic-material-pdf";
 import { pdf } from "@react-pdf/renderer";
+import CourseMaterialUpload from "../ui/course-material-upload";
 
 const activities = ["Simple Arithmetic", "Reading Aloud", "Physical Exercise"];
 const difficulties = ["Basic", "Intermediate"];
@@ -32,7 +33,7 @@ export default function AddMaterial(props: {
     handleClosePopup: () => void;
     setSelectedCourse: Dispatch<SetStateAction<CourseFull | undefined>>;
 }) {
-    const courseId = useParams().id;
+    const courseId = useParams().id as string;
     const [selectedActivity, setSelectedActivity] = useState<string>(
         activities[0]
     );
@@ -43,6 +44,7 @@ export default function AddMaterial(props: {
     const [description, setDescription] = useState<string>("");
     const [url, setUrl] = useState<string>("");
     const [topic, setTopic] = useState<string>("");
+    const [file, setFile] = useState<File | null>(null);
     const [errors, setErrors] = useState<Errors>({});
     const [loading, setLoading] = useState<boolean>(false);
 
@@ -177,7 +179,6 @@ export default function AddMaterial(props: {
         if (!validateForm()) {
             return;
         }
-
         const data = {
             title,
             exerciseType: selectedActivity,
@@ -186,15 +187,22 @@ export default function AddMaterial(props: {
             courseId,
             url: passUrl || url || null,
             uploadId,
+            file,
         };
+
+        const parsedFormData = new FormData();
+        Object.entries(data).forEach(([key, value]) => {
+            if (value instanceof File) {
+                parsedFormData.append(key, value);
+            } else if (value !== null && value !== undefined) {
+                parsedFormData.append(key, value.toString());
+            }
+        });
 
         try {
             const response = await fetch("/api/courses/materials/create", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(data),
+                body: parsedFormData,
             });
 
             if (response.ok) {
@@ -313,7 +321,11 @@ export default function AddMaterial(props: {
                             </div>
                         </div>
                         <div className="flex flex-col flex-1 gap-2">
-                            <label htmlFor="courseMaterial">
+                            <CourseMaterialUpload
+                                fileUrl={null}
+                                onFileSelect={setFile}
+                            />
+                            {/* <label htmlFor="courseMaterial">
                                 Course Material
                                 <div className="flex flex-col items-center justify-center bg-[#D9D9D9] h-[148px] w-full rounded-lg">
                                     <svg
@@ -340,7 +352,7 @@ export default function AddMaterial(props: {
                                 className="hidden"
                                 accept="application/pdf, image/*"
                                 onChange={() => {}}
-                            />
+                            /> */}
                         </div>
                         {selectedActivity === "Physical Exercise" && (
                             <div className="flex flex-col flex-1 gap-2">
