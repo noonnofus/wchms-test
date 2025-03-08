@@ -5,7 +5,17 @@ import { hashPassword } from "@/lib/hashing";
 
 export async function getAllAdmins() {
     try {
-        const allAdmins = await db.select().from(users);
+        const allAdmins = await db
+            .select({
+                id: users.id,
+                firstName: users.firstName,
+                lastName: users.lastName,
+                email: users.email,
+                dateOfBirth: users.dateOfBirth,
+                gender: users.gender,
+                role: users.role,
+            })
+            .from(users);
         return allAdmins;
     } catch (error) {
         console.error("Error fetching admins", error);
