@@ -38,7 +38,9 @@ export const courseMaterials = mysqlTable("course_materials", {
     type: mysqlEnum("type", materialTypeEnumValues).notNull(),
     difficulty: mysqlEnum("difficulty", difficultyEnumValues).notNull(),
     description: text("description"),
-    uploadId: int("upload_id").references(() => uploadMedia.id),
+    uploadId: int("upload_id").references(() => uploadMedia.id, {
+        onDelete: "set null",
+    }),
     courseId: int("course_id")
         .notNull()
         .references(() => Courses.id, { onDelete: "cascade" }),
@@ -53,6 +55,7 @@ export interface CourseMaterialsWithFile extends CourseMaterials {
         fileName: UploadMedia["fileName"];
         fileType: UploadMedia["fileType"];
         fileSize: UploadMedia["fileSize"];
-        fileData: UploadMedia["fileData"];
+        fileKey: UploadMedia["fileKey"];
     } | null;
+    url: string | null;
 }

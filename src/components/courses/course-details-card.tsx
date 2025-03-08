@@ -1,8 +1,6 @@
 "use client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-    fetchCourseImage,
-    getUploadId,
     createCourseJoinRequest,
     checkCourseJoinRequestExists,
     deleteCourseJoinRequest,
@@ -12,12 +10,13 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { useSession } from "next-auth/react";
+import { CourseFull } from "@/db/schema/course";
+import { getSignedUrlFromFileKey } from "@/lib/s3";
 import EditIcon from "../icons/edit-icon";
 import DeleteIcon from "../icons/delete-icon";
 
 interface CourseDetailsProps {
-    name: string;
-    description: string;
+    course: CourseFull;
     variant: "client" | "admin";
     enrolled?: boolean;
     editAction?: () => void;
@@ -27,7 +26,7 @@ interface CourseDetailsProps {
 export default function CourseDetailsCard(props: CourseDetailsProps) {
     const id = useParams().id;
     const courseId = Array.isArray(id) ? id[0] : id || "";
-    const [imageUrl, setImageUrl] = useState<string>("/course-image.png");
+    const [imageUrl, setImageUrl] = useState<string | null>(null);
     const { data: session } = useSession();
     const participantId = session?.user.id;
     const [isEnrolling, setIsEnrolling] = useState(false);
@@ -37,11 +36,11 @@ export default function CourseDetailsCard(props: CourseDetailsProps) {
 
     const fetchData = async () => {
         try {
-            const uploadId = await getUploadId(parseInt(courseId, 10));
-            if (uploadId) {
-                const fetchedImage = await fetchCourseImage(uploadId);
-                setImageUrl(fetchedImage || "/course-image.png");
-            }
+            props.course.fileKey !== null
+                ? setImageUrl(
+                      await getSignedUrlFromFileKey(props.course.fileKey)
+                  )
+                : null;
 
             if (participantId) {
                 const exists = await checkCourseJoinRequestExists(
@@ -55,7 +54,6 @@ export default function CourseDetailsCard(props: CourseDetailsProps) {
                 "Error fetching course image or request status",
                 error
             );
-            setImageUrl("/course-image.png");
         }
     };
 
@@ -123,15 +121,17 @@ export default function CourseDetailsCard(props: CourseDetailsProps) {
                     </div>
                 )}
                 <CardHeader>
-                    <CardTitle>{props.name}</CardTitle>
+                    <CardTitle>{props.course.title}</CardTitle>
                 </CardHeader>
-                <Image
-                    src={imageUrl}
-                    width={200}
-                    height={200}
-                    alt={`${props.name} course image`}
-                    className="rounded-lg my-2"
-                />
+                {imageUrl && (
+                    <Image
+                        src={imageUrl}
+                        width={200}
+                        height={200}
+                        alt={`${props.course.title} course image`}
+                        className="rounded-lg my-2"
+                    />
+                )}
                 {props.variant === "client" &&
                     (props.enrolled ? (
                         <Button className="bg-primary-green text-white rounded-full w-full font-semibold text-base hover:bg-[#045B47]">
@@ -169,7 +169,7 @@ export default function CourseDetailsCard(props: CourseDetailsProps) {
                     </Button>
                 )}
                 <CardContent>
-                    <p>{props.description}</p>
+                    <p>{props.course.description}</p>
                 </CardContent>
             </Card>
         </div>

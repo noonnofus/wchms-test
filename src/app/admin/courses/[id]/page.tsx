@@ -56,6 +56,7 @@ export default function AdminCourses() {
             try {
                 const course = await getCourseById(
                     parseInt(id as string),
+                    false,
                     true,
                     true
                 );
@@ -205,37 +206,32 @@ export default function AdminCourses() {
                                 <p>Loading Courses...</p>
                             </div>
                         ) : (
-                            <div className="h-full w-full">
-                                <div className="flex flex-col gap-6 md:gap-8">
-                                    <CourseDetailsCard
-                                        name={selectedCourse.title}
-                                        description={
-                                            selectedCourse?.description || ""
-                                        }
-                                        variant="admin"
-                                        editAction={handleEditCourseButtonClick}
-                                        handleDeleteButtonClick={
-                                            handleDeleteCourseButtonClick
-                                        }
-                                    />
-                                    <Button
-                                        className="bg-primary-green text-white rounded-full w-full font-semibold text-base hover:bg-[#045B47]"
-                                        onClick={() =>
-                                            router.push(`/admin/session/${id}`)
-                                        }
-                                    >
-                                        All Sessions
-                                    </Button>
-                                    {requests ? (
-                                        <RequestList requests={requests} />
-                                    ) : null}
-                                    <ParticipantList
-                                        participants={
-                                            selectedCourse.participants || []
-                                        }
-                                        courseId={parseInt(id as string)}
-                                    />
-                                </div>
+                            <div className="flex flex-col gap-6 md:gap-8">
+                                <CourseDetailsCard
+                                    course={selectedCourse}
+                                    variant="admin"
+                                    editAction={handleEditCourseButtonClick}
+                                    handleDeleteButtonClick={
+                                        handleDeleteCourseButtonClick
+                                    }
+                                />
+                                <Button
+                                    className="bg-primary-green text-white rounded-full w-full font-semibold text-base hover:bg-[#045B47]"
+                                    onClick={() =>
+                                        router.push(`/admin/session/${id}`)
+                                    }
+                                >
+                                    All Sessions
+                                </Button>
+                                {requests ? (
+                                    <RequestList requests={requests} />
+                                ) : null}
+                                <ParticipantList
+                                    participants={
+                                        selectedCourse.participants || []
+                                    }
+                                    courseId={parseInt(id as string)}
+                                />
                                 <button
                                     className="absolute bottom-20 right-6 flex h-[72px] w-[72px] bg-primary-green shadow-lg border-4 border-white rounded-full justify-center items-center z-10"
                                     onClick={handleAddSessionButtonClick}

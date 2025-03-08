@@ -7,17 +7,22 @@ import {
 } from "@/db/schema/course";
 import { desc, eq, and } from "drizzle-orm";
 import { uploadMedia } from "../schema/mediaUpload";
-import { courseMaterials } from "../schema/courseMaterials";
+import {
+    courseMaterials,
+    CourseMaterialsWithFile,
+} from "../schema/courseMaterials";
 import { participants } from "@/db/schema/participants";
 import { type Participant } from "../schema/participants";
 import { CourseJoinRequests } from "../schema/courseJoinRequests";
 import { getServerSession } from "next-auth";
 import { authConfig } from "@/auth";
+import { getSignedUrlFromFileKey } from "@/lib/s3";
 
 export interface courseList {
     id: number;
     title: string;
     description: string | null;
+    fileKey: string | null;
 }
 //Returns all courses that are available to users. Returns an object with an array of enrolled courses and unenrolled courses
 export async function getAvailableCourses() {
@@ -33,8 +38,10 @@ export async function getAvailableCourses() {
                 id: coursesTable.id,
                 title: coursesTable.title,
                 description: coursesTable.description,
+                fileKey: uploadMedia.fileKey,
             })
             .from(coursesTable)
+            .leftJoin(uploadMedia, eq(coursesTable.uploadId, uploadMedia.id))
             .where(eq(coursesTable.status, "Available"))
             .orderBy(desc(coursesTable.id));
 
@@ -67,20 +74,40 @@ export async function getAvailableCourses() {
     }
 }
 
-//Uncomment in the future for pagination functionality
-export async function getAllCourses(/* page = 1, limit = 10 */) {
+export async function getAllCourses(withImages = false) {
     "use server";
     try {
         //TODO: Validate user is admin
 
-        // const offset = (page - 1) * limit;
-
         const courses = await db
-            .select()
+            .select({
+                id: coursesTable.id,
+                title: coursesTable.title,
+                description: coursesTable.description,
+                start: coursesTable.start,
+                end: coursesTable.end,
+                kind: coursesTable.kind,
+                status: coursesTable.status,
+                lang: coursesTable.lang,
+                roomId: coursesTable.roomId,
+                uploadId: coursesTable.uploadId,
+                fileKey: uploadMedia.fileKey,
+            })
             .from(coursesTable)
-            // .limit(limit) //limit number of courses
-            // .offset(offset); // Set the starting point of query
+            .leftJoin(uploadMedia, eq(coursesTable.uploadId, uploadMedia.id))
             .orderBy(desc(coursesTable.id));
+        if (withImages) {
+            const coursesWithImages = await Promise.all(
+                courses.map(async (course) => {
+                    const imageUrl =
+                        course.fileKey !== null
+                            ? await getSignedUrlFromFileKey(course.fileKey)
+                            : null;
+                    return { ...course, imageUrl };
+                })
+            );
+            return coursesWithImages;
+        }
 
         return courses;
     } catch (error) {
@@ -88,27 +115,6 @@ export async function getAllCourses(/* page = 1, limit = 10 */) {
         return [];
     }
 }
-
-export const fetchCourseImage = async (uploadId: number) => {
-    try {
-        const result = await db
-            .select()
-            .from(uploadMedia)
-            .where(eq(uploadMedia.id, uploadId))
-            .limit(1);
-
-        if (result.length > 0) {
-            const { fileData, fileType } = result[0];
-            const imageUrl = `data:${fileType};base64,${fileData}`;
-            return imageUrl;
-        }
-
-        return null;
-    } catch (error) {
-        console.error("Error fetching course image", error);
-        return null;
-    }
-};
 
 export async function getUploadId(courseId: number) {
     try {
@@ -154,6 +160,7 @@ export async function getUserCourses(
 
 export async function getCourseById(
     courseId: number,
+    withImage = false,
     withParticipants = false,
     withMaterials = false
 ) {
@@ -168,7 +175,7 @@ export async function getCourseById(
                 title: coursesTable.title,
                 description: coursesTable.description,
                 uploadId: coursesTable.uploadId,
-                imageFileName: uploadMedia.fileName,
+                fileKey: uploadMedia.fileKey,
                 start: coursesTable.start,
                 end: coursesTable.end,
                 roomId: coursesTable.roomId,
@@ -182,7 +189,13 @@ export async function getCourseById(
             .then((res) => res[0]);
 
         let course: CourseFull = { ...(await courseQuery) };
-
+        if (withImage) {
+            const imageUrl =
+                course.fileKey !== null
+                    ? await getSignedUrlFromFileKey(course.fileKey)
+                    : null;
+            course = { ...course, imageUrl };
+        }
         if (withMaterials) {
             const materials = await db
                 .select({
@@ -199,7 +212,7 @@ export async function getCourseById(
                         fileName: uploadMedia.fileName,
                         fileType: uploadMedia.fileType,
                         fileSize: uploadMedia.fileSize,
-                        fileData: uploadMedia.fileData,
+                        fileKey: uploadMedia.fileKey,
                     },
                 })
                 .from(courseMaterials)
@@ -210,9 +223,30 @@ export async function getCourseById(
                 .where(eq(courseMaterials.courseId, courseId))
                 .orderBy(desc(courseMaterials.createdAt));
 
+            let materialsWithUrl: CourseMaterialsWithFile[] | undefined;
+
+            if (materials) {
+                materialsWithUrl = await Promise.all(
+                    materials.map(async (material) =>
+                        material.url
+                            ? material
+                            : {
+                                  ...material,
+                                  url: material.file?.fileKey
+                                      ? await getSignedUrlFromFileKey(
+                                            material.file.fileKey,
+                                            true,
+                                            material.file.fileName
+                                        )
+                                      : null,
+                              }
+                    )
+                );
+            }
+
             course = {
                 ...course,
-                materials,
+                materials: materialsWithUrl,
             };
         }
 
@@ -299,48 +333,6 @@ export async function getLatestPhysicalMaterial() {
         .orderBy(desc(courseMaterials.createdAt));
 
     return material;
-}
-
-export async function createCourseWithMedia(courseData: any, mediaId?: number) {
-    "use server";
-    try {
-        const [course] = await db.insert(coursesTable).values({
-            ...courseData,
-            uploadId: mediaId,
-        });
-
-        if (mediaId) {
-            await db
-                .update(uploadMedia)
-                .set({ originId: course.insertId })
-                .where(eq(uploadMedia.id, mediaId));
-        }
-
-        return course;
-    } catch (error) {
-        console.error("Error creating course with media:", error);
-        throw error;
-    }
-}
-
-export async function updateCourseMedia(courseId: number, mediaId: number) {
-    "use server";
-    try {
-        await db
-            .update(coursesTable)
-            .set({ uploadId: mediaId })
-            .where(eq(coursesTable.id, courseId));
-
-        await db
-            .update(uploadMedia)
-            .set({ originId: courseId })
-            .where(eq(uploadMedia.id, mediaId));
-
-        return true;
-    } catch (error) {
-        console.error("Error updating course media:", error);
-        throw error;
-    }
 }
 
 // COURSE JOIN REQUESTS

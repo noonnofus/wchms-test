@@ -16,6 +16,7 @@ import { CourseMaterialsWithFile } from "@/db/schema/courseMaterials";
 import PDFDocument from "./reading-material-pdf";
 import PDFMath from "./arithmetic-material-pdf";
 import { pdf } from "@react-pdf/renderer";
+import CourseMaterialUpload from "../ui/course-material-upload";
 
 const activities = ["Simple Arithmetic", "Reading Aloud", "Physical Exercise"];
 const difficulties = ["Basic", "Intermediate"];
@@ -32,7 +33,7 @@ export default function AddMaterial(props: {
     handleClosePopup: () => void;
     setSelectedCourse: Dispatch<SetStateAction<CourseFull | undefined>>;
 }) {
-    const courseId = useParams().id;
+    const courseId = useParams().id as string;
     const [selectedActivity, setSelectedActivity] = useState<string>(
         activities[0]
     );
@@ -43,9 +44,9 @@ export default function AddMaterial(props: {
     const [description, setDescription] = useState<string>("");
     const [url, setUrl] = useState<string>("");
     const [topic, setTopic] = useState<string>("");
+    const [file, setFile] = useState<File | null>(null);
     const [errors, setErrors] = useState<Errors>({});
     const [loading, setLoading] = useState<boolean>(false);
-
 
     const handleActivitySelect = (activity: string) => {
         setSelectedActivity(activity);
@@ -63,8 +64,13 @@ export default function AddMaterial(props: {
             newErrors.exerciseType = "Please select an activity.";
         if (!selectedDifficulty)
             newErrors.exerciseDifficulty = "Please select a difficulty.";
-        if (url && !/^((https?|ftp|smtp):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/.test(url))
-            newErrors.exerciseUrl = "Please type valid URL."
+        if (
+            url &&
+            !/^((https?|ftp|smtp):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/.test(
+                url
+            )
+        )
+            newErrors.exerciseUrl = "Please type valid URL.";
 
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
@@ -97,15 +103,16 @@ export default function AddMaterial(props: {
         const activityConfig: Record<string, { url: string; payload: any }> = {
             "Reading Aloud": {
                 url: "/api/homework/reading",
-                payload: { level: selectedDifficulty, topic: topic }
+                payload: { level: selectedDifficulty, topic: topic },
             },
             "Simple Arithmetic": {
                 url: "/api/homework/arithmetics",
-                payload: { level: selectedDifficulty }
-            }
+                payload: { level: selectedDifficulty },
+            },
         };
 
-        const { url: fetchUrl, payload } = activityConfig[selectedActivity] || {};
+        const { url: fetchUrl, payload } =
+            activityConfig[selectedActivity] || {};
 
         if (!fetchUrl) {
             console.error("Invalid activity type");
@@ -113,70 +120,89 @@ export default function AddMaterial(props: {
         }
 
         const res = await fetch(fetchUrl, {
-            method: 'POST',
+            method: "POST",
             body: JSON.stringify(payload),
             headers: new Headers({
-                'Content-Type': 'application/json; charset=UTF-8'
-
-            })
-        })
+                "Content-Type": "application/json; charset=UTF-8",
+            }),
+        });
 
         const data = await res.json();
         const result = JSON.parse(data.result);
 
-        const pdfComponent = selectedActivity === "Reading Aloud"
-            ? <PDFDocument title={title} content={result.reading.join("\n\n")} />
-            : <PDFMath title={title} difficulty={selectedDifficulty} contents={result.questions} />;
+        const pdfComponent =
+            selectedActivity === "Reading Aloud" ? (
+                <PDFDocument
+                    title={title}
+                    content={result.reading.join("\n\n")}
+                />
+            ) : (
+                <PDFMath
+                    title={title}
+                    difficulty={selectedDifficulty}
+                    contents={result.questions}
+                />
+            );
 
         const pdfBlob = await pdf(pdfComponent).toBlob();
 
         const formData = new FormData();
         formData.append("file", pdfBlob, `document_${Date.now()}.pdf`);
 
-        const filePath = await fetchMaterialPDF(formData);
+        const fetchResult = await fetchMaterialPDF(formData);
 
-        handleSubmit(e, filePath);
-    }
+        handleSubmit(e, fetchResult?.uploadId, fetchResult?.returnUrl);
+    };
 
     const fetchMaterialPDF = async (formData: FormData) => {
         try {
             const res = await fetch("/api/courses/materials/upload", {
-                method: 'POST',
+                method: "POST",
                 body: formData,
-            })
+            });
 
             const data = await res.json();
-            return data.filePath;
+            return { uploadId: data.uploadId, returnUrl: data.url };
         } catch (error) {
             console.error(error);
             return;
         }
-    }
+    };
 
-
-    const handleSubmit = async (e: React.FormEvent, filePath?: string) => {
+    const handleSubmit = async (
+        e: React.FormEvent,
+        uploadId?: number,
+        passUrl?: string
+    ) => {
         e.preventDefault();
 
         if (!validateForm()) {
             return;
         }
-
         const data = {
             title,
             exerciseType: selectedActivity,
             difficulty: selectedDifficulty,
             description,
             courseId,
-            url: filePath ? filePath : url,
+            url: passUrl || url || null,
+            uploadId,
+            file,
         };
+
+        const parsedFormData = new FormData();
+        Object.entries(data).forEach(([key, value]) => {
+            if (value instanceof File) {
+                parsedFormData.append(key, value);
+            } else if (value !== null && value !== undefined) {
+                parsedFormData.append(key, value.toString());
+            }
+        });
 
         try {
             const response = await fetch("/api/courses/materials/create", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(data),
+                body: parsedFormData,
             });
 
             if (response.ok) {
@@ -188,8 +214,8 @@ export default function AddMaterial(props: {
                             return {
                                 ...prevSelectedCourse,
                                 materials: [
-                                    ...(prevSelectedCourse.materials || []),
                                     newMaterial,
+                                    ...(prevSelectedCourse.materials || []),
                                 ] as CourseMaterialsWithFile[],
                             };
                         } else {
@@ -294,36 +320,14 @@ export default function AddMaterial(props: {
                                 </Select>
                             </div>
                         </div>
-                        <div className="flex flex-col flex-1 gap-2">
-                            <label htmlFor="courseMaterial">
-                                Course Material
-                                <div className="flex flex-col items-center justify-center bg-[#D9D9D9] h-[148px] w-full rounded-lg">
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="26"
-                                        height="24"
-                                        viewBox="0 0 26 24"
-                                        fill="none"
-                                    >
-                                        <path
-                                            d="M8.00002 16C5.7512 16 3.92816 14.2091 3.92816 12C3.92816 10.0929 5.2867 8.4976 7.10493 8.09695C7.02449 7.74395 6.98206 7.37684 6.98206 7C6.98206 4.23858 9.26085 2 12.0719 2C14.5346 2 16.5889 3.71825 17.0601 6.00098C17.0939 6.00033 17.1278 6 17.1617 6C19.9727 6 22.2515 8.23858 22.2515 11C22.2515 13.419 20.5029 15.4367 18.1797 15.9M16.1437 13L13.0898 10M13.0898 10L10.0359 13M13.0898 10L13.0898 22"
-                                            stroke="#5D5D5D"
-                                            strokeWidth="2"
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                        />
-                                    </svg>
-                                    <p>Click or drag to add a file</p>
-                                </div>
-                            </label>
-                            <Input
-                                type="file"
-                                id="courseMaterial"
-                                className="hidden"
-                                accept="application/pdf, image/*"
-                                onChange={() => { }}
-                            />
-                        </div>
+                        {selectedActivity !== "Physical Exercise" && (
+                            <div className="flex flex-col flex-1 gap-2">
+                                <CourseMaterialUpload
+                                    fileUrl={null}
+                                    onFileSelect={setFile}
+                                />
+                            </div>
+                        )}
                         {selectedActivity === "Physical Exercise" && (
                             <div className="flex flex-col flex-1 gap-2">
                                 <label htmlFor="url">Video URL</label>

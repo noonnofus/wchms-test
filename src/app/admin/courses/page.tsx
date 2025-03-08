@@ -3,14 +3,15 @@ import AddCourse from "@/components/courses/add-course";
 import CourseCard from "@/components/courses/course-card";
 import CloseIcon from "@/components/icons/close-icon";
 import CloseSwipe from "@/components/icons/close-swipe";
-import { fetchCourseImage, getAllCourses } from "@/db/queries/courses";
+import { getAllCourses } from "@/db/queries/courses";
 import { type Course } from "@/db/schema/course";
 import { useEffect, useState } from "react";
 import { useSwipeable } from "react-swipeable";
 import DeleteConfirmation from "@/components/shared/delete-confirmation";
 
 export type CourseWithImage = Course & {
-    imageUrl?: string | null;
+    fileKey: string | null;
+    imageUrl: string | null;
 };
 
 export default function Courses() {
@@ -77,28 +78,19 @@ export default function Courses() {
     const [isLoading, setIsLoading] = useState(true);
     const [courses, setCourses] = useState<CourseWithImage[]>([]);
 
+    const fetchCourses = async () => {
+        try {
+            const allCourses = (await getAllCourses(true)) as CourseWithImage[];
+            setCourses(allCourses);
+        } catch (error) {
+            console.error("Error fetching courses", error);
+            setCourses([]);
+        } finally {
+            setIsLoading(false);
+            setRefreshCourses(false);
+        }
+    };
     useEffect(() => {
-        const fetchCourses = async () => {
-            try {
-                const allCourses = await getAllCourses();
-                const coursesWithImages = await Promise.all(
-                    allCourses.map(async (course) => {
-                        const imageUrl =
-                            course.uploadId !== null
-                                ? await fetchCourseImage(course.uploadId)
-                                : null;
-                        return { ...course, imageUrl };
-                    })
-                );
-                setCourses(coursesWithImages);
-            } catch (error) {
-                console.error("Error fetching courses", error);
-                setCourses([]);
-            } finally {
-                setIsLoading(false);
-                setRefreshCourses(false);
-            }
-        };
         fetchCourses();
     }, [refreshCourses]);
 
@@ -220,11 +212,6 @@ export default function Courses() {
                             <CourseCard
                                 course={course}
                                 key={course.id}
-                                id={course.id}
-                                name={course.title}
-                                image={course.imageUrl || "/course-image.png"}
-                                imageAlt={`${course.title} Cover Image`}
-                                description={course.description}
                                 variant="admin"
                                 handleEditButtonClick={handleEditButtonClick}
                                 handleDeleteButtonClick={

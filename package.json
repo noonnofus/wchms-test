@@ -12,6 +12,8 @@
         "seedAdmin": "npx tsx ./drizzle/seedAdmin.ts"
     },
     "dependencies": {
+        "@aws-sdk/client-s3": "^3.758.0",
+        "@aws-sdk/s3-request-presigner": "^3.758.0",
         "@radix-ui/react-accordion": "^1.2.3",
         "@radix-ui/react-checkbox": "^1.1.4",
         "@radix-ui/react-dropdown-menu": "^2.1.5",

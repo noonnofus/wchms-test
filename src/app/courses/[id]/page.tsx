@@ -27,6 +27,7 @@ export default function CoursePage() {
             try {
                 const course = await getCourseById(
                     parseInt(id as string),
+                    false,
                     true,
                     true
                 );
@@ -95,10 +96,7 @@ export default function CoursePage() {
                         ) : (
                             <div className="flex flex-col gap-4">
                                 <CourseDetailsCard // TODO: Pass Zoom link
-                                    name={selectedCourse.title}
-                                    description={
-                                        selectedCourse?.description || ""
-                                    }
+                                    course={selectedCourse}
                                     variant="client"
                                     enrolled={isEnrolled}
                                 />
@@ -136,7 +134,7 @@ export default function CoursePage() {
                                 </div>
                             ) : (
                                 <div className="flex flex-col gap-4">
-                                    {selectedCourse.materials?.length > 0 ? (
+                                    {selectedCourse?.materials?.length ? (
                                         selectedCourse.materials.map(
                                             (material) => (
                                                 <MaterialCard
