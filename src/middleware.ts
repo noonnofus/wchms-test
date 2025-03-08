@@ -17,12 +17,18 @@ export async function middleware(req: NextRequest) {
 
         return NextResponse.redirect(new URL("/", req.url));
     }
-
+    const userRole = token.role;
+    console.log("pathname", pathname);
     if (pathname.startsWith("/admin/")) {
-        const userRole = token.role;
-
         if (userRole !== "Admin" && userRole !== "Staff") {
             return NextResponse.redirect(new URL("/admin", req.url));
+        }
+    } else {
+        if (userRole === "Admin" || userRole === "Staff") {
+            console.log("Here");
+            return NextResponse.redirect(
+                new URL(`/admin/${pathname}`, req.url)
+            );
         }
     }
 
@@ -31,5 +37,5 @@ export async function middleware(req: NextRequest) {
 
 // Protected routes
 export const config = {
-    matcher: ["/admin/:path*", "/landing", "/courses"],
+    matcher: ["/admin/:path*", "/landing", "/courses/:path*"],
 };
