@@ -10,10 +10,14 @@ import {
 import { getAllCourses } from "@/db/queries/courses";
 import { type Course } from "@/db/schema/course";
 import { type Participant } from "@/db/schema/participants";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function ParticipantLogin() {
+    const router = useRouter();
+    const [loading, setLoading] = useState(true);
     const [participants, setParticipants] = useState<
         { name: string; courses: { id: number; title: string }[] }[]
     >([]);
@@ -26,6 +30,22 @@ export default function ParticipantLogin() {
             title: string;
         }[]
     >([]);
+    const { data: session, status } = useSession();
+    useEffect(() => {
+        if (status === "authenticated") {
+            if (
+                session.user.role === "Admin" ||
+                session.user.role === "Staff"
+            ) {
+                return router.push("/admin/landing");
+            }
+            router.push("/landing");
+        } else if (status === "loading") {
+            setLoading(true);
+        } else {
+            setLoading(false);
+        }
+    }, [status, router]);
 
     useEffect(() => {
         const fetchCourses = async () => {
@@ -140,7 +160,7 @@ export default function ParticipantLogin() {
             setParticipants(filteredParticipants);
         }
     };
-
+    if (loading) return null;
     return (
         <div className="flex flex-col gap-12 w-full h-full items-center">
             <h1 className="font-semibold text-4xl">Participants List</h1>
