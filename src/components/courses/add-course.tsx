@@ -16,6 +16,7 @@ import { DatePicker } from "../ui/date-picker";
 import ImageUpload from "../ui/image-upload";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
+import { useTranslation } from "react-i18next";
 
 const defaultRoomName = "Online via Zoom"; //name of room for default selection
 export const [languages, types, statuses] = [
@@ -293,10 +294,12 @@ export default function AddCourse(props: props) {
         }
     };
 
+    const { t } = useTranslation();
+
     return (
         <div className="flex flex-col gap-12 w-full h-full py-8 px-6 rounded-lg bg-white items-center justify-center overf">
             <h1 className="font-semibold text-3xl md:text-4xl text-center">
-                {props.courseId ? "Edit Course" : "Add New Course"}
+                {props.courseId ? t("edit course") : t("create new course")}
             </h1>
             <form
                 className="flex flex-col gap-4 md:gap-6 w-full h-full md:text-2xl"
@@ -304,7 +307,7 @@ export default function AddCourse(props: props) {
             >
                 <div className="flex flex-row gap-2 w-full">
                     <div className="flex flex-col flex-1 gap-2">
-                        <label htmlFor="courseName">Course Name</label>
+                        <label htmlFor="courseName">{t("course name")}</label>
                         {errors.courseName && (
                             <p className="text-red-500 text-sm">
                                 {errors.courseName}
@@ -321,7 +324,7 @@ export default function AddCourse(props: props) {
                     </div>
                 </div>
                 <div className="flex flex-col flex-1 gap-2">
-                    <label htmlFor="courseImage">Course Image</label>
+                    <label htmlFor="courseImage">{t("course image")}</label>
                     {errors.courseImage && (
                         <p className="text-red-500 text-sm">
                             {errors.courseImage}
@@ -530,7 +533,7 @@ export default function AddCourse(props: props) {
                             onClick={handleUpdate}
                             className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold md:text-xl py-2 md:py-4"
                         >
-                            Update
+                            {t("update")}
                         </Button>
                     ) : (
                         <Button className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold md:text-xl py-2 md:py-4">
@@ -542,7 +545,7 @@ export default function AddCourse(props: props) {
                         variant="outline"
                         className="w-full h-full rounded-full bg-transparent border-primary-green text-primary-green hover:bg-primary-green hover:text-white font-semibold md:text-xl py-2 md:py-4"
                     >
-                        Cancel
+                        {t("button.cancel")}
                     </Button>
                 </div>
             </form>

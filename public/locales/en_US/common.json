@@ -4,6 +4,7 @@
     "button.cancel": "Cancel",
     "edit": "Edit",
     "delete": "Delete",
+    "update": "Update",
     "course_one": "Course",
     "course_other": "Courses",
     "paricipant": "Participant",
@@ -15,5 +16,9 @@
     "course assigned": "Course Assigned",
     "role": "Role",
     "search": "Search",
-    "instructor overview": "Instructor Overview"
+    "staff overview": "Staff Overview",
+    "create new course": "Create New Course",
+    "edit course": "Edit Course",
+    "course name": "Course Name",
+    "course image": "Course Image"
 }

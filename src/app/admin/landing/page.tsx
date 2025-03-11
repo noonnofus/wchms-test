@@ -10,7 +10,7 @@ export default function AdminLanding() {
     return (
         <div className="flex flex-col gap-10 w-full h-full items-center">
             <h1 className="font-semibold text-4xl text-center">
-                {t("instructor overview")}
+                {t("staff overview")}
             </h1>
             <div className="w-full flex flex-col gap-4">
                 <Button

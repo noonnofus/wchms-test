@@ -213,7 +213,7 @@ export default function Courses() {
                                 onClick={handleAddButtonClick}
                                 className="px-6 py-2 bg-primary-green text-white rounded-lg"
                             >
-                                Create New Course
+                                {t("create new course")}
                             </button>
                         </div>
                     )}

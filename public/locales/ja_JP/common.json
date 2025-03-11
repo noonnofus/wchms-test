@@ -4,6 +4,7 @@
     "button.cancel": "キャンセル",
     "edit": "編集",
     "delete": "削除",
+    "update": "更新",
     "course": "コース",
     "course_other": "コース",
     "participant": "受講者",
@@ -15,5 +16,9 @@
     "course assigned": "コース割り当て済み",
     "role": "役割",
     "search": "検索",
-    "instructor overview": "講師概要"
+    "staff overview": "スタッフ概要",
+    "create new course": "新規コース作成",
+    "edit course": "コース編集",
+    "course name": "コース名",
+    "course image": "コース画像"
 }
