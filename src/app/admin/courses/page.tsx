@@ -103,7 +103,7 @@ export default function Courses() {
     }, [refreshCourses]);
 
     return (
-        <div className="w-full h-[calc(100vh-80px)]">
+        <div className="w-full h-full">
             <h1 className="font-semibold text-4xl text-center mb-6">Courses</h1>
             {showAddPopup && (
                 <div className="fixed inset-0 flex items-end md:items-center justify-center z-20">
