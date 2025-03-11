@@ -3,7 +3,7 @@ import { getUserCourses } from "@/db/queries/courses";
 import { getNextSessionDate } from "@/db/queries/sessions";
 import { getSession } from "next-auth/react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function NextClass({ whenLoaded }: { whenLoaded: () => void }) {
     const [sessionCountdown, setSessionCountdown] = useState<string | null>(
@@ -11,6 +11,10 @@ export default function NextClass({ whenLoaded }: { whenLoaded: () => void }) {
     );
     const [courseTitle, setCourseTitle] = useState<string>("");
     const [isLoading, setIsLoading] = useState<boolean>(true);
+
+    // const { showNotification, dismissNotification } = useNotifications();
+    // const notificationTimerRef = useRef<NodeJS.Timeout | null>(null);
+    // const notificationIdRef = useRef<string | null>(null);
 
     const nextSessionDate = async () => {
         try {
