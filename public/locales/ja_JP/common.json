@@ -2,10 +2,18 @@
     "back": "戻る",
     "logout": "ログアウト",
     "button.cancel": "キャンセル",
-    "course_one": "コース",
+    "edit": "編集",
+    "delete": "削除",
+    "course": "コース",
     "course_other": "コース",
-    "participant_one": "受講者",
+    "participant": "受講者",
     "participant_other": "受講者",
     "manage": "管理",
-    "home": "ホーム"
+    "home": "ホーム",
+    "staff": "スタッフ",
+    "admin": "管理人",
+    "course assigned": "コース割り当て済み",
+    "role": "役割",
+    "search": "検索",
+    "instructor overview": "講師概要"
 }

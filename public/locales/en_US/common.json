@@ -2,10 +2,18 @@
     "back": "Back",
     "logout": "Logout",
     "button.cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
     "course_one": "Course",
     "course_other": "Courses",
-    "paricipant_one": "Participant",
+    "paricipant": "Participant",
     "participant_other": "Participants",
     "manage": "Manage",
-    "home": "Home"
+    "home": "Home",
+    "staff": "Staff",
+    "admin": "Admin",
+    "course assigned": "Course Assigned",
+    "role": "Role",
+    "search": "Search",
+    "instructor overview": "Instructor Overview"
 }

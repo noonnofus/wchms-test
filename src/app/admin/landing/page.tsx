@@ -10,7 +10,7 @@ export default function AdminLanding() {
     return (
         <div className="flex flex-col gap-10 w-full h-full items-center">
             <h1 className="font-semibold text-4xl text-center">
-                Instructor Overview
+                {t("instructor overview")}
             </h1>
             <div className="w-full flex flex-col gap-4">
                 <Button
@@ -30,7 +30,7 @@ export default function AdminLanding() {
                     asChild
                     className="min-h-[16vh] rounded-lg bg-homework-yellow hover:bg-[#E0A800]"
                 >
-                    <Link href="#">
+                    <Link href="/admin/manage/participants">
                         <div className="flex flex-col items-center justify-center">
                             <svg
                                 width="48"

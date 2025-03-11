@@ -22,6 +22,7 @@ import { type Participant } from "@/db/schema/participants";
 import { useEffect, useState } from "react";
 import { useSwipeable } from "react-swipeable";
 import CloseSwipe from "@/components/icons/close-swipe";
+import { useTranslation } from "react-i18next";
 
 interface ParticipantCourse {
     participant: Participant;
@@ -41,7 +42,7 @@ export default function ManageParticipant() {
     const [refreshParticipants, setRefreshParticipants] = useState(false);
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
     const [searchQuery, setSearchQuery] = useState("");
-
+    const { t } = useTranslation();
     const swipeHandlers = useSwipeable({
         onSwipedDown: () => {
             handleClosePopup();
@@ -146,7 +147,9 @@ export default function ManageParticipant() {
     return (
         <div>
             <div className="flex flex-col gap-10 w-full items-center h-full">
-                <h1 className="font-semibold text-4xl text-center">Manage</h1>
+                <h1 className="font-semibold text-4xl text-center">
+                    {t("manage")}
+                </h1>
                 {showEditPopup && participantToEdit && (
                     <div className="fixed inset-0 flex items-end md:items-center justify-center z-10 overflow-y-auto">
                         <div
@@ -239,12 +242,12 @@ export default function ManageParticipant() {
                 <Card className="flex flex-col h-full">
                     <CardHeader className="w-full">
                         <h2 className="text-xl md:text-3xl font-semibold">
-                            Participants
+                            {t("participant", { count: 2 })}
                         </h2>
                         <div className="flex gap-2 md:gap-4 items-center">
                             <Input
                                 type="text"
-                                placeholder="Search"
+                                placeholder={t("search")}
                                 className="mt-2 md:mt-4 py-4 md:py-6 w-full"
                                 onChange={handleSearchChange}
                             ></Input>
@@ -261,7 +264,7 @@ export default function ManageParticipant() {
                             <TableHeader>
                                 <TableRow className="flex w-full text-base md:text-xl font-semibold">
                                     <TableHead className="w-[300px] min-w-[200px] text-left">
-                                        Participant
+                                        {t("participant")}
                                         <button
                                             onClick={handleSortChange}
                                             className="ml-2"
@@ -274,14 +277,14 @@ export default function ManageParticipant() {
                                         </button>
                                     </TableHead>
                                     <TableHead className="w-[250px] min-w-[120px] text-left">
-                                        Course Assigned
+                                        {t("course assigned")}
                                     </TableHead>
                                     <TableCell className="flex-1"></TableCell>
                                     <TableHead className="w-[100px] min-w-[80px] text-center">
-                                        Delete
+                                        {t("delete")}
                                     </TableHead>
                                     <TableHead className="w-[100px] min-w-[80px] text-center">
-                                        Edit
+                                        {t("edit")}
                                     </TableHead>
                                 </TableRow>
                             </TableHeader>
