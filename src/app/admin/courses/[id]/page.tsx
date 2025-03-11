@@ -20,6 +20,7 @@ import { type CourseMaterials } from "@/db/schema/courseMaterials";
 import AddSession from "@/components/sessions/add-session";
 import { CourseJoinRequest } from "@/db/schema/courseJoinRequests";
 import RequestList from "@/components/courses/request-list";
+import AddButton from "@/components/shared/add-button";
 
 export default function AdminCourses() {
     const { id } = useParams();
@@ -232,26 +233,11 @@ export default function AdminCourses() {
                                     }
                                     courseId={parseInt(id as string)}
                                 />
-                                <button
-                                    className="absolute bottom-20 right-6 flex h-[72px] w-[72px] bg-primary-green shadow-lg border-4 border-white rounded-full justify-center items-center z-10"
-                                    onClick={handleAddSessionButtonClick}
-                                >
-                                    <svg
-                                        width="32"
-                                        height="32"
-                                        viewBox="0 0 32 32"
-                                        fill="none"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                        <path
-                                            d="M16 5.33334V26.6667M26.6667 16L5.33334 16"
-                                            stroke="white"
-                                            strokeWidth="4"
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                        />
-                                    </svg>
-                                </button>
+                                <AddButton
+                                    handleAddButtonClick={
+                                        handleAddSessionButtonClick
+                                    }
+                                />
                             </div>
                         )}
                         {showAddSessionPopup && (
@@ -389,26 +375,9 @@ export default function AdminCourses() {
                                         </button>
                                     </div>
                                 )}
-                                <button
-                                    onClick={handleAddButtonClick}
-                                    className="absolute bottom-20 right-6 flex h-[72px] w-[72px] bg-primary-green shadow-lg border-4 border-white rounded-full justify-center items-center z-10"
-                                >
-                                    <svg
-                                        width="32"
-                                        height="32"
-                                        viewBox="0 0 32 32"
-                                        fill="none"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                        <path
-                                            d="M16 5.33334V26.6667M26.6667 16L5.33334 16"
-                                            stroke="white"
-                                            strokeWidth="4"
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                        />
-                                    </svg>
-                                </button>
+                                <AddButton
+                                    handleAddButtonClick={handleAddButtonClick}
+                                />
                                 {showAddPopup && (
                                     <div className="fixed inset-0 flex items-end md:items-center justify-center z-10">
                                         <div
