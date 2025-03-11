@@ -83,6 +83,7 @@ export async function PUT(req: Request) {
                         fileSize: file.size,
                     })
                     .where(eq(uploadMedia.id, Number(uploadId)));
+                url = await getSignedUrlFromFileKey(fileKey, true, file.name);
             }
             if (fileName && !fileKey) {
                 uploadId = await db
