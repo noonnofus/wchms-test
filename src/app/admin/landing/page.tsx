@@ -8,7 +8,7 @@ export default function AdminLanding() {
     return (
         <div className="flex flex-col gap-10 w-full h-full items-center">
             <h1 className="font-semibold text-4xl text-center">
-                Instructor Overview
+                Staff Overview
             </h1>
             <div className="w-full flex flex-col gap-4">
                 <Button

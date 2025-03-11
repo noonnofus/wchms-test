@@ -23,9 +23,9 @@ export default function Logout() {
                 <p className="text-xl leading-4 font-semibold">
                     Are you sure you want to
                 </p>
-                <p className="text-xl font-semibold">LOG OUT?</p>
+                <p className="text-xl font-semibold">LOGOUT?</p>
                 <p className="text-xl font-semibold mt-8">
-                    You will need to LOG IN again to access your account.
+                    You will need to LOGIN again to access your account.
                 </p>
             </Card>
             <div className="w-full flex flex-col gap-4">

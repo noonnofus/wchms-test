@@ -9,7 +9,7 @@ interface ChildrenWrapperProps {
 
 export default function ChildrenWrapper({ children }: ChildrenWrapperProps) {
     const pathname = usePathname();
-    const isAdmin = pathname.startsWith("/admin");
+    const isAdmin = pathname.includes("/admin/");
 
     return (
         <div
