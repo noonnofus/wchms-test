@@ -5,10 +5,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { Button } from "../ui/button";
+import { useTranslation } from "react-i18next";
 
 export default function TopNav() {
     const path = usePathname();
     const router = useRouter();
+    const { t } = useTranslation();
     return (
         <div className="p-6 min-h-28 flex items-center">
             <div className="flex justify-between items-center w-full">
@@ -40,7 +42,7 @@ export default function TopNav() {
                                         />
                                     </g>
                                 </svg>
-                                Back
+                                {t("back")}
                             </Button>
                         ) : (
                             <Button
@@ -51,7 +53,7 @@ export default function TopNav() {
                                 <Link
                                     href={`/logout?redirect=${path === "/admin/landing" ? `/admin` : "/"}`}
                                 >
-                                    Logout
+                                    {t("logout")}
                                 </Link>
                             </Button>
                         )

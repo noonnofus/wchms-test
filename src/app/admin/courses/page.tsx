@@ -8,6 +8,7 @@ import { type Course } from "@/db/schema/course";
 import { useEffect, useState } from "react";
 import { useSwipeable } from "react-swipeable";
 import DeleteConfirmation from "@/components/shared/delete-confirmation";
+import { useTranslation } from "react-i18next";
 
 export type CourseWithImage = Course & {
     fileKey: string | null;
@@ -15,6 +16,7 @@ export type CourseWithImage = Course & {
 };
 
 export default function Courses() {
+    const { t } = useTranslation();
     const [showAddPopup, setShowAddPopup] = useState(false);
     const [showEditPopup, setShowEditPopup] = useState(false);
     const [editCourseId, setEditCourseId] = useState(-1);
@@ -96,7 +98,9 @@ export default function Courses() {
 
     return (
         <div className="w-full h-full">
-            <h1 className="font-semibold text-4xl text-center mb-6">Courses</h1>
+            <h1 className="font-semibold text-4xl text-center mb-6">
+                {t("course", { count: 2 })}
+            </h1>
             {showAddPopup && (
                 <div className="fixed inset-0 flex items-end md:items-center justify-center z-20">
                     <div

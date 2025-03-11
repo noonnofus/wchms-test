@@ -5,10 +5,12 @@ import { Card } from "@/components/ui/card";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
+import { useTranslation } from "react-i18next";
 
 export default function Logout() {
     const router = useRouter();
     const searchParams = useSearchParams();
+    const { t } = useTranslation();
 
     const handleLogout = async () => {
         await signOut({ callbackUrl: "/login", redirect: false });
@@ -34,7 +36,7 @@ export default function Logout() {
                     onClick={handleLogout}
                     className="bg-destructive-red hover:bg-destructive-hover text-destructive-text rounded-full w-full font-semibold text-base min-h-[45px]"
                 >
-                    Logout
+                    {t("logout")}
                 </Button>
 
                 <Button
@@ -42,7 +44,7 @@ export default function Logout() {
                     variant="outline"
                     className="border-primary-green hover:bg-primary-green text-primary-green rounded-full w-full font-semibold text-base hover:text-white min-h-[45px]"
                 >
-                    Cancel
+                    {t("button.cancel")}
                 </Button>
             </div>
         </div>
