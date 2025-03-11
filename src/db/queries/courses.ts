@@ -5,7 +5,7 @@ import {
     CourseParticipant,
     Courses as coursesTable,
 } from "@/db/schema/course";
-import { desc, eq, and } from "drizzle-orm";
+import { desc, eq, and, like } from "drizzle-orm";
 import { uploadMedia } from "../schema/mediaUpload";
 import {
     courseMaterials,
@@ -284,7 +284,7 @@ export async function getCourseById(
 export async function getLatestPhysicalMaterial() {
     //TODO: Get user Id to validate the course is a course user assigned.
 
-    // It's returns Undefined right now
+    // It's returns Undefined now
     const session = await getServerSession(authConfig);
     const userId = session?.user.id;
     // console.log(session);
@@ -324,12 +324,17 @@ export async function getLatestPhysicalMaterial() {
                 fileName: uploadMedia.fileName,
                 fileType: uploadMedia.fileType,
                 fileSize: uploadMedia.fileSize,
-                fileData: uploadMedia.fileData,
+                // fileKey: uploadMedia.fileKey,
             },
         })
         .from(courseMaterials)
         .leftJoin(uploadMedia, eq(courseMaterials.uploadId, uploadMedia.id))
-        .where(eq(courseMaterials.courseId, latestCourse.id))
+        .where(
+            and(
+                eq(courseMaterials.courseId, latestCourse.id),
+                like(courseMaterials.url, "http%")
+            )
+        )
         .orderBy(desc(courseMaterials.createdAt));
 
     return material;

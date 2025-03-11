@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { useSwipeable } from "react-swipeable";
 import DeleteConfirmation from "@/components/shared/delete-confirmation";
 import { useTranslation } from "react-i18next";
+import AddButton from "@/components/shared/add-button";
 
 export type CourseWithImage = Course & {
     fileKey: string | null;
@@ -183,28 +184,7 @@ export default function Courses() {
                     </div>
                 </div>
             )}
-
-            <button
-                className="absolute bottom-20 right-6 flex h-[72px] w-[72px] bg-primary-green shadow-lg border-4 border-white rounded-full justify-center items-center z-10"
-                onClick={handleAddButtonClick}
-            >
-                <svg
-                    width="32"
-                    height="32"
-                    viewBox="0 0 32 32"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                >
-                    <path
-                        d="M16 5.33334V26.6667M26.6667 16L5.33334 16"
-                        stroke="white"
-                        strokeWidth="4"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                    />
-                </svg>
-            </button>
-
+            <AddButton handleAddButtonClick={handleAddButtonClick} />
             {isLoading ? (
                 <div className="flex justify-center items-center py-10">
                     <p>Loading Courses...</p>
