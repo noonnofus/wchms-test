@@ -23,7 +23,7 @@ export default function PhysicalCard({
     const router = useRouter();
 
     useEffect(() => {
-        // console.log(videoUrl);
+        console.log(videoUrl);
         const id = videoUrl?.split("v=")[1]?.split("&")[0];
         if (videoUrl !== null && id) {
             setVideoId(id);
