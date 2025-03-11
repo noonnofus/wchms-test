@@ -26,7 +26,7 @@ export default function ActivityPage() {
     const [recommendations, setRecommendations] = useState<Recommendation[] | null>(null);
     const [mathQuestions, setMathQuestions] = useState<MathQuestions[] | null>(null);
     const [currentQuestion, setCurrentQuestion] = useState(0);
-    const [loading, setLoading] = useState(false);
+    // const [loading, setLoading] = useState(false);
     const [physicalUrl, setPhysicalUrl] = useState<string | null>(null);
 
     const pathname = usePathname();
@@ -53,14 +53,11 @@ export default function ActivityPage() {
             throw new Error(`HTTP error! Status: ${res.status}`);
         }
 
-        let result;
-
         try {
             const data = await res.json();
             return await JSON.parse(data.result);
         } catch (e) {
             console.error(e);
-            result = null;
         }
     }
 
@@ -72,13 +69,11 @@ export default function ActivityPage() {
 
     useEffect(() => {
         const fetchQuestions = async () => {
-            if (activity === "arithemetic") {
-                setLoading(true);
+            if (activity === "arithmetic") {
                 const data = await getMathQuestions();
                 if (data) {
                     setMathQuestions(data.questions);
                 }
-                setLoading(false);
             }
         };
 
@@ -113,12 +108,16 @@ export default function ActivityPage() {
 
     useEffect(() => {
         const getVideoUrl = async () => {
-            const res = await getLatestPhysicalMaterial();
-            const url = res[0].url;
-            if (url) {
-                setPhysicalUrl(url);
-            } else {
-                setPhysicalUrl("No available video for you, please try again later.");
+            if (activity === "physical") {
+                const res = await getLatestPhysicalMaterial();
+                console.log(res);
+                const url = res[0].url;
+                console.log(url);
+                if (url !== null) {
+                    setPhysicalUrl(url);
+                } else {
+                    setPhysicalUrl("No available video for you, please try again later.");
+                }
             }
         }
 
@@ -127,7 +126,7 @@ export default function ActivityPage() {
     }, [activity, difficulty])
 
     const activityComponents: Record<string, React.ReactNode> = {
-        arithemetic: (
+        arithmetic: (
             <ArithemeticCard
                 question={mathQuestions ? mathQuestions[currentQuestion].question : null}
                 answer={mathQuestions ? mathQuestions[currentQuestion].answer : null}
