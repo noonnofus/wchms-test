@@ -59,11 +59,7 @@ export default function TopNav() {
                 </div>
                 <div className="flex-1 flex justify-center items-center">
                     <Link
-                        href={
-                            path.startsWith("/admin")
-                                ? "/admin/landing"
-                                : "/landing"
-                        }
+                        href="/landing"
                     >
                         <Image
                             src="/logo.png"

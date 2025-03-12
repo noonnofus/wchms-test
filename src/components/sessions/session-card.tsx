@@ -41,11 +41,10 @@ export default function SessionCard({
     return (
         <div className="flex flex-col items-center w-full">
             <Card
-                className={`flex flex-row justify-between items-center gap-4 p-4 shadow-lg rounded-lg ${
-                    currentDateTime > session.endTime.toISOString()
-                        ? "bg-gray-200"
-                        : "bg-white"
-                }`}
+                className={`flex flex-row justify-between items-center gap-4 p-4 shadow-lg rounded-lg ${currentDateTime > session.endTime.toISOString()
+                    ? "bg-gray-200"
+                    : "bg-white"
+                    }`}
             >
                 <div className="flex items-center gap-4 text-gray-700">
                     <Calendar className="w-6 h-6 text-gray-500" />

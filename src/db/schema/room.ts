@@ -1,11 +1,4 @@
-import {
-    mysqlTable,
-    serial,
-    varchar,
-    mysqlEnum,
-    date,
-    int,
-} from "drizzle-orm/mysql-core";
+import { mysqlTable, varchar, mysqlEnum, int } from "drizzle-orm/mysql-core";
 
 export enum RoomStatus {
     available = "available",
