@@ -240,114 +240,109 @@ export default function ManageParticipant() {
                     <h2 className="text-xl md:text-3xl font-semibold">
                         Participants
                     </h2>
-                    <div className="flex gap-2 md:gap-4 items-center">
-                        <Input
-                            type="text"
-                            placeholder="Search"
-                            className="mt-2 md:mt-4 py-4 md:py-6 w-full"
-                            onChange={handleSearchChange}
-                        ></Input>
-                    </div>
+                    <Input
+                        type="text"
+                        placeholder="Search"
+                        className="mt-2 md:mt-4 py-4 md:py-6 w-full"
+                        onChange={handleSearchChange}
+                    ></Input>
                 </div>
-                <div className="w-full flex-grow overflow-auto">
-                    <Table className="table-fixed w-full border-collapse">
-                        <TableHeader className="w-full">
-                            <TableRow className="flex justify-between w-full text-base md:text-xl font-semibold">
-                                <TableHead className="flex items-center w-[300px] min-w-[200px] text-left">
-                                    Participant
-                                    <button
-                                        onClick={handleSortChange}
-                                        className="ml-2"
-                                    >
-                                        {sortOrder === "asc" ? (
-                                            <ChevronDownIcon className="text-primary-green" />
-                                        ) : (
-                                            <ChevronUpIcon className="text-primary-green" />
-                                        )}
-                                    </button>
-                                </TableHead>
-                                <TableHead className="flex items-center w-[250px] min-w-[120px] text-left">
-                                    Course Assigned
-                                </TableHead>
-                                <TableHead className="flex justify-center items-center gap-4 w-[200px] min-w-[80px] text-center">
-                                    <span className="w-[100px]">Delete</span>
-                                    <span className="w-[100px]">Edit</span>
-                                </TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {isLoading
-                                ? [...Array(3)].map((_, index) => (
-                                      <TableRow
-                                          className="flex justify-between w-full items-center"
-                                          key={index}
-                                      >
-                                          <TableCell className="w-[300px] min-w-[250px] flex items-center gap-4 text-left text-base md:text-lg">
-                                              <Skeleton className="hidden md:flex md:w-10 md:h-10 rounded-full" />
-                                              <Skeleton className="h-4 w-24 rounded" />
-                                          </TableCell>
-                                          <TableCell className="w-[200px] min-w-[120px]">
-                                              <Skeleton className="h-4 w-40 rounded" />
-                                          </TableCell>
-                                          <TableCell className="w-[200px] min-w-[80px] flex justify-center items-center">
-                                              <Skeleton className="h-6 w-6 rounded" />
-                                              <Skeleton className="h-6 w-6 rounded" />
-                                          </TableCell>
-                                      </TableRow>
-                                  ))
-                                : filteredParticipants.map(
-                                      (
-                                          participantCourse: ParticipantCourse
-                                      ) => {
-                                          return (
-                                              <TableRow
-                                                  className="flex gap-2 justify-between w-full items-center"
-                                                  key={
-                                                      participantCourse
-                                                          .participant.id
-                                                  }
-                                              >
-                                                  <TableCell className="w-[300px] min-w-[200px] flex items-center gap-4 text-left text-base md:text-lg">
-                                                      <div className="hidden md:flex md:w-10 md:h-10 rounded-full bg-gray-200 items-center justify-center">
-                                                          {`${participantCourse.participant.firstName[0]}${participantCourse.participant.lastName[0]}`}
-                                                      </div>
-                                                      {`${participantCourse.participant.firstName} ${participantCourse.participant.lastName}`}
-                                                  </TableCell>
-                                                  <TableCell className="w-[250px] min-w-[120px] text-left text-base md:text-lg">
-                                                      {participantCourse.course ??
-                                                          "none"}
-                                                  </TableCell>
-                                                  <TableCell className="w-[200px] min-w-[80px] flex gap-4 justify-center items-center">
-                                                      <button
-                                                          onClick={() => {
-                                                              handleDeleteButtonClick(
-                                                                  participantCourse.participant
-                                                              );
-                                                          }}
-                                                          className="w-[100px] flex justify-center"
-                                                      >
-                                                          <DeleteIcon />
-                                                      </button>
-                                                      <button
-                                                          onClick={() => {
-                                                              handleEditButtonClick(
-                                                                  participantCourse.participant
-                                                              );
-                                                          }}
-                                                          className="w-[100px] flex justify-center"
-                                                      >
-                                                          <EditIcon />
-                                                      </button>
-                                                  </TableCell>
-                                              </TableRow>
-                                          );
-                                      }
-                                  )}
-                        </TableBody>
-                    </Table>
-                </div>
-                <AddButton handleAddButtonClick={handleAddButtonClick} />
+
+                <Table className="table-fixed w-full border-collapse">
+                    <TableHeader className="w-full">
+                        <TableRow className="flex gap-2 justify-between w-full text-base md:text-xl font-semibold">
+                            <TableHead className="flex items-center w-[300px] min-w-[200px] text-left">
+                                Participant
+                                <button
+                                    onClick={handleSortChange}
+                                    className="ml-2"
+                                >
+                                    {sortOrder === "asc" ? (
+                                        <ChevronDownIcon className="text-primary-green" />
+                                    ) : (
+                                        <ChevronUpIcon className="text-primary-green" />
+                                    )}
+                                </button>
+                            </TableHead>
+                            <TableHead className="flex items-center w-[250px] min-w-[120px] text-left">
+                                Course Assigned
+                            </TableHead>
+                            <TableHead className="flex justify-center items-center gap-4 w-[200px] min-w-[100px] text-center">
+                                <span className="w-1/2">Delete</span>
+                                <span className="w-1/2">Edit</span>
+                            </TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {isLoading
+                            ? [...Array(3)].map((_, index) => (
+                                  <TableRow
+                                      className="flex justify-between w-full items-center"
+                                      key={index}
+                                  >
+                                      <TableCell className="w-[300px] min-w-[250px] flex items-center gap-4 text-left text-base md:text-lg">
+                                          <Skeleton className="hidden md:flex md:w-10 md:h-10 rounded-full" />
+                                          <Skeleton className="h-4 w-24 rounded" />
+                                      </TableCell>
+                                      <TableCell className="w-[200px] min-w-[120px]">
+                                          <Skeleton className="h-4 w-40 rounded" />
+                                      </TableCell>
+                                      <TableCell className="w-[200px] min-w-[100px] flex justify-center items-center">
+                                          <Skeleton className="h-6 w-6 rounded" />
+                                          <Skeleton className="h-6 w-6 rounded" />
+                                      </TableCell>
+                                  </TableRow>
+                              ))
+                            : filteredParticipants.map(
+                                  (participantCourse: ParticipantCourse) => {
+                                      return (
+                                          <TableRow
+                                              className="flex gap-2 justify-between w-full items-center"
+                                              key={
+                                                  participantCourse.participant
+                                                      .id
+                                              }
+                                          >
+                                              <TableCell className="w-[300px] min-w-[200px] flex items-center gap-4 text-left text-base md:text-lg">
+                                                  <div className="hidden md:flex md:w-10 md:h-10 rounded-full bg-gray-200 items-center justify-center">
+                                                      {`${participantCourse.participant.firstName[0]}${participantCourse.participant.lastName[0]}`}
+                                                  </div>
+                                                  {`${participantCourse.participant.firstName} ${participantCourse.participant.lastName}`}
+                                              </TableCell>
+                                              <TableCell className="w-[250px] min-w-[120px] text-left text-base md:text-lg">
+                                                  {participantCourse.course ??
+                                                      "none"}
+                                              </TableCell>
+                                              <TableCell className="w-[200px] min-w-[100px] flex gap-4 justify-center items-center">
+                                                  <button
+                                                      onClick={() => {
+                                                          handleDeleteButtonClick(
+                                                              participantCourse.participant
+                                                          );
+                                                      }}
+                                                      className="w-1/2 flex justify-center"
+                                                  >
+                                                      <DeleteIcon />
+                                                  </button>
+                                                  <button
+                                                      onClick={() => {
+                                                          handleEditButtonClick(
+                                                              participantCourse.participant
+                                                          );
+                                                      }}
+                                                      className="w-1/2 flex justify-center"
+                                                  >
+                                                      <EditIcon />
+                                                  </button>
+                                              </TableCell>
+                                          </TableRow>
+                                      );
+                                  }
+                              )}
+                    </TableBody>
+                </Table>
             </div>
+            <AddButton handleAddButtonClick={handleAddButtonClick} />
         </div>
     );
 }
