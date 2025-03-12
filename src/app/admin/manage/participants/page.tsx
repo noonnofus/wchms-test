@@ -190,8 +190,8 @@ export default function ManageParticipant() {
                     ></div>
                     <div className="z-30 bg-white rounded-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
                         <DeleteConfirmation
-                            title="Before you delete!"
-                            body={`Are you sure you want to delete ${participantToDelete.firstName}? You cannot undo this action.`}
+                            title="Delete Participant"
+                            body={`Are you sure you want to delete participant ${participantToDelete.firstName}? You cannot undo this action.`}
                             actionLabel="DELETE"
                             handleSubmit={handleDelete}
                             closePopup={handleClosePopup}
@@ -269,11 +269,9 @@ export default function ManageParticipant() {
                                 <TableHead className="flex items-center w-[250px] min-w-[120px] text-left">
                                     Course Assigned
                                 </TableHead>
-                                <TableHead className="flex justify-center items-center w-[100px] min-w-[80px] text-center">
-                                    Delete
-                                </TableHead>
-                                <TableHead className="flex justify-center items-center w-[100px] min-w-[80px] text-center">
-                                    Edit
+                                <TableHead className="flex justify-center items-center gap-4 w-[200px] min-w-[80px] text-center">
+                                    <span className="w-[100px]">Delete</span>
+                                    <span className="w-[100px]">Edit</span>
                                 </TableHead>
                             </TableRow>
                         </TableHeader>
@@ -291,10 +289,8 @@ export default function ManageParticipant() {
                                           <TableCell className="w-[200px] min-w-[120px]">
                                               <Skeleton className="h-4 w-40 rounded" />
                                           </TableCell>
-                                          <TableCell className="w-[100px] min-w-[80px] flex justify-center items-center">
+                                          <TableCell className="w-[200px] min-w-[80px] flex justify-center items-center">
                                               <Skeleton className="h-6 w-6 rounded" />
-                                          </TableCell>
-                                          <TableCell className="w-[100px] min-w-[80px] flex justify-center items-center">
                                               <Skeleton className="h-6 w-6 rounded" />
                                           </TableCell>
                                       </TableRow>
@@ -321,24 +317,24 @@ export default function ManageParticipant() {
                                                       {participantCourse.course ??
                                                           "none"}
                                                   </TableCell>
-                                                  <TableCell className="w-[100px] min-w-[80px] flex justify-center items-center">
+                                                  <TableCell className="w-[200px] min-w-[80px] flex gap-4 justify-center items-center">
                                                       <button
                                                           onClick={() => {
                                                               handleDeleteButtonClick(
                                                                   participantCourse.participant
                                                               );
                                                           }}
+                                                          className="w-[100px] flex justify-center"
                                                       >
                                                           <DeleteIcon />
                                                       </button>
-                                                  </TableCell>
-                                                  <TableCell className="w-[100px] min-w-[80px] flex justify-center items-start">
                                                       <button
                                                           onClick={() => {
                                                               handleEditButtonClick(
                                                                   participantCourse.participant
                                                               );
                                                           }}
+                                                          className="w-[100px] flex justify-center"
                                                       >
                                                           <EditIcon />
                                                       </button>
