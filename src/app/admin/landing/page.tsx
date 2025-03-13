@@ -26,7 +26,7 @@ export default function AdminLanding() {
                     asChild
                     className="min-h-[16vh] rounded-lg bg-homework-yellow hover:bg-[#E0A800]"
                 >
-                    <Link href="#">
+                    <Link href="/admin/rooms">
                         <div className="flex flex-col items-center justify-center">
                             <svg
                                 width="48"
@@ -52,7 +52,7 @@ export default function AdminLanding() {
                                 />
                             </svg>
 
-                            <p className="text-2xl md:text-3xl">Participants</p>
+                            <p className="text-2xl md:text-3xl">Rooms</p>
                         </div>
                     </Link>
                 </Button>

@@ -14,13 +14,13 @@ import { Textarea } from "../ui/textarea";
 const mediums = ["online", "Offline"];
 const statuses = ["available", "unavailable"];
 
-// TODO: Make a logic to store the room info into the db.
-
 export default function AddRoom({
-    // closePopup,
+    onRoomAdded,
+    closePopup,
 }: {
-        // closePopup: () => void;
-    }) {
+    onRoomAdded: () => void;
+    closePopup: () => void;
+}) {
     const [name, setName] = useState("");
     const [selectedMedium, setSelectedMedium] = useState("online");
     const [url, setUrl] = useState("");
@@ -88,7 +88,7 @@ export default function AddRoom({
             url: "",
             status: "",
         });
-        // closePopup();
+        closePopup();
     };
 
     const handleAddRoomSubmit = async (e: React.FormEvent) => {
@@ -101,17 +101,17 @@ export default function AddRoom({
         }
 
         try {
-            const res = await fetch("/api/courses/room", {
+            const res = await fetch("/api/courses/room/add", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
                     name,
-                    selectedMedium,
+                    medium: selectedMedium,
                     url,
                     capacity,
-                    selectedStatus,
+                    status: selectedStatus,
                     description,
                     note,
                 }),
@@ -121,6 +121,9 @@ export default function AddRoom({
                 throw new Error("Failed to add room in the course");
             }
 
+            onRoomAdded();
+            console.log("room added");
+
             setName("");
             setSelectedMedium("online");
             setUrl("");
@@ -128,7 +131,7 @@ export default function AddRoom({
             setSelectedStatus("available");
             setDescription("");
             setNote("");
-            // closePopup();
+            closePopup();
         } catch (error) {
             console.error(error);
         } finally {
@@ -284,7 +287,7 @@ export default function AddRoom({
                     <Button
                         variant="outline"
                         className="w-full h-full rounded-full bg-transparent border-primary-green text-primary-green hover:bg-primary-green hover:text-white font-semibold md:text-xl py-2 md:py-4"
-                    // onClick={handleCancel}
+                        onClick={handleCancel}
                     >
                         Cancel
                     </Button>
