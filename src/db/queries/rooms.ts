@@ -57,7 +57,7 @@ export async function getAllRooms() {
                 medium: rooms.medium,
                 url: rooms.url,
                 capacity: rooms.capacity,
-                satus: rooms.status,
+                status: rooms.status,
                 description: rooms.description,
                 internalNote: rooms.internalNote,
             })

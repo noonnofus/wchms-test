@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Input } from "../ui/input";
 import {
     Select,
@@ -10,45 +10,62 @@ import {
 } from "@/components/ui/select";
 import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
+import { Room } from "@/db/schema/room";
 
 const mediums = ["online", "offline"];
 const statuses = ["available", "unavailable"];
 
-export default function AddRoom({
-    onRoomAdded,
+export default function EditRoom({
     closePopup,
+    roomData,
+    onRoomUpdated,
 }: {
-    onRoomAdded: () => void;
     closePopup: () => void;
+    roomData: Room;
+    onRoomUpdated: () => void;
 }) {
-    const [name, setName] = useState("");
-    const [selectedMedium, setSelectedMedium] = useState("online");
-    const [url, setUrl] = useState("");
-    const [capacity, setCapacity] = useState("");
-    const [selectedStatus, setSelectedStatus] = useState("available");
-    const [description, setDescription] = useState("");
-    const [note, setNote] = useState("");
-    const [loading, setLoading] = useState(false);
+    const [name, setName] = useState(roomData.name);
+    const [medium, setMedium] = useState<string>(roomData.medium);
+    const [url, setUrl] = useState(roomData.url);
+    const [capacity, setCapacity] = useState<string>(String(roomData.capacity));
+    const [status, setStatus] = useState<string>(roomData.status);
+    const [description, setDescription] = useState(roomData.description);
+    const [note, setNote] = useState(roomData.internalNote);
     const [errors, setErrors] = useState({
         name: "",
         medium: "",
-        url: "",
         status: "",
     });
 
-    const handleMediumChange = (value: string) => {
-        setSelectedMedium(value);
-    }
+    const [loading, setLoading] = useState(false);
 
-    const handleStatusChange = (value: string) => {
-        setSelectedStatus(value);
-    }
+    useEffect(() => {
+        setName(roomData.name);
+        setMedium(roomData.medium);
+        setUrl(roomData.url);
+        setCapacity(String(roomData.capacity));
+        setStatus(roomData.status);
+        setDescription(roomData.description);
+        setNote(roomData.internalNote);
+    }, [roomData]);
+
+    const handleMediumChange = (medium: string) => {
+        setMedium(medium);
+    };
+
+    const handleStatusChange = (status: string) => {
+        setStatus(status);
+    };
+
+    const handleCancel = (e: React.FormEvent) => {
+        e.preventDefault();
+        closePopup();
+    };
 
     const validateFields = () => {
         let newErrors = {
             name: "",
             medium: "",
-            url: "",
             status: "",
         };
         let valid = true;
@@ -57,15 +74,11 @@ export default function AddRoom({
             newErrors.name = "Room name is required";
             valid = false;
         }
-        if (!selectedMedium.trim()) {
+        if (!medium.trim()) {
             newErrors.medium = "Medium is required";
             valid = false;
         }
-        if (!url.trim()) {
-            newErrors.url = "Url is required";
-            valid = false;
-        }
-        if (!selectedStatus.trim()) {
+        if (!status.trim()) {
             newErrors.status = "Status is required";
             valid = false;
         }
@@ -73,67 +86,40 @@ export default function AddRoom({
         return valid;
     };
 
-    const handleCancel = (e: React.FormEvent) => {
+    const handleEditRoomSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setName("");
-        setSelectedMedium("online");
-        setUrl("");
-        setCapacity("");
-        setSelectedStatus("available");
-        setDescription("");
-        setNote("");
-        setErrors({
-            name: "",
-            medium: "",
-            url: "",
-            status: "",
-        });
-        closePopup();
-    };
 
-    const handleAddRoomSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+        if (!validateFields()) return;
+
         setLoading(true);
 
-        if (!validateFields()) {
-            setLoading(false);
-            return;
-        }
-
         try {
-            const res = await fetch("/api/courses/room/add", {
-                method: "POST",
+            const response = await fetch(`/api/courses/room/update`, {
+                method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    name,
-                    medium: selectedMedium,
-                    url,
-                    capacity,
-                    status: selectedStatus,
-                    description,
-                    note,
+                    id: roomData.id,
+                    name: name,
+                    medium: medium,
+                    url: url,
+                    capacity: capacity,
+                    status: status,
+                    description: description,
+                    internalNote: note,
                 }),
             });
 
-            if (!res.ok) {
-                throw new Error("Failed to add room in the course");
+            if (!response.ok) {
+                throw new Error("Failed to update room");
             }
 
-            onRoomAdded();
-            console.log("room added");
-
-            setName("");
-            setSelectedMedium("online");
-            setUrl("");
-            setCapacity("");
-            setSelectedStatus("available");
-            setDescription("");
-            setNote("");
+            onRoomUpdated();
+            console.log("Room updated successfully");
             closePopup();
         } catch (error) {
-            console.error(error);
+            console.error("Error updating room:", error);
         } finally {
             setLoading(false);
         }
@@ -142,12 +128,12 @@ export default function AddRoom({
     return (
         <div className="flex flex-col gap-12 overflow-y-auto py-8 px-6 rounded-lg bg-white items-center justify-center">
             <h1 className="font-semibold text-3xl md:text-4xl text-center">
-                Add New Room
+                Edit {roomData.name} Room
             </h1>
             <form
                 className="flex flex-col gap-4 md:gap-6 w-full h-full md:text-2xl"
                 method="POST"
-                onSubmit={handleAddRoomSubmit}
+                onSubmit={handleEditRoomSubmit}
             >
                 <div className="flex w-full">
                     <div className="flex flex-col flex-1 gap-2">
@@ -175,7 +161,7 @@ export default function AddRoom({
                             </p>
                         )}
                         <Select
-                            value={selectedMedium}
+                            value={medium}
                             onValueChange={handleMediumChange}
                         >
                             <SelectTrigger>
@@ -196,16 +182,11 @@ export default function AddRoom({
                     </div>
                     <div className="flex flex-col flex-1 gap-2">
                         <label htmlFor="lastName">URL</label>
-                        {errors.url && (
-                            <p className="text-red-500 text-sm">
-                                {errors.url}
-                            </p>
-                        )}
                         <Input
                             id="url"
                             type="text"
                             placeholder="https://example.zoom.us/12345"
-                            value={url}
+                            value={url ? url : ""}
                             onChange={(e) => setUrl(e.target.value)}
                         />
                     </div>
@@ -217,7 +198,7 @@ export default function AddRoom({
                             id="capacity"
                             type="text"
                             placeholder="100"
-                            value={capacity}
+                            value={capacity ? capacity : ""}
                             onChange={(e) => setCapacity(e.target.value)}
                         />
                     </div>
@@ -229,7 +210,7 @@ export default function AddRoom({
                             </p>
                         )}
                         <Select
-                            value={selectedStatus}
+                            value={status}
                             onValueChange={handleStatusChange}
                         >
                             <SelectTrigger>
@@ -259,7 +240,7 @@ export default function AddRoom({
                             name="description"
                             placeholder="Room Description"
                             onChange={(e) => setDescription(e.target.value)}
-                            value={description}
+                            value={description ? description : ""}
                         />
                     </div>
                 </div>
@@ -273,7 +254,7 @@ export default function AddRoom({
                             name="note"
                             placeholder="Internal Note"
                             onChange={(e) => setNote(e.target.value)}
-                            value={note}
+                            value={note ? note : ""}
                         />
                     </div>
                 </div>

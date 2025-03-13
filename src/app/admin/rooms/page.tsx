@@ -16,14 +16,18 @@ import {
 } from "@/components/ui/table";
 import { useState, useEffect } from "react";
 import AddRoom from "@/components/rooms/add-room";
+import EditRoom from "@/components/rooms/edit-room";
 import DeleteConfirmation from "@/components/shared/delete-confirmation";
 import CloseIcon from "@/components/icons/close-icon";
 import CloseSwipe from "@/components/icons/close-swipe";
 import { Room } from "@/db/schema/room";
 
+
 export default function RoomPage() {
     const [rooms, setRooms] = useState<Room[]>([]);
     const [roomToDelete, setRoomToDelete] = useState<Room | null>(null);
+    const [roomToEdit, setRoomToEdit] = useState<Room | null>(null);
+    const [showEditPopup, setShowEditPopup] = useState(false);
     const [showAddPopup, setShowAddPopup] = useState(false);
     const [refreshRooms, setRefreshRooms] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -48,12 +52,17 @@ export default function RoomPage() {
         setShowDeletePopup(true);
     };
 
+    const handleEditButtonClick = (room: Room) => {
+        setRoomToEdit(room);
+        setShowEditPopup(true);
+    };
+
     const handleClosePopup = () => {
         setShowDeletePopup(false);
         setShowAddPopup(false);
-        // setShowEditPopup(false);
+        setShowEditPopup(false);
         setRoomToDelete(null);
-        // setAdminToEdit(null);
+        setRoomToEdit(null);
     };
 
     const handleDelete = async () => {
@@ -110,6 +119,42 @@ export default function RoomPage() {
                                 <AddRoom
                                     closePopup={handleClosePopup}
                                     onRoomAdded={() =>
+                                        setRefreshRooms((prev) => !prev)
+                                    }
+                                />
+                            </div>
+                        </div>
+                    </div>
+                )}
+                {showEditPopup && roomToEdit && (
+                    <div className="fixed inset-0 flex items-end md:items-center justify-center z-10 overflow-y-auto">
+                        <div
+                            className="absolute inset-0 bg-black opacity-50"
+                            onClick={handleClosePopup}
+                        ></div>
+                        <div className="z-30 bg-white rounded-t-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
+                            <div className="relative w-full">
+                                <div
+                                    className="flex justify-center items-center p-6 md:hidden "
+                                // {...swipeHandlers}
+                                >
+                                    {/* Swipe indicator */}
+                                    <div className="absolute top-6 md:hidden">
+                                        <CloseSwipe />
+                                    </div>
+                                </div>
+                                <button
+                                    onClick={handleClosePopup}
+                                    className="absolute top-3 right-4"
+                                >
+                                    <CloseIcon />
+                                </button>
+                            </div>
+                            <div className="overflow-y-auto max-h-[calc(90vh-90px)]">
+                                <EditRoom
+                                    closePopup={handleClosePopup}
+                                    roomData={roomToEdit}
+                                    onRoomUpdated={() =>
                                         setRefreshRooms((prev) => !prev)
                                     }
                                 />
@@ -214,11 +259,11 @@ export default function RoomPage() {
                                                 </TableCell>
                                                 <TableCell className="flex-1 min-w-[80px] flex justify-center items-center">
                                                     <button
-                                                    // onClick={() =>
-                                                    //     handleEditButtonClick(
-                                                    //         room
-                                                    //     )
-                                                    // }
+                                                        onClick={() =>
+                                                            handleEditButtonClick(
+                                                                room
+                                                            )
+                                                        }
                                                     >
                                                         <Pen className="inline-flex text-center" />
                                                     </button>
