@@ -13,11 +13,12 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { PlusIcon } from "lucide-react";
-import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { CourseFull } from "@/db/schema/course";
 import { getCourseById } from "@/db/queries/courses";
+import DeleteConfirmation from "@/components/shared/delete-confirmation";
+import { Participant } from "@/db/schema/participants";
 
 export default function ClassParticipants() {
     const { id } = useParams();
@@ -25,6 +26,10 @@ export default function ClassParticipants() {
     const [selectedCourse, setSelectedCourse] = useState<
         CourseFull | undefined
     >(undefined);
+    const [showDeletePopup, setShowDeletePopup] = useState(false);
+    const [participantToRemove, setParticipantToRemove] =
+        useState<Participant | null>(null);
+    const [refreshParticipants, setRefreshParticipants] = useState(false);
 
     useEffect(() => {
         const fetchCourses = async () => {
@@ -49,7 +54,7 @@ export default function ClassParticipants() {
             }
         };
         fetchCourses();
-    }, [id]);
+    }, [id, refreshParticipants]);
 
     const [searchQuery, setSearchQuery] = useState("");
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
@@ -76,11 +81,61 @@ export default function ClassParticipants() {
                 : nameB.localeCompare(nameA);
         });
 
+    const handleRemoveButtonClick = (participant: Participant) => {
+        setParticipantToRemove(participant);
+        setShowDeletePopup(true);
+    };
+
+    const handleRemoveParticipant = async () => {
+        if (!participantToRemove) return;
+        try {
+            const response = await fetch("/api/courses/participants/remove", {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    userId: participantToRemove.id,
+                    courseId: id,
+                }),
+            });
+
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.error || "Failed to delete");
+
+            setRefreshParticipants((prev) => !prev);
+        } catch (error) {
+            console.error("Failed to remove participant from course", error);
+        } finally {
+            setShowDeletePopup(false);
+            setParticipantToRemove(null);
+        }
+    };
+
+    const handleClosePopup = () => {
+        setShowDeletePopup(false);
+    };
+
     return (
         <div className="flex flex-col gap-10 w-full items-center">
             <h1 className="font-semibold text-4xl text-center">
                 Participant List
             </h1>
+            {showDeletePopup && participantToRemove && (
+                <div className="fixed inset-0 flex items-center justify-center z-10 overflow-y-auto">
+                    <div
+                        className="absolute inset-0 bg-black opacity-50"
+                        onClick={handleClosePopup}
+                    ></div>
+                    <div className="z-30 bg-white rounded-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
+                        <DeleteConfirmation
+                            title="Before you delete!"
+                            body={`Are you sure you want to delete ${participantToRemove.firstName}? You cannot undo this action.`}
+                            actionLabel="DELETE"
+                            handleSubmit={handleRemoveParticipant}
+                            closePopup={handleClosePopup}
+                        />
+                    </div>
+                </div>
+            )}
             <Card className="flex flex-col h-full">
                 <CardHeader className="w-full">
                     <h2 className="text-xl md:text-3xl font-semibold">
@@ -136,9 +191,15 @@ export default function ClassParticipants() {
                                             </div>
                                         </TableCell>
                                         <TableCell className="flex justify-center items-center px-0 w-20 med:w-24">
-                                            <Link href="#">
+                                            <button
+                                                onClick={() =>
+                                                    handleRemoveButtonClick(
+                                                        participant
+                                                    )
+                                                }
+                                            >
                                                 <DeleteIcon className="inline-flex flex-col text-center justify-center items-center" />
-                                            </Link>
+                                            </button>
                                         </TableCell>
                                     </TableRow>
                                 );
