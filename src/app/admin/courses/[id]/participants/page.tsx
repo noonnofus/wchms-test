@@ -113,6 +113,7 @@ export default function ClassParticipants() {
     const handleClosePopup = () => {
         setShowDeletePopup(false);
     };
+
     return (
         <div className="flex flex-col gap-10 w-full items-center">
             <h1 className="font-semibold text-4xl text-center">
