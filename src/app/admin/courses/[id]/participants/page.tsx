@@ -12,13 +12,13 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { PlusIcon } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { CourseFull } from "@/db/schema/course";
 import { getCourseById } from "@/db/queries/courses";
 import DeleteConfirmation from "@/components/shared/delete-confirmation";
 import { Participant } from "@/db/schema/participants";
+import AddButton from "@/components/shared/add-button";
 
 export default function ClassParticipants() {
     const { id } = useParams();
@@ -30,6 +30,8 @@ export default function ClassParticipants() {
     const [participantToRemove, setParticipantToRemove] =
         useState<Participant | null>(null);
     const [refreshParticipants, setRefreshParticipants] = useState(false);
+    const [showAddParticipantPopup, setShowAddParticipantPopup] =
+        useState(false);
 
     useEffect(() => {
         const fetchCourses = async () => {
@@ -110,6 +112,10 @@ export default function ClassParticipants() {
         }
     };
 
+    const handleAddParticipantClick = () => {
+        setShowAddParticipantPopup(true);
+    };
+
     const handleClosePopup = () => {
         setShowDeletePopup(false);
     };
@@ -136,27 +142,22 @@ export default function ClassParticipants() {
                     </div>
                 </div>
             )}
-            <Card className="flex flex-col h-full">
-                <CardHeader className="w-full">
+            <div className="flex flex-col gap-4 w-full h-full">
+                <div className="w-full">
                     <h2 className="text-xl md:text-3xl font-semibold">
                         {selectedCourse?.title}
                     </h2>
-                    <div className="flex gap-2 md:gap-4 items-center">
-                        <Input
-                            type="text"
-                            placeholder="Search"
-                            className="mt-2 md:mt-4 py-4 md:py-6 w-full"
-                            onChange={handleSearchChange}
-                        ></Input>
-                        <button className="mt-2 md:mt-4 flex flex-col min-w-8 min-h-8 md:min-h-12 md:min-w-12 border-2 md:border-[3px] border-primary-green text-primary-green rounded-full justify-center items-center">
-                            <PlusIcon className="w-3/5 h-3/5" />
-                        </button>
-                    </div>
-                </CardHeader>
-                <CardContent className="w-full flex-grow overflow-auto">
-                    <Table className="w-full flex flex-col">
+                    <Input
+                        type="text"
+                        placeholder="Search"
+                        className="mt-2 md:mt-4 py-4 md:py-6 w-full"
+                        onChange={handleSearchChange}
+                    ></Input>
+                </div>
+                <div className="w-full flex-grow overflow-auto">
+                    <Table className="table-fixed w-full flex flex-col">
                         <TableHeader>
-                            <TableRow className="flex text-base md:text-xl font-semibold">
+                            <TableRow className="flex text-base md:text-xl font-semibold items-center">
                                 <TableHead className="flex-1 flex gap-2 items-center text-left text-black">
                                     Participant
                                     <button
@@ -170,7 +171,7 @@ export default function ClassParticipants() {
                                         )}
                                     </button>
                                 </TableHead>
-                                <TableHead className="flex-shrink-0 text-center p-0 w-20 med:w-24 text-black">
+                                <TableHead className="flex items-center justify-center text-center p-0 w-20 med:w-24 text-black">
                                     Remove
                                 </TableHead>
                             </TableRow>
@@ -206,8 +207,9 @@ export default function ClassParticipants() {
                             })}
                         </TableBody>
                     </Table>
-                </CardContent>
-            </Card>
+                </div>
+            </div>
+            <AddButton handleAddButtonClick={handleAddParticipantClick} />
         </div>
     );
 }
