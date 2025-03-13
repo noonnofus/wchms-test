@@ -1,13 +1,16 @@
+import { CourseParticipant } from "@/db/schema/course";
 import { Button } from "../ui/button";
-import { Textarea } from "../ui/textarea";
+import { useState } from "react";
 
-export default function AddParticipant({
-    courseId,
-    handleSubmit,
-}: {
-    courseId: number;
-    handleSubmit: () => void;
-}) {
+export default function AddParticipant({ courseId }: { courseId: number }) {
+    const [errors, setErrors] = useState({
+        courseParticipants: "",
+    });
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+    };
+
     return (
         <div className="flex flex-col gap-12 w-full h-full py-8 px-6 rounded-lg bg-white items-center justify-center overf">
             <h1 className="font-semibold text-3xl md:text-4xl text-center">
@@ -29,13 +32,7 @@ export default function AddParticipant({
                                         {errors.courseParticipants}
                                     </p>
                                 )}
-                                <Textarea
-                                    id="courseParticipants"
-                                    name="courseParticipants"
-                                    value={formData.courseParticipants}
-                                    onChange={handleChange}
-                                    placeholder="Enter participants' full names, ex. Kevin So, Annabelle Chen"
-                                />
+                                {/* Checkboxes with list of participants that aren't enrolled */}
                             </div>
                         )}
                     </div>
