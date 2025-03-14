@@ -17,6 +17,12 @@ export default function ParticipantConfirmation() {
     const { data: session, status } = useSession();
     useEffect(() => {
         if (status === "authenticated") {
+            if (
+                session.user.role === "Admin" ||
+                session.user.role === "Staff"
+            ) {
+                return router.push("/admin/landing");
+            }
             router.push("/landing");
         } else if (status === "loading") {
             setLoading(true);

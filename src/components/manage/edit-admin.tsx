@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/select";
 import { Button } from "../ui/button";
 import { DatePicker } from "../ui/date-picker";
-import { type User } from "@/db/schema/users";
+import { type UserNoPass } from "@/app/admin/manage/staff/page";
 
 const genders = ["Male", "Female", "Other"];
 const roles = ["Staff", "Admin"];
@@ -21,14 +21,14 @@ export default function EditAdmin({
     onAdminUpdated,
 }: {
     closePopup: () => void;
-    adminData: User;
+    adminData: UserNoPass;
     onAdminUpdated: () => void;
 }) {
     const [firstName, setFirstName] = useState(adminData.firstName);
     const [lastName, setLastName] = useState(adminData.lastName);
     const [email, setEmail] = useState(adminData.email);
     const [role, setRole] = useState<string | null>(adminData.role);
-    const [password, setPassword] = useState(adminData.password);
+    const [password, setPassword] = useState<string | null>(null);
     const [selectedGender, setSelectedGender] = useState<string | null>(
         adminData.gender
     );

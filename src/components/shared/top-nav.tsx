@@ -58,7 +58,13 @@ export default function TopNav() {
                     ) : null}
                 </div>
                 <div className="flex-1 flex justify-center items-center">
-                    <Link href="/">
+                    <Link
+                        href={
+                            path.startsWith("/admin")
+                                ? "/admin/landing"
+                                : "/landing"
+                        }
+                    >
                         <Image
                             src="/logo.png"
                             alt="West Coast Healthy Memory Society Logo"

@@ -56,59 +56,59 @@ export default function LoginPage() {
     };
     if (loading) return null;
     return (
-        <div className="fixed inset-0 h-screen flex items-center justify-center mt-20">
-            <div className="w-full max-w-4xl relative -translate-y-28 p-6 mt-16">
-                <Card className="py-14">
-                    <CardHeader className="space-y-1">
-                        <CardTitle className="text-black text-2xl font-bold">
-                            Staff Login
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent className="w-full">
-                        <CardDescription>
-                            Enter your email and password to login to your
-                            account
-                        </CardDescription>
-                        <form className="space-y-4">
-                            <div className="space-y-2">
-                                <Label htmlFor="email">Email</Label>
-                                <Input
-                                    id="email"
-                                    type="email"
-                                    placeholder="wchms@example.com"
-                                    className="w-full"
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    required
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="password">Password</Label>
-                                <Input
-                                    id="password"
-                                    type="password"
-                                    className="w-full"
-                                    onChange={(e) =>
-                                        setPassword(e.target.value)
-                                    }
-                                    required
-                                />
-                            </div>
-                            <div>
-                                {error && (
-                                    <p className="text-sm text-red-500">
-                                        {error}
-                                    </p>
-                                )}
-                            </div>
-                            <Button
-                                className="w-full rounded-xl bg-primary-green mt-4 hover:bg-[#046e5b]"
-                                onClick={handleLogin}
-                            >
-                                Login
-                            </Button>
-                        </form>
-                    </CardContent>
-                </Card>
+        <div className="flex flex-col gap-12 w-full h-full items-center">
+            <h1 className="font-semibold text-4xl">Staff Login</h1>
+            <div className="flex flex-col w-full h-full items-center gap-10">
+                <p className="font-medium text-xl md:text-2xl text-center">
+                    Enter your email and password to login to your account
+                </p>
+                <form className="w-full h-full flex flex-col gap-6 md:gap-4">
+                    <div className="w-full">
+                        {error && (
+                            <p className="text-sm md:text-lg lg:text-xl text-red-500">
+                                {error}
+                            </p>
+                        )}
+                    </div>
+                    <div className="flex flex-col gap-2">
+                        <Label
+                            htmlFor="email"
+                            className="md:text-lg lg:text-xl"
+                        >
+                            Email
+                        </Label>
+                        <Input
+                            id="email"
+                            type="email"
+                            placeholder="wchms@example.com"
+                            className="w-full md:text-lg lg:text-xl"
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                        />
+                    </div>
+                    <div className="flex flex-col gap-2">
+                        <Label
+                            htmlFor="password"
+                            className="md:text-lg lg:text-xl"
+                        >
+                            Password
+                        </Label>
+                        <Input
+                            id="password"
+                            type="password"
+                            className="w-full md:text-lg lg:text-xl"
+                            placeholder="*********"
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                        />
+                    </div>
+                    <Button
+                        className="mt-2 md:mt-4 w-full bg-primary-green hover:bg-[#045B47] font-semibold text-xl py-2"
+                        onClick={handleLogin}
+                    >
+                        Login
+                    </Button>
+                </form>
             </div>
         </div>
     );
