@@ -1,10 +1,20 @@
 import { CourseParticipant } from "@/db/schema/course";
 import { Button } from "../ui/button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 
-export default function AddParticipant({ courseId }: { courseId: number }) {
+export default function AddParticipant() {
+    const { courseId } = useParams();
     const [errors, setErrors] = useState({
         courseParticipants: "",
+    });
+
+    useEffect(() => {
+        const unenrolledParticipants = async () => {
+            try {
+                const res = await fetch();
+            } catch (error) {}
+        };
     });
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
