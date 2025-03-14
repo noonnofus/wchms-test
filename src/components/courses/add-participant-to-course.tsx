@@ -103,7 +103,7 @@ export default function AddParticipantToCourse({
                                     </p>
                                 )}
                                 <div className="flex flex-col gap-2">
-                                    {participants &&
+                                    {participants && participants.length > 0 ? (
                                         participants.map((participant) => (
                                             <div
                                                 key={participant.id}
@@ -130,7 +130,12 @@ export default function AddParticipantToCourse({
                                                     {participant.lastName}
                                                 </label>
                                             </div>
-                                        ))}
+                                        ))
+                                    ) : (
+                                        <p className="text-gray-500 text-lg">
+                                            No participants to add
+                                        </p>
+                                    )}
                                 </div>
                             </div>
                         )}
@@ -138,7 +143,11 @@ export default function AddParticipantToCourse({
                 </div>
                 <Button
                     className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold md:text-xl py-2 md:py-4"
-                    disabled={isLoading}
+                    disabled={
+                        isLoading ||
+                        selectedParticipants.length === 0 ||
+                        participants?.length === 0
+                    }
                 >
                     {isLoading ? "Adding..." : "Add"}
                 </Button>
