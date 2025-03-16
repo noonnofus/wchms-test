@@ -1,14 +1,100 @@
 "use client";
 import Image from "next/image";
-import { LanguageDropdown } from "../language-dropdown";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { LanguageDropdown } from "../language-dropdown";
+import NotificationDropdown from "../notification-dropdown";
+import { Notification } from "../notification-system";
 import { Button } from "../ui/button";
 
 export default function TopNav() {
     const path = usePathname();
     const router = useRouter();
+    const [notifications, setNotifications] = useState<Notification[]>([]);
+    const wsRef = useRef<WebSocket | null>(null);
+
+    useEffect(() => {
+        const fetchInitialNotifications = async () => {
+            try {
+                const response = await fetch("/api/notifications");
+                if (response.ok) {
+                    const data = await response.json();
+                    setNotifications(data.notifications);
+                }
+            } catch (error) {
+                console.error("Error fetching initial notifications:", error);
+            }
+        };
+
+        fetchInitialNotifications();
+        const connectWebSocket = () => {
+            const protocol =
+                window.location.protocol === "https:" ? "wss:" : "ws:";
+            const wsUrl = `${protocol}//${window.location.host}/api/ws`;
+
+            const ws = new WebSocket(wsUrl);
+            wsRef.current = ws;
+
+            ws.addEventListener("open", () => {
+                console.log("WebSocket connection established");
+            });
+
+            ws.addEventListener("message", (event) => {
+                try {
+                    const data = JSON.parse(event.data);
+
+                    if (data.event === "notification") {
+                        setNotifications((prev) => [
+                            data.notification,
+                            ...prev,
+                        ]);
+                    }
+                } catch (error) {
+                    console.error("Error processing WebSocket message:", error);
+                }
+            });
+
+            ws.addEventListener("close", () => {
+                console.log(
+                    "WebSocket connection closed, attempting to reconnect..."
+                );
+                setTimeout(connectWebSocket, 3000);
+            });
+
+            ws.addEventListener("error", (error) => {
+                console.error("WebSocket error:", error);
+                ws.close();
+            });
+        };
+
+        connectWebSocket();
+
+        return () => {
+            if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+                wsRef.current.close();
+            }
+        };
+    }, []);
+
+    const handleMarkAsRead = async (id: string) => {
+        try {
+            const response = await fetch(`/api/notifications/${id}/read`, {
+                method: "PUT",
+            });
+
+            if (response.ok) {
+                setNotifications((prev) =>
+                    prev.map((notif) =>
+                        notif.id === id ? { ...notif, isRead: true } : notif
+                    )
+                );
+            }
+        } catch (error) {
+            console.error("Error marking notification as read:", error);
+        }
+    };
+
     return (
         <div className="p-6 min-h-28 flex items-center">
             <div className="flex justify-between items-center w-full">
@@ -75,6 +161,10 @@ export default function TopNav() {
                 </div>
                 <div className="flex-1 flex items-center justify-end">
                     <LanguageDropdown />
+                    <NotificationDropdown
+                        notifications={notifications}
+                        onMarkAsRead={handleMarkAsRead}
+                    />
                 </div>
             </div>
         </div>

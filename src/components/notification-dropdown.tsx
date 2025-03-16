@@ -1,5 +1,6 @@
 import { formatDistanceToNow } from "date-fns";
 import { Bell } from "lucide-react";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { Notification } from "./notification-system";
 
@@ -13,6 +14,7 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
     onMarkAsRead,
 }) => {
     const [isOpen, setIsOpen] = useState(false);
+    const router = useRouter();
 
     const unreadCount = notifications.filter((n) => !n.isRead).length;
 
@@ -41,13 +43,13 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
                 notification.metadata;
 
             if (courseId && materialId) {
-                window.location.href = `/courses/${courseId}/materials/${materialId}`;
+                router.push(`/courses/${courseId}/materials/${materialId}`);
             } else if (courseId && homeworkId) {
-                window.location.href = `/courses/${courseId}/homework/${homeworkId}`;
+                router.push(`/courses/${courseId}/homework/${homeworkId}`);
             } else if (sessionId) {
-                window.location.href = `/sessions/${sessionId}`;
+                router.push(`/sessions/${sessionId}`);
             } else if (courseId) {
-                window.location.href = `/courses/${courseId}`;
+                router.push(`/courses/${courseId}`);
             }
         }
 
@@ -118,9 +120,10 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
                         <div className="p-2 text-center border-t">
                             <button
                                 className="text-sm text-blue-600 hover:text-blue-800"
-                                onClick={() =>
-                                    (window.location.href = "/notifications")
-                                }
+                                onClick={() => {
+                                    router.push("/notifications");
+                                    setIsOpen(false);
+                                }}
                             >
                                 View all notifications
                             </button>

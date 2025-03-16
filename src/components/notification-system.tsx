@@ -1,3 +1,4 @@
+"use client";
 import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
 import { toast, ToastContainer, ToastOptions } from "react-toastify";
@@ -48,7 +49,6 @@ const NotificationSystem: React.FC = () => {
                     }
                 }, 30000);
 
-                // Store the interval ID for cleanup
                 (ws as any).pingInterval = pingInterval;
             };
 

@@ -8,7 +8,7 @@ import {
     timestamp,
     varchar,
 } from "drizzle-orm/mysql-core";
-import { users } from "./users";
+import { participants } from "./participants";
 
 export const notifications = mysqlTable("notifications", {
     id: varchar("id", { length: 36 })
@@ -19,15 +19,15 @@ export const notifications = mysqlTable("notifications", {
     message: text("message").notNull(),
     userId: int("user_id")
         .notNull()
-        .references(() => users.id, { onDelete: "cascade" }),
+        .references(() => participants.id, { onDelete: "cascade" }),
     isRead: boolean("is_read").notNull().default(false),
     metadata: json("metadata"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
 export const notificationsRelations = relations(notifications, ({ one }) => ({
-    user: one(users, {
+    user: one(participants, {
         fields: [notifications.userId],
-        references: [users.id],
+        references: [participants.id],
     }),
 }));

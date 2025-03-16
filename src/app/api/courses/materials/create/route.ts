@@ -1,14 +1,18 @@
 import { authConfig } from "@/auth";
+import { Notification } from "@/components/notification-system";
 import db from "@/db";
+import { CourseParticipant, Courses } from "@/db/schema/course";
 import {
     courseMaterials,
     Difficulty,
     MaterialType,
 } from "@/db/schema/courseMaterials";
 import { uploadMedia } from "@/db/schema/mediaUpload";
+import { notifications } from "@/db/schema/notifications";
 import { validateFile } from "@/lib/fileUploads";
 import { getSignedUrlFromFileKey, uploadToS3 } from "@/lib/s3";
 import { validateAdminOrStaff } from "@/lib/validation";
+import { broadcastNotification } from "@/lib/websockets";
 import { eq } from "drizzle-orm";
 import { getServerSession } from "next-auth";
 
@@ -125,6 +129,65 @@ export async function POST(req: Request) {
                 );
             }
         }
+
+        const enrolledUsers = await db
+            .select({ userId: CourseParticipant.userId })
+            .from(CourseParticipant)
+            .where(eq(CourseParticipant.courseId, parseInt(courseId)));
+
+        if (enrolledUsers.length > 0) {
+            const course = await db
+                .select({ title: Courses.title })
+                .from(Courses)
+                .where(eq(Courses.id, parseInt(courseId)))
+                .then((res) => res[0]);
+
+            const courseTitle = course?.title || "your course";
+            const materialTypeName =
+                exerciseType.charAt(0).toUpperCase() +
+                exerciseType.slice(1).replace("_", " ");
+
+            const notificationPromises = enrolledUsers.map(async (user) => {
+                // Insert the notification into the database
+                const notificationId = await db
+                    .insert(notifications)
+                    .values({
+                        type: "course_material",
+                        title: `New ${materialTypeName} Available`,
+                        message: `"${title}" has been added to ${courseTitle}.`,
+                        userId: user.userId,
+                        metadata: JSON.stringify({
+                            courseId: parseInt(courseId),
+                            materialId: newMaterial.id,
+                        }),
+                        isRead: false,
+                    })
+                    .$returningId()
+                    .then((res) => res[0].id);
+
+                const notification: Notification = {
+                    id: notificationId.toString(),
+                    type: "course_material",
+                    title: `New ${materialTypeName} Available`,
+                    message: `"${title}" has been added to ${courseTitle}.`,
+                    userId: user.userId,
+                    isRead: false,
+                    createdAt: new Date().toISOString(), // Convert to string for your interface
+                    metadata: {
+                        courseId: parseInt(courseId),
+                        materialId: newMaterial.id,
+                    },
+                };
+
+                // Broadcast the notification
+                broadcastNotification(notification);
+
+                return notification;
+            });
+
+            await Promise.all(notificationPromises);
+        }
+
         return new Response(
             JSON.stringify({
                 message: "Course material created",
