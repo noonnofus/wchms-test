@@ -64,7 +64,6 @@ nextApp.prepare().then(() => {
 
     wss.on("connection", (ws: WebSocket, req: IncomingMessage) => {
         clients.add(ws);
-        console.log("New client connected");
 
         ws.on("message", (message: Buffer, isBinary: boolean) => {
             const msgStr = message.toString();
@@ -83,7 +82,6 @@ nextApp.prepare().then(() => {
                     ws.send(JSON.stringify({ event: "pong" }));
                     return;
                 }
-
                 if (data.event === "course_material_created") {
                     const { courseId, materialId, userIds } = data;
 

@@ -14,35 +14,55 @@ export default function TopNav() {
     const router = useRouter();
     const [notifications, setNotifications] = useState<Notification[]>([]);
     const [socket, setSocket] = useState<WebSocket | null>(null);
+    const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
-    useEffect(() => {
-        const fetchNotifications = async () => {
-            try {
-                const response = await fetch("/api/notifications");
-                if (response.ok) {
-                    const data = await response.json();
-                    setNotifications(data.notifications);
-                }
-            } catch (error) {
-                console.error("Error fetching notifications:", error);
-            }
-        };
+    const isParticipantPage =
+        !path.startsWith("/admin") &&
+        path !== "/" &&
+        path !== "/login" &&
+        path !== "/register";
 
-        fetchNotifications();
-        const intervalId = setInterval(fetchNotifications, 30000);
-        return () => clearInterval(intervalId);
-    }, []);
-    useEffect(() => {
-        const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-        const wsUrl = `${protocol}//${window.location.host}/api/ws`;
-        const ws = new WebSocket(wsUrl);
-
-        ws.onopen = async () => {
-            console.log("WebSocket connected");
-
+    const initializeUserData = async () => {
+        try {
             const session = await getSession();
             const userId = Number(session?.user.id);
-            console.log(userId, "userId");
+            const userLoggedIn = !!userId;
+
+            setIsLoggedIn(userLoggedIn);
+
+            if (userLoggedIn) {
+                fetchNotifications();
+                initializeWebSocket(userId);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const fetchNotifications = async () => {
+        try {
+            const response = await fetch("/api/notifications");
+            if (response.ok) {
+                const data = await response.json();
+                setNotifications(data.notifications);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const initializeWebSocket = (userId: number) => {
+        const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+        const wsUrl = `${protocol}//${window.location.host}/api/ws`;
+
+        if (socket && socket.readyState === WebSocket.OPEN) {
+            socket.close();
+        }
+
+        const ws = new WebSocket(wsUrl);
+
+        ws.onopen = () => {
+            console.log("WebSocket connected");
             if (userId) {
                 ws.send(
                     JSON.stringify({
@@ -60,7 +80,6 @@ export default function TopNav() {
 
                 if (data.event === "notification" && data.notification) {
                     const newNotification = data.notification as Notification;
-
                     setNotifications((prev) => [newNotification, ...prev]);
                 }
             } catch (error) {
@@ -70,7 +89,10 @@ export default function TopNav() {
 
         ws.onclose = () => {
             console.log("WebSocket closed, reconnecting...");
-            setTimeout(() => setSocket(new WebSocket(wsUrl)), 3000);
+            setTimeout(() => {
+                const newWs = new WebSocket(wsUrl);
+                setSocket(newWs);
+            }, 3000);
         };
 
         ws.onerror = (error) => {
@@ -79,13 +101,23 @@ export default function TopNav() {
         };
 
         setSocket(ws);
+    };
 
+    useEffect(() => {
+        initializeUserData();
+
+        const intervalId = setInterval(fetchNotifications, 30000);
         return () => {
-            if (ws.readyState === WebSocket.OPEN) {
-                ws.close();
+            clearInterval(intervalId);
+            if (socket && socket.readyState === WebSocket.OPEN) {
+                socket.close();
             }
         };
     }, []);
+
+    useEffect(() => {
+        initializeUserData();
+    }, [path]);
 
     const handleMarkAsRead = async (id: string) => {
         try {
@@ -171,10 +203,12 @@ export default function TopNav() {
                 </div>
                 <div className="flex-1 flex items-center justify-end">
                     <LanguageDropdown />
-                    <NotificationDropdown
-                        notifications={notifications}
-                        onMarkAsRead={handleMarkAsRead}
-                    />
+                    {isLoggedIn && isParticipantPage && (
+                        <NotificationDropdown
+                            notifications={notifications}
+                            onMarkAsRead={handleMarkAsRead}
+                        />
+                    )}
                 </div>
             </div>
         </div>
