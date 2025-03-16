@@ -1,8 +1,9 @@
 "use client";
+import { getSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { LanguageDropdown } from "../language-dropdown";
 import NotificationDropdown from "../notification-dropdown";
 import { Notification } from "../notification-system";
@@ -12,10 +13,10 @@ export default function TopNav() {
     const path = usePathname();
     const router = useRouter();
     const [notifications, setNotifications] = useState<Notification[]>([]);
-    const wsRef = useRef<WebSocket | null>(null);
+    const [socket, setSocket] = useState<WebSocket | null>(null);
 
     useEffect(() => {
-        const fetchInitialNotifications = async () => {
+        const fetchNotifications = async () => {
             try {
                 const response = await fetch("/api/notifications");
                 if (response.ok) {
@@ -23,56 +24,65 @@ export default function TopNav() {
                     setNotifications(data.notifications);
                 }
             } catch (error) {
-                console.error("Error fetching initial notifications:", error);
+                console.error("Error fetching notifications:", error);
             }
         };
 
-        fetchInitialNotifications();
-        const connectWebSocket = () => {
-            const protocol =
-                window.location.protocol === "https:" ? "wss:" : "ws:";
-            const wsUrl = `${protocol}//${window.location.host}/api/ws`;
+        fetchNotifications();
+        const intervalId = setInterval(fetchNotifications, 30000);
+        return () => clearInterval(intervalId);
+    }, []);
+    useEffect(() => {
+        const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+        const wsUrl = `${protocol}//${window.location.host}/api/ws`;
+        const ws = new WebSocket(wsUrl);
 
-            const ws = new WebSocket(wsUrl);
-            wsRef.current = ws;
+        ws.onopen = async () => {
+            console.log("WebSocket connected");
 
-            ws.addEventListener("open", () => {
-                console.log("WebSocket connection established");
-            });
-
-            ws.addEventListener("message", (event) => {
-                try {
-                    const data = JSON.parse(event.data);
-
-                    if (data.event === "notification") {
-                        setNotifications((prev) => [
-                            data.notification,
-                            ...prev,
-                        ]);
-                    }
-                } catch (error) {
-                    console.error("Error processing WebSocket message:", error);
-                }
-            });
-
-            ws.addEventListener("close", () => {
-                console.log(
-                    "WebSocket connection closed, attempting to reconnect..."
+            const session = await getSession();
+            const userId = Number(session?.user.id);
+            console.log(userId, "userId");
+            if (userId) {
+                ws.send(
+                    JSON.stringify({
+                        event: "identify",
+                        userId: userId,
+                    })
                 );
-                setTimeout(connectWebSocket, 3000);
-            });
-
-            ws.addEventListener("error", (error) => {
-                console.error("WebSocket error:", error);
-                ws.close();
-            });
+            }
         };
 
-        connectWebSocket();
+        ws.onmessage = (event) => {
+            try {
+                const data = JSON.parse(event.data);
+                console.log("WebSocket message received:", data);
+
+                if (data.event === "notification" && data.notification) {
+                    const newNotification = data.notification as Notification;
+
+                    setNotifications((prev) => [newNotification, ...prev]);
+                }
+            } catch (error) {
+                console.error("Error with websocket:", error);
+            }
+        };
+
+        ws.onclose = () => {
+            console.log("WebSocket closed, reconnecting...");
+            setTimeout(() => setSocket(new WebSocket(wsUrl)), 3000);
+        };
+
+        ws.onerror = (error) => {
+            console.error("WebSocket error:", error);
+            ws.close();
+        };
+
+        setSocket(ws);
 
         return () => {
-            if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
-                wsRef.current.close();
+            if (ws.readyState === WebSocket.OPEN) {
+                ws.close();
             }
         };
     }, []);

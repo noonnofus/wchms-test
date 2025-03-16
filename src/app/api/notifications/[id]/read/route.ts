@@ -61,7 +61,6 @@ export async function PUT(
             type: notificationToUpdate.type as "course_material" | "homework" | "session_reminder" | "course_acceptance",
             title: notificationToUpdate.title,
             message: notificationToUpdate.message,
-            createdAt: notificationToUpdate.createdAt.toISOString(),
             metadata: typeof notificationToUpdate.metadata === 'string'
                 ? JSON.parse(notificationToUpdate.metadata)
                 : null,

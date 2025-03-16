@@ -1,7 +1,13 @@
-import { Notification } from "@/components/notification-system";
-const userConnections: Map<number, WebSocket[]> = new Map();
+import { Notification } from "../components/notification-system";
 
-export function registerUserConnection(userId: number, ws: WebSocket) {
+type CompatibleWebSocket = WebSocket | import("ws").WebSocket;
+
+const userConnections: Map<number, CompatibleWebSocket[]> = new Map();
+
+export function registerUserConnection(
+    userId: number,
+    ws: CompatibleWebSocket
+) {
     if (!userConnections.has(userId)) {
         userConnections.set(userId, []);
     }
@@ -32,7 +38,7 @@ export function broadcastNotification(notification: Notification) {
         });
 
         connections.forEach((ws) => {
-            if (ws.readyState === WebSocket.OPEN) {
+            if (ws.readyState === (ws as WebSocket).OPEN) {
                 ws.send(message);
             }
         });
@@ -44,7 +50,7 @@ export function broadcastToAll(message: any) {
 
     for (const connections of userConnections.values()) {
         for (const ws of connections) {
-            if (ws.readyState === WebSocket.OPEN) {
+            if (ws.readyState === (ws as WebSocket).OPEN) {
                 ws.send(messageStr);
             }
         }

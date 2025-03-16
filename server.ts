@@ -9,13 +9,18 @@ import { Socket } from "node:net";
 import { parse } from "node:url";
 import { WebSocket, WebSocketServer } from "ws";
 
-const nextApp = next({ dev: process.env.NODE_ENV !== "production" });
-const handle = nextApp.getRequestHandler();
-
 const userConnections: Map<number, WebSocket[]> = new Map();
 const clients: Set<WebSocket> = new Set();
 
-export function broadcastNotification(notification: any) {
+function registerUserConnection(userId: number, ws: WebSocket) {
+    if (!userConnections.has(userId)) {
+        userConnections.set(userId, []);
+    }
+    userConnections.get(userId)?.push(ws);
+    console.log(`User ${userId} registered with websocket connection`);
+}
+
+function broadcastNotification(notification: any) {
     const userId = notification.userId;
     const connections = userConnections.get(userId);
 
@@ -33,7 +38,7 @@ export function broadcastNotification(notification: any) {
     }
 }
 
-export function broadcastToAll(message: any) {
+function broadcastToAll(message: any) {
     const messageStr = JSON.stringify(message);
 
     for (const connections of userConnections.values()) {
@@ -45,6 +50,9 @@ export function broadcastToAll(message: any) {
     }
 }
 
+const nextApp = next({ dev: process.env.NODE_ENV !== "production" });
+const handle = nextApp.getRequestHandler();
+
 nextApp.prepare().then(() => {
     const server: Server = createServer(
         (req: IncomingMessage, res: ServerResponse) => {
@@ -54,7 +62,7 @@ nextApp.prepare().then(() => {
 
     const wss = new WebSocketServer({ noServer: true });
 
-    wss.on("connection", (ws: WebSocket) => {
+    wss.on("connection", (ws: WebSocket, req: IncomingMessage) => {
         clients.add(ws);
         console.log("New client connected");
 
@@ -67,18 +75,32 @@ nextApp.prepare().then(() => {
 
                 if (data.event === "identify" && data.userId) {
                     const userId = parseInt(data.userId);
-
-                    if (!userConnections.has(userId)) {
-                        userConnections.set(userId, []);
-                    }
-
-                    userConnections.get(userId)?.push(ws);
-                    console.log(`User ${userId} identified and registered`);
+                    registerUserConnection(userId, ws);
                     return;
                 }
 
                 if (data.event === "ping") {
                     ws.send(JSON.stringify({ event: "pong" }));
+                    return;
+                }
+
+                if (data.event === "course_material_created") {
+                    const { courseId, materialId, userIds } = data;
+
+                    userIds.forEach((userId: number) => {
+                        const notification = {
+                            userId,
+                            type: "course_material",
+                            title: "New Course Material Available",
+                            message: `A new material has been added to course ${courseId}.`,
+                            metadata: {
+                                courseId,
+                                materialId,
+                            },
+                        };
+
+                        broadcastNotification(notification);
+                    });
                     return;
                 }
 
@@ -89,12 +111,6 @@ nextApp.prepare().then(() => {
                 });
             } catch (error) {
                 console.error("Error parsing websocket message:", error);
-
-                clients.forEach((client) => {
-                    if (client.readyState === WebSocket.OPEN) {
-                        client.send(message, { binary: isBinary });
-                    }
-                });
             }
         });
 

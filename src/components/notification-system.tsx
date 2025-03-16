@@ -13,7 +13,6 @@ export interface Notification {
         | "course_acceptance";
     title: string;
     message: string;
-    createdAt: string;
     userId: number;
     isRead: boolean;
     metadata?: {

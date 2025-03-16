@@ -156,6 +156,7 @@ export async function POST(req: Request) {
                         title: `New ${materialTypeName} Available`,
                         message: `"${title}" has been added to ${courseTitle}.`,
                         userId: user.userId,
+                        createdAt: new Date(),
                         metadata: JSON.stringify({
                             courseId: parseInt(courseId),
                             materialId: newMaterial.id,
@@ -172,7 +173,6 @@ export async function POST(req: Request) {
                     message: `"${title}" has been added to ${courseTitle}.`,
                     userId: user.userId,
                     isRead: false,
-                    createdAt: new Date().toISOString(), // Convert to string for your interface
                     metadata: {
                         courseId: parseInt(courseId),
                         materialId: newMaterial.id,

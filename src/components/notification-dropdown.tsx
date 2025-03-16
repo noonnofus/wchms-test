@@ -1,4 +1,3 @@
-import { formatDistanceToNow } from "date-fns";
 import { Bell } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
@@ -100,14 +99,6 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
                                             </h4>
                                             <p className="text-sm text-gray-600">
                                                 {notification.message}
-                                            </p>
-                                            <p className="text-xs text-gray-400 mt-1">
-                                                {formatDistanceToNow(
-                                                    new Date(
-                                                        notification.createdAt
-                                                    ),
-                                                    { addSuffix: true }
-                                                )}
                                             </p>
                                         </div>
                                     </div>
