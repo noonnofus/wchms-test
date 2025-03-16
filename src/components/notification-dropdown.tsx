@@ -37,21 +37,27 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
             onMarkAsRead(notification.id);
         }
 
-        if (notification.metadata) {
-            const { courseId, materialId, homeworkId, sessionId } =
-                notification.metadata;
+        let metadata = notification.metadata;
+        if (typeof metadata === "string") {
+            try {
+                metadata = JSON.parse(metadata);
+            } catch (e) {
+                console.error("Failed to parse notification metadata:", e);
+            }
+        }
+        if (metadata) {
+            const { courseId, materialId, homeworkId, sessionId } = metadata;
 
             if (courseId && materialId) {
-                router.push(`/courses/${courseId}/materials/${materialId}`);
+                router.push(`/courses/${courseId}/`);
             } else if (courseId && homeworkId) {
                 router.push(`/courses/${courseId}/homework/${homeworkId}`);
             } else if (sessionId) {
-                router.push(`/sessions/${sessionId}`);
+                router.push(`/landing`);
             } else if (courseId) {
                 router.push(`/courses/${courseId}`);
             }
         }
-
         setIsOpen(false);
     };
 
@@ -104,20 +110,6 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
                                     </div>
                                 </div>
                             ))}
-                        </div>
-                    )}
-
-                    {notifications.length > 0 && (
-                        <div className="p-2 text-center border-t">
-                            <button
-                                className="text-sm text-blue-600 hover:text-blue-800"
-                                onClick={() => {
-                                    router.push("/notifications");
-                                    setIsOpen(false);
-                                }}
-                            >
-                                View all notifications
-                            </button>
                         </div>
                     )}
                 </div>

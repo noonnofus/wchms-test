@@ -12,9 +12,9 @@ export default function NextClass({ whenLoaded }: { whenLoaded: () => void }) {
     const [courseTitle, setCourseTitle] = useState<string>("");
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
-    // const { showNotification, dismissNotification } = useNotifications();
-    // const notificationTimerRef = useRef<NodeJS.Timeout | null>(null);
-    // const notificationIdRef = useRef<string | null>(null);
+    const notificationTimerRef = useRef<NodeJS.Timeout | null>(null);
+    const notificationSentRef = useRef<boolean>(false);
+    const [sessionId, setSessionId] = useState<number | null>(null);
 
     const nextSessionDate = async () => {
         try {
@@ -44,6 +44,7 @@ export default function NextClass({ whenLoaded }: { whenLoaded: () => void }) {
                 return;
             }
 
+            setSessionId(nextSession.id || null);
             setCourseTitle(nextSession.courseTitle || "Class");
 
             const now = new Date();
@@ -55,6 +56,13 @@ export default function NextClass({ whenLoaded }: { whenLoaded: () => void }) {
                 now.getFullYear() === sessionDate.getFullYear() &&
                 now.getMonth() === sessionDate.getMonth() &&
                 now.getDate() === sessionDate.getDate();
+
+            scheduleSessionReminder(
+                userId,
+                startTime,
+                nextSession.courseTitle,
+                nextSession.id
+            );
 
             if (now >= startTime && now <= endTime) {
                 setSessionCountdown("Zoom");
@@ -87,10 +95,73 @@ export default function NextClass({ whenLoaded }: { whenLoaded: () => void }) {
         }
     };
 
+    const scheduleSessionReminder = (
+        userId: number,
+        startTime: Date,
+        title: string,
+        sessionId: number | undefined
+    ) => {
+        if (notificationTimerRef.current) {
+            clearTimeout(notificationTimerRef.current);
+            notificationTimerRef.current = null;
+        }
+        notificationSentRef.current = false;
+
+        const now = new Date();
+        const timeDiff = startTime.getTime() - now.getTime();
+        const tenMinutes = 10 * 60 * 1000;
+
+        if (timeDiff > tenMinutes) {
+            const timeUntilNotification = timeDiff - tenMinutes;
+
+            notificationTimerRef.current = setTimeout(() => {
+                sendSessionReminder(userId, title, sessionId);
+            }, timeUntilNotification);
+        } else if (timeDiff > 0 && !notificationSentRef.current) {
+            sendSessionReminder(userId, title, sessionId);
+        }
+    };
+
+    const sendSessionReminder = async (
+        userId: number,
+        courseTitle: string,
+        sessionId: number | undefined
+    ) => {
+        try {
+            notificationSentRef.current = true;
+
+            const response = await fetch(
+                "/api/notifications/session-reminder",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        userId,
+                        courseTitle,
+                        sessionId,
+                    }),
+                }
+            );
+
+            if (!response.ok) {
+                console.error("Failed to send session reminder notification");
+            }
+        } catch (error) {
+            console.error("Error sending session reminder:", error);
+        }
+    };
+
     useEffect(() => {
         nextSessionDate();
         const intervalId = setInterval(nextSessionDate, 60000);
-        return () => clearInterval(intervalId);
+        return () => {
+            clearInterval(intervalId);
+            if (notificationTimerRef.current) {
+                clearTimeout(notificationTimerRef.current);
+            }
+        };
     }, []);
 
     return (
