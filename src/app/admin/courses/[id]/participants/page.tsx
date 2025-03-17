@@ -2,7 +2,6 @@
 import ChevronDownIcon from "@/components/icons/chevron-down-icon";
 import ChevronUpIcon from "@/components/icons/chevron-up-icon";
 import DeleteIcon from "@/components/icons/delete-icon";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
     Table,
@@ -19,6 +18,10 @@ import { getCourseById } from "@/db/queries/courses";
 import DeleteConfirmation from "@/components/shared/delete-confirmation";
 import { Participant } from "@/db/schema/participants";
 import AddButton from "@/components/shared/add-button";
+import CloseIcon from "@/components/icons/close-icon";
+import CloseSwipe from "@/components/icons/close-swipe";
+import { useSwipeable } from "react-swipeable";
+import AddParticipantToCourse from "@/components/courses/add-participant-to-course";
 
 export default function ClassParticipants() {
     const { id } = useParams();
@@ -118,13 +121,58 @@ export default function ClassParticipants() {
 
     const handleClosePopup = () => {
         setShowDeletePopup(false);
+        setShowAddParticipantPopup(false);
     };
+
+    const swipeHandlers = useSwipeable({
+        onSwipedDown: () => {
+            handleClosePopup();
+        },
+        preventScrollOnSwipe: true,
+        trackMouse: true,
+    });
 
     return (
         <div className="flex flex-col gap-10 w-full items-center">
             <h1 className="font-semibold text-4xl text-center">
                 Participant List
             </h1>
+            {showAddParticipantPopup && (
+                <div className="fixed inset-0 flex items-end md:items-center justify-center z-20">
+                    <div
+                        className="absolute inset-0 bg-black opacity-50"
+                        onClick={handleClosePopup}
+                    ></div>
+                    <div className="z-30 bg-white rounded-t-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
+                        <div className="relative w-full">
+                            <div
+                                className="flex justify-center items-center p-6 md:hidden "
+                                {...swipeHandlers}
+                            >
+                                {/* Swipe indicator */}
+                                <div className="absolute top-6 md:hidden">
+                                    <CloseSwipe />
+                                </div>
+                            </div>
+                            <button
+                                onClick={handleClosePopup}
+                                className="absolute top-3 right-4"
+                            >
+                                <CloseIcon />
+                            </button>
+                        </div>
+                        <div className="overflow-y-auto max-h-[calc(90vh-90px)]">
+                            <AddParticipantToCourse
+                                courseId={id as string}
+                                handleClosePopup={handleClosePopup}
+                                onParticipantAdded={() =>
+                                    setRefreshParticipants((prev) => !prev)
+                                }
+                            />
+                        </div>
+                    </div>
+                </div>
+            )}
             {showDeletePopup && participantToRemove && (
                 <div className="fixed inset-0 flex items-center justify-center z-10 overflow-y-auto">
                     <div
