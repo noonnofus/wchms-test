@@ -533,9 +533,8 @@ export default function AddCourse(props: props) {
                             Update
                         </Button>
                     ) : (
-                        <Button
-                            className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold md:text-xl py-2 md:py-4">
-                            Save
+                        <Button className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold md:text-xl py-2 md:py-4">
+                            Add
                         </Button>
                     )}
                     <Button

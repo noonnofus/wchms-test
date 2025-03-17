@@ -21,6 +21,7 @@ import AddSession from "@/components/sessions/add-session";
 import { CourseJoinRequest } from "@/db/schema/courseJoinRequests";
 import RequestList from "@/components/courses/request-list";
 import AddButton from "@/components/shared/add-button";
+import { Participant } from "@/db/schema/participants";
 
 export default function AdminCourses() {
     const { id } = useParams();
@@ -44,6 +45,17 @@ export default function AdminCourses() {
     const [courseToDelete, setCourseToDelete] = useState<Course | null>(null);
     const [showAddSessionPopup, setShowAddSessionPopup] = useState(false);
     const [requests, setRequests] = useState<CourseJoinRequest[] | null>(null);
+    const [participants, setParticipants] = useState<Participant[]>(
+        selectedCourse?.participants || []
+    );
+
+    const removeParticipantLocally = (userId: number) => {
+        setParticipants((prev) => prev?.filter((p) => p.id !== userId));
+    };
+
+    const approveParticipantJoinLocally = (participant: Participant) => {
+        setParticipants((prev) => [...prev, participant]);
+    };
 
     const swipeHandlers = useSwipeable({
         onSwipedDown: () => {
@@ -63,6 +75,9 @@ export default function AdminCourses() {
                 );
                 if (course) {
                     setSelectedCourse(course);
+                }
+                if (course?.participants) {
+                    setParticipants(course.participants);
                 }
             } catch (error) {
                 console.error("Error fetching courses", error);
@@ -225,13 +240,19 @@ export default function AdminCourses() {
                                     All Sessions
                                 </Button>
                                 {requests ? (
-                                    <RequestList requests={requests} />
+                                    <RequestList
+                                        requests={requests}
+                                        approveParticipantJoinLocally={
+                                            approveParticipantJoinLocally
+                                        }
+                                    />
                                 ) : null}
                                 <ParticipantList
-                                    participants={
-                                        selectedCourse.participants || []
-                                    }
+                                    participants={participants}
                                     courseId={parseInt(id as string)}
+                                    removeParticipantLocally={
+                                        removeParticipantLocally
+                                    }
                                 />
                                 <AddButton
                                     handleAddButtonClick={
