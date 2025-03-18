@@ -46,13 +46,8 @@ export default function AddRoom({
     }
 
     const isValidUrl = (url: string) => {
-        try {
-            new URL(url);
-            return true;
-        } catch (error) {
-            console.error(error);
-            return false;
-        }
+        const pattern = /^(?:[\w-]+\.)+[\w]{2,}(?:\/.*)?$/;
+        return pattern.test(url);
     }
 
     const validateFields = () => {
@@ -70,7 +65,7 @@ export default function AddRoom({
             valid = false;
         }
         if (!selectedMedium.trim()) {
-            newErrors.medium = "Medium is required";
+            newErrors.medium = "Type is required";
             valid = false;
         }
         if (!url.trim()) {
@@ -189,7 +184,7 @@ export default function AddRoom({
                 </div>
                 <div className="flex flex-row gap-2 w-full">
                     <div className="flex flex-col flex-1 gap-2">
-                        <label htmlFor="firstName">Medium</label>
+                        <label htmlFor="firstName">Type</label>
                         {errors.medium && (
                             <p className="text-red-500 text-sm">
                                 {errors.medium}
@@ -308,7 +303,7 @@ export default function AddRoom({
                         type="submit"
                         className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold md:text-xl py-2 md:py-4"
                     >
-                        {loading ? "Saving..." : "Save"}
+                        {loading ? "Adding..." : "Add"}
                     </Button>
                     <Button
                         variant="outline"

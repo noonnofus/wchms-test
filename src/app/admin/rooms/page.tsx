@@ -22,6 +22,7 @@ import CloseIcon from "@/components/icons/close-icon";
 import CloseSwipe from "@/components/icons/close-swipe";
 import { Room } from "@/db/schema/room";
 import AddButton from "@/components/shared/add-button";
+import EditIcon from "@/components/icons/edit-icon";
 
 
 export default function RoomPage() {
@@ -291,7 +292,7 @@ export default function RoomPage() {
                                                         )
                                                     }
                                                 >
-                                                    <Pen className="inline-flex text-center" />
+                                                    <EditIcon />
                                                 </button>
                                             </TableCell>
                                         </TableRow>
