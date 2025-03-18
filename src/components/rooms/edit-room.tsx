@@ -12,8 +12,8 @@ import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
 import { Room } from "@/db/schema/room";
 
-const mediums = ["online", "offline"];
-const statuses = ["available", "unavailable"];
+const mediums = ["Online", "In-Person"];
+const statuses = ["Available", "Unavailable"];
 
 export default function EditRoom({
     closePopup,
@@ -25,10 +25,10 @@ export default function EditRoom({
     onRoomUpdated: () => void;
 }) {
     const [name, setName] = useState(roomData.name);
-    const [medium, setMedium] = useState<string>(roomData.medium);
+    const [medium, setMedium] = useState<string>(roomData.medium === "online" ? "Online" : "In-Person");
     const [url, setUrl] = useState(roomData.url);
     const [capacity, setCapacity] = useState<string>(String(roomData.capacity));
-    const [status, setStatus] = useState<string>(roomData.status);
+    const [status, setStatus] = useState<string>(roomData.status === "available" ? "Available" : "Unavailable");
     const [description, setDescription] = useState(roomData.description);
     const [note, setNote] = useState(roomData.internalNote);
     const [errors, setErrors] = useState({
@@ -41,10 +41,10 @@ export default function EditRoom({
 
     useEffect(() => {
         setName(roomData.name);
-        setMedium(roomData.medium);
+        setMedium(roomData.medium === "online" ? "Online" : "In-Person");
         setUrl(roomData.url);
         setCapacity(String(roomData.capacity));
-        setStatus(roomData.status);
+        setStatus(roomData.status === "available" ? "Available" : "Unavailable");
         setDescription(roomData.description);
         setNote(roomData.internalNote);
     }, [roomData]);
@@ -154,7 +154,7 @@ export default function EditRoom({
                 </div>
                 <div className="flex flex-row gap-2 w-full">
                     <div className="flex flex-col flex-1 gap-2">
-                        <label htmlFor="firstName">Medium</label>
+                        <label htmlFor="firstName">Type</label>
                         {errors.medium && (
                             <p className="text-red-500 text-sm">
                                 {errors.medium}
@@ -165,7 +165,7 @@ export default function EditRoom({
                             onValueChange={handleMediumChange}
                         >
                             <SelectTrigger>
-                                <SelectValue placeholder="Online" />
+                                <SelectValue placeholder={medium} />
                             </SelectTrigger>
                             <SelectContent>
                                 {mediums.map((medium, index) => (
@@ -214,7 +214,7 @@ export default function EditRoom({
                             onValueChange={handleStatusChange}
                         >
                             <SelectTrigger>
-                                <SelectValue placeholder="Available" />
+                                <SelectValue placeholder={status} />
                             </SelectTrigger>
                             <SelectContent>
                                 {statuses.map((status, index) => (

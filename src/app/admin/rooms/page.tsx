@@ -232,7 +232,7 @@ export default function RoomPage() {
                                         )}
                                     </button></TableHead>
                                 <TableHead className="flex-1 min-w-[120px] text-left">Capacity</TableHead>
-                                <TableHead className="flex-1 min-w-[200px] text-left">Medium</TableHead>
+                                <TableHead className="flex-1 min-w-[200px] text-left">Type</TableHead>
                                 <TableHead className="flex-1 min-w-[80px] text-center">Delete</TableHead>
                                 <TableHead className="flex-1 min-w-[80px] text-center">Edit</TableHead>
                             </TableRow>
