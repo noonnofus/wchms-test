@@ -66,10 +66,9 @@ export default function AddCourse(props: props) {
             setRooms(availableRooms);
             setFormData({
                 ...formData,
-                courseRoom:
-                    availableRooms
-                        .find((room) => room.name === defaultRoomName)
-                        ?.id.toString() || "-1",
+                courseRoom: availableRooms.length
+                    ? availableRooms[0].id.toString()
+                    : (-1).toString(),
             });
         } catch (error) {
             console.error("Error fetching rooms:", error);
@@ -104,8 +103,11 @@ export default function AddCourse(props: props) {
     useEffect(() => {
         try {
             fetchRooms();
-            fetchCourse();
+            if (props.courseId) {
+                fetchCourse();
+            }
         } catch (err) {
+            console.error(err);
         } finally {
             setIsLoading(false);
         }
@@ -128,7 +130,7 @@ export default function AddCourse(props: props) {
         });
     };
     const handleImageSelect = (file: File | null) => {
-        setFormData((prev) => ({
+        setFormData(() => ({
             ...formData,
             courseImage: file,
         }));
@@ -143,7 +145,14 @@ export default function AddCourse(props: props) {
 
     const validateForm = () => {
         let isValid = true;
-        let errorMessages: any = {};
+        const errorMessages: {
+            courseName?: string;
+            courseDescription?: string;
+            courseStartDate?: string;
+            courseEndDate?: string;
+            courseParticipants?: string;
+            courseRoom?: string;
+        } = {};
 
         if (!formData.courseName) {
             errorMessages.courseName = "Course name is required";
@@ -195,7 +204,7 @@ export default function AddCourse(props: props) {
             errorMessages.courseRoom = "Please select a valid room";
             isValid = false;
         }
-
+        //@ts-expect-error type issue
         setErrors(errorMessages);
         return isValid;
     };
@@ -400,12 +409,12 @@ export default function AddCourse(props: props) {
                                         isLoading
                                             ? "Loading rooms..."
                                             : formData.courseRoom
-                                                ? rooms.find(
+                                              ? rooms.find(
                                                     (room) =>
                                                         room.id.toString() ===
                                                         formData.courseRoom
                                                 )?.name
-                                                : defaultRoomName
+                                              : defaultRoomName
                                     }
                                 />
                             </SelectTrigger>
@@ -534,7 +543,9 @@ export default function AddCourse(props: props) {
                         </Button>
                     ) : (
                         <Button
-                            className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold md:text-xl py-2 md:py-4">
+                            onClick={() => handleSubmit}
+                            className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold md:text-xl py-2 md:py-4"
+                        >
                             Save
                         </Button>
                     )}

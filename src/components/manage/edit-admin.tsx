@@ -69,7 +69,7 @@ export default function EditAdmin({
     };
 
     const validateFields = () => {
-        let newErrors = {
+        const newErrors = {
             email: "",
             gender: "",
             firstName: "",

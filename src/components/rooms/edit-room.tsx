@@ -25,10 +25,14 @@ export default function EditRoom({
     onRoomUpdated: () => void;
 }) {
     const [name, setName] = useState(roomData.name);
-    const [medium, setMedium] = useState<string>(roomData.medium === "online" ? "Online" : "In-Person");
+    const [medium, setMedium] = useState<string>(
+        roomData.medium === "online" ? "Online" : "In-Person"
+    );
     const [url, setUrl] = useState(roomData.url);
     const [capacity, setCapacity] = useState<string>(String(roomData.capacity));
-    const [status, setStatus] = useState<string>(roomData.status === "available" ? "Available" : "Unavailable");
+    const [status, setStatus] = useState<string>(
+        roomData.status === "available" ? "Available" : "Unavailable"
+    );
     const [description, setDescription] = useState(roomData.description);
     const [note, setNote] = useState(roomData.internalNote);
     const [errors, setErrors] = useState({
@@ -44,7 +48,9 @@ export default function EditRoom({
         setMedium(roomData.medium === "online" ? "Online" : "In-Person");
         setUrl(roomData.url);
         setCapacity(String(roomData.capacity));
-        setStatus(roomData.status === "available" ? "Available" : "Unavailable");
+        setStatus(
+            roomData.status === "available" ? "Available" : "Unavailable"
+        );
         setDescription(roomData.description);
         setNote(roomData.internalNote);
     }, [roomData]);
@@ -63,7 +69,7 @@ export default function EditRoom({
     };
 
     const validateFields = () => {
-        let newErrors = {
+        const newErrors = {
             name: "",
             medium: "",
             status: "",
@@ -232,9 +238,7 @@ export default function EditRoom({
                 </div>
                 <div className="flex flex-row w-full">
                     <div className="flex flex-col flex-1">
-                        <label htmlFor="courseDescription">
-                            Description
-                        </label>
+                        <label htmlFor="courseDescription">Description</label>
                         <Textarea
                             id="description"
                             name="description"
@@ -246,9 +250,7 @@ export default function EditRoom({
                 </div>
                 <div className="flex flex-row w-full">
                     <div className="flex flex-col flex-1">
-                        <label htmlFor="courseDescription">
-                            Internal Note
-                        </label>
+                        <label htmlFor="courseDescription">Internal Note</label>
                         <Textarea
                             id="note"
                             name="note"

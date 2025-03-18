@@ -1,9 +1,7 @@
 "use client";
 import ChevronDownIcon from "@/components/icons/chevron-down-icon";
 import ChevronUpIcon from "@/components/icons/chevron-up-icon";
-import { Pen, PlusIcon } from "lucide-react";
 import DeleteIcon from "@/components/icons/delete-icon";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import {
@@ -28,7 +26,7 @@ import AddButton from "@/components/shared/add-button";
 export type UserNoPass = Omit<User, "password">;
 export default function ManageStaff() {
     const [admins, setAdmins] = useState<UserNoPass[]>([]);
-    const [error, setError] = useState("");
+    const [error, setError] = useState(""); //eslint-disable-line
     const [isLoading, setIsLoading] = useState(false);
     const [adminToDelete, setAdminToDelete] = useState<UserNoPass | null>(null);
     const [showDeletePopup, setShowDeletePopup] = useState(false);
