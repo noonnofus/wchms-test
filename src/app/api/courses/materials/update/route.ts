@@ -106,9 +106,10 @@ export async function PUT(req: Request) {
             type: exerciseType,
             difficulty,
             description,
-            uploadId: Number(uploadId),
+            ...(uploadId ? { uploadId: Number(uploadId) } : {}),
             courseId,
         };
+
         // Update the course material
         await db
             .update(courseMaterials)

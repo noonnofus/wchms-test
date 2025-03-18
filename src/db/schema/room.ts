@@ -1,11 +1,4 @@
-import {
-    mysqlTable,
-    serial,
-    varchar,
-    mysqlEnum,
-    date,
-    int,
-} from "drizzle-orm/mysql-core";
+import { mysqlTable, varchar, mysqlEnum, int } from "drizzle-orm/mysql-core";
 
 export enum RoomStatus {
     available = "available",
@@ -19,10 +12,10 @@ const roomStatusValues = [
 
 export enum RoomMedium {
     online = "online",
-    offline = "offline",
+    InPerson = "in-person",
 }
 
-const roomMediumValues = [RoomMedium.online, RoomMedium.offline] as const;
+const roomMediumValues = [RoomMedium.online, RoomMedium.InPerson] as const;
 
 export const rooms = mysqlTable("rooms", {
     id: int("id").primaryKey().autoincrement(),
