@@ -186,9 +186,7 @@ export default function TopNav() {
                     ) : null}
                 </div>
                 <div className="flex-1 flex justify-center items-center">
-                    <Link
-                        href="/landing"
-                    >
+                    <Link href="/landing">
                         <Image
                             src="/logo.png"
                             alt="West Coast Healthy Memory Society Logo"
@@ -200,10 +198,12 @@ export default function TopNav() {
                 <div className="flex-1 flex items-center justify-end">
                     <LanguageDropdown />
                     {isLoggedIn && isParticipantPage && (
-                        <NotificationDropdown
-                            notifications={notifications}
-                            onMarkAsRead={handleMarkAsRead}
-                        />
+                        <div className="ml-6">
+                            <NotificationDropdown
+                                notifications={notifications}
+                                onMarkAsRead={handleMarkAsRead}
+                            />
+                        </div>
                     )}
                 </div>
             </div>

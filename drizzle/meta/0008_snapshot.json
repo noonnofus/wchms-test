@@ -1,8 +1,8 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "50df5c9f-c933-4779-b8db-0ed545b66efd",
-  "prevId": "42543b9c-c026-45d2-a85f-ca33c7e80d70",
+  "id": "bb397a3e-9e4e-4b0e-bab5-db2d8e6796be",
+  "prevId": "50df5c9f-c933-4779-b8db-0ed545b66efd",
   "tables": {
     "announcements": {
       "name": "announcements",
@@ -1436,7 +1436,7 @@
         },
         "medium": {
           "name": "medium",
-          "type": "enum('online','offline')",
+          "type": "enum('online','in-person')",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
