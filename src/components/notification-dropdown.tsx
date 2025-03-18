@@ -56,7 +56,7 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
             } else if (courseId && homeworkId) {
                 router.push(`/courses/${courseId}/homework/${homeworkId}`);
             } else if (sessionId) {
-                router.push(`/landing`);
+                router.push(`/courses/${courseId}`);
             } else if (courseId) {
                 router.push(`/courses/${courseId}`);
             }
