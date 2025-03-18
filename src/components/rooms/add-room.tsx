@@ -11,8 +11,8 @@ import {
 import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
 
-const mediums = ["online", "offline"];
-const statuses = ["available", "unavailable"];
+const mediums = ["Online", "In-Person"];
+const statuses = ["Available", "Unavailable"];
 
 export default function AddRoom({
     onRoomAdded,
@@ -22,10 +22,10 @@ export default function AddRoom({
     closePopup: () => void;
 }) {
     const [name, setName] = useState("");
-    const [selectedMedium, setSelectedMedium] = useState("online");
+    const [selectedMedium, setSelectedMedium] = useState("Online");
     const [url, setUrl] = useState("");
     const [capacity, setCapacity] = useState("");
-    const [selectedStatus, setSelectedStatus] = useState("available");
+    const [selectedStatus, setSelectedStatus] = useState("Available");
     const [description, setDescription] = useState("");
     const [note, setNote] = useState("");
     const [loading, setLoading] = useState(false);

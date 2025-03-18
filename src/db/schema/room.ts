@@ -12,10 +12,10 @@ const roomStatusValues = [
 
 export enum RoomMedium {
     online = "online",
-    offline = "offline",
+    InPerson = "in-person",
 }
 
-const roomMediumValues = [RoomMedium.online, RoomMedium.offline] as const;
+const roomMediumValues = [RoomMedium.online, RoomMedium.InPerson] as const;
 
 export const rooms = mysqlTable("rooms", {
     id: int("id").primaryKey().autoincrement(),

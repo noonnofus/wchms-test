@@ -12,11 +12,11 @@ export const uploadMedia = mysqlTable("upload_media", {
     fileName: varchar("file_name", { length: 255 }).notNull(),
     fileType: varchar("file_type", { length: 50 }).notNull(),
     fileSize: int("file_size").notNull(),
-    fileKey: text("file_key").notNull(),
+    fileKey: text("file_key").notNull(), //fileData
     mediaOrigin: varchar("media_origin", { length: 50 }).notNull(),
     ownerId: int("owner_id")
         .notNull()
-        .references(() => users.id),
+        .references(() => users.id), //originId
     uploadedAt: timestamp("uploaded_at").defaultNow(),
 });
 

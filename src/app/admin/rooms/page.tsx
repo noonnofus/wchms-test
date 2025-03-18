@@ -21,6 +21,7 @@ import DeleteConfirmation from "@/components/shared/delete-confirmation";
 import CloseIcon from "@/components/icons/close-icon";
 import CloseSwipe from "@/components/icons/close-swipe";
 import { Room } from "@/db/schema/room";
+import AddButton from "@/components/shared/add-button";
 
 
 export default function RoomPage() {
@@ -171,7 +172,7 @@ export default function RoomPage() {
                         <div className="z-30 bg-white rounded-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
                             <DeleteConfirmation
                                 title="Before you delete!"
-                                body={`Are you sure you want to delete ${roomToDelete.name} room? You cannot undo this action.`}
+                                body={`Are you sure you want to delete room: ${roomToDelete.name}? You cannot undo this action.`}
                                 actionLabel="DELETE"
                                 handleSubmit={handleDelete}
                                 closePopup={handleClosePopup}
