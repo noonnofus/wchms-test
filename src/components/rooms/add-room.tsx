@@ -34,6 +34,7 @@ export default function AddRoom({
         medium: "",
         url: "",
         status: "",
+        capacity: "",
     });
 
     const handleMediumChange = (value: string) => {
@@ -44,12 +45,23 @@ export default function AddRoom({
         setSelectedStatus(value);
     }
 
+    const isValidUrl = (url: string) => {
+        try {
+            new URL(url);
+            return true;
+        } catch (error) {
+            console.error(error);
+            return false;
+        }
+    }
+
     const validateFields = () => {
         let newErrors = {
             name: "",
             medium: "",
             url: "",
             status: "",
+            capacity: "",
         };
         let valid = true;
 
@@ -65,8 +77,16 @@ export default function AddRoom({
             newErrors.url = "Url is required";
             valid = false;
         }
+        if (!isValidUrl(url)) {
+            newErrors.url = "Invalid Url";
+            valid = false;
+        }
         if (!selectedStatus.trim()) {
             newErrors.status = "Status is required";
+            valid = false;
+        }
+        if (Number.isNaN(Number(capacity))) {
+            newErrors.capacity = "Capacity has to be a Number";
             valid = false;
         }
         setErrors(newErrors);
@@ -87,6 +107,7 @@ export default function AddRoom({
             medium: "",
             url: "",
             status: "",
+            capacity: "",
         });
         closePopup();
     };
@@ -213,6 +234,11 @@ export default function AddRoom({
                 <div className="flex flex-row gap-2 w-full">
                     <div className="flex flex-col flex-1 gap-2">
                         <label htmlFor="lastName">Capacity</label>
+                        {errors.capacity && (
+                            <p className="text-red-500 text-sm">
+                                {errors.capacity}
+                            </p>
+                        )}
                         <Input
                             id="capacity"
                             type="text"
