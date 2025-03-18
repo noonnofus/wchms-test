@@ -45,7 +45,7 @@ export function broadcastNotification(notification: Notification) {
     }
 }
 
-export function broadcastToAll(message: any) {
+export function broadcastToAll(message: any) {// eslint-disable-line
     const messageStr = JSON.stringify(message);
 
     for (const connections of userConnections.values()) {

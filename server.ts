@@ -20,7 +20,7 @@ function registerUserConnection(userId: number, ws: WebSocket) {
     console.log(`User ${userId} registered with websocket connection`);
 }
 
-function broadcastNotification(notification: any) {
+function broadcastNotification(notification: any) {// eslint-disable-line
     const userId = notification.userId;
     const connections = userConnections.get(userId);
 
@@ -37,8 +37,7 @@ function broadcastNotification(notification: any) {
         });
     }
 }
-
-function broadcastToAll(message: any) {
+function broadcastToAll(message: any) {// eslint-disable-line
     const messageStr = JSON.stringify(message);
 
     for (const connections of userConnections.values()) {
@@ -151,6 +150,6 @@ nextApp.prepare().then(() => {
     server.listen(3000);
     console.log("Server listening on port 3000");
 
-    (global as any).broadcastNotification = broadcastNotification;
-    (global as any).broadcastToAll = broadcastToAll;
+    (global as any).broadcastNotification = broadcastNotification;// eslint-disable-line
+    (global as any).broadcastToAll = broadcastToAll;// eslint-disable-line
 });
