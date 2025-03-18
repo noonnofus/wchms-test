@@ -145,7 +145,7 @@ export default function ManageStaff() {
         });
 
     return (
-        <div className="flex flex-col gap-6 w-full items-center h-full overflow-y-hidden">
+        <div className="flex flex-col gap-6 w-full items-center h-full overflow-hidden">
             <h1 className="font-semibold text-4xl text-center">Manage</h1>
             {showEditPopup && adminToEdit && (
                 <div className="fixed inset-0 flex items-end md:items-center justify-center z-10 overflow-y-auto">
