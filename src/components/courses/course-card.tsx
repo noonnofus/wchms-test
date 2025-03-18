@@ -145,6 +145,7 @@ export default function CourseCard(
                         width={200}
                         height={200}
                         alt={`${props.course.title} Course Image`}
+                        className="rounded-lg sm:w-[300px] lg:w-[400px] h-[200px] object-cover object-center"
                     />
                 )}
                 {props.variant == "client" && (
