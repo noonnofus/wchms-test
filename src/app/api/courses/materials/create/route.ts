@@ -154,7 +154,7 @@ export async function POST(req: Request) {
                     .values({
                         type: "course_material",
                         title: `New ${materialTypeName} Available`,
-                        message: `"${title}" has been added to ${courseTitle}.`,
+                        message: `"${title}" had added you to ${courseTitle}.`,
                         userId: user.userId,
                         createdAt: new Date(),
                         metadata: JSON.stringify({

@@ -1,18 +1,21 @@
 import { Bell } from "lucide-react";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React from "react";
 import { Notification } from "./notification-system";
 
 interface NotificationDropdownProps {
     notifications: Notification[];
     onMarkAsRead: (id: string) => void;
+    isOpen: boolean;
+    setIsOpen: (openValue: boolean) => void;
 }
 
 const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
     notifications,
     onMarkAsRead,
+    isOpen,
+    setIsOpen,
 }) => {
-    const [isOpen, setIsOpen] = useState(false);
     const router = useRouter();
 
     const unreadCount = notifications.filter((n) => !n.isRead).length;

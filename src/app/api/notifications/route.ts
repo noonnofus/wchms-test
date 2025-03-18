@@ -24,7 +24,7 @@ export async function GET(req: Request) {
             .from(notifications)
             .where(eq(notifications.userId, userId))
             .orderBy(desc(notifications.createdAt))
-            .limit(50);
+            .limit(5);
 
         return new Response(
             JSON.stringify({

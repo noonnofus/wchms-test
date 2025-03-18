@@ -24,7 +24,7 @@ export async function POST(req: Request) {
         }
 
         const title = "Class Starting Soon";
-        const message = `Your ${courseTitle} session will begin in 10 minutes.`;
+        const message = `Your session will start in 10 minutes for ${courseTitle}.`;
 
         const notificationId = await db
             .insert(notifications)

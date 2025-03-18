@@ -15,6 +15,7 @@ export default function TopNav() {
     const [notifications, setNotifications] = useState<Notification[]>([]);
     const [socket, setSocket] = useState<WebSocket | null>(null);
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+    const [isOpen, setIsOpen] = useState(false);
 
     const isParticipantPage =
         !path.startsWith("/admin") &&
@@ -139,6 +140,17 @@ export default function TopNav() {
 
     return (
         <div className="p-6 min-h-28 flex items-center">
+            {isOpen ? (
+                <div
+                    className="absolute inset-0 opacity-100"
+                    onClick={(e: React.FormEvent) => {
+                        e.preventDefault();
+                        setIsOpen(false);
+                    }}
+                ></div>
+            ) : (
+                <></>
+            )}
             <div className="flex justify-between items-center w-full">
                 <div className="flex-1">
                     {/* If its not the root page, and admin login page render a button */}
@@ -202,6 +214,8 @@ export default function TopNav() {
                             <NotificationDropdown
                                 notifications={notifications}
                                 onMarkAsRead={handleMarkAsRead}
+                                setIsOpen={setIsOpen}
+                                isOpen={isOpen}
                             />
                         </div>
                     )}

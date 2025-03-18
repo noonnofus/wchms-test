@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
             .values({
                 type: "course_acceptance",
                 title: "Course Enrollment Approved",
-                message: `Your enrollment in "${courseTitle}" has been approved.`,
+                message: `You have been approved into "${courseTitle}".`,
                 userId: userId,
                 createdAt: new Date(),
                 metadata: JSON.stringify({
@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
             id: notificationId.toString(),
             type: "course_acceptance",
             title: "Course Enrollment Approved",
-            message: `Your enrollment in "${courseTitle}" has been approved.`,
+            message: `You have been approved into "${courseTitle}".`,
             userId: userId,
             isRead: false,
             metadata: {
