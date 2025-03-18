@@ -35,7 +35,7 @@ export default function AddParticipant({
     });
 
     const validateFields = () => {
-        let newErrors = {
+        const newErrors = {
             firstName: "",
             lastName: "",
             email: "",

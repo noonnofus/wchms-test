@@ -64,13 +64,12 @@ export default function AddCourse(props: props) {
         try {
             const availableRooms = await getAvailableRooms();
             setRooms(availableRooms);
-            setFormData({
-                ...formData,
-                courseRoom:
-                    availableRooms
-                        .find((room) => room.name === defaultRoomName)
-                        ?.id.toString() || "-1",
-            });
+            setFormData((prev) => ({
+                ...prev,
+                courseRoom: availableRooms.length
+                    ? availableRooms[0].id.toString()
+                    : "-1",
+            }));
         } catch (error) {
             console.error("Error fetching rooms:", error);
             setRooms([]);
@@ -102,13 +101,16 @@ export default function AddCourse(props: props) {
     };
 
     useEffect(() => {
-        try {
-            fetchRooms();
-            fetchCourse();
-        } catch (err) {
-        } finally {
+        const loadData = async () => {
+            await fetchRooms();
+            if (props.courseId) {
+                await fetchCourse();
+            }
+
             setIsLoading(false);
-        }
+        };
+
+        loadData().catch(console.error);
     }, []);
 
     const handleChange = (
@@ -128,7 +130,7 @@ export default function AddCourse(props: props) {
         });
     };
     const handleImageSelect = (file: File | null) => {
-        setFormData((prev) => ({
+        setFormData(() => ({
             ...formData,
             courseImage: file,
         }));
@@ -143,7 +145,14 @@ export default function AddCourse(props: props) {
 
     const validateForm = () => {
         let isValid = true;
-        let errorMessages: any = {};
+        const errorMessages: {
+            courseName?: string;
+            courseDescription?: string;
+            courseStartDate?: string;
+            courseEndDate?: string;
+            courseParticipants?: string;
+            courseRoom?: string;
+        } = {};
 
         if (!formData.courseName) {
             errorMessages.courseName = "Course name is required";
@@ -196,6 +205,7 @@ export default function AddCourse(props: props) {
             isValid = false;
         }
 
+        //@ts-expect-error type issue
         setErrors(errorMessages);
         return isValid;
     };
@@ -218,7 +228,7 @@ export default function AddCourse(props: props) {
                     updatedFormData.append(key, value.toString());
                 }
             });
-
+            console.log(updatedFormData);
             const res = await fetch("/api/courses/create", {
                 method: "POST",
                 body: updatedFormData,
@@ -272,7 +282,6 @@ export default function AddCourse(props: props) {
                 updatedFormData.append(key, value.toString());
             }
         });
-
         const res = await fetch("/api/courses/update", {
             method: "PUT",
             body: updatedFormData,
@@ -387,49 +396,51 @@ export default function AddCourse(props: props) {
                 <div className="w-full flex flex-col md:flex-row gap-2">
                     <div className="flex flex-col flex-1 gap-2">
                         <label htmlFor="courseRoom">Course Room</label>
-                        <Select
-                            value={formData.courseRoom}
-                            onValueChange={(value) =>
-                                handleSelectChange("courseRoom", value)
-                            }
-                            disabled={isLoading} // Disable select while loading
-                        >
-                            <SelectTrigger>
-                                <SelectValue
-                                    placeholder={
-                                        isLoading
-                                            ? "Loading rooms..."
-                                            : formData.courseRoom
-                                                ? rooms.find(
-                                                    (room) =>
-                                                        room.id.toString() ===
-                                                        formData.courseRoom
-                                                )?.name
-                                                : defaultRoomName
-                                    }
-                                />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {isLoading ? (
-                                    <SelectItem value={"-1"} disabled>
-                                        Loading...
-                                    </SelectItem>
-                                ) : rooms.length > 0 ? (
-                                    rooms.map((room) => (
-                                        <SelectItem
-                                            key={room.id}
-                                            value={String(room.id)}
-                                        >
-                                            {room.name}
+                        {formData.courseRoom && (
+                            <Select
+                                value={formData.courseRoom ?? "-1"}
+                                onValueChange={(value) =>
+                                    handleSelectChange("courseRoom", value)
+                                }
+                                disabled={isLoading} // Disable select while loading
+                            >
+                                <SelectTrigger>
+                                    <SelectValue
+                                        placeholder={
+                                            isLoading
+                                                ? "Loading rooms..."
+                                                : formData.courseRoom
+                                                  ? rooms.find(
+                                                        (room) =>
+                                                            room.id.toString() ===
+                                                            formData.courseRoom
+                                                    )?.name
+                                                  : defaultRoomName
+                                        }
+                                    />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {isLoading ? (
+                                        <SelectItem value={"-1"} disabled>
+                                            Loading...
                                         </SelectItem>
-                                    ))
-                                ) : (
-                                    <SelectItem value={"-1"} disabled>
-                                        No rooms available
-                                    </SelectItem>
-                                )}
-                            </SelectContent>
-                        </Select>
+                                    ) : rooms.length > 0 ? (
+                                        rooms.map((room) => (
+                                            <SelectItem
+                                                key={room.id}
+                                                value={String(room.id)}
+                                            >
+                                                {room.name}
+                                            </SelectItem>
+                                        ))
+                                    ) : (
+                                        <SelectItem value={"-1"} disabled>
+                                            No rooms available
+                                        </SelectItem>
+                                    )}
+                                </SelectContent>
+                            </Select>
+                        )}
                     </div>
                     <div className="flex flex-col flex-1 gap-2">
                         <label htmlFor="courseLanguage">Course Language</label>
@@ -534,7 +545,9 @@ export default function AddCourse(props: props) {
                         </Button>
                     ) : (
                         <Button
-                            className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold md:text-xl py-2 md:py-4">
+                            onClick={() => handleSubmit}
+                            className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold md:text-xl py-2 md:py-4"
+                        >
                             Save
                         </Button>
                     )}

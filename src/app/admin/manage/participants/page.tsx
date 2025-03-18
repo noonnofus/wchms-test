@@ -30,7 +30,7 @@ interface ParticipantCourse {
 
 export default function ManageParticipant() {
     const [participants, setParticipants] = useState<ParticipantCourse[]>([]);
-    const [error, setError] = useState("");
+    const [error, setError] = useState(""); //eslint-disable-line
     const [isLoading, setIsLoading] = useState(false);
     const [participantToDelete, setParticipantToDelete] =
         useState<Participant | null>(null);

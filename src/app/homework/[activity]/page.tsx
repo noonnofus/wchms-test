@@ -6,7 +6,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import ArithemeticCard from "@/components/homework/arithemetic-card";
 import ReadingCard from "@/components/homework/reading-card";
 import PhysicalCard from "@/components/homework/physical-card";
-import { redirect } from 'next/navigation'
+import { redirect } from "next/navigation";
 import { getLatestPhysicalMaterial } from "@/db/queries/courses";
 
 interface Recommendation {
@@ -20,11 +20,16 @@ interface MathQuestions {
 
 // video URL for physical activity to test it.
 const url = "https://www.youtube.com/watch?v=0xfDmrcI7OI";
+console.log(url);
 
 export default function ActivityPage() {
     const [correctCount, setCorrectCount] = useState(0);
-    const [recommendations, setRecommendations] = useState<Recommendation[] | null>(null);
-    const [mathQuestions, setMathQuestions] = useState<MathQuestions[] | null>(null);
+    const [recommendations, setRecommendations] = useState<
+        Recommendation[] | null
+    >(null);
+    const [mathQuestions, setMathQuestions] = useState<MathQuestions[] | null>(
+        null
+    );
     const [currentQuestion, setCurrentQuestion] = useState(0);
     // const [loading, setLoading] = useState(false);
     const [physicalUrl, setPhysicalUrl] = useState<string | null>(null);
@@ -36,19 +41,19 @@ export default function ActivityPage() {
     const difficulty = searchParams.get("difficulty");
 
     if (!activity || !difficulty) {
-        redirect('/homework');
+        redirect("/homework");
     }
 
     const getMathQuestions = async () => {
         const res = await fetch("/api/homework/arithmetics", {
-            method: 'POST',
+            method: "POST",
             body: JSON.stringify({
                 level: difficulty,
             }),
             headers: new Headers({
-                'Content-Type': 'application/json; charset=UTF-8'
-            })
-        })
+                "Content-Type": "application/json; charset=UTF-8",
+            }),
+        });
         if (!res.ok) {
             throw new Error(`HTTP error! Status: ${res.status}`);
         }
@@ -59,7 +64,7 @@ export default function ActivityPage() {
         } catch (e) {
             console.error(e);
         }
-    }
+    };
 
     const handleNext = () => {
         if (mathQuestions && currentQuestion < mathQuestions.length - 1) {
@@ -83,28 +88,33 @@ export default function ActivityPage() {
     useEffect(() => {
         const generateTopic = async () => {
             if (activity === "reading") {
-                const res = await fetch(`/api/homework/reading?level=${encodeURIComponent(difficulty)}`, {
-                    method: 'GET',
-                    headers: new Headers({
-                        'Content-Type': 'application/json; charset=UTF-8'
-                    })
-                })
+                const res = await fetch(
+                    `/api/homework/reading?level=${encodeURIComponent(difficulty)}`,
+                    {
+                        method: "GET",
+                        headers: new Headers({
+                            "Content-Type": "application/json; charset=UTF-8",
+                        }),
+                    }
+                );
                 if (!res.ok) {
                     throw new Error(`HTTP error! Status: ${res.status}`);
                 }
 
                 const data = await res.json();
 
-                const topics = JSON.parse(data.result).topics.map((t: string) => t);
+                const topics = JSON.parse(data.result).topics.map(
+                    (t: string) => t
+                );
 
                 setRecommendations(topics);
             } else {
                 return;
             }
-        }
+        };
 
-        generateTopic()
-    }, [activity, difficulty])
+        generateTopic();
+    }, [activity, difficulty]);
 
     useEffect(() => {
         const getVideoUrl = async () => {
@@ -116,20 +126,27 @@ export default function ActivityPage() {
                 if (url !== null) {
                     setPhysicalUrl(url);
                 } else {
-                    setPhysicalUrl("No available video for you, please try again later.");
+                    setPhysicalUrl(
+                        "No available video for you, please try again later."
+                    );
                 }
             }
-        }
+        };
 
         getVideoUrl();
-
-    }, [activity, difficulty])
+    }, [activity, difficulty]);
 
     const activityComponents: Record<string, React.ReactNode> = {
         arithmetic: (
             <ArithemeticCard
-                question={mathQuestions ? mathQuestions[currentQuestion].question : null}
-                answer={mathQuestions ? mathQuestions[currentQuestion].answer : null}
+                question={
+                    mathQuestions
+                        ? mathQuestions[currentQuestion].question
+                        : null
+                }
+                answer={
+                    mathQuestions ? mathQuestions[currentQuestion].answer : null
+                }
                 currentIndex={currentQuestion}
                 totalQuestions={mathQuestions ? mathQuestions.length : 15}
                 correctCount={correctCount}
@@ -137,9 +154,18 @@ export default function ActivityPage() {
                 onNext={handleNext}
             />
         ),
-        reading: <ReadingCard difficulty={difficulty} topicRecommendations={recommendations} />,
+        reading: (
+            <ReadingCard
+                difficulty={difficulty}
+                topicRecommendations={recommendations}
+            />
+        ),
         physical: <PhysicalCard videoUrl={physicalUrl} />,
     };
 
-    return activityComponents[activity] || <p className="text-center">Invalid activity</p>;
+    return (
+        activityComponents[activity] || (
+            <p className="text-center">Invalid activity</p>
+        )
+    );
 }

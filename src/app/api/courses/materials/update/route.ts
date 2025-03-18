@@ -36,7 +36,7 @@ export async function PUT(req: Request) {
             ?.toString();
         const courseId = parseInt(formData.get("courseId") as string);
         const file = formData.get("file") as File | null;
-        let fileKey = formData.get("fileKey") as string;
+        const fileKey = formData.get("fileKey") as string;
 
         if (!id) {
             return new Response(

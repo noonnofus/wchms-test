@@ -60,7 +60,7 @@ export const getSignedUrlFromFileKey = async (
     asAttachment = false,
     fileName = ""
 ) => {
-    let attachmentConfig = {
+    const attachmentConfig = {
         ResponseContentDisposition: `attachment; fileName=${fileName}`,
     };
     const getObjectParams = {

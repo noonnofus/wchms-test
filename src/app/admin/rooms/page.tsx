@@ -1,9 +1,7 @@
 "use client";
 import ChevronDownIcon from "@/components/icons/chevron-down-icon";
 import ChevronUpIcon from "@/components/icons/chevron-up-icon";
-import { Pen, PlusIcon } from "lucide-react";
 import DeleteIcon from "@/components/icons/delete-icon";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import {
@@ -24,7 +22,6 @@ import { Room } from "@/db/schema/room";
 import AddButton from "@/components/shared/add-button";
 import EditIcon from "@/components/icons/edit-icon";
 
-
 export default function RoomPage() {
     const [rooms, setRooms] = useState<Room[]>([]);
     const [roomToDelete, setRoomToDelete] = useState<Room | null>(null);
@@ -44,8 +41,8 @@ export default function RoomPage() {
             .then((data) => {
                 setRooms(data);
                 setIsLoading(false);
-            })
-    }, [refreshRooms])
+            });
+    }, [refreshRooms]);
 
     const handleAddButtonClick = () => {
         setShowAddPopup(true);
@@ -79,8 +76,7 @@ export default function RoomPage() {
 
     const filteredRooms = rooms
         .filter((arr) => {
-            const fullName =
-                arr.name.toLowerCase();
+            const fullName = arr.name.toLowerCase();
             return fullName.includes(searchQuery.toLowerCase());
         })
         .sort((a, b) => {
@@ -127,7 +123,7 @@ export default function RoomPage() {
                             <div className="relative w-full">
                                 <div
                                     className="flex justify-center items-center p-6 md:hidden "
-                                // {...swipeHandlers}
+                                    // {...swipeHandlers}
                                 >
                                     {/* Swipe indicator */}
                                     <div className="absolute top-6 md:hidden">
@@ -162,7 +158,7 @@ export default function RoomPage() {
                             <div className="relative w-full">
                                 <div
                                     className="flex justify-center items-center p-6 md:hidden "
-                                // {...swipeHandlers}
+                                    // {...swipeHandlers}
                                 >
                                     {/* Swipe indicator */}
                                     <div className="absolute top-6 md:hidden">
@@ -220,7 +216,8 @@ export default function RoomPage() {
                     <Table className="table-fixed w-full border-collapse">
                         <TableHeader>
                             <TableRow className="flex w-full justify-between text-base md:text-xl font-semibold">
-                                <TableHead className="flex-1 min-w-[200px] text-left">Name
+                                <TableHead className="flex-1 min-w-[200px] text-left">
+                                    Name
                                     <button
                                         onClick={handleSortChange}
                                         className="ml-2"
@@ -230,74 +227,87 @@ export default function RoomPage() {
                                         ) : (
                                             <ChevronUpIcon className="text-primary-green" />
                                         )}
-                                    </button></TableHead>
-                                <TableHead className="flex-1 min-w-[120px] text-left">Capacity</TableHead>
-                                <TableHead className="flex-1 min-w-[200px] text-left">Type</TableHead>
-                                <TableHead className="flex-1 min-w-[80px] text-center">Delete</TableHead>
-                                <TableHead className="flex-1 min-w-[80px] text-center">Edit</TableHead>
+                                    </button>
+                                </TableHead>
+                                <TableHead className="flex-1 min-w-[120px] text-left">
+                                    Capacity
+                                </TableHead>
+                                <TableHead className="flex-1 min-w-[200px] text-left">
+                                    Type
+                                </TableHead>
+                                <TableHead className="flex-1 min-w-[80px] text-center">
+                                    Delete
+                                </TableHead>
+                                <TableHead className="flex-1 min-w-[80px] text-center">
+                                    Edit
+                                </TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             {isLoading
                                 ? [...Array(3)].map((_, index) => (
-                                    <TableRow className="flex w-full justify-between items-center" key={index}>
-                                        <TableCell className="flex-1 min-w-[200px] text-left">
-                                            <Skeleton className="h-4 w-24 rounded" />
-                                        </TableCell>
-                                        <TableCell className="flex-1 min-w-[120px]">
-                                            <Skeleton className="h-4 w-24 rounded" />
-                                        </TableCell>
-                                        <TableCell className="flex-1 min-w-[200px]">
-                                            <Skeleton className="h-4 w-24 rounded" />
-                                        </TableCell>
-                                        <TableCell className="flex-1 min-w-[80px] flex justify-center items-center">
-                                            <Skeleton className="h-6 w-6 rounded" />
-                                        </TableCell>
-                                        <TableCell className="flex-1 min-w-[80px] flex justify-center items-center">
-                                            <Skeleton className="h-6 w-6 rounded" />
-                                        </TableCell>
-                                    </TableRow>
-                                ))
-                                : filteredRooms.map(
-                                    (room: Room) => (
-                                        <TableRow
-                                            className="flex w-full justify-between items-center"
-                                            key={room.id}
-                                        >
-                                            <TableCell className="flex-1 min-w-[200px] text-left text-base md:text-lg">
-                                                {room.name}
-                                            </TableCell>
-                                            <TableCell className="flex-1 min-w-[120px] text-left text-base md:text-lg">
-                                                {room.capacity !== null && room.capacity !== undefined ? room.capacity : "Unlimited"}
-                                            </TableCell>
-                                            <TableCell className="flex-1 min-w-[200px] text-left text-base md:text-lg">
-                                                {room.medium}
-                                            </TableCell>
-                                            <TableCell className="flex-1 min-w-[80px] flex justify-center items-center">
-                                                <button
-                                                    onClick={() =>
-                                                        handleDeleteButtonClick(
-                                                            room
-                                                        )
-                                                    }
-                                                >
-                                                    <DeleteIcon className="inline-flex text-center" />
-                                                </button>
-                                            </TableCell>
-                                            <TableCell className="flex-1 min-w-[80px] flex justify-center items-center">
-                                                <button
-                                                    onClick={() =>
-                                                        handleEditButtonClick(
-                                                            room
-                                                        )
-                                                    }
-                                                >
-                                                    <EditIcon />
-                                                </button>
-                                            </TableCell>
-                                        </TableRow>
-                                    )
-                                )}
+                                      <TableRow
+                                          className="flex w-full justify-between items-center"
+                                          key={index}
+                                      >
+                                          <TableCell className="flex-1 min-w-[200px] text-left">
+                                              <Skeleton className="h-4 w-24 rounded" />
+                                          </TableCell>
+                                          <TableCell className="flex-1 min-w-[120px]">
+                                              <Skeleton className="h-4 w-24 rounded" />
+                                          </TableCell>
+                                          <TableCell className="flex-1 min-w-[200px]">
+                                              <Skeleton className="h-4 w-24 rounded" />
+                                          </TableCell>
+                                          <TableCell className="flex-1 min-w-[80px] flex justify-center items-center">
+                                              <Skeleton className="h-6 w-6 rounded" />
+                                          </TableCell>
+                                          <TableCell className="flex-1 min-w-[80px] flex justify-center items-center">
+                                              <Skeleton className="h-6 w-6 rounded" />
+                                          </TableCell>
+                                      </TableRow>
+                                  ))
+                                : filteredRooms.map((room: Room) => (
+                                      <TableRow
+                                          className="flex w-full justify-between items-center"
+                                          key={room.id}
+                                      >
+                                          <TableCell className="flex-1 min-w-[200px] text-left text-base md:text-lg">
+                                              {room.name}
+                                          </TableCell>
+                                          <TableCell className="flex-1 min-w-[120px] text-left text-base md:text-lg">
+                                              {room.capacity !== null &&
+                                              room.capacity !== undefined
+                                                  ? room.capacity
+                                                  : "Unlimited"}
+                                          </TableCell>
+                                          <TableCell className="flex-1 min-w-[200px] text-left text-base md:text-lg">
+                                              {room.medium}
+                                          </TableCell>
+                                          <TableCell className="flex-1 min-w-[80px] flex justify-center items-center">
+                                              <button
+                                                  onClick={() =>
+                                                      handleDeleteButtonClick(
+                                                          room
+                                                      )
+                                                  }
+                                              >
+                                                  <DeleteIcon className="inline-flex text-center" />
+                                              </button>
+                                          </TableCell>
+                                          <TableCell className="flex-1 min-w-[80px] flex justify-center items-center">
+                                              <button
+                                                  onClick={() =>
+                                                      handleEditButtonClick(
+                                                          room
+                                                      )
+                                                  }
+                                              >
+                                                  <EditIcon />
+                                              </button>
+                                          </TableCell>
+                                      </TableRow>
+                                  ))}
                         </TableBody>
                     </Table>
                 </div>

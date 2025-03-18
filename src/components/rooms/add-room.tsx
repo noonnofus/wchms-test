@@ -39,19 +39,19 @@ export default function AddRoom({
 
     const handleMediumChange = (value: string) => {
         setSelectedMedium(value);
-    }
+    };
 
     const handleStatusChange = (value: string) => {
         setSelectedStatus(value);
-    }
+    };
 
     const isValidUrl = (url: string) => {
         const pattern = /^(?:[\w-]+\.)+[\w]{2,}(?:\/.*)?$/;
         return pattern.test(url);
-    }
+    };
 
     const validateFields = () => {
-        let newErrors = {
+        const newErrors = {
             name: "",
             medium: "",
             url: "",
@@ -213,9 +213,7 @@ export default function AddRoom({
                     <div className="flex flex-col flex-1 gap-2">
                         <label htmlFor="lastName">URL</label>
                         {errors.url && (
-                            <p className="text-red-500 text-sm">
-                                {errors.url}
-                            </p>
+                            <p className="text-red-500 text-sm">{errors.url}</p>
                         )}
                         <Input
                             id="url"
@@ -272,9 +270,7 @@ export default function AddRoom({
                 </div>
                 <div className="flex flex-row w-full">
                     <div className="flex flex-col flex-1">
-                        <label htmlFor="courseDescription">
-                            Description
-                        </label>
+                        <label htmlFor="courseDescription">Description</label>
                         <Textarea
                             id="description"
                             name="description"
@@ -286,9 +282,7 @@ export default function AddRoom({
                 </div>
                 <div className="flex flex-row w-full">
                     <div className="flex flex-col flex-1">
-                        <label htmlFor="courseDescription">
-                            Internal Note
-                        </label>
+                        <label htmlFor="courseDescription">Internal Note</label>
                         <Textarea
                             id="note"
                             name="note"

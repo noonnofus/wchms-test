@@ -25,7 +25,7 @@ export interface Notification {
 
 const NotificationSystem: React.FC = () => {
     const [socket, setSocket] = useState<WebSocket | null>(null);
-    const [notifications, setNotifications] = useState<Notification[]>([]);
+    const [notifications, setNotifications] = useState<Notification[]>([]); // eslint-disable-line
     const { data: session } = useSession();
     const userId = session?.user?.id;
 
@@ -47,8 +47,7 @@ const NotificationSystem: React.FC = () => {
                         ws.send(JSON.stringify({ event: "ping" }));
                     }
                 }, 30000);
-                // eslint-disable-line
-                (ws as any).pingInterval = pingInterval;// eslint-disable-line
+                (ws as any).pingInterval = pingInterval; // eslint-disable-line
             };
 
             ws.onmessage = (event) => {
@@ -74,8 +73,7 @@ const NotificationSystem: React.FC = () => {
                 console.log(
                     "WebSocket disconnected. Attempting to reconnect..."
                 );
-                // eslint-disable-line
-                clearInterval((ws as any).pingInterval);// eslint-disable-line
+                clearInterval((ws as any).pingInterval); // eslint-disable-line
 
                 setTimeout(connectWebSocket, 3000);
             };
@@ -107,7 +105,7 @@ const NotificationSystem: React.FC = () => {
         return () => {
             if (socket) {
                 // eslint-disable-line
-                clearInterval((socket as any).pingInterval);// eslint-disable-line
+                clearInterval((socket as any).pingInterval); // eslint-disable-line
 
                 socket.close();
             }
@@ -142,28 +140,28 @@ const NotificationSystem: React.FC = () => {
         }
     };
 
-    const markAsRead = async (notificationId: string) => {
-        try {
-            const response = await fetch(
-                `/api/notifications/${notificationId}/read`,
-                {
-                    method: "PUT",
-                }
-            );
+    // const markAsRead = async (notificationId: string) => {
+    //     try {
+    //         const response = await fetch(
+    //             `/api/notifications/${notificationId}/read`,
+    //             {
+    //                 method: "PUT",
+    //             }
+    //         );
 
-            if (response.ok) {
-                setNotifications((prev) =>
-                    prev.map((notif) =>
-                        notif.id === notificationId
-                            ? { ...notif, isRead: true }
-                            : notif
-                    )
-                );
-            }
-        } catch (error) {
-            console.error("Error marking notification as read:", error);
-        }
-    };
+    //         if (response.ok) {
+    //             setNotifications((prev) =>
+    //                 prev.map((notif) =>
+    //                     notif.id === notificationId
+    //                         ? { ...notif, isRead: true }
+    //                         : notif
+    //                 )
+    //             );
+    //         }
+    //     } catch (error) {
+    //         console.error("Error marking notification as read:", error);
+    //     }
+    // };
 
     return (
         <>

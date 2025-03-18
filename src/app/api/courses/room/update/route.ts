@@ -1,11 +1,9 @@
 import db from "@/db";
 import { eq } from "drizzle-orm";
-import { users } from "@/db/schema/users";
 import { rooms } from "@/db/schema/room";
 import { getServerSession } from "next-auth";
 import { authConfig } from "@/auth";
 import { validateAdmin } from "@/lib/validation";
-import { hashPassword } from "@/lib/hashing";
 
 export async function PUT(req: Request) {
     try {

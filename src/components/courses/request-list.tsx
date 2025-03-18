@@ -86,7 +86,7 @@ export default function RequestOverviewCard({
             if (!response.ok)
                 throw new Error("Failed to add participant to course");
 
-            const data = await response.json();
+            await response.json();
 
             // Delete course join request
             await fetch("/api/requests/delete", {

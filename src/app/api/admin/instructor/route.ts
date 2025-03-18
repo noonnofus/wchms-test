@@ -13,7 +13,7 @@ export async function GET() {
                 role: users.role,
             })
             .from(users)
-            .where(eq(users.role, "staff"));
+            .where(eq(users.role, "Staff"));
 
         return new Response(JSON.stringify(instructors), {
             status: 200,
