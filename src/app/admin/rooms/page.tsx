@@ -166,7 +166,7 @@ export default function RoomPage() {
                         <div className="relative w-full">
                             <div
                                 className="flex justify-center items-center p-6 md:hidden "
-                                // {...swipeHandlers}
+                                {...swipeHandlers}
                             >
                                 {/* Swipe indicator */}
                                 <div className="absolute top-6 md:hidden">
