@@ -1,7 +1,7 @@
 export default function NotificationCard({
-    userId,
-    notificationType,
-    notificationMessage,
+    userId, // eslint-disable-line
+    notificationType, // eslint-disable-line
+    notificationMessage, // eslint-disable-line
 }: {
     userId?: string;
     notificationType: string;
@@ -9,8 +9,7 @@ export default function NotificationCard({
 }) {
     return (
         <div className="flex justify-center content-center">
-            <div className="flex">
-            </div>
+            <div className="flex"></div>
         </div>
-    )
-};
+    );
+}

@@ -14,7 +14,7 @@ export default function NextClass({ whenLoaded }: { whenLoaded: () => void }) {
 
     const notificationTimerRef = useRef<NodeJS.Timeout | null>(null);
     const notificationSentRef = useRef<boolean>(false);
-    const [sessionId, setSessionId] = useState<number | null>(null);
+    const [sessionId, setSessionId] = useState<number | null>(null); // eslint-disable-line
 
     const nextSessionDate = async () => {
         try {
