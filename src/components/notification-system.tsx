@@ -47,7 +47,7 @@ const NotificationSystem: React.FC = () => {
                         ws.send(JSON.stringify({ event: "ping" }));
                     }
                 }, 30000);
-
+                // eslint-disable-line
                 (ws as any).pingInterval = pingInterval;
             };
 
@@ -74,6 +74,7 @@ const NotificationSystem: React.FC = () => {
                 console.log(
                     "WebSocket disconnected. Attempting to reconnect..."
                 );
+                // eslint-disable-line
                 clearInterval((ws as any).pingInterval);
 
                 setTimeout(connectWebSocket, 3000);
@@ -105,6 +106,7 @@ const NotificationSystem: React.FC = () => {
 
         return () => {
             if (socket) {
+                // eslint-disable-line
                 clearInterval((socket as any).pingInterval);
                 socket.close();
             }
