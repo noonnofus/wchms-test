@@ -1,9 +1,7 @@
 "use client";
 import ChevronDownIcon from "@/components/icons/chevron-down-icon";
 import ChevronUpIcon from "@/components/icons/chevron-up-icon";
-import { Pen, PlusIcon } from "lucide-react";
 import DeleteIcon from "@/components/icons/delete-icon";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import {
@@ -23,6 +21,7 @@ import CloseSwipe from "@/components/icons/close-swipe";
 import { Room } from "@/db/schema/room";
 import AddButton from "@/components/shared/add-button";
 import EditIcon from "@/components/icons/edit-icon";
+import { useSwipeable } from "react-swipeable";
 
 export default function RoomPage() {
     const [rooms, setRooms] = useState<Room[]>([]);
@@ -35,6 +34,14 @@ export default function RoomPage() {
     const [showDeletePopup, setShowDeletePopup] = useState(false);
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
     const [searchQuery, setSearchQuery] = useState("");
+
+    const swipeHandlers = useSwipeable({
+        onSwipedDown: () => {
+            handleClosePopup();
+        },
+        preventScrollOnSwipe: true,
+        trackMouse: true,
+    });
 
     useEffect(() => {
         setIsLoading(true);
@@ -124,7 +131,7 @@ export default function RoomPage() {
                         <div className="relative w-full">
                             <div
                                 className="flex justify-center items-center p-6 md:hidden "
-                                // {...swipeHandlers}
+                                {...swipeHandlers}
                             >
                                 {/* Swipe indicator */}
                                 <div className="absolute top-6 md:hidden">

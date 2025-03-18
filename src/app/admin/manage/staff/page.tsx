@@ -1,9 +1,7 @@
 "use client";
 import ChevronDownIcon from "@/components/icons/chevron-down-icon";
 import ChevronUpIcon from "@/components/icons/chevron-up-icon";
-import { Pen, PlusIcon } from "lucide-react";
 import DeleteIcon from "@/components/icons/delete-icon";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import {
