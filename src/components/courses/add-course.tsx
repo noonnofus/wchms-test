@@ -64,12 +64,12 @@ export default function AddCourse(props: props) {
         try {
             const availableRooms = await getAvailableRooms();
             setRooms(availableRooms);
-            setFormData({
-                ...formData,
+            setFormData((prev) => ({
+                ...prev,
                 courseRoom: availableRooms.length
                     ? availableRooms[0].id.toString()
-                    : (-1).toString(),
-            });
+                    : "-1",
+            }));
         } catch (error) {
             console.error("Error fetching rooms:", error);
             setRooms([]);
@@ -101,16 +101,16 @@ export default function AddCourse(props: props) {
     };
 
     useEffect(() => {
-        try {
-            fetchRooms();
+        const loadData = async () => {
+            await fetchRooms();
             if (props.courseId) {
-                fetchCourse();
+                await fetchCourse();
             }
-        } catch (err) {
-            console.error(err);
-        } finally {
+
             setIsLoading(false);
-        }
+        };
+
+        loadData().catch(console.error);
     }, []);
 
     const handleChange = (
@@ -204,6 +204,7 @@ export default function AddCourse(props: props) {
             errorMessages.courseRoom = "Please select a valid room";
             isValid = false;
         }
+
         //@ts-expect-error type issue
         setErrors(errorMessages);
         return isValid;
@@ -227,7 +228,7 @@ export default function AddCourse(props: props) {
                     updatedFormData.append(key, value.toString());
                 }
             });
-
+            console.log(updatedFormData);
             const res = await fetch("/api/courses/create", {
                 method: "POST",
                 body: updatedFormData,
@@ -281,7 +282,6 @@ export default function AddCourse(props: props) {
                 updatedFormData.append(key, value.toString());
             }
         });
-
         const res = await fetch("/api/courses/update", {
             method: "PUT",
             body: updatedFormData,
@@ -396,49 +396,51 @@ export default function AddCourse(props: props) {
                 <div className="w-full flex flex-col md:flex-row gap-2">
                     <div className="flex flex-col flex-1 gap-2">
                         <label htmlFor="courseRoom">Course Room</label>
-                        <Select
-                            value={formData.courseRoom}
-                            onValueChange={(value) =>
-                                handleSelectChange("courseRoom", value)
-                            }
-                            disabled={isLoading} // Disable select while loading
-                        >
-                            <SelectTrigger>
-                                <SelectValue
-                                    placeholder={
-                                        isLoading
-                                            ? "Loading rooms..."
-                                            : formData.courseRoom
-                                              ? rooms.find(
-                                                    (room) =>
-                                                        room.id.toString() ===
-                                                        formData.courseRoom
-                                                )?.name
-                                              : defaultRoomName
-                                    }
-                                />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {isLoading ? (
-                                    <SelectItem value={"-1"} disabled>
-                                        Loading...
-                                    </SelectItem>
-                                ) : rooms.length > 0 ? (
-                                    rooms.map((room) => (
-                                        <SelectItem
-                                            key={room.id}
-                                            value={String(room.id)}
-                                        >
-                                            {room.name}
+                        {formData.courseRoom && (
+                            <Select
+                                value={formData.courseRoom ?? "-1"}
+                                onValueChange={(value) =>
+                                    handleSelectChange("courseRoom", value)
+                                }
+                                disabled={isLoading} // Disable select while loading
+                            >
+                                <SelectTrigger>
+                                    <SelectValue
+                                        placeholder={
+                                            isLoading
+                                                ? "Loading rooms..."
+                                                : formData.courseRoom
+                                                  ? rooms.find(
+                                                        (room) =>
+                                                            room.id.toString() ===
+                                                            formData.courseRoom
+                                                    )?.name
+                                                  : defaultRoomName
+                                        }
+                                    />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {isLoading ? (
+                                        <SelectItem value={"-1"} disabled>
+                                            Loading...
                                         </SelectItem>
-                                    ))
-                                ) : (
-                                    <SelectItem value={"-1"} disabled>
-                                        No rooms available
-                                    </SelectItem>
-                                )}
-                            </SelectContent>
-                        </Select>
+                                    ) : rooms.length > 0 ? (
+                                        rooms.map((room) => (
+                                            <SelectItem
+                                                key={room.id}
+                                                value={String(room.id)}
+                                            >
+                                                {room.name}
+                                            </SelectItem>
+                                        ))
+                                    ) : (
+                                        <SelectItem value={"-1"} disabled>
+                                            No rooms available
+                                        </SelectItem>
+                                    )}
+                                </SelectContent>
+                            </Select>
+                        )}
                     </div>
                     <div className="flex flex-col flex-1 gap-2">
                         <label htmlFor="courseLanguage">Course Language</label>
