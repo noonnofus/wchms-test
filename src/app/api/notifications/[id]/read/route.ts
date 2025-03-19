@@ -4,12 +4,16 @@ import { notifications } from "@/db/schema/notifications";
 import { broadcastNotification } from "@/lib/websockets";
 import { and, eq } from "drizzle-orm";
 import { getServerSession } from "next-auth";
+import { NextRequest } from "next/server";
 
 // this function just marks the notification as read, it doesn't return anything
+//for some reason destructuring and typing params here prevents building, this needs to typed and fixed
 export async function PUT(
-    req: Request,
-    { params }: { params: { id: string } }
+    req: NextRequest,
+    { params }: any //eslint-disable-line
 ) {
+    const notificationId = String(params.id);
+
     try {
         const session = await getServerSession(authConfig);
         if (!session?.user?.id) {
@@ -22,7 +26,6 @@ export async function PUT(
         }
 
         const userId = parseInt(session.user.id);
-        const notificationId = params.id;
 
         const notificationToUpdate = await db
             .select()
@@ -58,12 +61,17 @@ export async function PUT(
             id: notificationId,
             userId: userId,
             isRead: true,
-            type: notificationToUpdate.type as "course_material" | "homework" | "session_reminder" | "course_acceptance",
+            type: notificationToUpdate.type as
+                | "course_material"
+                | "homework"
+                | "session_reminder"
+                | "course_acceptance",
             title: notificationToUpdate.title,
             message: notificationToUpdate.message,
-            metadata: typeof notificationToUpdate.metadata === 'string'
-                ? JSON.parse(notificationToUpdate.metadata)
-                : null,
+            metadata:
+                typeof notificationToUpdate.metadata === "string"
+                    ? JSON.parse(notificationToUpdate.metadata)
+                    : null,
         });
 
         return new Response(

@@ -30,17 +30,17 @@ const subscriptionKindEnumValues = [
     SubscriptionKind.single,
 ] as const;
 
-enum SubscriptionPeriod {
-    monthly = "monthly",
-    quarterly = "quarterly",
-    yearly = "yearly",
-}
+// enum SubscriptionPeriod {
+//     monthly = "monthly",
+//     quarterly = "quarterly",
+//     yearly = "yearly",
+// }
 
-const subscriptionPeriodEnumValues = [ // might be needed for mutation/query
-    SubscriptionPeriod.monthly,
-    SubscriptionPeriod.quarterly,
-    SubscriptionPeriod.yearly,
-] as const;
+// const subscriptionPeriodEnumValues = [ // might be needed for mutation/query
+//     SubscriptionPeriod.monthly,
+//     SubscriptionPeriod.quarterly,
+//     SubscriptionPeriod.yearly,
+// ] as const;
 
 export const subscriptions = mysqlTable("subscriptions", {
     id: serial("id").primaryKey(),

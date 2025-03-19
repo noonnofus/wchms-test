@@ -4,7 +4,7 @@ import { notifications } from "@/db/schema/notifications";
 import { desc, eq } from "drizzle-orm";
 import { getServerSession } from "next-auth";
 
-export async function GET(req: Request) {
+export async function GET() {
     try {
         const session = await getServerSession(authConfig);
         if (!session?.user?.id) {

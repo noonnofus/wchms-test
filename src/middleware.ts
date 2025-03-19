@@ -24,7 +24,9 @@ export async function middleware(req: NextRequest) {
         }
     } else {
         if (userRole === "Admin" || userRole === "Staff") {
-            console.log("Here");
+            if (pathname === "/admin") {
+                return NextResponse.next();
+            }
             return NextResponse.redirect(
                 new URL(`/admin/${pathname}`, req.url)
             );

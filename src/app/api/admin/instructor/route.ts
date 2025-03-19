@@ -13,7 +13,7 @@ export async function GET() {
                 role: users.role,
             })
             .from(users)
-            .where(inArray(users.role, ["Staff", "Admin"]))
+            .where(inArray(users.role, ["Staff", "Admin"]));
 
         return new Response(JSON.stringify(instructors), {
             status: 200,

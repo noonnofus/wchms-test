@@ -4,9 +4,6 @@ import db from "@/db";
 import { getServerSession } from "next-auth";
 import { authConfig } from "@/auth";
 import { validateAdminOrStaff } from "@/lib/validation";
-import { deleteFromS3 } from "@/lib/s3";
-import { uploadMedia } from "@/db/schema/mediaUpload";
-import { courseMaterials } from "@/db/schema/courseMaterials";
 
 export async function DELETE(req: Request) {
     try {
