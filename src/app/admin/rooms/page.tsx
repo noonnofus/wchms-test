@@ -21,6 +21,7 @@ import CloseSwipe from "@/components/icons/close-swipe";
 import { Room } from "@/db/schema/room";
 import AddButton from "@/components/shared/add-button";
 import EditIcon from "@/components/icons/edit-icon";
+import { useSwipeable } from "react-swipeable";
 
 export default function RoomPage() {
     const [rooms, setRooms] = useState<Room[]>([]);
@@ -33,6 +34,14 @@ export default function RoomPage() {
     const [showDeletePopup, setShowDeletePopup] = useState(false);
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
     const [searchQuery, setSearchQuery] = useState("");
+
+    const swipeHandlers = useSwipeable({
+        onSwipedDown: () => {
+            handleClosePopup();
+        },
+        preventScrollOnSwipe: true,
+        trackMouse: true,
+    });
 
     useEffect(() => {
         setIsLoading(true);
@@ -110,209 +119,203 @@ export default function RoomPage() {
     };
 
     return (
-        <div>
-            <div className="flex flex-col gap-10 w-full items-center h-full">
-                <h1 className="font-semibold text-4xl text-center">Manage</h1>
-                {showAddPopup && (
-                    <div className="fixed inset-0 flex items-end md:items-center justify-center z-10 overflow-y-auto">
-                        <div
-                            className="absolute inset-0 bg-black opacity-50"
-                            onClick={handleClosePopup}
-                        ></div>
-                        <div className="z-30 bg-white rounded-t-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
-                            <div className="relative w-full">
-                                <div
-                                    className="flex justify-center items-center p-6 md:hidden "
-                                    // {...swipeHandlers}
-                                >
-                                    {/* Swipe indicator */}
-                                    <div className="absolute top-6 md:hidden">
-                                        <CloseSwipe />
-                                    </div>
+        <div className="flex flex-col gap-10 w-full items-center h-full overflow-hidden">
+            <h1 className="font-semibold text-4xl text-center">Manage</h1>
+            {showAddPopup && (
+                <div className="fixed inset-0 flex items-end md:items-center justify-center z-10 overflow-y-auto">
+                    <div
+                        className="absolute inset-0 bg-black opacity-50"
+                        onClick={handleClosePopup}
+                    ></div>
+                    <div className="z-30 bg-white rounded-t-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
+                        <div className="relative w-full">
+                            <div
+                                className="flex justify-center items-center p-6 md:hidden "
+                                {...swipeHandlers}
+                            >
+                                {/* Swipe indicator */}
+                                <div className="absolute top-6 md:hidden">
+                                    <CloseSwipe />
                                 </div>
-                                <button
-                                    onClick={handleClosePopup}
-                                    className="absolute top-3 right-4"
-                                >
-                                    <CloseIcon />
-                                </button>
                             </div>
-                            <div className="overflow-y-auto max-h-[calc(90vh-90px)]">
-                                <AddRoom
-                                    closePopup={handleClosePopup}
-                                    onRoomAdded={() =>
-                                        setRefreshRooms((prev) => !prev)
-                                    }
-                                />
-                            </div>
+                            <button
+                                onClick={handleClosePopup}
+                                className="absolute top-3 right-4"
+                            >
+                                <CloseIcon />
+                            </button>
                         </div>
-                    </div>
-                )}
-                {showEditPopup && roomToEdit && (
-                    <div className="fixed inset-0 flex items-end md:items-center justify-center z-10 overflow-y-auto">
-                        <div
-                            className="absolute inset-0 bg-black opacity-50"
-                            onClick={handleClosePopup}
-                        ></div>
-                        <div className="z-30 bg-white rounded-t-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
-                            <div className="relative w-full">
-                                <div
-                                    className="flex justify-center items-center p-6 md:hidden "
-                                    // {...swipeHandlers}
-                                >
-                                    {/* Swipe indicator */}
-                                    <div className="absolute top-6 md:hidden">
-                                        <CloseSwipe />
-                                    </div>
-                                </div>
-                                <button
-                                    onClick={handleClosePopup}
-                                    className="absolute top-3 right-4"
-                                >
-                                    <CloseIcon />
-                                </button>
-                            </div>
-                            <div className="overflow-y-auto max-h-[calc(90vh-90px)]">
-                                <EditRoom
-                                    closePopup={handleClosePopup}
-                                    roomData={roomToEdit}
-                                    onRoomUpdated={() =>
-                                        setRefreshRooms((prev) => !prev)
-                                    }
-                                />
-                            </div>
-                        </div>
-                    </div>
-                )}
-                {showDeletePopup && roomToDelete && (
-                    <div className="fixed inset-0 flex items-center justify-center z-10 overflow-y-auto">
-                        <div
-                            className="absolute inset-0 bg-black opacity-50"
-                            onClick={handleClosePopup}
-                        ></div>
-                        <div className="z-30 bg-white rounded-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
-                            <DeleteConfirmation
-                                title="Before you delete!"
-                                body={`Are you sure you want to delete room: ${roomToDelete.name}? You cannot undo this action.`}
-                                actionLabel="DELETE"
-                                handleSubmit={handleDelete}
+                        <div className="overflow-y-auto max-h-[calc(90vh-90px)]">
+                            <AddRoom
                                 closePopup={handleClosePopup}
+                                onRoomAdded={() =>
+                                    setRefreshRooms((prev) => !prev)
+                                }
                             />
                         </div>
                     </div>
-                )}
-                <div className="flex flex-col h-full gap-4">
-                    <div className="w-full">
-                        <h2 className="text-xl md:text-3xl font-semibold">
-                            Room List
-                        </h2>
-                        <Input
-                            type="text"
-                            placeholder="Search"
-                            className="mt-2 md:mt-4 py-4 md:py-6 w-full"
-                            onChange={handleSearchChange}
-                        ></Input>
-                    </div>
-                    <Table className="table-fixed w-full border-collapse">
-                        <TableHeader>
-                            <TableRow className="flex w-full justify-between text-base md:text-xl font-semibold">
-                                <TableHead className="flex-1 min-w-[200px] text-left">
-                                    Name
-                                    <button
-                                        onClick={handleSortChange}
-                                        className="ml-2"
-                                    >
-                                        {sortOrder === "asc" ? (
-                                            <ChevronDownIcon className="text-primary-green" />
-                                        ) : (
-                                            <ChevronUpIcon className="text-primary-green" />
-                                        )}
-                                    </button>
-                                </TableHead>
-                                <TableHead className="flex-1 min-w-[120px] text-left">
-                                    Capacity
-                                </TableHead>
-                                <TableHead className="flex-1 min-w-[200px] text-left">
-                                    Type
-                                </TableHead>
-                                <TableHead className="flex-1 min-w-[80px] text-center">
-                                    Delete
-                                </TableHead>
-                                <TableHead className="flex-1 min-w-[80px] text-center">
-                                    Edit
-                                </TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {isLoading
-                                ? [...Array(3)].map((_, index) => (
-                                      <TableRow
-                                          className="flex w-full justify-between items-center"
-                                          key={index}
-                                      >
-                                          <TableCell className="flex-1 min-w-[200px] text-left">
-                                              <Skeleton className="h-4 w-24 rounded" />
-                                          </TableCell>
-                                          <TableCell className="flex-1 min-w-[120px]">
-                                              <Skeleton className="h-4 w-24 rounded" />
-                                          </TableCell>
-                                          <TableCell className="flex-1 min-w-[200px]">
-                                              <Skeleton className="h-4 w-24 rounded" />
-                                          </TableCell>
-                                          <TableCell className="flex-1 min-w-[80px] flex justify-center items-center">
-                                              <Skeleton className="h-6 w-6 rounded" />
-                                          </TableCell>
-                                          <TableCell className="flex-1 min-w-[80px] flex justify-center items-center">
-                                              <Skeleton className="h-6 w-6 rounded" />
-                                          </TableCell>
-                                      </TableRow>
-                                  ))
-                                : filteredRooms.map((room: Room) => (
-                                      <TableRow
-                                          className="flex w-full justify-between items-center"
-                                          key={room.id}
-                                      >
-                                          <TableCell className="flex-1 min-w-[200px] text-left text-base md:text-lg">
-                                              {room.name}
-                                          </TableCell>
-                                          <TableCell className="flex-1 min-w-[120px] text-left text-base md:text-lg">
-                                              {room.capacity !== null &&
-                                              room.capacity !== undefined
-                                                  ? room.capacity
-                                                  : "Unlimited"}
-                                          </TableCell>
-                                          <TableCell className="flex-1 min-w-[200px] text-left text-base md:text-lg">
-                                              {room.medium}
-                                          </TableCell>
-                                          <TableCell className="flex-1 min-w-[80px] flex justify-center items-center">
-                                              <button
-                                                  onClick={() =>
-                                                      handleDeleteButtonClick(
-                                                          room
-                                                      )
-                                                  }
-                                              >
-                                                  <DeleteIcon className="inline-flex text-center" />
-                                              </button>
-                                          </TableCell>
-                                          <TableCell className="flex-1 min-w-[80px] flex justify-center items-center">
-                                              <button
-                                                  onClick={() =>
-                                                      handleEditButtonClick(
-                                                          room
-                                                      )
-                                                  }
-                                              >
-                                                  <EditIcon />
-                                              </button>
-                                          </TableCell>
-                                      </TableRow>
-                                  ))}
-                        </TableBody>
-                    </Table>
                 </div>
-                <AddButton handleAddButtonClick={handleAddButtonClick} />
+            )}
+            {showEditPopup && roomToEdit && (
+                <div className="fixed inset-0 flex items-end md:items-center justify-center z-10 overflow-y-auto">
+                    <div
+                        className="absolute inset-0 bg-black opacity-50"
+                        onClick={handleClosePopup}
+                    ></div>
+                    <div className="z-30 bg-white rounded-t-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
+                        <div className="relative w-full">
+                            <div
+                                className="flex justify-center items-center p-6 md:hidden "
+                                {...swipeHandlers}
+                            >
+                                {/* Swipe indicator */}
+                                <div className="absolute top-6 md:hidden">
+                                    <CloseSwipe />
+                                </div>
+                            </div>
+                            <button
+                                onClick={handleClosePopup}
+                                className="absolute top-3 right-4"
+                            >
+                                <CloseIcon />
+                            </button>
+                        </div>
+                        <div className="overflow-y-auto max-h-[calc(90vh-90px)]">
+                            <EditRoom
+                                closePopup={handleClosePopup}
+                                roomData={roomToEdit}
+                                onRoomUpdated={() =>
+                                    setRefreshRooms((prev) => !prev)
+                                }
+                            />
+                        </div>
+                    </div>
+                </div>
+            )}
+            {showDeletePopup && roomToDelete && (
+                <div className="fixed inset-0 flex items-center justify-center z-10 overflow-y-auto">
+                    <div
+                        className="absolute inset-0 bg-black opacity-50"
+                        onClick={handleClosePopup}
+                    ></div>
+                    <div className="z-30 bg-white rounded-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
+                        <DeleteConfirmation
+                            title="Before you delete!"
+                            body={`Are you sure you want to delete room: ${roomToDelete.name}? You cannot undo this action.`}
+                            actionLabel="DELETE"
+                            handleSubmit={handleDelete}
+                            closePopup={handleClosePopup}
+                        />
+                    </div>
+                </div>
+            )}
+            <div className="flex flex-col h-full gap-4 pb-32">
+                <div className="w-full">
+                    <h2 className="text-xl md:text-3xl font-semibold">
+                        Room List
+                    </h2>
+                    <Input
+                        type="text"
+                        placeholder="Search"
+                        className="mt-2 md:mt-4 py-4 md:py-6 w-full"
+                        onChange={handleSearchChange}
+                    ></Input>
+                </div>
+                <Table className="relative table-fixed w-full border-collapse">
+                    <TableHeader className="sticky top-0 bg-white">
+                        <TableRow className="flex w-full justify-between text-base md:text-xl font-semibold">
+                            <TableHead className="flex-1 min-w-[200px] text-left">
+                                Name
+                                <button
+                                    onClick={handleSortChange}
+                                    className="ml-2"
+                                >
+                                    {sortOrder === "asc" ? (
+                                        <ChevronDownIcon className="text-primary-green" />
+                                    ) : (
+                                        <ChevronUpIcon className="text-primary-green" />
+                                    )}
+                                </button>
+                            </TableHead>
+                            <TableHead className="flex-1 min-w-[120px] text-left">
+                                Capacity
+                            </TableHead>
+                            <TableHead className="flex-1 min-w-[200px] text-left">
+                                Type
+                            </TableHead>
+                            <TableHead className="flex-1 min-w-[80px] text-center">
+                                Delete
+                            </TableHead>
+                            <TableHead className="flex-1 min-w-[80px] text-center">
+                                Edit
+                            </TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {isLoading
+                            ? [...Array(3)].map((_, index) => (
+                                  <TableRow
+                                      className="flex w-full justify-between items-center"
+                                      key={index}
+                                  >
+                                      <TableCell className="flex-1 min-w-[200px] text-left">
+                                          <Skeleton className="h-4 w-24 rounded" />
+                                      </TableCell>
+                                      <TableCell className="flex-1 min-w-[120px]">
+                                          <Skeleton className="h-4 w-24 rounded" />
+                                      </TableCell>
+                                      <TableCell className="flex-1 min-w-[200px]">
+                                          <Skeleton className="h-4 w-24 rounded" />
+                                      </TableCell>
+                                      <TableCell className="flex-1 min-w-[80px] flex justify-center items-center">
+                                          <Skeleton className="h-6 w-6 rounded" />
+                                      </TableCell>
+                                      <TableCell className="flex-1 min-w-[80px] flex justify-center items-center">
+                                          <Skeleton className="h-6 w-6 rounded" />
+                                      </TableCell>
+                                  </TableRow>
+                              ))
+                            : filteredRooms.map((room: Room) => (
+                                  <TableRow
+                                      className="flex w-full justify-between items-center"
+                                      key={room.id}
+                                  >
+                                      <TableCell className="flex-1 min-w-[200px] text-left text-base md:text-lg">
+                                          {room.name}
+                                      </TableCell>
+                                      <TableCell className="flex-1 min-w-[120px] text-left text-base md:text-lg">
+                                          {room.capacity !== null &&
+                                          room.capacity !== undefined
+                                              ? room.capacity
+                                              : "Unlimited"}
+                                      </TableCell>
+                                      <TableCell className="flex-1 min-w-[200px] text-left text-base md:text-lg">
+                                          {room.medium}
+                                      </TableCell>
+                                      <TableCell className="flex-1 min-w-[80px] flex justify-center items-center">
+                                          <button
+                                              onClick={() =>
+                                                  handleDeleteButtonClick(room)
+                                              }
+                                          >
+                                              <DeleteIcon className="inline-flex text-center" />
+                                          </button>
+                                      </TableCell>
+                                      <TableCell className="flex-1 min-w-[80px] flex justify-center items-center">
+                                          <button
+                                              onClick={() =>
+                                                  handleEditButtonClick(room)
+                                              }
+                                          >
+                                              <EditIcon />
+                                          </button>
+                                      </TableCell>
+                                  </TableRow>
+                              ))}
+                    </TableBody>
+                </Table>
             </div>
+            <AddButton handleAddButtonClick={handleAddButtonClick} />
         </div>
     );
 }

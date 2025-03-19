@@ -143,7 +143,7 @@ export default function ManageStaff() {
         });
 
     return (
-        <div className="flex flex-col gap-10 w-full items-center h-full">
+        <div className="flex flex-col gap-6 w-full items-center h-full overflow-hidden">
             <h1 className="font-semibold text-4xl text-center">Manage</h1>
             {showEditPopup && adminToEdit && (
                 <div className="fixed inset-0 flex items-end md:items-center justify-center z-10 overflow-y-auto">
@@ -234,7 +234,7 @@ export default function ManageStaff() {
                     </div>
                 </div>
             )}
-            <div className="flex flex-col h-full">
+            <div className="flex flex-col h-full gap-4 pb-32">
                 <div className="w-full">
                     <h2 className="text-xl md:text-3xl font-semibold">Staff</h2>
                     <Input
@@ -244,110 +244,104 @@ export default function ManageStaff() {
                         onChange={handleSearchChange}
                     ></Input>
                 </div>
-                <div className="w-full flex-grow overflow-auto">
-                    <Table className="table-fixed w-full border-collapse">
-                        <TableHeader className="w-full">
-                            <TableRow className="flex gap-2 justify-between w-full text-base md:text-xl font-semibold">
-                                <TableHead className="flex items-center w-[300px] min-w-[200px] text-left">
-                                    Staff
-                                    <button
-                                        onClick={handleSortChange}
-                                        className="ml-2"
-                                    >
-                                        {sortOrder === "asc" ? (
-                                            <ChevronDownIcon className="text-primary-green" />
-                                        ) : (
-                                            <ChevronUpIcon className="text-primary-green" />
-                                        )}
-                                    </button>
-                                </TableHead>
-                                <TableHead className="flex items-center w-[150px] min-w-[120px] text-left">
-                                    Role
-                                    <button
-                                        onClick={handleRoleSort}
-                                        className="ml-2"
-                                    >
-                                        {roleSort === "asc" ? (
-                                            <ChevronDownIcon className="text-primary-green" />
-                                        ) : (
-                                            <ChevronUpIcon className="text-primary-green" />
-                                        )}
-                                    </button>
-                                </TableHead>
-                                <TableHead className="flex justify-center items-center w-[200px] min-w-[100px] text-center">
-                                    <div className="flex gap-4 w-full">
-                                        <span className="w-1/2">Delete</span>
-                                        <span className="w-1/2">Edit</span>
-                                    </div>
-                                </TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody className="w-full">
-                            {isLoading
-                                ? [...Array(3)].map((_, index) => (
-                                      <TableRow
-                                          className="w-full justify-between items-center"
-                                          key={index}
-                                      >
-                                          <TableCell className="w-[300px] min-w-[200px] flex items-center gap-4 text-left text-base md:text-lg">
-                                              <Skeleton className="hidden md:flex md:w-10 md:h-10 rounded-full" />
-                                              <Skeleton className="h-4 w-24 rounded" />
-                                          </TableCell>
-                                          <TableCell className="w-[150px] min-w-[120px]">
-                                              <Skeleton className="h-4 w-40 rounded" />
-                                          </TableCell>
-                                          <TableCell className="w-[100px] min-w-[80px] flex justify-center items-center">
-                                              <Skeleton className="h-6 w-6 rounded" />
-                                          </TableCell>
-                                          <TableCell className="w-[200px] min-w-[80px] flex gap-4 justify-center items-center">
-                                              <Skeleton className="h-6 w-6 rounded" />
-                                              <Skeleton className="h-6 w-6 rounded" />
-                                          </TableCell>
-                                      </TableRow>
-                                  ))
-                                : filteredAdmins.map((admin: UserNoPass) => (
-                                      <TableRow
-                                          className="flex gap-2 justify-between w-full items-center"
-                                          key={admin.id}
-                                      >
-                                          <TableCell className="w-[300px] min-w-[200px] flex items-center gap-4 text-left text-base md:text-lg">
-                                              <div className="hidden md:flex md:w-10 md:h-10 rounded-full bg-gray-200 items-center justify-center">
-                                                  {`${admin.firstName[0]}${admin.lastName[0]}`}
-                                              </div>
-                                              {`${admin.firstName} ${admin.lastName}`}
-                                          </TableCell>
-                                          <TableCell className="w-[150px] min-w-[120px] text-left text-base md:text-lg">
-                                              {admin.role}
-                                          </TableCell>
-                                          <TableCell className="w-[200px] min-w-[100px] flex gap-4 justify-center items-center">
-                                              <button
-                                                  onClick={() =>
-                                                      handleDeleteButtonClick(
-                                                          admin
-                                                      )
-                                                  }
-                                                  className="w-1/2 flex justify-center"
-                                              >
-                                                  <DeleteIcon />
-                                              </button>
-                                              <button
-                                                  onClick={() =>
-                                                      handleEditButtonClick(
-                                                          admin
-                                                      )
-                                                  }
-                                                  className="w-1/2 flex justify-center"
-                                              >
-                                                  <EditIcon />
-                                              </button>
-                                          </TableCell>
-                                      </TableRow>
-                                  ))}
-                        </TableBody>
-                    </Table>
-                </div>
-                <AddButton handleAddButtonClick={handleAddButtonClick} />
+                <Table className="relative table-fixed w-full border-collapse">
+                    <TableHeader className="sticky top-0 bg-white w-full">
+                        <TableRow className="flex gap-2 justify-between w-full text-base md:text-xl font-semibold">
+                            <TableHead className="flex items-center w-[300px] min-w-[200px] text-left">
+                                Staff
+                                <button
+                                    onClick={handleSortChange}
+                                    className="ml-2"
+                                >
+                                    {sortOrder === "asc" ? (
+                                        <ChevronDownIcon className="text-primary-green" />
+                                    ) : (
+                                        <ChevronUpIcon className="text-primary-green" />
+                                    )}
+                                </button>
+                            </TableHead>
+                            <TableHead className="flex items-center w-[150px] min-w-[120px] text-left">
+                                Role
+                                <button
+                                    onClick={handleRoleSort}
+                                    className="ml-2"
+                                >
+                                    {roleSort === "asc" ? (
+                                        <ChevronDownIcon className="text-primary-green" />
+                                    ) : (
+                                        <ChevronUpIcon className="text-primary-green" />
+                                    )}
+                                </button>
+                            </TableHead>
+                            <TableHead className="flex justify-center items-center w-[200px] min-w-[100px] text-center">
+                                <div className="flex gap-4 w-full">
+                                    <span className="w-1/2">Delete</span>
+                                    <span className="w-1/2">Edit</span>
+                                </div>
+                            </TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody className="w-full">
+                        {isLoading
+                            ? [...Array(3)].map((_, index) => (
+                                  <TableRow
+                                      className="w-full justify-between items-center"
+                                      key={index}
+                                  >
+                                      <TableCell className="w-[300px] min-w-[200px] flex items-center gap-4 text-left text-base md:text-lg">
+                                          <Skeleton className="hidden md:flex md:w-10 md:h-10 rounded-full" />
+                                          <Skeleton className="h-4 w-24 rounded" />
+                                      </TableCell>
+                                      <TableCell className="w-[150px] min-w-[120px]">
+                                          <Skeleton className="h-4 w-40 rounded" />
+                                      </TableCell>
+                                      <TableCell className="w-[100px] min-w-[80px] flex justify-center items-center">
+                                          <Skeleton className="h-6 w-6 rounded" />
+                                      </TableCell>
+                                      <TableCell className="w-[200px] min-w-[80px] flex gap-4 justify-center items-center">
+                                          <Skeleton className="h-6 w-6 rounded" />
+                                          <Skeleton className="h-6 w-6 rounded" />
+                                      </TableCell>
+                                  </TableRow>
+                              ))
+                            : filteredAdmins.map((admin: UserNoPass) => (
+                                  <TableRow
+                                      className="flex gap-2 justify-between w-full items-center"
+                                      key={admin.id}
+                                  >
+                                      <TableCell className="w-[300px] min-w-[200px] flex items-center gap-4 text-left text-base md:text-lg">
+                                          <div className="hidden md:flex md:w-10 md:h-10 rounded-full bg-gray-200 items-center justify-center">
+                                              {`${admin.firstName[0]}${admin.lastName[0]}`}
+                                          </div>
+                                          {`${admin.firstName} ${admin.lastName}`}
+                                      </TableCell>
+                                      <TableCell className="w-[150px] min-w-[120px] text-left text-base md:text-lg">
+                                          {admin.role}
+                                      </TableCell>
+                                      <TableCell className="w-[200px] min-w-[100px] flex gap-4 justify-center items-center">
+                                          <button
+                                              onClick={() =>
+                                                  handleDeleteButtonClick(admin)
+                                              }
+                                              className="w-1/2 flex justify-center"
+                                          >
+                                              <DeleteIcon />
+                                          </button>
+                                          <button
+                                              onClick={() =>
+                                                  handleEditButtonClick(admin)
+                                              }
+                                              className="w-1/2 flex justify-center"
+                                          >
+                                              <EditIcon />
+                                          </button>
+                                      </TableCell>
+                                  </TableRow>
+                              ))}
+                    </TableBody>
+                </Table>
             </div>
+            <AddButton handleAddButtonClick={handleAddButtonClick} />
         </div>
     );
 }
