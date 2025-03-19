@@ -14,7 +14,7 @@ export default function NextClass({ whenLoaded }: { whenLoaded: () => void }) {
 
     const notificationTimerRef = useRef<NodeJS.Timeout | null>(null);
     const notificationSentRef = useRef<boolean>(false);
-    const [sessionId, setSessionId] = useState<number | null>(null);
+    const [sessionId, setSessionId] = useState<number | null>(null); // eslint-disable-line
 
     const nextSessionDate = async () => {
         try {
@@ -24,7 +24,6 @@ export default function NextClass({ whenLoaded }: { whenLoaded: () => void }) {
             if (!userId) {
                 setSessionCountdown("No Upcoming Sessions");
                 setIsLoading(false);
-                whenLoaded();
                 return;
             }
 
@@ -32,7 +31,6 @@ export default function NextClass({ whenLoaded }: { whenLoaded: () => void }) {
             if (!classExists || classExists.length === 0) {
                 setSessionCountdown("No Upcoming Sessions");
                 setIsLoading(false);
-                whenLoaded();
                 return;
             }
 
@@ -40,7 +38,6 @@ export default function NextClass({ whenLoaded }: { whenLoaded: () => void }) {
             if (!nextSession || !("date" in nextSession)) {
                 setSessionCountdown("No Upcoming Sessions");
                 setIsLoading(false);
-                whenLoaded();
                 return;
             }
 
@@ -86,11 +83,11 @@ export default function NextClass({ whenLoaded }: { whenLoaded: () => void }) {
             }
 
             setIsLoading(false);
-            whenLoaded();
         } catch (error) {
             console.error("Error getting next session", error);
             setSessionCountdown("No Upcoming Sessions");
             setIsLoading(false);
+        } finally {
             whenLoaded();
         }
     };
@@ -165,7 +162,9 @@ export default function NextClass({ whenLoaded }: { whenLoaded: () => void }) {
     }, []);
 
     return (
-        <div className="min-h-[7vh] border-2 border-primary-green rounded-lg flex items-center justify-center">
+        <div
+            className={`min-h-[7vh] border-2 border-primary-green rounded-lg items-center justify-center ${isLoading ? "hidden" : "flex"}`}
+        >
             {isLoading ? (
                 <p className="text-primary-green/50 text-xl md:text-2xl lg:text-3xl animate-pulse">
                     Loading...

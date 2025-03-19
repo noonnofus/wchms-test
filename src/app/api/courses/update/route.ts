@@ -1,6 +1,6 @@
 import db from "@/db";
 import { eq } from "drizzle-orm";
-import { type Course, Courses } from "@/db/schema/course";
+import { Courses } from "@/db/schema/course";
 import { rooms } from "@/db/schema/room";
 import { getServerSession } from "next-auth";
 import { authConfig } from "@/auth";
@@ -23,6 +23,7 @@ export async function PUT(req: Request) {
             );
         }
         const formData = await req.formData();
+        console.log(formData);
         const courseId = parseInt(formData.get("courseId") as string);
         const courseName = formData.get("courseName") as string;
         const courseRoom = formData.get("courseRoom") as string;
@@ -147,7 +148,7 @@ export async function PUT(req: Request) {
                     .then((res) => res[0].id);
             }
         }
-        const updatedData: Omit<Course, "id"> = {
+        const updatedData = {
             title: courseName,
             description: courseDescription,
             start: startDate,
@@ -155,7 +156,7 @@ export async function PUT(req: Request) {
             lang: courseLanguage,
             status: courseStatus,
             kind: courseType,
-            uploadId,
+            ...(uploadId ? { uploadId: Number(uploadId) } : {}),
             roomId,
         };
         if (uploadId) {

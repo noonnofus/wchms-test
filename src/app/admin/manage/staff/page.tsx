@@ -26,7 +26,7 @@ import AddButton from "@/components/shared/add-button";
 export type UserNoPass = Omit<User, "password">;
 export default function ManageStaff() {
     const [admins, setAdmins] = useState<UserNoPass[]>([]);
-    const [error, setError] = useState("");
+    const [error, setError] = useState(""); //eslint-disable-line
     const [isLoading, setIsLoading] = useState(false);
     const [adminToDelete, setAdminToDelete] = useState<UserNoPass | null>(null);
     const [showDeletePopup, setShowDeletePopup] = useState(false);

@@ -20,13 +20,7 @@ export async function POST(req: Request) {
             );
         }
 
-        const result = await addParticipant(
-            firstName,
-            lastName,
-            email,
-            gender,
-            dateOfBirth
-        );
+        await addParticipant(firstName, lastName, email, gender, dateOfBirth);
 
         return new Response(
             JSON.stringify({ message: "Participant sucessfully added" }),

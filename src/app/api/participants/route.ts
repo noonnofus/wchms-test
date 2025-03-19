@@ -7,6 +7,7 @@ export async function GET() {
             status: 200,
         });
     } catch (error) {
+        console.error(error);
         return new Response(
             JSON.stringify({ message: "Error fetching participants" }),
             { status: 500 }

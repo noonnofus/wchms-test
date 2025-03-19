@@ -1,12 +1,13 @@
 "use client";
 
+import { Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 
-export default function Logout() {
+function LogoutContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
 
@@ -46,5 +47,13 @@ export default function Logout() {
                 </Button>
             </div>
         </div>
+    );
+}
+
+export default function Logout() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <LogoutContent />
+        </Suspense>
     );
 }

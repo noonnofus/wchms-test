@@ -1,6 +1,6 @@
 "use client";
 import RequestCard from "@/components/courses/request-card";
-import { getAllCourseJoinRequests, getCourseById } from "@/db/queries/courses";
+import { getAllCourseJoinRequests } from "@/db/queries/courses";
 import { CourseJoinRequest } from "@/db/schema/courseJoinRequests";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
@@ -29,6 +29,7 @@ export default function Requests() {
                 );
                 if (requests) setCourseJoinRequests(requests);
             } catch (error) {
+                console.error(error);
                 console.error("Error fetching ");
             }
         };
@@ -56,7 +57,7 @@ export default function Requests() {
             if (!response.ok)
                 throw new Error("Failed to add participant to course");
 
-            const data = await response.json();
+            await response.json();
 
             // Delete course join request
             const deleteResponse = await fetch("/api/requests/delete", {

@@ -9,7 +9,7 @@ export default function DeleteConfirmation({
 }: {
     title: string;
     body: string;
-    actionLabel: String;
+    actionLabel: string;
     handleSubmit: (e: React.FormEvent) => void;
     closePopup: () => void;
 }) {
