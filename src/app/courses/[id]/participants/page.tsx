@@ -1,7 +1,6 @@
 "use client";
 import ChevronDownIcon from "@/components/icons/chevron-down-icon";
 import ChevronUpIcon from "@/components/icons/chevron-up-icon";
-import DeleteIcon from "@/components/icons/delete-icon";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
@@ -12,8 +11,6 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { PlusIcon } from "lucide-react";
-import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { CourseFull } from "@/db/schema/course";
@@ -76,7 +73,11 @@ export default function ClassParticipants() {
                 : nameB.localeCompare(nameA);
         });
 
-    return (
+    return isLoading ? (
+        <div className="flex justify-center items-center py-10">
+            <p>Loading Participants...</p>
+        </div>
+    ) : (
         <div className="flex flex-col gap-10 w-full items-center">
             <h1 className="font-semibold text-4xl text-center">
                 Participant List

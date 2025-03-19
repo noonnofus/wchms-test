@@ -1,6 +1,4 @@
 import { NextResponse } from "next/server";
-import fs from "fs";
-import path from "path";
 import { getSignedUrlFromFileKey, uploadToS3 } from "@/lib/s3";
 import { uploadMedia } from "@/db/schema/mediaUpload";
 import db from "@/db";

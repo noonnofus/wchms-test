@@ -10,7 +10,7 @@ import { useState } from "react";
 export default function ParticipantList(props: {
     participants: Participant[];
     courseId?: number;
-    removeParticipantLocally: (userId: number) => void;
+    removeParticipantLocally?: (userId: number) => void;
 }) {
     const { id } = useParams();
     const [showDeletePopup, setShowDeletePopup] = useState(false);
@@ -37,7 +37,9 @@ export default function ParticipantList(props: {
             const data = await response.json();
             if (!response.ok) throw new Error(data.error || "Failed to delete");
 
-            props.removeParticipantLocally(participantToRemove.id);
+            if (props.removeParticipantLocally) {
+                props.removeParticipantLocally(participantToRemove.id);
+            }
         } catch (error) {
             console.error("Failed to remove participant from course", error);
         } finally {

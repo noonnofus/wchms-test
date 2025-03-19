@@ -30,7 +30,7 @@ interface ParticipantCourse {
 
 export default function ManageParticipant() {
     const [participants, setParticipants] = useState<ParticipantCourse[]>([]);
-    const [error, setError] = useState("");
+    const [error, setError] = useState(""); //eslint-disable-line
     const [isLoading, setIsLoading] = useState(false);
     const [participantToDelete, setParticipantToDelete] =
         useState<Participant | null>(null);
@@ -144,7 +144,7 @@ export default function ManageParticipant() {
         });
 
     return (
-        <div className="flex flex-col gap-10 w-full items-center h-full">
+        <div className="flex flex-col gap-6 w-full items-center h-full overflow-hidden">
             <h1 className="font-semibold text-4xl text-center">Manage</h1>
             {showEditPopup && participantToEdit && (
                 <div className="fixed inset-0 flex items-end md:items-center justify-center z-10 overflow-y-auto">
@@ -235,7 +235,7 @@ export default function ManageParticipant() {
                 </div>
             )}
 
-            <div className="flex flex-col h-full gap-4">
+            <div className="flex flex-col w-full h-full gap-4 pb-32">
                 <div className="w-full">
                     <h2 className="text-xl md:text-3xl font-semibold">
                         Participants
@@ -247,9 +247,8 @@ export default function ManageParticipant() {
                         onChange={handleSearchChange}
                     ></Input>
                 </div>
-
-                <Table className="table-fixed w-full border-collapse">
-                    <TableHeader className="w-full">
+                <Table className="relative table-fixed w-full border-collapse">
+                    <TableHeader className="sticky top-0 w-full bg-white">
                         <TableRow className="flex gap-2 justify-between w-full text-base md:text-xl font-semibold">
                             <TableHead className="flex items-center w-[300px] min-w-[200px] text-left">
                                 Participant

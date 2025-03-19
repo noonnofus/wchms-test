@@ -40,7 +40,7 @@ export default function AddAdmin({
     });
 
     const validateFields = () => {
-        let newErrors = {
+        const newErrors = {
             firstName: "",
             lastName: "",
             email: "",

@@ -132,7 +132,11 @@ export default function ClassParticipants() {
         trackMouse: true,
     });
 
-    return (
+    return isLoading ? (
+        <div className="flex justify-center items-center py-10">
+            <p>Loading Participants...</p>
+        </div>
+    ) : (
         <div className="flex flex-col gap-10 w-full items-center">
             <h1 className="font-semibold text-4xl text-center">
                 Participant List

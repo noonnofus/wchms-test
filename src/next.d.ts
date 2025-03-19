@@ -3,10 +3,10 @@ import { Server } from "socket.io";
 declare module "next" {
     interface NextApiResponse {
         socket: {
-            server: any;
+            server: any; // eslint-disable-line
             io?: Server;
         };
         status(code: number): NextApiResponse;
-        json(data: any): NextApiResponse
+        json(data: any): NextApiResponse; // eslint-disable-line
     }
 }

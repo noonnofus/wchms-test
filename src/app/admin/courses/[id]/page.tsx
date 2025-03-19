@@ -43,7 +43,6 @@ export default function AdminCourses() {
     const [showDeletePopup, setShowDeletePopup] = useState(false);
     const [materialToDelete, setMaterialToDelete] =
         useState<CourseMaterials | null>(null);
-    const [refreshCourseMaterials, setRefreshCourseMaterials] = useState(false);
     const [courseToDelete, setCourseToDelete] = useState<Course | null>(null);
     const [showAddSessionPopup, setShowAddSessionPopup] = useState(false);
     const [requests, setRequests] = useState<CourseJoinRequest[] | null>(null);

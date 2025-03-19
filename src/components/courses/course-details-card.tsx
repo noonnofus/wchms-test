@@ -30,17 +30,16 @@ export default function CourseDetailsCard(props: CourseDetailsProps) {
     const { data: session } = useSession();
     const participantId = session?.user.id;
     const [isEnrolling, setIsEnrolling] = useState(false);
-    const [error, setError] = useState("");
+    const [error, setError] = useState(""); // eslint-disable-line
     const [requestExists, setRequestExists] = useState(false);
     const [isRemoving, setIsRemoving] = useState(false);
 
     const fetchData = async () => {
         try {
-            props.course.fileKey !== null
-                ? setImageUrl(
-                      await getSignedUrlFromFileKey(props.course.fileKey)
-                  )
-                : null;
+            if (props.course.fileKey !== null)
+                setImageUrl(
+                    await getSignedUrlFromFileKey(props.course.fileKey)
+                );
 
             if (participantId) {
                 const exists = await checkCourseJoinRequestExists(
