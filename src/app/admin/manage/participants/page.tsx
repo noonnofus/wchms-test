@@ -22,6 +22,7 @@ import { useSwipeable } from "react-swipeable";
 import CloseSwipe from "@/components/icons/close-swipe";
 import AddButton from "@/components/shared/add-button";
 import EditIcon from "@/components/icons/edit-icon";
+import Link from "next/link";
 
 interface ParticipantCourse {
     participant: Participant;
@@ -307,7 +308,11 @@ export default function ManageParticipant() {
                                                   <div className="hidden md:flex md:w-10 md:h-10 rounded-full bg-gray-200 items-center justify-center">
                                                       {`${participantCourse.participant.firstName[0]}${participantCourse.participant.lastName[0]}`}
                                                   </div>
-                                                  {`${participantCourse.participant.firstName} ${participantCourse.participant.lastName}`}
+                                                  <Link
+                                                      href={`/admin/manage/participants/${participantCourse.participant.firstName}${participantCourse.participant.lastName}`}
+                                                  >
+                                                      {`${participantCourse.participant.firstName} ${participantCourse.participant.lastName}`}
+                                                  </Link>
                                               </TableCell>
                                               <TableCell className="w-[250px] min-w-[120px] text-left text-base md:text-lg">
                                                   {participantCourse.course ??
