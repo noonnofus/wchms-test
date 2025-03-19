@@ -25,6 +25,7 @@ export async function PUT(req: Request) {
                 { status: 401 }
             );
         }
+
         const formData = await req.formData();
         const id = parseInt(formData.get("id") as string);
         const title = formData.get("title") as string;
@@ -59,7 +60,7 @@ export async function PUT(req: Request) {
             );
         }
         let url: undefined | string;
-        if (file) {
+        if (file !== null) {
             const validationError = validateFile(file);
             if (validationError) {
                 return new Response(
@@ -101,6 +102,7 @@ export async function PUT(req: Request) {
                 url = await getSignedUrlFromFileKey(fileName, true, file.name);
             }
         }
+        console.log(uploadId);
         const newData = {
             title,
             type: exerciseType,
@@ -137,6 +139,8 @@ export async function PUT(req: Request) {
             .leftJoin(uploadMedia, eq(courseMaterials.uploadId, uploadMedia.id))
             .where(eq(courseMaterials.id, id))
             .then((res) => res[0]);
+
+        console.log(updatedMaterial);
 
         return new Response(
             JSON.stringify({
