@@ -37,7 +37,6 @@ export async function POST(req: Request) {
 
         const today = new Date();
         const startDate = new Date(body.date);
-        const startTime = new Date(`${body.date}T${body.startTime}`);
 
         const startDateWithoutTime = new Date(
             startDate.getFullYear(),

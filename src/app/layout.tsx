@@ -1,10 +1,11 @@
+import NotificationSystem from "@/components/notification-system";
+import AdminNav from "@/components/shared/admin-nav";
+import ChildrenWrapper from "@/components/shared/children-wrapper";
+import SessionProviderWrapper from "@/components/shared/session-provider-wrapper";
+import TopNav from "@/components/shared/top-nav";
 import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
 import "./globals.css";
-import TopNav from "@/components/shared/top-nav";
-import AdminNav from "@/components/shared/admin-nav";
-import SessionProviderWrapper from "@/components/shared/session-provider-wrapper";
-import ChildrenWrapper from "@/components/shared/children-wrapper";
 
 const dmSans = DM_Sans({
     variable: "--font-dm-sans",
@@ -28,6 +29,7 @@ export default function RootLayout({
                     className={`${dmSans.variable} antialiased min-w-[360px] w-full h-full flex flex-col`}
                 >
                     <TopNav />
+                    <NotificationSystem />
                     <ChildrenWrapper>{children}</ChildrenWrapper>
                     <div className="flex-1 fixed bottom-0 right-0 left-0">
                         <AdminNav />

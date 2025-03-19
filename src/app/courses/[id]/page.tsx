@@ -113,7 +113,14 @@ export default function CoursePage() {
                                     </h2>
                                     {sessions ? (
                                         sessions.map((session) => (
-                                            <SessionCard session={session} />
+                                            <SessionCard
+                                                session={session}
+                                                key={
+                                                    session.id +
+                                                    session.courseId +
+                                                    session.date.toString()
+                                                }
+                                            />
                                         ))
                                     ) : (
                                         <p className="text-gray-500">

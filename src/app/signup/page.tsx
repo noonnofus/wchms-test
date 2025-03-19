@@ -31,7 +31,7 @@ export default function SignUp() {
     });
 
     const validateFields = () => {
-        let newErrors = {
+        const newErrors = {
             firstName: "",
             lastName: "",
             email: "",
