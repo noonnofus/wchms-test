@@ -228,7 +228,6 @@ export default function AddCourse(props: props) {
                     updatedFormData.append(key, value.toString());
                 }
             });
-            console.log(updatedFormData);
             const res = await fetch("/api/courses/create", {
                 method: "POST",
                 body: updatedFormData,

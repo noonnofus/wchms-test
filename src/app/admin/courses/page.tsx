@@ -117,7 +117,7 @@ export default function Courses() {
                             </div>
                             <button
                                 onClick={handleClosePopup}
-                                className="absolute top-3 right-4"
+                                className="absolute top-3 right-4 z-40"
                             >
                                 <CloseIcon />
                             </button>
