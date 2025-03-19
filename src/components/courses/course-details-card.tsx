@@ -128,7 +128,7 @@ export default function CourseDetailsCard(props: CourseDetailsProps) {
                         width={200}
                         height={200}
                         alt={`${props.course.title} course image`}
-                        className="rounded-lg my-2"
+                        className="rounded-lg my-2 sm:w-[300px] lg:w-[400px] max-w-[400px] h-[200px] object-cover object-center"
                     />
                 )}
                 {props.variant === "client" &&
