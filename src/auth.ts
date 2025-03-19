@@ -2,7 +2,7 @@ import db from "@/db";
 import { users } from "@/db/schema/users";
 import bcrypt from "bcrypt";
 import { eq, and } from "drizzle-orm";
-import NextAuth, { AuthOptions, DefaultSession } from "next-auth";
+import NextAuth, { AuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { participants } from "./db/schema/participants";
 

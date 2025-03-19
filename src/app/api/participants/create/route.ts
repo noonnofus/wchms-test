@@ -20,8 +20,6 @@ export async function POST(req: Request) {
             );
         }
 
-        // TODO: check if there is a participant with the email if the "client" needs the email for the participant.
-
         await addParticipant(firstName, lastName, email, gender, dateOfBirth);
 
         return new Response(

@@ -43,7 +43,6 @@ export default function AdminCourses() {
     const [showDeletePopup, setShowDeletePopup] = useState(false);
     const [materialToDelete, setMaterialToDelete] =
         useState<CourseMaterials | null>(null);
-    const [refreshCourseMaterials, setRefreshCourseMaterials] = useState(false);
     const [courseToDelete, setCourseToDelete] = useState<Course | null>(null);
     const [showAddSessionPopup, setShowAddSessionPopup] = useState(false);
     const [requests, setRequests] = useState<CourseJoinRequest[] | null>(null);
@@ -304,7 +303,7 @@ export default function AdminCourses() {
                             </div>
                         )}
                         {showEditCoursePopup && (
-                            <div className="fixed inset-0 flex items-end md:items-center justify-center z-10 overflow-y-auto">
+                            <div className="fixed inset-0 flex items-end md:items-center justify-center z-10">
                                 <div
                                     className="absolute inset-0 bg-black opacity-50"
                                     onClick={handleClosePopup}

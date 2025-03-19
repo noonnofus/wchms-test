@@ -11,7 +11,6 @@ import {
 import { Button } from "../ui/button";
 import { DatePicker } from "../ui/date-picker";
 import { type Participant } from "@/db/schema/participants";
-import CloseIcon from "../icons/close-icon";
 
 const genders = ["Male", "Female", "Other"];
 
@@ -60,7 +59,7 @@ export default function EditParticipant({
     };
 
     const validateFields = () => {
-        let newErrors = {
+        const newErrors = {
             email: "",
             gender: "",
             firstName: "",
@@ -94,7 +93,6 @@ export default function EditParticipant({
         setErrors(newErrors);
         return valid;
     };
-
 
     const handleEditParticipantSubmit = async (e: React.FormEvent) => {
         e.preventDefault();

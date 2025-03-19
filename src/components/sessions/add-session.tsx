@@ -21,10 +21,18 @@ interface Props {
     sessionId?: number;
 }
 
+type Instructor = {
+    id: number;
+    firstName: string;
+    lastName: string;
+    email: string | null;
+    role: "Admin" | "Staff";
+};
+
 export default function AddSession(props: Props) {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
-    const [instructors, setInstructors] = useState([]);
+    const [instructors, setInstructors] = useState<Instructor[]>([]);
 
     useEffect(() => {
         const fetchInstructors = async () => {
@@ -120,7 +128,13 @@ export default function AddSession(props: Props) {
 
     const validateForm = () => {
         let isValid = true;
-        let errorMessages: any = {};
+        const errorMessages: {
+            instructorId?: string;
+            date?: string;
+            startTime?: string;
+            endTime?: string;
+            status?: string;
+        } = {};
         const now = new Date();
         now.setSeconds(0, 0);
 
@@ -187,6 +201,7 @@ export default function AddSession(props: Props) {
             isValid = false;
         }
 
+        //@ts-expect-error type issue
         setErrors(errorMessages);
         return isValid;
     };
@@ -330,7 +345,7 @@ export default function AddSession(props: Props) {
                             <SelectValue placeholder="Select Instructor" />
                         </SelectTrigger>
                         <SelectContent>
-                            {instructors.map((instructor: any) => (
+                            {instructors.map((instructor) => (
                                 <SelectItem
                                     key={instructor.id}
                                     value={String(instructor.id)}

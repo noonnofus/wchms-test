@@ -150,7 +150,7 @@ export default function ParticipantLogin() {
         if (courseValue === "All Courses") {
             setParticipants(allParticipants);
         } else {
-            const [idStr, title] = courseValue.split("|");
+            const [idStr, title] = courseValue.split("|"); // eslint-disable-line
             const courseId = parseInt(idStr);
 
             const filteredParticipants = allParticipants.filter((p) =>
@@ -206,7 +206,7 @@ export default function ParticipantLogin() {
                 </div>
                 <div className="w-full flex flex-col gap-2 items-center">
                     <p className="text-xl text-center">
-                        Don't have an account?
+                        Don&apos;t have an account?
                     </p>
                     <Button className="capitalize h-full bg-primary-green hover:bg-[#045B47] font-semibold text-xl py-4">
                         <Link href="/signup">Click here to sign up</Link>

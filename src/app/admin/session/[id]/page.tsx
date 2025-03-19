@@ -47,9 +47,10 @@ export default function SessionsPage() {
         setShowDeletePopup(true);
     };
 
-    const handleDeleteSession = async () => {
+    const handleDeleteSession = async (e: React.FormEvent) => {
         if (!sessionIdToDelete) return;
         try {
+            e.preventDefault();
             const response = await fetch("/api/sessions/delete", {
                 method: "DELETE",
                 headers: { "Content-Type": "application/json" },

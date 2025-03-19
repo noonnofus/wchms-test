@@ -100,7 +100,10 @@ export default function AddMaterial(props: {
 
         setLoading(true);
 
-        const activityConfig: Record<string, { url: string; payload: any }> = {
+        const activityConfig: Record<
+            string,
+            { url: string; payload: { level: string; topic?: string } }
+        > = {
             "Reading Aloud": {
                 url: "/api/homework/reading",
                 payload: { level: selectedDifficulty, topic: topic },

@@ -37,7 +37,7 @@ export async function PUT(req: Request) {
             ?.toString();
         const courseId = parseInt(formData.get("courseId") as string);
         const file = formData.get("file") as File | null;
-        let fileKey = formData.get("fileKey") as string;
+        const fileKey = formData.get("fileKey") as string;
 
         if (!id) {
             return new Response(
@@ -108,11 +108,10 @@ export async function PUT(req: Request) {
             type: exerciseType,
             difficulty,
             description,
-            uploadId: uploadId !== undefined ? Number(uploadId) : "",
+            ...(uploadId ? { uploadId: Number(uploadId) } : {}),
             courseId,
         };
 
-        console.log(newData);
         // Update the course material
         await db
             .update(courseMaterials)

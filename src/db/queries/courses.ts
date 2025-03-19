@@ -286,7 +286,7 @@ export async function getLatestPhysicalMaterial() {
 
     // It's returns Undefined now
     const session = await getServerSession(authConfig);
-    const userId = session?.user.id;
+    const userId = session?.user.id; // eslint-disable-line
 
     const latestCourse = await db
         .select({
