@@ -27,6 +27,8 @@
     "search": "検索",
     "staff overview": "スタッフ概要",
     "create new course": "新規コース作成",
+    "delete course": "コースを削除",
+    "delete course confirmation": "本当にコース『{{courseTitle}}』を削除してもよろしいですか？この操作は元に戻せません。",
     "edit course": "コース編集",
     "course name": "コース名",
     "course image": "コース画像",

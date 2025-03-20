@@ -175,9 +175,11 @@ export default function Courses() {
                     ></div>
                     <div className="z-30 bg-white rounded-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
                         <DeleteConfirmation
-                            title="Delete Course"
-                            body={`Are you sure you want to delete course "${courseToDelete.title}"? You cannot undo this action.`}
-                            actionLabel="DELETE"
+                            title={t("delete course")}
+                            body={t("delete course confirmation", {
+                                courseTitle: courseToDelete.title,
+                            })}
+                            actionLabel={t("delete")}
                             handleSubmit={handleDeleteCourse}
                             closePopup={handleClosePopup}
                         />

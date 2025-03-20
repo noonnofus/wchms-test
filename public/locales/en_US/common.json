@@ -27,6 +27,8 @@
     "search": "Search",
     "staff overview": "Staff Overview",
     "create new course": "Create New Course",
+    "delete course": "Delete Course",
+    "delete course confirmation": "Are you sure you want to delete {{courseTitle}}? This action cannot be undone.",
     "edit course": "Edit Course",
     "course name": "Course Name",
     "course image": "Course Image",
