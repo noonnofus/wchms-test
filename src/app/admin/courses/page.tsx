@@ -189,7 +189,7 @@ export default function Courses() {
             <AddButton handleAddButtonClick={handleAddButtonClick} />
             {isLoading ? (
                 <div className="flex justify-center items-center py-10">
-                    <p>Loading Courses...</p>
+                    <p>{t("loading.courses")}</p>
                 </div>
             ) : (
                 <div className="flex flex-col gap-4 pb-10 md:pb-12">

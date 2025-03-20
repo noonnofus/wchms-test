@@ -34,7 +34,9 @@ export default function AdminLanding() {
                     <Link href="/admin/rooms">
                         <div className="flex flex-col items-center justify-center">
                             <Building className="min-w-12 min-h-12" />
-                            <p className="text-2xl md:text-3xl">Rooms</p>
+                            <p className="text-2xl md:text-3xl">
+                                {t("room", { count: 2 })}
+                            </p>
                         </div>
                     </Link>
                 </Button>

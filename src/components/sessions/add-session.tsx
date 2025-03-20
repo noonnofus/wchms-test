@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { DatePicker } from "../ui/date-picker";
+import { useTranslation } from "react-i18next";
 
 export const statuses = ["Draft", "Available", "Completed", "Archived"];
 
@@ -30,6 +31,7 @@ type Instructor = {
 };
 
 export default function AddSession(props: Props) {
+    const { t } = useTranslation();
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
     const [instructors, setInstructors] = useState<Instructor[]>([]);
@@ -322,14 +324,14 @@ export default function AddSession(props: Props) {
     return (
         <div className="flex flex-col gap-12 w-full h-full py-8 px-6 rounded-lg bg-white items-center justify-center">
             <h1 className="font-semibold text-3xl md:text-4xl text-center">
-                {props.sessionId ? "Edit Session" : "Add New Session"}
+                {props.sessionId ? t("edit session") : t("add session")}
             </h1>
             <form
                 className="flex flex-col gap-4 md:gap-6 w-full h-full md:text-2xl"
                 onSubmit={handleSubmit}
             >
                 <div className="flex flex-col flex-1 gap-2">
-                    <label htmlFor="instructorId">Instructor</label>
+                    <label htmlFor="instructorId">{t("instructor")}</label>
                     {errors.instructorId && (
                         <p className="text-red-500 text-sm">
                             {errors.instructorId}
@@ -342,7 +344,9 @@ export default function AddSession(props: Props) {
                         }
                     >
                         <SelectTrigger>
-                            <SelectValue placeholder="Select Instructor" />
+                            <SelectValue
+                                placeholder={t("placeholder.selectInstructor")}
+                            />
                         </SelectTrigger>
                         <SelectContent>
                             {instructors.map((instructor) => (
@@ -358,7 +362,7 @@ export default function AddSession(props: Props) {
                 </div>
 
                 <div className="flex flex-col flex-1 gap-2">
-                    <label htmlFor="date">Session Date</label>
+                    <label htmlFor="date">{t("session date")}</label>
                     {errors.date && (
                         <p className="text-red-500 text-sm">{errors.date}</p>
                     )}
@@ -370,7 +374,7 @@ export default function AddSession(props: Props) {
 
                 <div className="w-full flex flex-col md:flex-row gap-2">
                     <div className="flex flex-col flex-1 gap-2">
-                        <label htmlFor="startTime">Start Time</label>
+                        <label htmlFor="startTime">{t("session start")}</label>
                         {errors.startTime && (
                             <p className="text-red-500 text-sm">
                                 {errors.startTime}
@@ -385,7 +389,11 @@ export default function AddSession(props: Props) {
                             <SelectTrigger className="w-full">
                                 <div className="flex items-center gap-2">
                                     <Clock className="h-4 w-4" />
-                                    <SelectValue placeholder="Select start time" />
+                                    <SelectValue
+                                        placeholder={t(
+                                            "placeholder.selectStartTime"
+                                        )}
+                                    />
                                 </div>
                             </SelectTrigger>
                             <SelectContent>
@@ -403,7 +411,7 @@ export default function AddSession(props: Props) {
                         </Select>
                     </div>
                     <div className="flex flex-col flex-1 gap-2">
-                        <label htmlFor="endTime">End Time</label>
+                        <label htmlFor="endTime">{t("session end")}</label>
                         {errors.endTime && (
                             <p className="text-red-500 text-sm">
                                 {errors.endTime}
@@ -418,7 +426,11 @@ export default function AddSession(props: Props) {
                             <SelectTrigger className="w-full">
                                 <div className="flex items-center gap-2">
                                     <Clock className="h-4 w-4" />
-                                    <SelectValue placeholder="Select end time" />
+                                    <SelectValue
+                                        placeholder={t(
+                                            "placeholder.selectEndTime"
+                                        )}
+                                    />
                                 </div>
                             </SelectTrigger>
                             <SelectContent>
@@ -438,7 +450,7 @@ export default function AddSession(props: Props) {
                 </div>
 
                 <div className="flex flex-col flex-1 gap-2">
-                    <label htmlFor="status">Status</label>
+                    <label htmlFor="status">{t("status")}</label>
                     {errors.status && (
                         <p className="text-red-500 text-sm">{errors.status}</p>
                     )}
@@ -449,7 +461,9 @@ export default function AddSession(props: Props) {
                         }
                     >
                         <SelectTrigger>
-                            <SelectValue placeholder="Select Status" />
+                            <SelectValue
+                                placeholder={t("placeholder.selectStatus")}
+                            />
                         </SelectTrigger>
                         <SelectContent>
                             {statuses.map((status) => (
@@ -468,7 +482,7 @@ export default function AddSession(props: Props) {
                             disabled={isLoading}
                             className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold md:text-xl py-2 md:py-4"
                         >
-                            {isLoading ? "Updating..." : "Update"}
+                            {isLoading ? t("updating") : t("update")}
                         </Button>
                     ) : (
                         <Button
@@ -476,7 +490,7 @@ export default function AddSession(props: Props) {
                             disabled={isLoading}
                             className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold md:text-xl py-2 md:py-4"
                         >
-                            {isLoading ? "Adding..." : "Add"}
+                            {isLoading ? t("adding") : t("add")}
                         </Button>
                     )}
                     <Button
@@ -485,7 +499,7 @@ export default function AddSession(props: Props) {
                         variant="outline"
                         className="w-full h-full rounded-full bg-transparent border-primary-green text-primary-green hover:bg-primary-green hover:text-white font-semibold md:text-xl py-2 md:py-4"
                     >
-                        Cancel
+                        {t("button.cancel")}
                     </Button>
                 </div>
             </form>

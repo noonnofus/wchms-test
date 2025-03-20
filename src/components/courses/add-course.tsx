@@ -460,7 +460,7 @@ export default function AddCourse(props: props) {
                                 <SelectValue
                                     placeholder={
                                         formData.courseLanguage ||
-                                        t("select language")
+                                        t("placeholder.selectLanguage")
                                     }
                                 />
                             </SelectTrigger>
@@ -486,7 +486,8 @@ export default function AddCourse(props: props) {
                             <SelectTrigger>
                                 <SelectValue
                                     placeholder={
-                                        formData.courseType || t("select type")
+                                        formData.courseType ||
+                                        t("placeholder.selectType")
                                     }
                                 />
                             </SelectTrigger>
@@ -513,7 +514,7 @@ export default function AddCourse(props: props) {
                                 <SelectValue
                                     placeholder={
                                         formData.courseStatus ||
-                                        t("select status")
+                                        t("placeholder.selectStatus")
                                     }
                                 />
                             </SelectTrigger>

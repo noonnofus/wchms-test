@@ -247,7 +247,7 @@ export default function AdminCourses() {
                                         router.push(`/admin/session/${id}`)
                                     }
                                 >
-                                    All Sessions
+                                    {t("all sessions")}
                                 </Button>
                                 {requests ? (
                                     <RequestList
