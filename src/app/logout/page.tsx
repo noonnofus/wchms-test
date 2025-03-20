@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { signOut } from "next-auth/react";
@@ -7,7 +8,7 @@ import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
-export default function Logout() {
+function LogoutContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const { t } = useTranslation();
@@ -25,9 +26,9 @@ export default function Logout() {
                 <p className="text-xl leading-4 font-semibold">
                     Are you sure you want to
                 </p>
-                <p className="text-xl font-semibold">LOG OUT?</p>
+                <p className="text-xl font-semibold">LOGOUT?</p>
                 <p className="text-xl font-semibold mt-8">
-                    You will need to LOG IN again to access your account.
+                    You will need to LOGIN again to access your account.
                 </p>
             </Card>
             <div className="w-full flex flex-col gap-4">
@@ -48,5 +49,13 @@ export default function Logout() {
                 </Button>
             </div>
         </div>
+    );
+}
+
+export default function Logout() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <LogoutContent />
+        </Suspense>
     );
 }

@@ -1,5 +1,5 @@
 "use client";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { Input } from "../ui/input";
 import {
     Select,
@@ -69,7 +69,7 @@ export default function EditMaterial({
                 formData.append(key, value.toString());
             }
         });
-        const response = await fetch(`/api/courses/materials/update/`, {
+        const response = await fetch(`/api/courses/materials/update`, {
             method: "PUT",
             body: formData,
         });
@@ -84,10 +84,10 @@ export default function EditMaterial({
                         ...prevSelectedCourse,
                         materials: prevSelectedCourse.materials
                             ? prevSelectedCourse.materials.map((material) =>
-                                  material.id === updatedMaterial.id
-                                      ? { ...material, ...updatedMaterial }
-                                      : material
-                              )
+                                material.id === updatedMaterial.id
+                                    ? { ...material, ...updatedMaterial }
+                                    : material
+                            )
                             : [],
                     } as CourseFull;
                 } else {
@@ -96,6 +96,7 @@ export default function EditMaterial({
             });
             handleClosePopup();
         } else {
+            console.log(response);
             console.error("Failed to update material");
         }
     };

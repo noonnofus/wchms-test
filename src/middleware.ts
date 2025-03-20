@@ -18,14 +18,15 @@ export async function middleware(req: NextRequest) {
         return NextResponse.redirect(new URL("/", req.url));
     }
     const userRole = token.role;
-    console.log("pathname", pathname);
     if (pathname.startsWith("/admin/")) {
         if (userRole !== "Admin" && userRole !== "Staff") {
             return NextResponse.redirect(new URL("/admin", req.url));
         }
     } else {
         if (userRole === "Admin" || userRole === "Staff") {
-            console.log("Here");
+            if (pathname === "/admin") {
+                return NextResponse.next();
+            }
             return NextResponse.redirect(
                 new URL(`/admin/${pathname}`, req.url)
             );

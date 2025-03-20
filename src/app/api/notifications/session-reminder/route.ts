@@ -1,0 +1,73 @@
+import { authConfig } from "@/auth";
+import { Notification } from "@/components/notification-system";
+import db from "@/db";
+import { notifications } from "@/db/schema/notifications";
+import { broadcastNotification } from "@/lib/websockets";
+import { getServerSession } from "next-auth";
+
+export async function POST(req: Request) {
+    try {
+        const session = await getServerSession(authConfig);
+        if (!session) {
+            return new Response(JSON.stringify({ error: "Unauthorized" }), {
+                status: 401,
+            });
+        }
+
+        const { userId, courseTitle, sessionId } = await req.json();
+
+        if (!userId || !courseTitle) {
+            return new Response(
+                JSON.stringify({ error: "Missing required fields" }),
+                { status: 400 }
+            );
+        }
+
+        const title = "Class Starting Soon";
+        const message = `Your session will start in 10 minutes for ${courseTitle}.`;
+
+        const notificationId = await db
+            .insert(notifications)
+            .values({
+                type: "session_reminder",
+                title,
+                message,
+                userId,
+                createdAt: new Date(),
+                metadata: JSON.stringify({
+                    sessionId: sessionId || null,
+                }),
+                isRead: false,
+            })
+            .$returningId()
+            .then((res) => res[0].id);
+
+        const notification: Notification = {
+            id: notificationId.toString(),
+            type: "session_reminder",
+            title,
+            message,
+            userId,
+            isRead: false,
+            metadata: {
+                sessionId: sessionId || undefined,
+            },
+        };
+
+        broadcastNotification(notification);
+
+        return new Response(
+            JSON.stringify({
+                message: "Session reminder notification sent",
+                notification,
+            }),
+            { status: 201 }
+        );
+    } catch (error) {
+        console.error("Error sending session reminder notification:", error);
+        return new Response(
+            JSON.stringify({ error: "Internal Server Error" }),
+            { status: 500 }
+        );
+    }
+}

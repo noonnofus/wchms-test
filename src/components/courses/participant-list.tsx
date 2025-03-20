@@ -4,12 +4,53 @@ import { Button } from "../ui/button";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { Participant } from "@/db/schema/participants";
+import DeleteConfirmation from "../shared/delete-confirmation";
+import { useState } from "react";
 
 export default function ParticipantList(props: {
     participants: Participant[];
     courseId?: number;
+    removeParticipantLocally?: (userId: number) => void;
 }) {
     const { id } = useParams();
+    const [showDeletePopup, setShowDeletePopup] = useState(false);
+    const [participantToRemove, setParticipantToRemove] =
+        useState<Participant | null>(null);
+
+    const handleRemoveButtonClick = (participant: Participant) => {
+        setParticipantToRemove(participant);
+        setShowDeletePopup(true);
+    };
+
+    const handleRemoveParticipant = async () => {
+        if (!participantToRemove) return;
+        try {
+            const response = await fetch("/api/courses/participants/remove", {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    userId: participantToRemove.id,
+                    courseId: id,
+                }),
+            });
+
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.error || "Failed to delete");
+
+            if (props.removeParticipantLocally) {
+                props.removeParticipantLocally(participantToRemove.id);
+            }
+        } catch (error) {
+            console.error("Failed to remove participant from course", error);
+        } finally {
+            setShowDeletePopup(false);
+            setParticipantToRemove(null);
+        }
+    };
+
+    const handleClosePopup = () => {
+        setShowDeletePopup(false);
+    };
     return (
         <div className="flex flex-col items-center w-full">
             <Card className="overflow-hidden">
@@ -63,17 +104,19 @@ export default function ParticipantList(props: {
 
                                           {props.courseId ? (
                                               <Button
-                                                  asChild
                                                   key={
                                                       participant.id +
                                                       participant.firstName +
                                                       "remove_action"
                                                   }
+                                                  onClick={() =>
+                                                      handleRemoveButtonClick(
+                                                          participant
+                                                      )
+                                                  }
                                                   className="mt-2 bg-destructive-red text-destructive-text hover:bg-destructive-hover font-semibold text-xs md:text-base"
                                               >
-                                                  <Link href="#">
-                                                      Remove From Course
-                                                  </Link>
+                                                  Remove From Course
                                               </Button>
                                           ) : (
                                               ""
@@ -85,6 +128,23 @@ export default function ParticipantList(props: {
                     </div>
                 </CardContent>
             </Card>
+            {showDeletePopup && participantToRemove && (
+                <div className="fixed inset-0 flex items-center justify-center z-10 overflow-y-auto">
+                    <div
+                        className="absolute inset-0 bg-black opacity-50"
+                        onClick={handleClosePopup}
+                    ></div>
+                    <div className="z-30 bg-white rounded-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
+                        <DeleteConfirmation
+                            title="Before you delete!"
+                            body={`Are you sure you want to delete ${participantToRemove.firstName}? You cannot undo this action.`}
+                            actionLabel="DELETE"
+                            handleSubmit={handleRemoveParticipant}
+                            closePopup={handleClosePopup}
+                        />
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

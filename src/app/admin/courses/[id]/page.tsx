@@ -4,23 +4,26 @@ import AddMaterial from "@/components/courses/add-material";
 import CourseDetailsCard from "@/components/courses/course-details-card";
 import EditMaterial from "@/components/courses/edit-material";
 import ParticipantList from "@/components/courses/participant-list";
+import RequestList from "@/components/courses/request-list";
 import CloseIcon from "@/components/icons/close-icon";
 import CloseSwipe from "@/components/icons/close-swipe";
+import AddSession from "@/components/sessions/add-session";
+import AddButton from "@/components/shared/add-button";
+import DeleteConfirmation from "@/components/shared/delete-confirmation";
 import MaterialCard from "@/components/shared/material-card";
 import TabsMenu from "@/components/shared/tabs-menu";
 import { Button } from "@/components/ui/button";
 import { getAllCourseJoinRequests, getCourseById } from "@/db/queries/courses";
 import { Course, CourseFull } from "@/db/schema/course";
-import { CourseMaterialsWithFile } from "@/db/schema/courseMaterials";
+import { CourseJoinRequest } from "@/db/schema/courseJoinRequests";
+import {
+    CourseMaterialsWithFile,
+    type CourseMaterials,
+} from "@/db/schema/courseMaterials";
+import { Participant } from "@/db/schema/participants";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useSwipeable } from "react-swipeable";
-import DeleteConfirmation from "@/components/shared/delete-confirmation";
-import { type CourseMaterials } from "@/db/schema/courseMaterials";
-import AddSession from "@/components/sessions/add-session";
-import { CourseJoinRequest } from "@/db/schema/courseJoinRequests";
-import RequestList from "@/components/courses/request-list";
-import AddButton from "@/components/shared/add-button";
 
 export default function AdminCourses() {
     const { id } = useParams();
@@ -40,10 +43,20 @@ export default function AdminCourses() {
     const [showDeletePopup, setShowDeletePopup] = useState(false);
     const [materialToDelete, setMaterialToDelete] =
         useState<CourseMaterials | null>(null);
-    const [refreshCourseMaterials, setRefreshCourseMaterials] = useState(false);
     const [courseToDelete, setCourseToDelete] = useState<Course | null>(null);
     const [showAddSessionPopup, setShowAddSessionPopup] = useState(false);
     const [requests, setRequests] = useState<CourseJoinRequest[] | null>(null);
+    const [participants, setParticipants] = useState<Participant[]>(
+        selectedCourse?.participants || []
+    );
+
+    const removeParticipantLocally = (userId: number) => {
+        setParticipants((prev) => prev?.filter((p) => p.id !== userId));
+    };
+
+    const approveParticipantJoinLocally = (participant: Participant) => {
+        setParticipants((prev) => [...prev, participant]);
+    };
 
     const swipeHandlers = useSwipeable({
         onSwipedDown: () => {
@@ -63,6 +76,9 @@ export default function AdminCourses() {
                 );
                 if (course) {
                     setSelectedCourse(course);
+                }
+                if (course?.participants) {
+                    setParticipants(course.participants);
                 }
             } catch (error) {
                 console.error("Error fetching courses", error);
@@ -165,7 +181,8 @@ export default function AdminCourses() {
         setShowDeletePopup(true);
     };
 
-    const handleDeleteCourseMaterial = async () => {
+    const handleDeleteCourseMaterial = async (e: React.FormEvent) => {
+        e.preventDefault();
         if (!materialToDelete) return;
 
         try {
@@ -181,12 +198,18 @@ export default function AdminCourses() {
 
             if (!response.ok) throw new Error(data.error || "Failed to delete");
 
-            setRefreshCourseMaterials((prev) => !prev);
-        } catch (error) {
-            console.error("Error deleting course material:", error);
-        } finally {
+            if (selectedCourse) {
+                setSelectedCourse({
+                    ...selectedCourse,
+                    materials: selectedCourse.materials?.filter(
+                        (material) => material.id !== materialToDelete.id
+                    ),
+                });
+            }
             setShowDeletePopup(false);
             setMaterialToDelete(null);
+        } catch (error) {
+            console.error("Error deleting course material:", error);
         }
     };
 
@@ -225,13 +248,19 @@ export default function AdminCourses() {
                                     All Sessions
                                 </Button>
                                 {requests ? (
-                                    <RequestList requests={requests} />
+                                    <RequestList
+                                        requests={requests}
+                                        approveParticipantJoinLocally={
+                                            approveParticipantJoinLocally
+                                        }
+                                    />
                                 ) : null}
                                 <ParticipantList
-                                    participants={
-                                        selectedCourse.participants || []
-                                    }
+                                    participants={participants}
                                     courseId={parseInt(id as string)}
+                                    removeParticipantLocally={
+                                        removeParticipantLocally
+                                    }
                                 />
                                 <AddButton
                                     handleAddButtonClick={
@@ -274,7 +303,7 @@ export default function AdminCourses() {
                             </div>
                         )}
                         {showEditCoursePopup && (
-                            <div className="fixed inset-0 flex items-end md:items-center justify-center z-10 overflow-y-auto">
+                            <div className="fixed inset-0 flex items-end md:items-center justify-center z-10">
                                 <div
                                     className="absolute inset-0 bg-black opacity-50"
                                     onClick={handleClosePopup}

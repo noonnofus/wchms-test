@@ -2,7 +2,6 @@
 import ChevronDownIcon from "@/components/icons/chevron-down-icon";
 import ChevronUpIcon from "@/components/icons/chevron-up-icon";
 import DeleteIcon from "@/components/icons/delete-icon";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
     Table,
@@ -12,12 +11,17 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { PlusIcon } from "lucide-react";
-import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { CourseFull } from "@/db/schema/course";
 import { getCourseById } from "@/db/queries/courses";
+import DeleteConfirmation from "@/components/shared/delete-confirmation";
+import { Participant } from "@/db/schema/participants";
+import AddButton from "@/components/shared/add-button";
+import CloseIcon from "@/components/icons/close-icon";
+import CloseSwipe from "@/components/icons/close-swipe";
+import { useSwipeable } from "react-swipeable";
+import AddParticipantToCourse from "@/components/courses/add-participant-to-course";
 
 export default function ClassParticipants() {
     const { id } = useParams();
@@ -25,6 +29,12 @@ export default function ClassParticipants() {
     const [selectedCourse, setSelectedCourse] = useState<
         CourseFull | undefined
     >(undefined);
+    const [showDeletePopup, setShowDeletePopup] = useState(false);
+    const [participantToRemove, setParticipantToRemove] =
+        useState<Participant | null>(null);
+    const [refreshParticipants, setRefreshParticipants] = useState(false);
+    const [showAddParticipantPopup, setShowAddParticipantPopup] =
+        useState(false);
 
     useEffect(() => {
         const fetchCourses = async () => {
@@ -49,7 +59,7 @@ export default function ClassParticipants() {
             }
         };
         fetchCourses();
-    }, [id]);
+    }, [id, refreshParticipants]);
 
     const [searchQuery, setSearchQuery] = useState("");
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
@@ -76,32 +86,130 @@ export default function ClassParticipants() {
                 : nameB.localeCompare(nameA);
         });
 
-    return (
+    const handleRemoveButtonClick = (participant: Participant) => {
+        setParticipantToRemove(participant);
+        setShowDeletePopup(true);
+    };
+
+    const handleRemoveParticipant = async () => {
+        if (!participantToRemove) return;
+        try {
+            const response = await fetch("/api/courses/participants/remove", {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    userId: participantToRemove.id,
+                    courseId: id,
+                }),
+            });
+
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.error || "Failed to delete");
+
+            setRefreshParticipants((prev) => !prev);
+        } catch (error) {
+            console.error("Failed to remove participant from course", error);
+        } finally {
+            setShowDeletePopup(false);
+            setParticipantToRemove(null);
+        }
+    };
+
+    const handleAddParticipantClick = () => {
+        setShowAddParticipantPopup(true);
+    };
+
+    const handleClosePopup = () => {
+        setShowDeletePopup(false);
+        setShowAddParticipantPopup(false);
+    };
+
+    const swipeHandlers = useSwipeable({
+        onSwipedDown: () => {
+            handleClosePopup();
+        },
+        preventScrollOnSwipe: true,
+        trackMouse: true,
+    });
+
+    return isLoading ? (
+        <div className="flex justify-center items-center py-10">
+            <p>Loading Participants...</p>
+        </div>
+    ) : (
         <div className="flex flex-col gap-10 w-full items-center">
             <h1 className="font-semibold text-4xl text-center">
                 Participant List
             </h1>
-            <Card className="flex flex-col h-full">
-                <CardHeader className="w-full">
+            {showAddParticipantPopup && (
+                <div className="fixed inset-0 flex items-end md:items-center justify-center z-20">
+                    <div
+                        className="absolute inset-0 bg-black opacity-50"
+                        onClick={handleClosePopup}
+                    ></div>
+                    <div className="z-30 bg-white rounded-t-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
+                        <div className="relative w-full">
+                            <div
+                                className="flex justify-center items-center p-6 md:hidden "
+                                {...swipeHandlers}
+                            >
+                                {/* Swipe indicator */}
+                                <div className="absolute top-6 md:hidden">
+                                    <CloseSwipe />
+                                </div>
+                            </div>
+                            <button
+                                onClick={handleClosePopup}
+                                className="absolute top-3 right-4"
+                            >
+                                <CloseIcon />
+                            </button>
+                        </div>
+                        <div className="overflow-y-auto max-h-[calc(90vh-90px)]">
+                            <AddParticipantToCourse
+                                courseId={id as string}
+                                handleClosePopup={handleClosePopup}
+                                onParticipantAdded={() =>
+                                    setRefreshParticipants((prev) => !prev)
+                                }
+                            />
+                        </div>
+                    </div>
+                </div>
+            )}
+            {showDeletePopup && participantToRemove && (
+                <div className="fixed inset-0 flex items-center justify-center z-10 overflow-y-auto">
+                    <div
+                        className="absolute inset-0 bg-black opacity-50"
+                        onClick={handleClosePopup}
+                    ></div>
+                    <div className="z-30 bg-white rounded-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
+                        <DeleteConfirmation
+                            title="Before you delete!"
+                            body={`Are you sure you want to delete ${participantToRemove.firstName}? You cannot undo this action.`}
+                            actionLabel="DELETE"
+                            handleSubmit={handleRemoveParticipant}
+                            closePopup={handleClosePopup}
+                        />
+                    </div>
+                </div>
+            )}
+            <div className="flex flex-col gap-4 w-full h-full">
+                <div className="w-full">
                     <h2 className="text-xl md:text-3xl font-semibold">
                         {selectedCourse?.title}
                     </h2>
-                    <div className="flex gap-2 md:gap-4 items-center">
-                        <Input
-                            type="text"
-                            placeholder="Search"
-                            className="mt-2 md:mt-4 py-4 md:py-6 w-full"
-                            onChange={handleSearchChange}
-                        ></Input>
-                        <button className="mt-2 md:mt-4 flex flex-col min-w-8 min-h-8 md:min-h-12 md:min-w-12 border-2 md:border-[3px] border-primary-green text-primary-green rounded-full justify-center items-center">
-                            <PlusIcon className="w-3/5 h-3/5" />
-                        </button>
-                    </div>
-                </CardHeader>
-                <CardContent className="w-full flex-grow overflow-auto">
-                    <Table className="w-full flex flex-col">
+                    <Input
+                        type="text"
+                        placeholder="Search"
+                        className="mt-2 md:mt-4 py-4 md:py-6 w-full"
+                        onChange={handleSearchChange}
+                    ></Input>
+                </div>
+                <div className="w-full flex-grow overflow-auto">
+                    <Table className="table-fixed w-full flex flex-col">
                         <TableHeader>
-                            <TableRow className="flex text-base md:text-xl font-semibold">
+                            <TableRow className="flex text-base md:text-xl font-semibold items-center">
                                 <TableHead className="flex-1 flex gap-2 items-center text-left text-black">
                                     Participant
                                     <button
@@ -115,7 +223,7 @@ export default function ClassParticipants() {
                                         )}
                                     </button>
                                 </TableHead>
-                                <TableHead className="flex-shrink-0 text-center p-0 w-20 med:w-24 text-black">
+                                <TableHead className="flex items-center justify-center text-center p-0 w-20 med:w-24 text-black">
                                     Remove
                                 </TableHead>
                             </TableRow>
@@ -136,17 +244,24 @@ export default function ClassParticipants() {
                                             </div>
                                         </TableCell>
                                         <TableCell className="flex justify-center items-center px-0 w-20 med:w-24">
-                                            <Link href="#">
+                                            <button
+                                                onClick={() =>
+                                                    handleRemoveButtonClick(
+                                                        participant
+                                                    )
+                                                }
+                                            >
                                                 <DeleteIcon className="inline-flex flex-col text-center justify-center items-center" />
-                                            </Link>
+                                            </button>
                                         </TableCell>
                                     </TableRow>
                                 );
                             })}
                         </TableBody>
                     </Table>
-                </CardContent>
-            </Card>
+                </div>
+            </div>
+            <AddButton handleAddButtonClick={handleAddParticipantClick} />
         </div>
     );
 }

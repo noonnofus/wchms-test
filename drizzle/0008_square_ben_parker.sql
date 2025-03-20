@@ -1,0 +1,1 @@
+ALTER TABLE `rooms` MODIFY COLUMN `medium` enum('online','in-person') NOT NULL;

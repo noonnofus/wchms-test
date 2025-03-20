@@ -5,11 +5,7 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import { CourseJoinRequest } from "@/db/schema/courseJoinRequests";
 import { useEffect, useState } from "react";
-import {
-    deleteCourseJoinRequest,
-    getAllCourseJoinRequests,
-    getCourseById,
-} from "@/db/queries/courses";
+import { getAllCourseJoinRequests } from "@/db/queries/courses";
 import { Participant } from "@/db/schema/participants";
 import { getParticipantById } from "@/db/queries/participants";
 import { Check } from "lucide-react";
@@ -18,8 +14,10 @@ import DeleteConfirmation from "../shared/delete-confirmation";
 
 export default function RequestOverviewCard({
     requests,
+    approveParticipantJoinLocally,
 }: {
     requests: CourseJoinRequest[];
+    approveParticipantJoinLocally: (participant: Participant) => void;
 }) {
     const { id } = useParams();
     const [courseJoinRequests, setCourseJoinRequests] =
@@ -88,7 +86,7 @@ export default function RequestOverviewCard({
             if (!response.ok)
                 throw new Error("Failed to add participant to course");
 
-            const data = await response.json();
+            await response.json();
 
             // Delete course join request
             await fetch("/api/requests/delete", {
@@ -99,10 +97,12 @@ export default function RequestOverviewCard({
                 body: JSON.stringify({ requestId: request.id }),
             });
 
-            const updatedRequests = await getAllCourseJoinRequests(
-                parseInt(id as string)
+            // Update the requests list
+            approveParticipantJoinLocally(participant);
+
+            setCourseJoinRequests((prev) =>
+                prev?.filter((r) => r.id !== request.id)
             );
-            setCourseJoinRequests(updatedRequests);
         } catch (error) {
             console.error("Error approving request", error);
         }

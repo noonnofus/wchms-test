@@ -1,13 +1,6 @@
 "use client";
 import { useRouter } from "next/navigation";
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "../ui/button";
 import Image from "next/image";
 import Link from "next/link";
@@ -24,9 +17,7 @@ import { type CourseWithImage } from "@/app/admin/courses/page";
 import { type CourseListWithImage } from "@/app/courses/page";
 import DeleteIcon from "../icons/delete-icon";
 
-interface CourseCardProps {
-    //Shared props
-}
+interface CourseCardProps {} // eslint-disable-line
 
 interface ClientVariantProps extends CourseCardProps {
     variant: "client";
@@ -72,7 +63,7 @@ export default function CourseCard(
     };
 
     useEffect(() => {
-        props.variant === "admin" ? null : fetchData();
+        if (props.variant === "admin") fetchData();
     }, [participantId]);
 
     const handleEnrollClick = async () => {
@@ -145,6 +136,7 @@ export default function CourseCard(
                         width={200}
                         height={200}
                         alt={`${props.course.title} Course Image`}
+                        className="rounded-lg sm:w-[300px] lg:w-[400px] h-[200px] object-cover object-center"
                     />
                 )}
                 {props.variant == "client" && (

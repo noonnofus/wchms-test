@@ -5,7 +5,7 @@ import {
     CourseParticipant,
     Courses as coursesTable,
 } from "@/db/schema/course";
-import { desc, eq, and, like } from "drizzle-orm";
+import { desc, eq, and, like, not, exists } from "drizzle-orm";
 import { uploadMedia } from "../schema/mediaUpload";
 import {
     courseMaterials,
@@ -286,9 +286,7 @@ export async function getLatestPhysicalMaterial() {
 
     // It's returns Undefined now
     const session = await getServerSession(authConfig);
-    const userId = session?.user.id;
-    // console.log(session);
-    // console.log(userId);
+    const userId = session?.user.id; // eslint-disable-line
 
     const latestCourse = await db
         .select({
@@ -416,5 +414,41 @@ export async function getAllCourseJoinRequests(courseId: number) {
     } catch (error) {
         console.error("Error fetching course join requests", error);
         throw error;
+    }
+}
+
+export async function getUnenrolledParticipants(courseId: number) {
+    "use server";
+    try {
+        const unenrolledParticipants = await db
+            .select()
+            .from(participants)
+            .where(
+                and(
+                    not(
+                        exists(
+                            db
+                                .select()
+                                .from(CourseParticipant)
+                                .where(
+                                    and(
+                                        eq(
+                                            CourseParticipant.courseId,
+                                            courseId
+                                        ),
+                                        eq(
+                                            CourseParticipant.userId,
+                                            participants.id
+                                        )
+                                    )
+                                )
+                        )
+                    )
+                )
+            );
+        return unenrolledParticipants;
+    } catch (error) {
+        console.error("Error fetching unenrolled participants", error);
+        return [];
     }
 }

@@ -42,7 +42,7 @@ export async function POST(req: Request) {
             );
         }
 
-        const result = await addAdmin(
+        await addAdmin(
             firstName,
             lastName,
             email,

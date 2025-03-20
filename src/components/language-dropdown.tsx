@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-
+import { cookies } from 'next/headers'
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -14,9 +14,20 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export function LanguageDropdown() {
-  const [position, setPosition] = React.useState("bottom");
+  // const [position, setPosition] = React.useState("bottom");
   const [selectedLanguage, setSelectedLanguage] = React.useState("English");
   const languages = ["English", "Japanese"];
+
+  const handleLanguage = (value: string) => {
+    setSelectedLanguage(value);
+
+    fetch("/api/participants/language", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ language: value })
+    });
+  }
+
 
   return (
     <DropdownMenu>
@@ -30,7 +41,7 @@ export function LanguageDropdown() {
         <DropdownMenuSeparator />
         <DropdownMenuRadioGroup
           value={selectedLanguage}
-          onValueChange={setSelectedLanguage}
+          onValueChange={handleLanguage}
         >
           {languages.map((language) => (
             <DropdownMenuRadioItem key={language} value={language}>

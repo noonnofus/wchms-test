@@ -1,6 +1,6 @@
 import db from "@/db";
 import { users } from "@/db/schema/users";
-import { eq } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 
 export async function GET() {
     try {
@@ -13,7 +13,7 @@ export async function GET() {
                 role: users.role,
             })
             .from(users)
-            .where(eq(users.role, "staff"));
+            .where(inArray(users.role, ["Staff", "Admin"]));
 
         return new Response(JSON.stringify(instructors), {
             status: 200,
