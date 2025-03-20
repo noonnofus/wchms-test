@@ -4,7 +4,7 @@ const i18nConfig = {
         defaultLocale: "en_US",
         locales: ["en_US", "ja_JP"],
     },
-    localePath: "./public/locales",
+    localePath: "@/locales",
 };
 
 module.exports = i18nConfig;
