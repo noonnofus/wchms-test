@@ -22,8 +22,10 @@ import CloseIcon from "@/components/icons/close-icon";
 import CloseSwipe from "@/components/icons/close-swipe";
 import { useSwipeable } from "react-swipeable";
 import AddParticipantToCourse from "@/components/courses/add-participant-to-course";
+import { useTranslation } from "react-i18next";
 
 export default function ClassParticipants() {
+    const { t } = useTranslation();
     const { id } = useParams();
     const [isLoading, setIsLoading] = useState(true);
     const [selectedCourse, setSelectedCourse] = useState<
@@ -139,7 +141,7 @@ export default function ClassParticipants() {
     ) : (
         <div className="flex flex-col gap-10 w-full items-center">
             <h1 className="font-semibold text-4xl text-center">
-                Participant List
+                {t("participant list")}
             </h1>
             {showAddParticipantPopup && (
                 <div className="fixed inset-0 flex items-end md:items-center justify-center z-20">
@@ -185,9 +187,12 @@ export default function ClassParticipants() {
                     ></div>
                     <div className="z-30 bg-white rounded-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
                         <DeleteConfirmation
-                            title="Before you delete!"
-                            body={`Are you sure you want to delete ${participantToRemove.firstName}? You cannot undo this action.`}
-                            actionLabel="DELETE"
+                            title={t("before you remove")}
+                            body={t("remove participant confirmation", {
+                                firstName: participantToRemove.firstName,
+                                lastName: participantToRemove.lastName,
+                            })}
+                            actionLabel={t("remove")}
                             handleSubmit={handleRemoveParticipant}
                             closePopup={handleClosePopup}
                         />
@@ -201,7 +206,7 @@ export default function ClassParticipants() {
                     </h2>
                     <Input
                         type="text"
-                        placeholder="Search"
+                        placeholder={t("search")}
                         className="mt-2 md:mt-4 py-4 md:py-6 w-full"
                         onChange={handleSearchChange}
                     ></Input>
@@ -211,7 +216,7 @@ export default function ClassParticipants() {
                         <TableHeader>
                             <TableRow className="flex text-base md:text-xl font-semibold items-center">
                                 <TableHead className="flex-1 flex gap-2 items-center text-left text-black">
-                                    Participant
+                                    {t("participant")}
                                     <button
                                         onClick={handleSortChange}
                                         className="flex items-center"
@@ -224,7 +229,7 @@ export default function ClassParticipants() {
                                     </button>
                                 </TableHead>
                                 <TableHead className="flex items-center justify-center text-center p-0 w-20 med:w-24 text-black">
-                                    Remove
+                                    {t("remove")}
                                 </TableHead>
                             </TableRow>
                         </TableHeader>
