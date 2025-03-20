@@ -11,6 +11,7 @@ import {
 import { Button } from "../ui/button";
 import { DatePicker } from "../ui/date-picker";
 import { type Participant } from "@/db/schema/participants";
+import { useTranslation } from "react-i18next";
 
 const genders = ["Male", "Female", "Other"];
 
@@ -23,6 +24,7 @@ export default function EditParticipant({
     participantData: Participant;
     onParticipantUpdated: () => void;
 }) {
+    const { t } = useTranslation();
     const [firstName, setFirstName] = useState(participantData.firstName);
     const [lastName, setLastName] = useState(participantData.lastName);
     const [email, setEmail] = useState(participantData.email);
@@ -134,7 +136,7 @@ export default function EditParticipant({
     return (
         <div className="flex flex-col gap-6 overflow-y-auto overflow-x-hidden py-8 px-6 rounded-lg bg-white items-center justify-center">
             <h1 className="font-semibold text-3xl md:text-4xl text-center mt-4">
-                Edit Participant
+                {t("edit participant")}
             </h1>
             <form
                 className="flex flex-col gap-4 md:gap-6 w-full h-full md:text-2xl"
@@ -143,7 +145,7 @@ export default function EditParticipant({
             >
                 <div className="flex flex-row gap-2 w-full">
                     <div className="flex flex-col flex-1 gap-2">
-                        <label htmlFor="firstName">First Name</label>
+                        <label htmlFor="firstName">{t("firstName")}</label>
                         {errors.firstName && (
                             <p className="text-red-500 text-sm">
                                 {errors.firstName}
@@ -152,13 +154,13 @@ export default function EditParticipant({
                         <Input
                             id="firstName"
                             type="text"
-                            placeholder="First Name"
+                            placeholder={t("firstName")}
                             value={firstName}
                             onChange={(e) => setFirstName(e.target.value)}
                         />
                     </div>
                     <div className="flex flex-col flex-1 gap-2">
-                        <label htmlFor="lastName">Last Name</label>
+                        <label htmlFor="lastName">{t("lastName")}</label>
                         {errors.lastName && (
                             <p className="text-red-500 text-sm">
                                 {errors.lastName}
@@ -167,7 +169,7 @@ export default function EditParticipant({
                         <Input
                             id="lastName"
                             type="text"
-                            placeholder="Last Name"
+                            placeholder={t("lastName")}
                             value={lastName}
                             onChange={(e) => setLastName(e.target.value)}
                         />
@@ -175,7 +177,7 @@ export default function EditParticipant({
                 </div>
                 <div className="flex flex-row gap-2 w-full">
                     <div className="flex flex-col flex-1 gap-2">
-                        <label htmlFor="email">Email</label>
+                        <label htmlFor="email">{t("email address")}</label>
                         {errors.email && (
                             <p className="text-red-500 text-sm">
                                 {errors.email}
@@ -184,13 +186,13 @@ export default function EditParticipant({
                         <Input
                             id="email"
                             type="email"
-                            placeholder="Email"
+                            placeholder="example@wchms.com"
                             value={email ?? ""}
                             onChange={(e) => setEmail(e.target.value)}
                         />
                     </div>
                     <div className="flex flex-col flex-1 gap-2">
-                        <label htmlFor="courseCategory">Gender</label>
+                        <label htmlFor="courseCategory">{t("gender")}</label>
                         {errors.gender && (
                             <p className="text-red-500 text-sm">
                                 {errors.gender}
@@ -201,7 +203,7 @@ export default function EditParticipant({
                             onValueChange={handleGenderSelect}
                         >
                             <SelectTrigger>
-                                <SelectValue placeholder="Gender" />
+                                <SelectValue placeholder={t("gender")} />
                             </SelectTrigger>
                             <SelectContent>
                                 {genders.map((gender, index) => (
@@ -218,7 +220,7 @@ export default function EditParticipant({
                     </div>
                 </div>
                 <div className="flex flex-col flex-1 gap-2">
-                    <label htmlFor="dateOfBirth">Date of Birth</label>
+                    <label htmlFor="dateOfBirth">{t("date of birth")}</label>
                     {errors.dateOfBirth && (
                         <p className="text-red-500 text-sm">
                             {errors.dateOfBirth}
@@ -234,14 +236,14 @@ export default function EditParticipant({
                         type="submit"
                         className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold md:text-xl py-2 md:py-4"
                     >
-                        {loading ? "Updating..." : "Update"}
+                        {loading ? t("updating") : t("update")}
                     </Button>
                     <Button
                         variant="outline"
                         className="w-full h-full rounded-full bg-transparent border-primary-green text-primary-green hover:bg-primary-green hover:text-white font-semibold md:text-xl py-2 md:py-4"
                         onClick={handleCancel}
                     >
-                        Cancel
+                        {t("button.cancel")}
                     </Button>
                 </div>
             </form>

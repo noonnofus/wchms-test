@@ -194,9 +194,12 @@ export default function ManageStaff() {
                     ></div>
                     <div className="z-30 bg-white rounded-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
                         <DeleteConfirmation
-                            title="Delete Staff"
-                            body={`Are you sure you want to delete staff member ${adminToDelete.firstName}? You cannot undo this action.`}
-                            actionLabel="DELETE"
+                            title={t("delete staff")}
+                            body={t("delete staff confirmation", {
+                                firstName: adminToDelete.firstName,
+                                lastName: adminToDelete.lastName,
+                            })}
+                            actionLabel={t("delete")}
                             handleSubmit={handleDelete}
                             closePopup={handleClosePopup}
                         />

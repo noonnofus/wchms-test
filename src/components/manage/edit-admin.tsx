@@ -11,6 +11,7 @@ import {
 import { Button } from "../ui/button";
 import { DatePicker } from "../ui/date-picker";
 import { type UserNoPass } from "@/app/admin/manage/staff/page";
+import { useTranslation } from "react-i18next";
 
 const genders = ["Male", "Female", "Other"];
 const roles = ["Staff", "Admin"];
@@ -24,6 +25,7 @@ export default function EditAdmin({
     adminData: UserNoPass;
     onAdminUpdated: () => void;
 }) {
+    const { t } = useTranslation();
     const [firstName, setFirstName] = useState(adminData.firstName);
     const [lastName, setLastName] = useState(adminData.lastName);
     const [email, setEmail] = useState(adminData.email);
@@ -160,7 +162,10 @@ export default function EditAdmin({
     return (
         <div className="flex flex-col gap-12 overflow-y-auto py-8 px-6 rounded-lg bg-white items-center justify-center">
             <h1 className="font-semibold text-3xl md:text-4xl text-center">
-                Edit {adminData.firstName}&#39;s Profile
+                {t("edit staff", {
+                    firstName: adminData.firstName,
+                    lastName: adminData.lastName,
+                })}
             </h1>
             <form
                 className="flex flex-col gap-4 md:gap-6 w-full h-full md:text-2xl"
@@ -168,7 +173,7 @@ export default function EditAdmin({
             >
                 <div className="w-full flex flex-row gap-2">
                     <div className="flex flex-col flex-1 gap-2">
-                        <label htmlFor="email">Email</label>
+                        <label htmlFor="email">{t("email address")}</label>
                         {errors.email && (
                             <p className="text-red-500 text-sm">
                                 {errors.email}
@@ -178,13 +183,13 @@ export default function EditAdmin({
                             id="email"
                             name="email"
                             type="text"
-                            placeholder="Email"
+                            placeholder={t("email address")}
                             value={email ?? ""}
                             onChange={(e) => setEmail(e.target.value)}
                         />
                     </div>
                     <div className="flex flex-col flex-1 gap-2">
-                        <label htmlFor="password">Password</label>
+                        <label htmlFor="password">{t("password")}</label>
                         {errors.password && (
                             <p className="text-red-500 text-sm">
                                 {errors.password}
@@ -193,7 +198,7 @@ export default function EditAdmin({
                         <Input
                             id="password"
                             name="password"
-                            type="text"
+                            type="password"
                             placeholder="*********"
                             onChange={(e) => setPassword(e.target.value)}
                         />
@@ -201,7 +206,7 @@ export default function EditAdmin({
                 </div>
                 <div className="w-full flex flex-row gap-2">
                     <div className="flex flex-col flex-1 gap-2">
-                        <label htmlFor="firstName">First Name</label>
+                        <label htmlFor="firstName">{t("firstName")}</label>
                         {errors.firstName && (
                             <p className="text-red-500 text-sm">
                                 {errors.firstName}
@@ -211,13 +216,13 @@ export default function EditAdmin({
                             id="firstName"
                             name="firstName"
                             type="text"
-                            placeholder="First Name"
+                            placeholder={t("firstName")}
                             value={firstName}
                             onChange={(e) => setFirstName(e.target.value)}
                         />
                     </div>
                     <div className="flex flex-col flex-1 gap-2">
-                        <label htmlFor="lastName">Last Name</label>
+                        <label htmlFor="lastName">{t("lastName")}</label>
                         {errors.lastName && (
                             <p className="text-red-500 text-sm">
                                 {errors.lastName}
@@ -227,7 +232,7 @@ export default function EditAdmin({
                             id="lastName"
                             name="lastName"
                             type="text"
-                            placeholder="Last Name"
+                            placeholder={t("lastName")}
                             value={lastName}
                             onChange={(e) => setLastName(e.target.value)}
                         />
@@ -235,7 +240,7 @@ export default function EditAdmin({
                 </div>
                 <div className="w-full flex flex-row gap-2">
                     <div className="flex flex-col flex-1 gap-2">
-                        <label>Gender</label>
+                        <label>{t("gender")}</label>
                         {errors.gender && (
                             <p className="text-red-500 text-sm">
                                 {errors.gender}
@@ -246,7 +251,9 @@ export default function EditAdmin({
                             onValueChange={handleGenderSelect}
                         >
                             <SelectTrigger>
-                                <SelectValue placeholder="Select Gender" />
+                                <SelectValue
+                                    placeholder={t("placeholder.selectGender")}
+                                />
                             </SelectTrigger>
                             <SelectContent>
                                 {genders.map((gender, index) => (
@@ -258,7 +265,9 @@ export default function EditAdmin({
                         </Select>
                     </div>
                     <div className="flex flex-col flex-1 gap-2">
-                        <label htmlFor="courseStartDate">Date of Birth</label>
+                        <label htmlFor="courseStartDate">
+                            {t("date of birth")}
+                        </label>
                         {errors.dateOfBirth && (
                             <p className="text-red-500 text-sm">
                                 {errors.dateOfBirth}
@@ -272,7 +281,7 @@ export default function EditAdmin({
                 </div>
                 <div className="w-full flex flex-row gap-2">
                     <div className="flex flex-col flex-1 gap-2">
-                        <label>Role</label>
+                        <label>{t("role")}</label>
                         {errors.role && (
                             <p className="text-red-500 text-sm">
                                 {errors.role}
@@ -283,7 +292,9 @@ export default function EditAdmin({
                             onValueChange={handleRoleSelect}
                         >
                             <SelectTrigger>
-                                <SelectValue placeholder="Select Gender" />
+                                <SelectValue
+                                    placeholder={t("placeholder.selectRole")}
+                                />
                             </SelectTrigger>
                             <SelectContent>
                                 {roles.map((role, index) => (
@@ -298,7 +309,7 @@ export default function EditAdmin({
                 </div>
                 <div className="w-full flex flex-row gap-2 mt-4">
                     <Button className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold md:text-xl py-2 md:py-4">
-                        {loading ? "Saving..." : "Save"}
+                        {loading ? t("updating") : t("update")}
                     </Button>
                     <Button
                         onClick={handleCancel}
@@ -306,7 +317,7 @@ export default function EditAdmin({
                         variant="outline"
                         className="w-full h-full rounded-full bg-transparent border-primary-green text-primary-green hover:bg-primary-green hover:text-white font-semibold md:text-xl py-2 md:py-4"
                     >
-                        Cancel
+                        {t("button.cancel")}
                     </Button>
                 </div>
             </form>

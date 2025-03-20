@@ -193,9 +193,12 @@ export default function ManageParticipant() {
                     ></div>
                     <div className="z-30 bg-white rounded-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
                         <DeleteConfirmation
-                            title="Delete Participant"
-                            body={`Are you sure you want to delete participant ${participantToDelete.firstName}? You cannot undo this action.`}
-                            actionLabel="DELETE"
+                            title={t("delete participant")}
+                            body={t("delete participant confirmation", {
+                                firstName: participantToDelete.firstName,
+                                lastName: participantToDelete.lastName,
+                            })}
+                            actionLabel={t("delete")}
                             handleSubmit={handleDelete}
                             closePopup={handleClosePopup}
                         />
