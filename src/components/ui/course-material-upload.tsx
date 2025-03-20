@@ -7,6 +7,7 @@ import {
 } from "@/lib/fileUploads";
 import Image from "next/image";
 import React, { useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 interface FileUploadProps {
     fileUrl: string | null;
@@ -21,6 +22,7 @@ export default function CourseMaterialUpload({
     onFileSelect,
     error: externalError,
 }: FileUploadProps) {
+    const { t } = useTranslation();
     const [dragActive, setDragActive] = useState(false);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const [fileType, setFileType] = useState<string | null>(null);
@@ -189,8 +191,8 @@ export default function CourseMaterialUpload({
                         </svg>
                         <p className="mt-2 text-sm text-gray-600">
                             {dragActive
-                                ? "Drop image here"
-                                : "Click or drag to add a photo or PDF"}
+                                ? t("drop image here")
+                                : t("fileUploadLabel")}
                         </p>
                     </div>
                 )}

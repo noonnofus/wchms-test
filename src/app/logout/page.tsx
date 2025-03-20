@@ -21,14 +21,13 @@ function LogoutContent() {
     };
     return (
         <div className="flex flex-col items-center gap-8 h-full">
-            <h1 className="mt-4 text-[32px] font-semibold">Logout</h1>
+            <h1 className="mt-4 text-[32px] font-semibold">{t("logout")}</h1>
             <Card className="flex flex-col w-full gap-2 items-center text-center py-8 px-4 h-auto">
                 <p className="text-xl leading-4 font-semibold">
-                    Are you sure you want to
+                    {t("logout.confirmation")}
                 </p>
-                <p className="text-xl font-semibold">LOGOUT?</p>
                 <p className="text-xl font-semibold mt-8">
-                    You will need to LOGIN again to access your account.
+                    {t("logout.warning")}
                 </p>
             </Card>
             <div className="w-full flex flex-col gap-4">

@@ -13,6 +13,7 @@ import { Button } from "../ui/button";
 import { CourseMaterialsWithFile } from "@/db/schema/courseMaterials";
 import { CourseFull } from "@/db/schema/course";
 import CourseMaterialUpload from "../ui/course-material-upload";
+import { useTranslation } from "react-i18next";
 
 const activities = ["Simple Arithmetic", "Reading Aloud", "Physical Exercise"];
 const difficulties = ["Basic", "Intermediate"];
@@ -26,6 +27,7 @@ export default function EditMaterial({
     material: CourseMaterialsWithFile;
     setSelectedCourse: Dispatch<SetStateAction<CourseFull | undefined>>;
 }) {
+    const { t } = useTranslation();
     const [title, setTitle] = useState<string>(material.title);
     const [selectedActivity, setSelectedActivity] = useState<string>(
         material.type
@@ -84,10 +86,10 @@ export default function EditMaterial({
                         ...prevSelectedCourse,
                         materials: prevSelectedCourse.materials
                             ? prevSelectedCourse.materials.map((material) =>
-                                material.id === updatedMaterial.id
-                                    ? { ...material, ...updatedMaterial }
-                                    : material
-                            )
+                                  material.id === updatedMaterial.id
+                                      ? { ...material, ...updatedMaterial }
+                                      : material
+                              )
                             : [],
                     } as CourseFull;
                 } else {
@@ -104,25 +106,27 @@ export default function EditMaterial({
     return (
         <div className="flex flex-col gap-12 w-full h-full py-8 px-6 rounded-lg bg-white items-center justify-center">
             <h1 className="font-semibold text-3xl md:text-4xl text-center">
-                Edit Course Material
+                {t("edit course material")}
             </h1>
             <form
                 className="flex flex-col gap-4 md:gap-6 w-full h-full md:text-2xl"
                 onSubmit={handleSubmit}
             >
                 <div className="flex flex-col flex-1 gap-2">
-                    <label htmlFor="title">Title</label>
+                    <label htmlFor="title">{t("title")}</label>
                     <Input
                         id="title"
                         type="text"
-                        placeholder="ex. Week 1: In-class math activity"
+                        placeholder={t("placeholder.exerciseTitle")}
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
                     />
                 </div>
                 <div className="flex flex-col md:flex-row gap-2 items-center w-full">
                     <div className="flex flex-col flex-1 w-full">
-                        <label htmlFor="exerciseType">Exercise Type</label>
+                        <label htmlFor="exerciseType">
+                            {t("exercise type")}
+                        </label>
                         <Select onValueChange={handleActivitySelect}>
                             <SelectTrigger>
                                 <SelectValue placeholder={selectedActivity} />
@@ -138,7 +142,7 @@ export default function EditMaterial({
                     </div>
                     <div className="flex flex-col flex-1 w-full">
                         <label htmlFor="exerciseDifficulty">
-                            Exercise Difficulty
+                            {t("exercise difficulty")}
                         </label>
                         <Select onValueChange={handleDifficultySelect}>
                             <SelectTrigger>
@@ -168,7 +172,7 @@ export default function EditMaterial({
                 </div>
                 {selectedActivity === "Physical Exercise" && (
                     <div className="flex flex-col flex-1 gap-2">
-                        <label htmlFor="url">Video URL</label>
+                        <label htmlFor="url">{t("videoURL")}</label>
                         <Input
                             id="url"
                             value={url}
@@ -180,25 +184,25 @@ export default function EditMaterial({
                 )}
                 <div className="flex flex-col flex-1 gap-2">
                     <label htmlFor="ExerciseInstructions">
-                        Exercise Instructions
+                        {t("exercise instructions")}
                     </label>
                     <Textarea
                         id="ExerciseInstructions"
-                        placeholder="Exercise Instructions (Optional)"
+                        placeholder={t("placeholder.exerciseInstructions")}
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
                     />
                 </div>
                 <div className="w-full flex flex-row gap-2 mt-4">
                     <Button className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold md:text-xl py-2 md:py-4">
-                        Save
+                        {t("update")}
                     </Button>
                     <Button
                         onClick={handleClosePopup}
                         variant="outline"
                         className="w-full h-full rounded-full bg-transparent border-primary-green text-primary-green hover:bg-primary-green hover:text-white font-semibold md:text-xl py-2 md:py-4"
                     >
-                        Cancel
+                        {t("button.cancel")}
                     </Button>
                 </div>
             </form>
