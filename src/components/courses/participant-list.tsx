@@ -99,7 +99,17 @@ export default function ParticipantList(props: {
                                               }
                                               className=" bg-primary-green hover:bg-[#045B47] font-semibold text-sm md:text-base"
                                           >
-                                              <Link href="#">View Profile</Link>
+                                              <Link
+                                                  href={`/admin/manage/participants/${participant.firstName}-${participant.lastName}`}
+                                                  onClick={() =>
+                                                      sessionStorage.setItem(
+                                                          "participantId",
+                                                          participant.id.toString()
+                                                      )
+                                                  }
+                                              >
+                                                  View Profile
+                                              </Link>
                                           </Button>
 
                                           {props.courseId ? (

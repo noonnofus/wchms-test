@@ -22,6 +22,7 @@ import CloseIcon from "@/components/icons/close-icon";
 import CloseSwipe from "@/components/icons/close-swipe";
 import { useSwipeable } from "react-swipeable";
 import AddParticipantToCourse from "@/components/courses/add-participant-to-course";
+import Link from "next/link";
 
 export default function ClassParticipants() {
     const { id } = useParams();
@@ -138,9 +139,7 @@ export default function ClassParticipants() {
         </div>
     ) : (
         <div className="flex flex-col gap-10 w-full items-center">
-            <h1 className="font-semibold text-4xl text-center">
-                Participant List
-            </h1>
+            <h1 className="font-semibold text-4xl text-center">Participants</h1>
             {showAddParticipantPopup && (
                 <div className="fixed inset-0 flex items-end md:items-center justify-center z-20">
                     <div
@@ -240,7 +239,17 @@ export default function ClassParticipants() {
                                                 <div className="hidden md:flex md:flex-col md:w-10 md:h-10 rounded-full bg-gray-200 items-center justify-center">
                                                     {`${participant.firstName[0]}${participant.lastName[0]}`}
                                                 </div>
-                                                {`${participant.firstName} ${participant.lastName}`}
+                                                <Link
+                                                    href={`/admin/manage/participants/${participant.firstName}-${participant.lastName}`}
+                                                    onClick={() =>
+                                                        sessionStorage.setItem(
+                                                            "participantId",
+                                                            participant.id.toString()
+                                                        )
+                                                    }
+                                                >
+                                                    {`${participant.firstName} ${participant.lastName}`}
+                                                </Link>
                                             </div>
                                         </TableCell>
                                         <TableCell className="flex justify-center items-center px-0 w-20 med:w-24">

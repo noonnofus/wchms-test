@@ -308,7 +308,13 @@ export default function ManageParticipant() {
                                                       {`${participantCourse.participant.firstName[0]}${participantCourse.participant.lastName[0]}`}
                                                   </div>
                                                   <Link
-                                                      href={`/admin/manage/participants/${participantCourse.participant.firstName}${participantCourse.participant.lastName}`}
+                                                      href={`/admin/manage/participants/${participantCourse.participant.firstName}-${participantCourse.participant.lastName}`}
+                                                      onClick={() =>
+                                                          sessionStorage.setItem(
+                                                              "participantId",
+                                                              participantCourse.participant.id.toString()
+                                                          )
+                                                      }
                                                   >
                                                       {`${participantCourse.participant.firstName} ${participantCourse.participant.lastName}`}
                                                   </Link>
