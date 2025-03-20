@@ -30,6 +30,18 @@
     "edit course": "Edit Course",
     "course name": "Course Name",
     "course image": "Course Image",
+    "drop image here": "Drop image here",
+    "click or drag to add a photo": "Click or drag to add a photo",
+    "course description": "Course Description",
+    "course start": "Course Start Date",
+    "course end": "Course End Date",
+    "course room": "Course Room",
+    "course language": "Course Language",
+    "select language": "Select Language",
+    "course type": "Course Type",
+    "select type": "Select Type",
+    "course status": "Course Status",
+    "select status": "Select Status",
     "course home": "Course Home",
     "course materials": "Course Materials",
     "join requests": "Join Requests",
@@ -38,5 +50,8 @@
     "reject course join request": "Reject Course Join Request",
     "reject course join request confirmation": "Are you sure you want to reject {{firstName}} {{lastName}}'s request? This action cannot be undone.",
     "view profile": "View Profile",
-    "remove from course": "Remove from Course"
+    "remove from course": "Remove from Course",
+    "loading": "Loading...",
+    "loading.rooms": "Loading rooms...",
+    "placeholder.participantInput": "Enter full name of participant (e.g. Taro Yamada, Hanako Tanaka)"
 }

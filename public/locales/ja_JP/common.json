@@ -30,6 +30,18 @@
     "edit course": "コース編集",
     "course name": "コース名",
     "course image": "コース画像",
+    "drop image here": "ここに画像をドロップ",
+    "click or drag to add a photo": "クリックまたはドラッグして写真を追加",
+    "course description": "コース説明",
+    "course start date": "コース開始日",
+    "course end date": "コース終了日",
+    "course room": "コースルーム",
+    "course language": "コース言語",
+    "select language": "言語を選択",
+    "course type": "コースタイプ",
+    "select type": "タイプを選択",
+    "course status": "コースステータス",
+    "select status": "ステータスを選択",
     "course home": "コースホーム",
     "course materials": "コース教材",
     "join requests": "参加リクエスト",
@@ -38,5 +50,8 @@
     "reject course join request": "コース参加リクエストを拒否",
     "reject course join request confirmation": "{{firstName}} {{lastName}}さんのリクエストを拒否してもよろしいですか？この操作は元に戻せません。",
     "view profile": "プロフィールを見る",
-    "remove from course": "コースから外す"
+    "remove from course": "コースから外す",
+    "loading": "読み込み中…",
+    "loading.rooms": "コースルームを読み込み中…",
+    "placeholder.participantInput": "参加者のフルネームを入力してください（例：太郎 山田、花子 田中）"
 }
