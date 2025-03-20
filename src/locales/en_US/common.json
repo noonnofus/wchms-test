@@ -1,6 +1,9 @@
 {
     "back": "Back",
     "logout": "Logout",
+    "login": "Login",
+    "staff login": "Staff Login",
+    "staff login instructions": "Enter your email and password to login to your account",
     "button.approve": "Approve",
     "button.reject": "Reject",
     "button.cancel": "Cancel",
@@ -110,6 +113,7 @@
     "loading.rooms": "Loading rooms...",
     "loading.courses": "Loading courses...",
     "loading.generating": "Generating...",
+    "loading.participants": "Loading participants...",
     "placeholder.participantInput": "Enter full name of participant (e.g. Taro Yamada, Hanako Tanaka)",
     "placeholder.pickDate": "Pick a date",
     "placeholder.selectLanguage": "Select Language",

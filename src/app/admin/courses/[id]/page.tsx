@@ -229,7 +229,7 @@ export default function AdminCourses() {
                     <>
                         {isLoading ? (
                             <div className="flex justify-center items-center py-10">
-                                <p>Loading Courses...</p>
+                                <p>{t("loading.courses")}</p>
                             </div>
                         ) : (
                             <div className="flex flex-col gap-6 md:gap-8">
@@ -362,7 +362,7 @@ export default function AdminCourses() {
                     <div className="w-full mb-8">
                         {isLoading ? (
                             <div className="flex justify-center items-center py-10">
-                                <p>Loading Courses...</p>
+                                <p>{t("loading.courses")}</p>
                             </div>
                         ) : (
                             <div className="flex flex-col gap-4">

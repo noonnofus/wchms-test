@@ -136,7 +136,7 @@ export default function ClassParticipants() {
 
     return isLoading ? (
         <div className="flex justify-center items-center py-10">
-            <p>Loading Participants...</p>
+            <p>{t("loading.participants")}</p>
         </div>
     ) : (
         <div className="flex flex-col gap-10 w-full items-center">

@@ -1,6 +1,9 @@
 {
     "back": "戻る",
     "logout": "ログアウト",
+    "login": "ログイン",
+    "staff login": "スタッフログイン",
+    "staff login instructions": "メールアドレスとパスワードを入力してログインしてください",
     "button.approve": "承認",
     "button.reject": "拒否",
     "button.cancel": "キャンセル",
@@ -110,6 +113,7 @@
     "loading.rooms": "コースルームを読み込み中…",
     "loading.courses": "コースを読み込み中…",
     "loading.generating": "生成中…",
+    "loading.participants": "参加者を読み込み中… ",
     "placeholder.participantInput": "参加者のフルネームを入力してください（例：太郎 山田、花子 田中）",
     "placeholder.pickDate": "日付を選択",
     "placeholder.selectLanguage": "言語を選択",
