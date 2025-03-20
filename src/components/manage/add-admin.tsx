@@ -29,6 +29,7 @@ export default function AddAdmin({
     const [password, setPassword] = useState("");
     const [role, setRole] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
+    const [serverError, setServerError] = useState("");
     const [errors, setErrors] = useState({
         firstName: "",
         lastName: "",
@@ -145,11 +146,11 @@ export default function AddAdmin({
             });
 
             if (!response.ok) {
+                response.status === 409 && setServerError("Admin/Staff with this email already exists, please try again with other email.");
                 throw new Error("Failed to add admin");
             }
 
             onAdminAdded();
-            console.log("Admin added successfully");
 
             setFirstName("");
             setLastName("");
@@ -311,6 +312,11 @@ export default function AddAdmin({
                     </div>
                     <div className="flex flex-col flex-1 gap-2"></div>
                 </div>
+                {serverError && (
+                    <p className="text-red-500 text-center text-sm">
+                        {serverError}
+                    </p>
+                )}
                 <div className="w-full flex flex-row gap-2 mt-4">
                     <Button
                         type="submit"

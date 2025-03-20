@@ -23,6 +23,24 @@ export async function getAllAdmins() {
     }
 }
 
+export async function existAdmin(email: string) {
+    try {
+        const existingUser = await db
+            .select()
+            .from(users)
+            .where(eq(users.email, email));
+
+        if (existingUser.length > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+}
+
 export async function addAdmin(
     firstName: string,
     lastName: string,

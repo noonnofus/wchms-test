@@ -1,4 +1,4 @@
-import { addParticipant } from "@/db/queries/participants";
+import { addParticipant, existParticipant } from "@/db/queries/participants";
 
 export async function POST(req: Request) {
     try {
@@ -20,7 +20,16 @@ export async function POST(req: Request) {
             );
         }
 
-        // TODO: check if there is a participant with the email if the "client" needs the email for the participant.
+        const existingUser = await existParticipant(email);
+
+        if (existingUser) {
+            return new Response(
+                JSON.stringify({
+                    message: "Participant with the email is already exists.",
+                }),
+                { status: 409 }
+            );
+        }
 
         await addParticipant(firstName, lastName, email, gender, dateOfBirth);
 
