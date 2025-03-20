@@ -10,11 +10,11 @@ i18n.use(LanguageDetector)
     .use(initReactI18next)
     .init({
         resources: {
-            en_US: { translation: en_US },
-            ja_JP: { translation: ja_JP },
+            English: { translation: en_US },
+            Japanese: { translation: ja_JP },
         },
-        supportedLngs: ["en_US", "ja_JP"],
-        fallbackLng: "en_US",
+        supportedLngs: ["English", "Japanese"],
+        fallbackLng: "English",
         detection: {
             order: ["localStorage", "navigator"],
             caches: ["localStorage"],

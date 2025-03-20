@@ -7,6 +7,7 @@ import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
 import "./globals.css";
 import I18NextProviderWrapper from "@/components/shared/i18next-provider-wrapper";
+import { getLanguageFromCookie } from "@/lib/lang";
 
 const dmSans = DM_Sans({
     variable: "--font-dm-sans",
@@ -18,15 +19,20 @@ export const metadata: Metadata = {
     description: "",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
     children,
 }: Readonly<{
     children: React.ReactNode;
 }>) {
+    const language = await getLanguageFromCookie();
+
     return (
         <SessionProviderWrapper>
-            <html lang="en" className="h-full w-full overflow-hidden">
-                <I18NextProviderWrapper>
+            <html
+                lang={language.substring(0, 2).toLocaleLowerCase()}
+                className="h-full w-full overflow-hidden"
+            >
+                <I18NextProviderWrapper language={language}>
                     <body
                         className={`${dmSans.variable} antialiased min-w-[360px] w-full h-full flex flex-col`}
                     >

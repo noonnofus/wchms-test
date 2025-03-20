@@ -240,10 +240,12 @@ export default function ManageStaff() {
             )}
             <div className="flex flex-col h-full gap-4 pb-32">
                 <div className="w-full">
-                    <h2 className="text-xl md:text-3xl font-semibold">Staff</h2>
+                    <h2 className="text-xl md:text-3xl font-semibold">
+                        {t("staff")}
+                    </h2>
                     <Input
                         type="text"
-                        placeholder="Search"
+                        placeholder={t("search")}
                         className="mt-2 md:mt-4 py-4 md:py-6 w-full"
                         onChange={handleSearchChange}
                     ></Input>
