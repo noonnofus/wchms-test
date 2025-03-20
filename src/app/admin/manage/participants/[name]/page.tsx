@@ -93,6 +93,26 @@ export default function Profile() {
         }
     };
 
+    const calculateAge = (dob: Date) => {
+        const today = new Date();
+        const birthDate = new Date(dob);
+
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const monthDifference = today.getMonth() - birthDate.getMonth();
+
+        if (
+            monthDifference < 0 ||
+            (monthDifference === 0 && today.getDate() < birthDate.getDate())
+        ) {
+            age--;
+        }
+
+        return age;
+    };
+
+    if (!participant) return;
+    const age = calculateAge(participant.dateOfBirth);
+
     if (isLoading) {
         return (
             <div className="flex justify-center items-center py-10">
@@ -103,7 +123,6 @@ export default function Profile() {
 
     return (
         <main className="relative flex flex-col gap-10 w-full items-center h-full">
-            {/* Always render popups */}
             {showEditPopup && participant && (
                 <div className="fixed inset-0 flex items-end md:items-center justify-center z-10 overflow-y-auto">
                     <div
@@ -172,6 +191,10 @@ export default function Profile() {
                     <p>{participant?.email}</p>
                 </div>
                 <div className="flex flex-row gap-2">
+                    <p className="text-lg font-semibold">Age: </p>
+                    <p>{age}</p>
+                </div>
+                <div className="flex flex-row gap-2">
                     <p className="text-lg font-semibold">Date of Birth:</p>
                     <p>
                         {participant?.dateOfBirth.toLocaleDateString("en-US", {
@@ -185,16 +208,25 @@ export default function Profile() {
                     <p className="text-lg font-semibold">Gender:</p>
                     <p>{participant?.gender}</p>
                 </div>
-                <div className="flex flex-col w-full">
-                    <p className="text-lg font-semibold">Courses:</p>
-                    <ul className="w-full">
-                        {courses?.map((course, index) => (
-                            <li key={index} className="list-disc ml-8">
-                                {course.title}
-                            </li>
-                        ))}
-                    </ul>
-                </div>
+                {courses?.length === 0 ? (
+                    <div className="flex flex-col w-full">
+                        <p className="text-lg font-semibold">Courses:</p>
+                        <p>
+                            Participant is not currently enrolled in any courses
+                        </p>
+                    </div>
+                ) : (
+                    <div className="flex flex-col w-full">
+                        <p className="text-lg font-semibold">Courses:</p>
+                        <ul className="w-full">
+                            {courses?.map((course, index) => (
+                                <li key={index} className="list-disc ml-8">
+                                    {course.title}
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
             </div>
         </main>
     );
