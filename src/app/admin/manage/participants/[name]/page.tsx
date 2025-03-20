@@ -41,17 +41,15 @@ export default function Profile() {
     };
 
     useEffect(() => {
-        const id = sessionStorage.getItem("participantId");
-        if (id) {
-            setParticipantId(id);
-            fetchData(id);
-        } else {
-            setIsLoading(false);
+        if (typeof window !== "undefined") {
+            const id = sessionStorage.getItem("participantId");
+            if (id) {
+                setParticipantId(id);
+                fetchData(id);
+            } else {
+                setIsLoading(false);
+            }
         }
-
-        return () => {
-            sessionStorage.removeItem("participantId");
-        };
     }, []);
 
     if (!participantId) {
