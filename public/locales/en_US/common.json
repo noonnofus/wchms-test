@@ -1,13 +1,15 @@
 {
     "back": "Back",
     "logout": "Logout",
+    "button.approve": "Approve",
+    "button.reject": "Reject",
     "button.cancel": "Cancel",
     "edit": "Edit",
     "delete": "Delete",
     "update": "Update",
     "course_one": "Course",
     "course_other": "Courses",
-    "paricipant": "Participant",
+    "participant": "Participant",
     "participant_other": "Participants",
     "manage": "Manage",
     "home": "Home",
@@ -22,5 +24,10 @@
     "course name": "Course Name",
     "course image": "Course Image",
     "course home": "Course Home",
-    "course materials": "Course Materials"
+    "course materials": "Course Materials",
+    "join requests": "Join Requests",
+    "no course join requests": "No course join requests",
+    "view all": "View All",
+    "reject course join request": "Reject Course Join Request",
+    "reject course join request confirmation": "Are you sure you want to reject {{firstName}} {{lastName}}'s request? This action cannot be undone."
 }

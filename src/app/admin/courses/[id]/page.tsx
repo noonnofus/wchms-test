@@ -23,9 +23,11 @@ import {
 import { Participant } from "@/db/schema/participants";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useSwipeable } from "react-swipeable";
 
 export default function AdminCourses() {
+    const { t } = useTranslation();
     const { id } = useParams();
     const [isLoading, setIsLoading] = useState(true);
     const router = useRouter();
@@ -221,8 +223,8 @@ export default function AdminCourses() {
         <div className="w-full h-full">
             <TabsMenu
                 tabsListClassName="z-[1]"
-                leftLabel="Course Home"
-                rightLabel="Course Materials"
+                leftLabel={t("course home")}
+                rightLabel={t("course materials")}
                 leftChildren={
                     <>
                         {isLoading ? (

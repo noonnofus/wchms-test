@@ -6,8 +6,10 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import DeleteConfirmation from "@/components/shared/delete-confirmation";
 import { Participant } from "@/db/schema/participants";
+import { useTranslation } from "react-i18next";
 
 export default function Requests() {
+    const { t } = useTranslation();
     const { id } = useParams();
     const [courseJoinRequests, setCourseJoinRequests] = useState<
         CourseJoinRequest[] | null
@@ -119,7 +121,7 @@ export default function Requests() {
     return (
         <div className="flex flex-col gap-10 w-full items-center">
             <h1 className="font-semibold text-4xl text-center">
-                Course Enrollment Requests
+                {t("join requests")}
             </h1>
             <div className="w-full flex flex-col items-center gap-4">
                 {courseJoinRequests && courseJoinRequests.length > 0
@@ -141,9 +143,13 @@ export default function Requests() {
                     ></div>
                     <div className="z-30 bg-white rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
                         <DeleteConfirmation
-                            title="Reject Course Join Request"
-                            body={`Are you sure you want to reject ${participantRequestToDelete?.firstName} ${participantRequestToDelete?.lastName}'s request? This action cannot be undone.`}
-                            actionLabel="REJECT"
+                            title={t("reject course join request")}
+                            body={t("reject course join request confirmation", {
+                                firstName:
+                                    participantRequestToDelete?.firstName,
+                                lastName: participantRequestToDelete?.lastName,
+                            })}
+                            actionLabel={t("button.reject")}
                             handleSubmit={handleDeleteJoinRequest}
                             closePopup={handleClosePopup}
                         />

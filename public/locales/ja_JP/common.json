@@ -1,6 +1,8 @@
 {
     "back": "戻る",
     "logout": "ログアウト",
+    "button.approve": "承認",
+    "button.reject": "拒否",
     "button.cancel": "キャンセル",
     "edit": "編集",
     "delete": "削除",
@@ -20,5 +22,12 @@
     "create new course": "新規コース作成",
     "edit course": "コース編集",
     "course name": "コース名",
-    "course image": "コース画像"
+    "course image": "コース画像",
+    "course home": "コースホーム",
+    "course materials": "コース教材",
+    "join requests": "参加リクエスト",
+    "no course join requests": "コース参加リクエストなし",
+    "view all": "全てを見る",
+    "reject course join request": "コース参加リクエストを拒否",
+    "reject course join request confirmation": "{{firstName}} {{lastName}}さんのリクエストを拒否してもよろしいですか？この操作は元に戻せません。"
 }
