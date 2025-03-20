@@ -50,6 +50,24 @@ export async function getParticipantById(id: number) {
     }
 }
 
+export async function existParticipant(email: string) {
+    "use server";
+    try {
+        const existingUser = await db
+            .select()
+            .from(participants)
+            .where(eq(participants.email, email));
+
+        if (existingUser) {
+            throw new Error(
+                "The participant with the email is already exists, Please try again with another email"
+            );
+        }
+    } catch (error) {
+        return { error: error };
+    }
+}
+
 export async function addParticipant(
     firstName: string,
     lastName: string,
