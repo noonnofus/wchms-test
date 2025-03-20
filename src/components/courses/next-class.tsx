@@ -4,10 +4,12 @@ import { getNextSessionDate } from "@/db/queries/sessions";
 import { getSession } from "next-auth/react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export default function NextClass({ whenLoaded }: { whenLoaded: () => void }) {
+    const { t } = useTranslation();
     const [sessionCountdown, setSessionCountdown] = useState<string | null>(
-        "No Upcoming Sessions"
+        t("nextSession.none")
     );
     const [courseTitle, setCourseTitle] = useState<string>("");
     const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -22,21 +24,21 @@ export default function NextClass({ whenLoaded }: { whenLoaded: () => void }) {
             const session = await getSession();
             const userId = Number(session?.user.id);
             if (!userId) {
-                setSessionCountdown("No Upcoming Sessions");
+                setSessionCountdown(t("nextSession.none"));
                 setIsLoading(false);
                 return;
             }
 
             const classExists = await getUserCourses(userId);
             if (!classExists || classExists.length === 0) {
-                setSessionCountdown("No Upcoming Sessions");
+                setSessionCountdown(t("nextSession.none"));
                 setIsLoading(false);
                 return;
             }
 
             const nextSession = await getNextSessionDate();
             if (!nextSession || !("date" in nextSession)) {
-                setSessionCountdown("No Upcoming Sessions");
+                setSessionCountdown(t("nextSession.none"));
                 setIsLoading(false);
                 return;
             }
@@ -71,15 +73,15 @@ export default function NextClass({ whenLoaded }: { whenLoaded: () => void }) {
                 );
 
                 if (hours > 0) {
-                    setSessionCountdown(`Next Session in ${hours} Hours`);
+                    setSessionCountdown(t("nextSession.hours", { hours }));
                 } else {
-                    setSessionCountdown(`Next Session in ${minutes} Minutes`);
+                    setSessionCountdown(t("nextSession.minutes", { minutes }));
                 }
             } else {
-                const daysTillSession = Math.ceil(
+                const days = Math.ceil(
                     (sessionDate.getTime() - now.getTime()) / (1000 * 3600 * 24)
                 );
-                setSessionCountdown(`Next Session in ${daysTillSession} Days`);
+                setSessionCountdown(t("nextSession.days", { days }));
             }
 
             setIsLoading(false);
@@ -167,7 +169,7 @@ export default function NextClass({ whenLoaded }: { whenLoaded: () => void }) {
         >
             {isLoading ? (
                 <p className="text-primary-green/50 text-xl md:text-2xl lg:text-3xl animate-pulse">
-                    Loading...
+                    {t("loading")}
                 </p>
             ) : sessionCountdown === "Zoom" ? (
                 <Link
@@ -176,7 +178,7 @@ export default function NextClass({ whenLoaded }: { whenLoaded: () => void }) {
                 >
                     <div className="w-full h-full flex items-center justify-center hover:bg-green-100 transition-colors duration-300 ease-in-out rounded-lg">
                         <p className="text-primary-green text-xl md:text-2xl lg:text-3xl font-semibold">
-                            Join {courseTitle} Zoom Class Now
+                            {t("nextSession.zoom", { courseTitle })}
                         </p>
                     </div>
                 </Link>

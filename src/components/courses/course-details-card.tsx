@@ -136,7 +136,7 @@ export default function CourseDetailsCard(props: CourseDetailsProps) {
                 {props.variant === "client" &&
                     (props.enrolled ? (
                         <Button className="bg-primary-green text-white rounded-full w-full font-semibold text-base hover:bg-[#045B47]">
-                            Join Session
+                            {t("launch zoom")}
                         </Button>
                     ) : requestExists ? (
                         <Button
@@ -149,8 +149,8 @@ export default function CourseDetailsCard(props: CourseDetailsProps) {
                             disabled={isRemoving}
                         >
                             {isRemoving
-                                ? "Removing..."
-                                : "Remove Request to Join Course"}
+                                ? t("loading.removing")
+                                : t("remove join request")}
                         </Button>
                     ) : (
                         <Button
@@ -161,7 +161,7 @@ export default function CourseDetailsCard(props: CourseDetailsProps) {
                             }}
                             disabled={isEnrolling}
                         >
-                            {isEnrolling ? "Enrolling..." : "Enroll"}
+                            {isEnrolling ? t("loading.enrolling") : t("enroll")}
                         </Button>
                     ))}
                 {props.variant == "admin" && (

@@ -2,20 +2,15 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-    Card,
-    CardHeader,
-    CardTitle,
-    CardContent,
-} from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { useTranslation } from "react-i18next";
 
 interface PhysicalProps {
     videoUrl: string | null;
 }
 
-export default function PhysicalCard({
-    videoUrl
-}: PhysicalProps) {
+export default function PhysicalCard({ videoUrl }: PhysicalProps) {
+    const { t } = useTranslation();
     const [videoTitle, setVideoTitle] = useState("");
     const [videoId, setVideoId] = useState("");
     const [error, setError] = useState<string | null>(null);
@@ -27,10 +22,14 @@ export default function PhysicalCard({
         const id = videoUrl?.split("v=")[1]?.split("&")[0];
         if (videoUrl !== null && id) {
             setVideoId(id);
-            fetch(`https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${id}&format=json`)
+            fetch(
+                `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${id}&format=json`
+            )
                 .then((res) => res.json())
                 .then((data) => setVideoTitle(data.title))
-                .catch((err) => console.error("Error fetching video title:", err));
+                .catch((err) =>
+                    console.error("Error fetching video title:", err)
+                );
         } else {
             setError(videoUrl);
         }
@@ -38,7 +37,7 @@ export default function PhysicalCard({
 
     const handleSubmit = () => {
         router.push("/homework");
-    }
+    };
 
     return (
         <div className="flex justify-center items-center w-full md:px-4">
@@ -66,7 +65,9 @@ export default function PhysicalCard({
                                     ></iframe>
                                 </div>
                             ) : error ? (
-                                <p className="text-red-500 text-center">{error}</p>
+                                <p className="text-red-500 text-center">
+                                    {error}
+                                </p>
                             ) : (
                                 <Skeleton className="md:h-[500px] sm:h-[500px] sm:w-[400px] max-h-[500px] md:w-[1000px] max-w-[1200px] rounded-md" />
                             )}
@@ -80,7 +81,7 @@ export default function PhysicalCard({
                             handleSubmit();
                         }}
                     >
-                        Back to Homework
+                        {t("button.backToHomework")}
                     </Button>
                 </div>
             </div>

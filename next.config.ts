@@ -10,8 +10,8 @@ const nextConfig: NextConfig = {
 
 module.exports = {
     i18n: {
-        defaultLocale: "en_US", // ✅ Correctly define i18n here
-        locales: ["en_US", "ja_JP"], // ✅ Ensure locales is an array
+        defaultLocale: "en_US",
+        locales: ["en_US", "ja_JP"],
     },
     images: {
         remotePatterns: [

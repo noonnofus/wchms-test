@@ -12,6 +12,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+import { useTranslation } from "react-i18next";
 
 // TODO: Implement course materials tab.
 
@@ -19,6 +20,7 @@ const difficulties = ["Basic", "Intermediate"];
 
 export default function HomeworkPage() {
     // Make it true after implementing getting materials.
+    const { t } = useTranslation();
     const [isLoading, setIsLoading] = useState(false);
     const [difficulty, setDifficulty] = useState("Basic");
     const [selectedCourse, setSelectedCourse] = useState<
@@ -49,7 +51,7 @@ export default function HomeworkPage() {
     }, []);
 
     if (!selectedCourse) {
-        return <div>No course found</div>;
+        return <div>{t("no course found")}</div>;
     }
 
     const handleDifficultySelect = (difficulty: string) => {
@@ -59,19 +61,19 @@ export default function HomeworkPage() {
     return (
         <div>
             <TabsMenu
-                leftLabel="Course Materials"
-                rightLabel="AI Self-Study"
+                leftLabel={t("course materials")}
+                rightLabel={t("AISelfStudy")}
                 leftChildren={
                     <>
                         {isLoading ? (
                             <div className="flex justify-center items-center py-10">
-                                <p>Loading Course Materials...</p>
+                                <p>{t("loading.coursesMaterials")}</p>
                             </div>
                         ) : (
                             <>
                                 {isLoading ? (
                                     <div className="flex justify-center items-center py-10">
-                                        <p>Loading Course Materials...</p>
+                                        <p>{t("loading.coursesMaterials")}</p>
                                     </div>
                                 ) : (
                                     <div className="flex flex-col gap-4">
@@ -92,12 +94,12 @@ export default function HomeworkPage() {
                                         ) : (
                                             <div className="flex flex-col gap-4 text-center py-10">
                                                 <p className="text-center text-xl md:text-2xl font-semibold">
-                                                    No course materials
-                                                    available.
+                                                    {t(
+                                                        "no materials available"
+                                                    )}
                                                 </p>
                                                 <p className="text-xl">
-                                                    Try AI self-study for more
-                                                    resources!
+                                                    {t("tryAISelfStudy")}
                                                 </p>
                                             </div>
                                         )}
@@ -110,12 +112,12 @@ export default function HomeworkPage() {
                 rightChildren={
                     <div className="flex flex-col items-center gap-6">
                         <div className="flex justify-center max-w-[1000px] w-full items-center gap-4">
-                            <p className="text-2xl">Difficulty:</p>
+                            <p className="text-2xl w-fit">{t("difficulty")}:</p>
                             <Select
                                 value={difficulty}
                                 onValueChange={handleDifficultySelect}
                             >
-                                <SelectTrigger className="w-full">
+                                <SelectTrigger className="flex-1">
                                     <SelectValue placeholder="Select difficulty" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -131,17 +133,17 @@ export default function HomeworkPage() {
                             </Select>
                         </div>
                         <HomeworkCard
-                            title="Physical Activity"
+                            title={t("activity.physical")}
                             activity="physical"
                             difficulty={difficulty}
                         />
                         <HomeworkCard
-                            title="Reading Aloud Activity"
+                            title={t("activity.reading")}
                             activity="reading"
                             difficulty={difficulty}
                         />
                         <HomeworkCard
-                            title="Simple Arithmetic Activity"
+                            title={t("activity.arithmetic")}
                             activity="arithmetic"
                             difficulty={difficulty}
                         />

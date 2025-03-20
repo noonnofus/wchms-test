@@ -59,7 +59,7 @@ export default function ParticipantList(props: {
                 <CardHeader className="w-full py-4 md:py-6">
                     <div className="flex justify-between items-center">
                         <CardTitle className="text-left text-2xl md:text-[32px]">
-                            Participant List
+                            {t("participant list")}
                         </CardTitle>
                         {props.courseId ? (
                             <Link
@@ -128,7 +128,7 @@ export default function ParticipantList(props: {
                                       </div>
                                   );
                               })
-                            : "No participants registered"}
+                            : t("no participants registered")}
                     </div>
                 </CardContent>
             </Card>
