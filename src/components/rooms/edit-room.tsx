@@ -11,6 +11,7 @@ import {
 import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
 import { Room } from "@/db/schema/room";
+import { useTranslation } from "react-i18next";
 
 const mediums = ["Online", "In-Person"];
 const statuses = ["Available", "Unavailable"];
@@ -24,6 +25,7 @@ export default function EditRoom({
     roomData: Room;
     onRoomUpdated: () => void;
 }) {
+    const { t } = useTranslation();
     const [name, setName] = useState(roomData.name);
     const [medium, setMedium] = useState<string>(
         roomData.medium === "online" ? "Online" : "In-Person"
@@ -134,7 +136,7 @@ export default function EditRoom({
     return (
         <div className="flex flex-col gap-12 overflow-y-auto py-8 px-6 rounded-lg bg-white items-center justify-center">
             <h1 className="font-semibold text-3xl md:text-4xl text-center">
-                Edit {roomData.name} Room
+                {t("edit room")}
             </h1>
             <form
                 className="flex flex-col gap-4 md:gap-6 w-full h-full md:text-2xl"
@@ -143,7 +145,7 @@ export default function EditRoom({
             >
                 <div className="flex w-full">
                     <div className="flex flex-col flex-1 gap-2">
-                        <label htmlFor="name">Name</label>
+                        <label htmlFor="name">{t("roomName")}</label>
                         {errors.name && (
                             <p className="text-red-500 text-sm">
                                 {errors.name}
@@ -152,7 +154,7 @@ export default function EditRoom({
                         <Input
                             id="name"
                             type="text"
-                            placeholder="Name"
+                            placeholder={t("roomName")}
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                         />
@@ -160,7 +162,7 @@ export default function EditRoom({
                 </div>
                 <div className="flex flex-row gap-2 w-full">
                     <div className="flex flex-col flex-1 gap-2">
-                        <label htmlFor="firstName">Type</label>
+                        <label htmlFor="firstName">{t("type")}</label>
                         {errors.medium && (
                             <p className="text-red-500 text-sm">
                                 {errors.medium}
@@ -199,7 +201,7 @@ export default function EditRoom({
                 </div>
                 <div className="flex flex-row gap-2 w-full">
                     <div className="flex flex-col flex-1 gap-2">
-                        <label htmlFor="lastName">Capacity</label>
+                        <label htmlFor="lastName">{t("capacity")}</label>
                         <Input
                             id="capacity"
                             type="text"
@@ -209,7 +211,7 @@ export default function EditRoom({
                         />
                     </div>
                     <div className="flex flex-col flex-1 gap-2">
-                        <label htmlFor="status">Status</label>
+                        <label htmlFor="status">{t("status")}</label>
                         {errors.status && (
                             <p className="text-red-500 text-sm">
                                 {errors.status}
@@ -238,11 +240,13 @@ export default function EditRoom({
                 </div>
                 <div className="flex flex-row w-full">
                     <div className="flex flex-col flex-1">
-                        <label htmlFor="courseDescription">Description</label>
+                        <label htmlFor="courseDescription">
+                            {t("room description")}
+                        </label>
                         <Textarea
                             id="description"
                             name="description"
-                            placeholder="Room Description"
+                            placeholder={t("room description")}
                             onChange={(e) => setDescription(e.target.value)}
                             value={description ? description : ""}
                         />
@@ -250,11 +254,13 @@ export default function EditRoom({
                 </div>
                 <div className="flex flex-row w-full">
                     <div className="flex flex-col flex-1">
-                        <label htmlFor="courseDescription">Internal Note</label>
+                        <label htmlFor="courseDescription">
+                            {t("internal note")}
+                        </label>
                         <Textarea
                             id="note"
                             name="note"
-                            placeholder="Internal Note"
+                            placeholder={t("internal note")}
                             onChange={(e) => setNote(e.target.value)}
                             value={note ? note : ""}
                         />
@@ -265,14 +271,14 @@ export default function EditRoom({
                         type="submit"
                         className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold md:text-xl py-2 md:py-4"
                     >
-                        {loading ? "Updating..." : "Update"}
+                        {loading ? t("updating") : t("update")}
                     </Button>
                     <Button
                         variant="outline"
                         className="w-full h-full rounded-full bg-transparent border-primary-green text-primary-green hover:bg-primary-green hover:text-white font-semibold md:text-xl py-2 md:py-4"
                         onClick={handleCancel}
                     >
-                        Cancel
+                        {t("button.cancel")}
                     </Button>
                 </div>
             </form>
