@@ -11,7 +11,8 @@ export interface Notification {
         | "course_material"
         | "homework"
         | "session_reminder"
-        | "course_acceptance";
+        | "course_acceptance"
+        | "admin_notification";
     userId?: number;
     isRead: boolean;
     metadata?: {
