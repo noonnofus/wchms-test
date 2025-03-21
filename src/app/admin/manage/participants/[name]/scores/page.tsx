@@ -3,6 +3,7 @@ import CloseIcon from "@/components/icons/close-icon";
 import CloseSwipe from "@/components/icons/close-swipe";
 import AddScore from "@/components/scores/add-score";
 import ScoreCard from "@/components/scores/score-card";
+import AddButton from "@/components/shared/add-button";
 import { getUserCourses } from "@/db/queries/courses";
 import {
     getAllScoresByParticipantId,
@@ -76,6 +77,10 @@ export default function ParticipantScores() {
         setShowAddPopup(false);
     };
 
+    const handleAddButtonClick = () => {
+        setShowAddPopup(true);
+    };
+
     const handleDeleteScoreButtonClick = () => {};
 
     const handleEditScoreButtonClick = () => {};
@@ -141,6 +146,7 @@ export default function ParticipantScores() {
                     </div>
                 </div>
             )}
+            <AddButton handleAddButtonClick={handleAddButtonClick} />
         </main>
     );
 }

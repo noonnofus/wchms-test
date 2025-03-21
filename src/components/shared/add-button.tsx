@@ -5,7 +5,7 @@ export default function AddButton({
 }) {
     return (
         <button
-            className="absolute bottom-24 right-6 flex h-[72px] w-[72px] bg-primary-green shadow-lg border-4 border-white rounded-full justify-center items-center"
+            className="absolute bottom-24 md:bottom-28 right-6 flex h-[72px] w-[72px] bg-primary-green shadow-lg border-4 border-white rounded-full justify-center items-center"
             onClick={handleAddButtonClick}
         >
             <svg

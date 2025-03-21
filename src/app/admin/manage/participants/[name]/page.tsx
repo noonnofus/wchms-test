@@ -14,8 +14,6 @@ import EditParticipant from "@/components/manage/edit-participant";
 import DeleteConfirmation from "@/components/shared/delete-confirmation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import AddButton from "@/components/shared/add-button";
-import AddScore from "@/components/scores/add-score";
 import CloseSwipe from "@/components/icons/close-swipe";
 import CloseIcon from "@/components/icons/close-icon";
 import { useSwipeable } from "react-swipeable";
@@ -28,7 +26,6 @@ export default function Profile() {
     const [showEditPopup, setShowEditPopup] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [participantId, setParticipantId] = useState<string | null>(null);
-    const [showAddPopup, setShowAddPopup] = useState(false);
     const [scores, setScores] = useState<Score[] | null>(null);
     const router = useRouter();
 
@@ -147,47 +144,10 @@ export default function Profile() {
     const handleClosePopup = () => {
         setShowDeletePopup(false);
         setShowEditPopup(false);
-        setShowAddPopup(false);
-    };
-
-    const handleAddButtonClick = () => {
-        setShowAddPopup(true);
     };
 
     return (
         <main className="flex flex-col gap-10 w-full items-center h-full">
-            {showAddPopup && participant && (
-                <div className="fixed inset-0 flex items-end md:items-center justify-center z-10 overflow-y-auto">
-                    <div
-                        className="absolute inset-0 bg-black opacity-50"
-                        onClick={() => setShowEditPopup(false)}
-                    ></div>
-                    <div className="z-30 bg-white rounded-t-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
-                        <div className="relative w-full">
-                            <div
-                                className="flex justify-center items-center p-6 md:hidden "
-                                {...swipeHandlers}
-                            >
-                                {/* Swipe indicator */}
-                                <div className="absolute top-6 md:hidden">
-                                    <CloseSwipe />
-                                </div>
-                            </div>
-                            <button
-                                onClick={handleClosePopup}
-                                className="absolute top-3 right-4"
-                            >
-                                <CloseIcon />
-                            </button>
-                        </div>
-                        <AddScore
-                            participantId={participant.id}
-                            courses={courses}
-                            closePopup={handleClosePopup}
-                        />
-                    </div>
-                </div>
-            )}
             {showEditPopup && participant && (
                 <div className="fixed inset-0 flex items-end md:items-center justify-center z-10 overflow-y-auto">
                     <div
@@ -322,7 +282,6 @@ export default function Profile() {
                     </Link>
                 </Button>
             </div>
-            <AddButton handleAddButtonClick={handleAddButtonClick} />
         </main>
     );
 }
