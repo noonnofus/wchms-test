@@ -9,9 +9,11 @@ import { getAllSessionsByCourseId } from "@/db/queries/sessions";
 import { Session } from "@/db/schema/session";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useSwipeable } from "react-swipeable";
 
 export default function SessionsPage() {
+    const { t } = useTranslation();
     const { id } = useParams();
     const courseId = Number(id);
     const [sessions, setSessions] = useState<Session[]>([]);
@@ -88,7 +90,7 @@ export default function SessionsPage() {
     return (
         <div className="w-full h-full flex flex-col gap-4">
             <h1 className="font-semibold text-3xl md:text-4xl text-start">
-                All Sessions
+                {t("all sessions")}
             </h1>
 
             <div className="flex flex-col items-center gap-4">
@@ -105,7 +107,7 @@ export default function SessionsPage() {
                         />
                     ))
                 ) : (
-                    <p className="text-gray-500">No sessions available.</p>
+                    <p className="text-gray-500">{t("no sessions")}</p>
                 )}
             </div>
 
@@ -152,9 +154,9 @@ export default function SessionsPage() {
                     ></div>
                     <div className="z-30 bg-white rounded-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
                         <DeleteConfirmation
-                            title="Are you sure?"
-                            body="This action cannot be undone."
-                            actionLabel="Delete"
+                            title={t("delete session")}
+                            body={t("delete session confirmation")}
+                            actionLabel={t("delete")}
                             handleSubmit={handleDeleteSession}
                             closePopup={handleClosePopup}
                         />

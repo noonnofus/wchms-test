@@ -12,6 +12,7 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover";
+import { useTranslation } from "react-i18next";
 
 export function DatePicker({
     selected,
@@ -20,6 +21,7 @@ export function DatePicker({
     selected: Date | null;
     onChange: (date: Date | undefined) => void;
 }) {
+    const { t } = useTranslation();
     return (
         <Popover>
             <PopoverTrigger asChild>
@@ -34,7 +36,7 @@ export function DatePicker({
                     {selected ? (
                         format(selected, "PPP")
                     ) : (
-                        <span>Pick a date</span>
+                        <span>{t("placeholder.pickDate")}</span>
                     )}
                 </Button>
             </PopoverTrigger>

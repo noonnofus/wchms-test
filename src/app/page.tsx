@@ -14,8 +14,10 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export default function ParticipantLogin() {
+    const { t } = useTranslation();
     const router = useRouter();
     const [loading, setLoading] = useState(true);
     const [participants, setParticipants] = useState<
@@ -163,10 +165,12 @@ export default function ParticipantLogin() {
     if (loading) return null;
     return (
         <div className="flex flex-col gap-12 w-full h-full items-center">
-            <h1 className="font-semibold text-4xl">Participants List</h1>
+            <h1 className="font-semibold text-4xl">{t("participant list")}</h1>
             <div className="flex flex-col w-full items-center gap-10">
                 <div className="flex flex-col w-full items-center gap-4">
-                    <h2 className="font-medium text-2xl">Select a Course</h2>
+                    <h2 className="font-medium text-2xl">
+                        {t("select a course")}
+                    </h2>
                     <Select onValueChange={handleCourseSelect}>
                         <SelectTrigger>
                             <SelectValue placeholder="All Courses" />
@@ -188,7 +192,7 @@ export default function ParticipantLogin() {
                 </div>
                 <div className="flex flex-col w-full items-center gap-4">
                     <h2 className="font-medium text-2xl text-center">
-                        Please Select Your First Name
+                        {t("landing instructions")}
                     </h2>
                     <div className="w-full grid grid-cols-2 grid-rows-auto gap-4 h-full">
                         {participants.map((participant, index) => (
@@ -205,11 +209,9 @@ export default function ParticipantLogin() {
                     </div>
                 </div>
                 <div className="w-full flex flex-col gap-2 items-center">
-                    <p className="text-xl text-center">
-                        Don&apos;t have an account?
-                    </p>
+                    <p className="text-xl text-center">{t("no account")}</p>
                     <Button className="capitalize h-full bg-primary-green hover:bg-[#045B47] font-semibold text-xl py-4">
-                        <Link href="/signup">Click here to sign up</Link>
+                        <Link href="/signup">{t("button.signup")}</Link>
                     </Button>
                 </div>
             </div>
