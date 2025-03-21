@@ -1,6 +1,8 @@
 import { Input } from "@/components/ui/input";
+import { use } from "i18next";
 import Image from "next/image";
 import React, { useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 interface ImageUploadProps {
     fileUrl: string | null;
@@ -13,6 +15,7 @@ export default function ImageUpload({
     onImageSelect,
     error: externalError,
 }: ImageUploadProps) {
+    const { t } = useTranslation();
     const [dragActive, setDragActive] = useState(false);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const [internalError, setInternalError] = useState<string>("");
@@ -127,8 +130,8 @@ export default function ImageUpload({
                         </svg>
                         <p className="mt-2 text-sm text-gray-600">
                             {dragActive
-                                ? "Drop image here"
-                                : "Click or drag to add a photo"}
+                                ? t("drop image here")
+                                : t("click or drag to add a photo")}
                         </p>
                     </>
                 )}

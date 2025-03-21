@@ -6,12 +6,14 @@ import Link from "next/link";
 import { Participant } from "@/db/schema/participants";
 import DeleteConfirmation from "../shared/delete-confirmation";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export default function ParticipantList(props: {
     participants: Participant[];
     courseId?: number;
     removeParticipantLocally?: (userId: number) => void;
 }) {
+    const { t } = useTranslation();
     const { id } = useParams();
     const [showDeletePopup, setShowDeletePopup] = useState(false);
     const [participantToRemove, setParticipantToRemove] =
@@ -57,20 +59,20 @@ export default function ParticipantList(props: {
                 <CardHeader className="w-full py-4 md:py-6">
                     <div className="flex justify-between items-center">
                         <CardTitle className="text-left text-2xl md:text-[32px]">
-                            Participant List
+                            {t("participant list")}
                         </CardTitle>
                         {props.courseId ? (
                             <Link
                                 href={`/admin/courses/${props.courseId}/participants`}
                             >
                                 <p className="text-primary-green text-sm md:text-xl font-semibold">
-                                    View All
+                                    {t("view all")}
                                 </p>
                             </Link>
                         ) : (
                             <Link href={`/courses/${id}/participants`}>
                                 <p className="text-primary-green text-sm md:text-xl font-semibold">
-                                    View All
+                                    {t("view all")}
                                 </p>
                             </Link>
                         )}
@@ -99,7 +101,9 @@ export default function ParticipantList(props: {
                                               }
                                               className=" bg-primary-green hover:bg-[#045B47] font-semibold text-sm md:text-base"
                                           >
-                                              <Link href="#">View Profile</Link>
+                                              <Link href="#">
+                                                  {t("view profile")}
+                                              </Link>
                                           </Button>
 
                                           {props.courseId ? (
@@ -116,7 +120,7 @@ export default function ParticipantList(props: {
                                                   }
                                                   className="mt-2 bg-destructive-red text-destructive-text hover:bg-destructive-hover font-semibold text-xs md:text-base"
                                               >
-                                                  Remove From Course
+                                                  {t("remove from course")}
                                               </Button>
                                           ) : (
                                               ""
@@ -124,7 +128,7 @@ export default function ParticipantList(props: {
                                       </div>
                                   );
                               })
-                            : "No participants registered"}
+                            : t("no participants registered")}
                     </div>
                 </CardContent>
             </Card>
@@ -136,9 +140,12 @@ export default function ParticipantList(props: {
                     ></div>
                     <div className="z-30 bg-white rounded-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
                         <DeleteConfirmation
-                            title="Before you delete!"
-                            body={`Are you sure you want to delete ${participantToRemove.firstName}? You cannot undo this action.`}
-                            actionLabel="DELETE"
+                            title={t("before you remove")}
+                            body={t("remove participant confirmation", {
+                                firstName: participantToRemove.firstName,
+                                lastName: participantToRemove.lastName,
+                            })}
+                            actionLabel={t("remove")}
                             handleSubmit={handleRemoveParticipant}
                             closePopup={handleClosePopup}
                         />

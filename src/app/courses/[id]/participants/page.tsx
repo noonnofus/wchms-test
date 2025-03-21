@@ -15,8 +15,10 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { CourseFull } from "@/db/schema/course";
 import { getCourseById } from "@/db/queries/courses";
+import { useTranslation } from "react-i18next";
 
 export default function ClassParticipants() {
+    const { t } = useTranslation();
     const { id } = useParams();
     const [isLoading, setIsLoading] = useState(true);
     const [selectedCourse, setSelectedCourse] = useState<
@@ -75,12 +77,12 @@ export default function ClassParticipants() {
 
     return isLoading ? (
         <div className="flex justify-center items-center py-10">
-            <p>Loading Participants...</p>
+            <p>{t("loading.participants")}</p>
         </div>
     ) : (
         <div className="flex flex-col gap-10 w-full items-center">
             <h1 className="font-semibold text-4xl text-center">
-                Participant List
+                {t("participant list")}
             </h1>
             <Card className="flex flex-col h-full">
                 <CardHeader className="w-full">
@@ -90,7 +92,7 @@ export default function ClassParticipants() {
                     <div className="flex gap-2 md:gap-4 items-center">
                         <Input
                             type="text"
-                            placeholder="Search"
+                            placeholder={t("search")}
                             className="mt-2 md:mt-4 py-4 md:py-6 w-full"
                             onChange={handleSearchChange}
                         ></Input>
@@ -101,7 +103,7 @@ export default function ClassParticipants() {
                         <TableHeader>
                             <TableRow className="flex text-base md:text-xl font-semibold">
                                 <TableHead className="flex-1 flex gap-2 items-center text-left text-black">
-                                    Participant
+                                    {t("participant", { count: 2 })}
                                     <button
                                         onClick={handleSortChange}
                                         className="flex items-center"

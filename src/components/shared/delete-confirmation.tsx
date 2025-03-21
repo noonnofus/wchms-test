@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { useTranslation } from "react-i18next";
 
 export default function DeleteConfirmation({
     title,
@@ -17,7 +18,7 @@ export default function DeleteConfirmation({
         e.preventDefault();
         closePopup();
     };
-
+    const { t } = useTranslation();
     return (
         <div className="flex flex-col w-full gap-8 py-8 px-6 rounded-lg bg-white items-center justify-center">
             <h1 className="font-semibold text-2xl md:text-3xl text-center">
@@ -42,7 +43,7 @@ export default function DeleteConfirmation({
                         className="w-full h-full rounded-full bg-transparent border-primary-green text-primary-green hover:bg-primary-green hover:text-white font-semibold text-base md:text-xl py-2 md:py-4"
                         onClick={handleCancel}
                     >
-                        Cancel
+                        {t("button.cancel")}
                     </Button>
                 </div>
             </form>

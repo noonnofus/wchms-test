@@ -11,6 +11,7 @@ import { getParticipantById } from "@/db/queries/participants";
 import { Check } from "lucide-react";
 import CloseIcon from "../icons/close-icon";
 import DeleteConfirmation from "../shared/delete-confirmation";
+import { useTranslation } from "react-i18next";
 
 export default function RequestOverviewCard({
     requests,
@@ -19,6 +20,7 @@ export default function RequestOverviewCard({
     requests: CourseJoinRequest[];
     approveParticipantJoinLocally: (participant: Participant) => void;
 }) {
+    const { t } = useTranslation();
     const { id } = useParams();
     const [courseJoinRequests, setCourseJoinRequests] =
         useState<CourseJoinRequest[]>();
@@ -150,11 +152,11 @@ export default function RequestOverviewCard({
                 <CardHeader className="w-full py-4 md:py-6">
                     <div className="flex justify-between items-center">
                         <CardTitle className="text-left text-2xl md:text-[32px]">
-                            Join Requests
+                            {t("join requests")}
                         </CardTitle>
                         <Link href={`/admin/courses/${id}/requests`}>
                             <p className="text-primary-green text-sm md:text-xl font-semibold">
-                                View All
+                                {t("view all")}
                             </p>
                         </Link>
                     </div>
@@ -212,9 +214,21 @@ export default function RequestOverviewCard({
                                                 ></div>
                                                 <div className="z-30 bg-white rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
                                                     <DeleteConfirmation
-                                                        title="Reject Course Join Request"
-                                                        body={`Are you sure you want to reject ${participant.firstName} ${participant.lastName}'s request? This action cannot be undone.`}
-                                                        actionLabel="REJECT"
+                                                        title={t(
+                                                            "reject course join request"
+                                                        )}
+                                                        body={t(
+                                                            "reject course join request confirmation",
+                                                            {
+                                                                firstName:
+                                                                    participant.firstName,
+                                                                lastName:
+                                                                    participant.lastName,
+                                                            }
+                                                        )}
+                                                        actionLabel={t(
+                                                            "button.reject"
+                                                        )}
                                                         handleSubmit={
                                                             handleDeleteJoinRequest
                                                         }
@@ -229,7 +243,7 @@ export default function RequestOverviewCard({
                                 );
                             })
                         ) : (
-                            <p>No course join requests</p>
+                            <p>{t("no course join requests")}</p>
                         )}
                     </div>
                 </CardContent>

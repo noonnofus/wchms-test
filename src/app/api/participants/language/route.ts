@@ -5,7 +5,7 @@ export async function POST(req: Request) {
         const body = await req.json();
         const cookieStore = await cookies();
         cookieStore.set({
-            name: "language",
+            name: "i18next",
             value: body.language,
             httpOnly: true,
             maxAge: 60 * 60 * 24 * 30,

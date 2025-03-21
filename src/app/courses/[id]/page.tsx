@@ -11,8 +11,10 @@ import ParticipantList from "@/components/courses/participant-list";
 import SessionCard from "@/components/sessions/session-card";
 import { getFutureSessions } from "@/db/queries/sessions";
 import { Session } from "@/db/schema/session";
+import { useTranslation } from "react-i18next";
 
 export default function CoursePage() {
+    const { t } = useTranslation();
     const { id } = useParams();
     const { data: session } = useSession();
     const participantId = session?.user.id;
@@ -58,25 +60,17 @@ export default function CoursePage() {
         fetchSessions();
     }, [id]);
 
-    if (!selectedCourse) {
-        return <div>No course found</div>;
-    }
-
     if (isLoading) {
-        return <div>Loading...</div>;
+        return <div>{t("loading")}</div>;
     }
 
     if (!selectedCourse) {
-        return <div>No course found</div>;
+        return <div>{t("no course found")}</div>;
     }
 
     if (!participantId) return;
 
     const isParticipant = session.user.role === "Participant";
-
-    if (!isParticipant) {
-        return <div>Please register to view courses</div>;
-    }
 
     const isEnrolled = selectedCourse.participants?.some(
         (participant) => participant.id === parseInt(participantId)
@@ -85,13 +79,13 @@ export default function CoursePage() {
     return (
         <div>
             <TabsMenu
-                leftLabel="Course Home"
-                rightLabel="Course Materials"
+                leftLabel={t("course home")}
+                rightLabel={t("course materials")}
                 leftChildren={
                     <>
                         {isLoading ? (
                             <div className="flex justify-center items-center py-10">
-                                <p>Loading Course Details...</p>
+                                <p>{t("loading.courseDetails")}</p>
                             </div>
                         ) : (
                             <div className="flex flex-col gap-4">
@@ -109,7 +103,7 @@ export default function CoursePage() {
                                 )}
                                 <div className="flex flex-col items-start gap-4">
                                     <h2 className="font-semibold text-primary-green tracking-tight text-left text-2xl md:text-[32px]">
-                                        Next Sessions
+                                        {t("next sessions")}
                                     </h2>
                                     {sessions ? (
                                         sessions.map((session) => (
@@ -124,7 +118,7 @@ export default function CoursePage() {
                                         ))
                                     ) : (
                                         <p className="text-gray-500">
-                                            No sessions available.
+                                            {t("no sessions")}
                                         </p>
                                     )}
                                 </div>
@@ -137,7 +131,7 @@ export default function CoursePage() {
                         {isParticipant && isEnrolled ? (
                             isLoading ? (
                                 <div className="flex justify-center items-center py-10">
-                                    <p>Loading Course Materials...</p>
+                                    <p>{t("loading.courseMaterials")}</p>
                                 </div>
                             ) : (
                                 <div className="flex flex-col gap-4">
@@ -153,7 +147,7 @@ export default function CoursePage() {
                                     ) : (
                                         <div className="flex flex-col gap-4 text-center py-10">
                                             <p className="text-center text-xl md:text-2xl font-semibold">
-                                                No course materials available.
+                                                {t("no materials available")}
                                             </p>
                                             <p className="text-xl">
                                                 Try AI self-study for more
@@ -164,9 +158,7 @@ export default function CoursePage() {
                                 </div>
                             )
                         ) : (
-                            <div>
-                                You must be enrolled to view course materials
-                            </div>
+                            <div>{t("enroll to view course materials")}</div>
                         )}
                     </>
                 }

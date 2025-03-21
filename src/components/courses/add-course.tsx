@@ -16,6 +16,7 @@ import { DatePicker } from "../ui/date-picker";
 import ImageUpload from "../ui/image-upload";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
+import { useTranslation } from "react-i18next";
 
 const defaultRoomName = "Online via Zoom"; //name of room for default selection
 export const [languages, types, statuses] = [
@@ -155,28 +156,35 @@ export default function AddCourse(props: props) {
         } = {};
 
         if (!formData.courseName) {
-            errorMessages.courseName = "Course name is required";
+            errorMessages.courseName = t("error.missingCourseName");
             isValid = false;
         } else if (formData.courseName.length > 255) {
-            errorMessages.courseName = `Course name cannot exceed 255 characters. Current count: ${formData.courseName.length}/255`;
+            errorMessages.courseName = t("error.invalidCourseNameLength", {
+                count: formData.courseName.length,
+            });
             isValid = false;
         }
 
         if (!formData.courseDescription) {
-            errorMessages.courseDescription = "Course description is required";
+            errorMessages.courseDescription = t(
+                "error.missingCourseDescription"
+            );
             isValid = false;
         } else if (formData.courseDescription.length > 255) {
-            errorMessages.courseDescription = `Course Description cannot exceed 255 characters. Current count: ${formData.courseDescription.length}/255`;
+            errorMessages.courseDescription = t(
+                "error.invalidCourseDescriptionLength",
+                { count: formData.courseName.length }
+            );
             isValid = false;
         }
 
         if (!formData.courseStartDate) {
-            errorMessages.courseStartDate = "Start date is required";
+            errorMessages.courseStartDate = t("error.missingStartDate");
             isValid = false;
         }
 
         if (!formData.courseEndDate) {
-            errorMessages.courseEndDate = "End date is required";
+            errorMessages.courseEndDate = t("error.missingEndDate");
             isValid = false;
         } else if (formData.courseStartDate && formData.courseEndDate) {
             // Check if end date is after start date
@@ -301,10 +309,12 @@ export default function AddCourse(props: props) {
         }
     };
 
+    const { t } = useTranslation();
+
     return (
         <div className="flex flex-col gap-12 w-full h-full py-8 px-6 rounded-lg bg-white items-center justify-center overf">
             <h1 className="font-semibold text-3xl md:text-4xl text-center">
-                {props.courseId ? "Edit Course" : "Add New Course"}
+                {props.courseId ? t("edit course") : t("create new course")}
             </h1>
             <form
                 className="flex flex-col gap-4 md:gap-6 w-full h-full md:text-2xl"
@@ -312,7 +322,7 @@ export default function AddCourse(props: props) {
             >
                 <div className="flex flex-row gap-2 w-full">
                     <div className="flex flex-col flex-1 gap-2">
-                        <label htmlFor="courseName">Course Name</label>
+                        <label htmlFor="courseName">{t("course name")}</label>
                         {errors.courseName && (
                             <p className="text-red-500 text-sm">
                                 {errors.courseName}
@@ -322,14 +332,14 @@ export default function AddCourse(props: props) {
                             id="courseName"
                             name="courseName"
                             type="text"
-                            placeholder="Course Name"
+                            placeholder={t("course name")}
                             value={formData.courseName}
                             onChange={handleChange}
                         />
                     </div>
                 </div>
                 <div className="flex flex-col flex-1 gap-2">
-                    <label htmlFor="courseImage">Course Image</label>
+                    <label htmlFor="courseImage">{t("course image")}</label>
                     {errors.courseImage && (
                         <p className="text-red-500 text-sm">
                             {errors.courseImage}
@@ -345,7 +355,7 @@ export default function AddCourse(props: props) {
                 </div>
                 <div className="flex flex-col flex-1 gap-2">
                     <label htmlFor="courseDescription">
-                        Course Description
+                        {t("course description")}
                     </label>
                     {errors.courseDescription && (
                         <p className="text-red-500 text-sm">
@@ -355,7 +365,7 @@ export default function AddCourse(props: props) {
                     <Textarea
                         id="courseDescription"
                         name="courseDescription"
-                        placeholder="Course Description"
+                        placeholder={t("course description")}
                         onChange={handleChange}
                         value={formData.courseDescription}
                     />
@@ -363,7 +373,7 @@ export default function AddCourse(props: props) {
                 <div className="w-full flex flex-col md:flex-row gap-2">
                     <div className="flex flex-col flex-1 gap-2">
                         <label htmlFor="courseStartDate">
-                            Course Start Date
+                            {t("course start date")}
                         </label>
                         {errors.courseStartDate && (
                             <p className="text-red-500 text-sm">
@@ -378,7 +388,9 @@ export default function AddCourse(props: props) {
                         />
                     </div>
                     <div className="flex flex-col flex-1 gap-2">
-                        <label htmlFor="courseEndDate">Course End Date</label>
+                        <label htmlFor="courseEndDate">
+                            {t("course end date")}
+                        </label>
                         {errors.courseEndDate && (
                             <p className="text-red-500 text-sm">
                                 {errors.courseEndDate}
@@ -394,7 +406,7 @@ export default function AddCourse(props: props) {
                 </div>
                 <div className="w-full flex flex-col md:flex-row gap-2">
                     <div className="flex flex-col flex-1 gap-2">
-                        <label htmlFor="courseRoom">Course Room</label>
+                        <label htmlFor="courseRoom">{t("course room")}</label>
                         {formData.courseRoom && (
                             <Select
                                 value={formData.courseRoom ?? "-1"}
@@ -407,7 +419,7 @@ export default function AddCourse(props: props) {
                                     <SelectValue
                                         placeholder={
                                             isLoading
-                                                ? "Loading rooms..."
+                                                ? t("loading.rooms")
                                                 : formData.courseRoom
                                                   ? rooms.find(
                                                         (room) =>
@@ -421,7 +433,7 @@ export default function AddCourse(props: props) {
                                 <SelectContent>
                                     {isLoading ? (
                                         <SelectItem value={"-1"} disabled>
-                                            Loading...
+                                            {t("loading")}
                                         </SelectItem>
                                     ) : rooms.length > 0 ? (
                                         rooms.map((room) => (
@@ -442,7 +454,9 @@ export default function AddCourse(props: props) {
                         )}
                     </div>
                     <div className="flex flex-col flex-1 gap-2">
-                        <label htmlFor="courseLanguage">Course Language</label>
+                        <label htmlFor="courseLanguage">
+                            {t("course language")}
+                        </label>
                         <Select
                             value={formData.courseLanguage}
                             onValueChange={(value) =>
@@ -453,7 +467,7 @@ export default function AddCourse(props: props) {
                                 <SelectValue
                                     placeholder={
                                         formData.courseLanguage ||
-                                        "Select Language"
+                                        t("placeholder.selectLanguage")
                                     }
                                 />
                             </SelectTrigger>
@@ -469,7 +483,7 @@ export default function AddCourse(props: props) {
                 </div>
                 <div className="w-full flex flex-col md:flex-row gap-2">
                     <div className="flex flex-col flex-1 gap-2">
-                        <label htmlFor="courseType">Course Type</label>
+                        <label htmlFor="courseType">{t("course type")}</label>
                         <Select
                             value={formData.courseType}
                             onValueChange={(value) =>
@@ -479,21 +493,24 @@ export default function AddCourse(props: props) {
                             <SelectTrigger>
                                 <SelectValue
                                     placeholder={
-                                        formData.courseType || "Select Type"
+                                        formData.courseType ||
+                                        t("placeholder.selectType")
                                     }
                                 />
                             </SelectTrigger>
                             <SelectContent>
                                 {types.map((type, index) => (
                                     <SelectItem key={index} value={type}>
-                                        {type}
+                                        {t(`${type.toLowerCase()}`)}
                                     </SelectItem>
                                 ))}
                             </SelectContent>
                         </Select>
                     </div>
                     <div className="flex flex-col flex-1 gap-2">
-                        <label htmlFor="courseStatus">Course Status</label>
+                        <label htmlFor="courseStatus">
+                            {t("course status")}
+                        </label>
                         <Select
                             value={formData.courseStatus}
                             onValueChange={(value) =>
@@ -503,14 +520,15 @@ export default function AddCourse(props: props) {
                             <SelectTrigger>
                                 <SelectValue
                                     placeholder={
-                                        formData.courseStatus || "Select Status"
+                                        formData.courseStatus ||
+                                        t("placeholder.selectStatus")
                                     }
                                 />
                             </SelectTrigger>
                             <SelectContent>
                                 {statuses.map((status, index) => (
                                     <SelectItem key={index} value={status}>
-                                        {status}
+                                        {t(`${status.toLowerCase()}`)}
                                     </SelectItem>
                                 ))}
                             </SelectContent>
@@ -519,7 +537,9 @@ export default function AddCourse(props: props) {
                 </div>
                 {!props.courseId && (
                     <div className="flex flex-col flex-1 gap-2">
-                        <label htmlFor="courseParticipants">Participants</label>
+                        <label htmlFor="courseParticipants">
+                            {t("participant", { count: 2 })}
+                        </label>
                         {errors.courseParticipants && (
                             <p className="text-red-500 text-sm">
                                 {errors.courseParticipants}
@@ -530,7 +550,7 @@ export default function AddCourse(props: props) {
                             name="courseParticipants"
                             value={formData.courseParticipants}
                             onChange={handleChange}
-                            placeholder="Enter participants' full names, ex. Kevin So, Annabelle Chen"
+                            placeholder={t("placeholder.participantInput")}
                         />
                     </div>
                 )}
@@ -540,14 +560,14 @@ export default function AddCourse(props: props) {
                             onClick={handleUpdate}
                             className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold md:text-xl py-2 md:py-4"
                         >
-                            Update
+                            {t("update")}
                         </Button>
                     ) : (
                         <Button
                             onClick={() => handleSubmit}
                             className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold md:text-xl py-2 md:py-4"
                         >
-                            Add
+                            {t("add")}
                         </Button>
                     )}
                     <Button
@@ -555,7 +575,7 @@ export default function AddCourse(props: props) {
                         variant="outline"
                         className="w-full h-full rounded-full bg-transparent border-primary-green text-primary-green hover:bg-primary-green hover:text-white font-semibold md:text-xl py-2 md:py-4"
                     >
-                        Cancel
+                        {t("button.cancel")}
                     </Button>
                 </div>
             </form>
