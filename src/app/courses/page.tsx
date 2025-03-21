@@ -104,7 +104,7 @@ export default function Courses() {
                         ) : courses.unenrolled.length === 0 ? (
                             <div className="flex flex-col justify-center items-center py-10">
                                 <p className="text-center text-xl font-semibold mb-4">
-                                    t{"no course available"}
+                                    {t("no course available")}
                                 </p>
                                 <p className="text-center text-xl mb-4">
                                     {t("refresh or check back")}

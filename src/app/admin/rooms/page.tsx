@@ -218,7 +218,7 @@ export default function RoomPage() {
             <div className="flex flex-col h-full gap-4 pb-32">
                 <div className="w-full">
                     <h2 className="text-xl md:text-3xl font-semibold">
-                        Room List
+                        {t("room list")}
                     </h2>
                     <Input
                         type="text"
