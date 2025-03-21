@@ -1,7 +1,7 @@
 import { authConfig } from "@/auth";
 import { Notification } from "@/components/notification-system";
 import db from "@/db";
-import { notifications } from "@/db/schema/notifications";
+import { notifications, NotificationType } from "@/db/schema/notifications";
 import { broadcastNotification } from "@/lib/websockets";
 import { getServerSession } from "next-auth";
 
@@ -14,7 +14,8 @@ export async function POST(req: Request) {
             });
         }
 
-        const { userId, courseTitle, sessionId } = await req.json();
+        const { userId, courseTitle, sessionId, sessionDate } =
+            await req.json();
 
         if (!userId || !courseTitle) {
             return new Response(
@@ -26,15 +27,24 @@ export async function POST(req: Request) {
         const title = "Class Starting Soon";
         const message = `Your session will start in 10 minutes for ${courseTitle}.`;
 
+        const courseId = sessionId
+            ? Number(sessionId.toString().split("-")[0])
+            : undefined;
+
+        const metadata = {
+            courseId: courseId,
+            courseName: courseTitle,
+            sessionId: sessionId || undefined,
+            sessionDate: sessionDate || undefined,
+        };
+
         const notificationId = await db
             .insert(notifications)
             .values({
                 type: "session_reminder",
                 userId,
                 createdAt: new Date(),
-                metadata: JSON.stringify({
-                    sessionId: sessionId || null,
-                }),
+                metadata: JSON.stringify(metadata),
                 isRead: false,
             })
             .$returningId()
@@ -42,12 +52,10 @@ export async function POST(req: Request) {
 
         const notification: Notification = {
             id: notificationId.toString(),
-            type: "session_reminder",
+            type: "session_reminder" as NotificationType,
             userId,
             isRead: false,
-            metadata: {
-                sessionId: sessionId || undefined,
-            },
+            metadata,
         };
 
         broadcastNotification(notification);
