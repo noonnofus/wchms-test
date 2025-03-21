@@ -25,6 +25,7 @@ export default function Profile() {
     const [isLoading, setIsLoading] = useState(true);
     const [participantId, setParticipantId] = useState<string | null>(null);
     const [showAddPopup, setShowAddPopup] = useState(false);
+    const [scoreId, setScoreId] = useState<number | null>(null);
     const router = useRouter();
 
     const fetchData = async (id: string) => {
@@ -169,7 +170,11 @@ export default function Profile() {
                                 <CloseIcon />
                             </button>
                         </div>
-                        <AddScore />
+                        <AddScore
+                            participantId={participant.id}
+                            courses={courses}
+                            closePopup={handleClosePopup}
+                        />
                     </div>
                 </div>
             )}
