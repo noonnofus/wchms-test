@@ -23,6 +23,7 @@ import CloseSwipe from "@/components/icons/close-swipe";
 import EditIcon from "@/components/icons/edit-icon";
 import AddButton from "@/components/shared/add-button";
 import { useTranslation } from "react-i18next";
+import Link from "next/link";
 
 export type UserNoPass = Omit<User, "password">;
 export default function ManageStaff() {
@@ -322,7 +323,17 @@ export default function ManageStaff() {
                                           <div className="hidden md:flex md:w-10 md:h-10 rounded-full bg-gray-200 items-center justify-center">
                                               {`${admin.firstName[0]}${admin.lastName[0]}`}
                                           </div>
-                                          {`${admin.firstName} ${admin.lastName}`}
+                                          <Link
+                                              href={`/admin/manage/staff/${admin.firstName}-${admin.lastName}`}
+                                              onClick={() =>
+                                                  sessionStorage.setItem(
+                                                      "staffId",
+                                                      admin.id.toString()
+                                                  )
+                                              }
+                                          >
+                                              {`${admin.firstName} ${admin.lastName}`}
+                                          </Link>
                                       </TableCell>
                                       <TableCell className="w-[150px] min-w-[120px] text-left text-base md:text-lg">
                                           {t(admin.role.toLowerCase())}

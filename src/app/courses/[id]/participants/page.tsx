@@ -16,6 +16,7 @@ import { useEffect, useState } from "react";
 import { CourseFull } from "@/db/schema/course";
 import { getCourseById } from "@/db/queries/courses";
 import { useTranslation } from "react-i18next";
+import Link from "next/link";
 
 export default function ClassParticipants() {
     const { t } = useTranslation();
@@ -129,7 +130,17 @@ export default function ClassParticipants() {
                                                 <div className="hidden md:flex md:flex-col md:w-10 md:h-10 rounded-full bg-gray-200 items-center justify-center">
                                                     {`${participant.firstName[0]}${participant.lastName[0]}`}
                                                 </div>
-                                                {`${participant.firstName} ${participant.lastName}`}
+                                                <Link
+                                                    href={`/profile/${participant.firstName}-${participant.lastName}`}
+                                                    onClick={() =>
+                                                        sessionStorage.setItem(
+                                                            "participantId",
+                                                            participant.id.toString()
+                                                        )
+                                                    }
+                                                >
+                                                    {`${participant.firstName} ${participant.lastName}`}
+                                                </Link>
                                             </div>
                                         </TableCell>
                                     </TableRow>
