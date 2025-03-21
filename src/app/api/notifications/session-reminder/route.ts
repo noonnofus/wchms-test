@@ -1,7 +1,7 @@
 import { authConfig } from "@/auth";
 import { Notification } from "@/components/notification-system";
 import db from "@/db";
-import { notifications, NotificationType } from "@/db/schema/notifications";
+import { notifications } from "@/db/schema/notifications";
 import { broadcastNotification } from "@/lib/websockets";
 import { getServerSession } from "next-auth";
 
@@ -52,7 +52,7 @@ export async function POST(req: Request) {
 
         const notification: Notification = {
             id: notificationId.toString(),
-            type: "session_reminder" as NotificationType,
+            type: "session_reminder",
             userId,
             isRead: false,
             metadata,

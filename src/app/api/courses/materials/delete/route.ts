@@ -1,11 +1,12 @@
-import { courseMaterials } from "@/db/schema/courseMaterials";
-import { eq } from "drizzle-orm";
-import db from "@/db";
-import { getServerSession } from "next-auth";
 import { authConfig } from "@/auth";
-import { validateAdminOrStaff } from "@/lib/validation";
+import db from "@/db";
+import { courseMaterials } from "@/db/schema/courseMaterials";
 import { uploadMedia } from "@/db/schema/mediaUpload";
+import { notifications } from "@/db/schema/notifications";
 import { deleteFromS3 } from "@/lib/s3";
+import { validateAdminOrStaff } from "@/lib/validation";
+import { and, eq, sql } from "drizzle-orm";
+import { getServerSession } from "next-auth";
 
 export async function DELETE(req: Request) {
     try {
@@ -50,6 +51,16 @@ export async function DELETE(req: Request) {
         if (courseMaterial.upload_media?.fileKey) {
             await deleteFromS3(courseMaterial.upload_media.fileKey);
         }
+
+        await db
+            .delete(notifications)
+            .where(
+                and(
+                    eq(notifications.type, "course_material"),
+                    sql`JSON_EXTRACT(${notifications.metadata}, '$.materialId') = ${body.courseMaterialId}`
+                )
+            );
+
         // Delete the course material
         await db
             .delete(courseMaterials)

@@ -1,12 +1,13 @@
-import { Courses } from "@/db/schema/course";
-import { eq } from "drizzle-orm";
-import db from "@/db";
-import { getServerSession } from "next-auth";
 import { authConfig } from "@/auth";
-import { validateAdminOrStaff } from "@/lib/validation";
-import { deleteFromS3 } from "@/lib/s3";
-import { uploadMedia } from "@/db/schema/mediaUpload";
+import db from "@/db";
+import { Courses } from "@/db/schema/course";
 import { courseMaterials } from "@/db/schema/courseMaterials";
+import { uploadMedia } from "@/db/schema/mediaUpload";
+import { notifications } from "@/db/schema/notifications";
+import { deleteFromS3 } from "@/lib/s3";
+import { validateAdminOrStaff } from "@/lib/validation";
+import { and, eq, inArray, sql } from "drizzle-orm";
+import { getServerSession } from "next-auth";
 
 export async function DELETE(req: Request) {
     try {
@@ -68,6 +69,18 @@ export async function DELETE(req: Request) {
                 })
             );
         }
+        await db
+            .delete(notifications)
+            .where(
+                and(
+                    inArray(notifications.type, [
+                        "course_material",
+                        "course_acceptance",
+                        "course_invite",
+                    ]),
+                    sql`JSON_EXTRACT(${notifications.metadata}, '$.courseId') = ${body.courseId}`
+                )
+            );
         await db.delete(Courses).where(eq(Courses.id, body.courseId));
 
         return new Response(

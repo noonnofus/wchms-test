@@ -17,12 +17,13 @@ export interface NotificationDisplay {
     message: string;
     icon: string;
 }
-// If you need to edit any notification content 
+// If you need to edit any notification content
 export function getNotificationContent(
     type: NotificationType,
     metadata: NotificationMetadata = {}
 ): NotificationDisplay {
     switch (type) {
+        // metadata isnt being used due to translation
         case "course_material":
             return {
                 title: `New ${metadata.materialType || "Material"} Available`,
@@ -57,6 +58,14 @@ export function getNotificationContent(
                     ? `Your enrollment in ${metadata.courseName} has been approved.`
                     : `Your course enrollment has been approved.`,
                 icon: "🎉",
+            };
+        case "course_invite":
+            return {
+                title: `New Course Invitation`,
+                message: metadata.courseName
+                    ? `You've been invited to join ${metadata.courseName}.`
+                    : `You've been invited to join a new course.`,
+                icon: "📩",
             };
 
         default:

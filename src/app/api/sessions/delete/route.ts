@@ -1,9 +1,10 @@
-import db from "@/db";
-import { eq } from "drizzle-orm";
-import { Sessions } from "@/db/schema/session";
-import { getServerSession } from "next-auth";
 import { authConfig } from "@/auth";
+import db from "@/db";
+import { notifications } from "@/db/schema/notifications";
+import { Sessions } from "@/db/schema/session";
 import { validateAdminOrStaff } from "@/lib/validation";
+import { eq, like } from "drizzle-orm";
+import { getServerSession } from "next-auth";
 
 export async function DELETE(req: Request) {
     try {
@@ -39,6 +40,11 @@ export async function DELETE(req: Request) {
                 { status: 404 }
             );
         }
+        await db
+            .delete(notifications)
+            .where(
+                like(notifications.metadata, `%"sessionId":${body.sessionId}%`)
+            );
 
         await db.delete(Sessions).where(eq(Sessions.id, body.sessionId));
 

@@ -13,7 +13,9 @@ export type NotificationType =
     | "course_material"
     | "homework"
     | "session_reminder"
-    | "course_acceptance";
+    | "course_acceptance"
+    | "course_invite";
+
 
 export const notifications = mysqlTable("notifications", {
     id: varchar("id", { length: 36 })
