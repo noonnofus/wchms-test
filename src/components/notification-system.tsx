@@ -12,7 +12,7 @@ export interface Notification {
         | "homework"
         | "session_reminder"
         | "course_acceptance";
-    userId: number;
+    userId?: number;
     isRead: boolean;
     metadata?: {
         courseId?: number;

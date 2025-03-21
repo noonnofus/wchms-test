@@ -67,6 +67,14 @@ export function getNotificationContent(
                     : `You've been invited to join a new course.`,
                 icon: "📩",
             };
+        case "admin_notification":
+            return {
+                title: `Join Request for Course`,
+                message: metadata.courseName
+                    ? `Someone has requested to join ${metadata.courseName}.`
+                    : `A user has requested to join a course.`,
+                icon: "🔔",
+            };
 
         default:
             return {

@@ -1,22 +1,25 @@
 "use server";
+import { authConfig } from "@/auth";
+import { Notification } from "@/components/notification-system";
 import db from "@/db";
 import {
     CourseFull,
     CourseParticipant,
     Courses as coursesTable,
 } from "@/db/schema/course";
-import { desc, eq, and, like, not, exists } from "drizzle-orm";
-import { uploadMedia } from "../schema/mediaUpload";
+import { notifications } from "@/db/schema/notifications";
+import { participants } from "@/db/schema/participants";
+import { getSignedUrlFromFileKey } from "@/lib/s3";
+import { broadcastNotification } from "@/lib/websockets";
+import { and, desc, eq, exists, like, not } from "drizzle-orm";
+import { getServerSession } from "next-auth";
+import { CourseJoinRequests } from "../schema/courseJoinRequests";
 import {
     courseMaterials,
     CourseMaterialsWithFile,
 } from "../schema/courseMaterials";
-import { participants } from "@/db/schema/participants";
+import { uploadMedia } from "../schema/mediaUpload";
 import { type Participant } from "../schema/participants";
-import { CourseJoinRequests } from "../schema/courseJoinRequests";
-import { getServerSession } from "next-auth";
-import { authConfig } from "@/auth";
-import { getSignedUrlFromFileKey } from "@/lib/s3";
 
 export interface courseList {
     id: number;
@@ -350,6 +353,29 @@ export async function createCourseJoinRequest(
             participantId: participantId,
             courseId: courseId,
         });
+
+        const notificationId = await db
+            .insert(notifications)
+            .values({
+                type: "admin_notification",
+                createdAt: new Date(),
+                metadata: JSON.stringify({
+                    courseId: courseId,
+                }),
+                isRead: false,
+            })
+            .$returningId()
+            .then((res) => res[0].id);
+
+        const notification: Notification = {
+            id: notificationId.toString(),
+            type: "course_acceptance",
+            isRead: false,
+            metadata: {
+                courseId: courseId,
+            },
+        };
+        broadcastNotification(notification);
 
         console.log("Course join request created successfully.");
     } catch (error) {

@@ -1,6 +1,7 @@
 import { authConfig } from "@/auth";
 import db from "@/db";
 import { notifications } from "@/db/schema/notifications";
+import { validateAdminOrStaff } from "@/lib/validation";
 import { desc, eq } from "drizzle-orm";
 import { getServerSession } from "next-auth";
 
@@ -17,6 +18,22 @@ export async function GET() {
         }
 
         const userId = parseInt(session.user.id);
+
+        if (validateAdminOrStaff(session)) {
+            const adminNotifications = await db
+                .select()
+                .from(notifications)
+                .where(eq(notifications.type, "admin_notification"))
+                .orderBy(desc(notifications.createdAt))
+                .limit(5);
+
+            return new Response(
+                JSON.stringify({
+                    notifications: adminNotifications,
+                }),
+                { status: 200 }
+            );
+        }
 
         // Get all notifications for the user
         const userNotifications = await db
