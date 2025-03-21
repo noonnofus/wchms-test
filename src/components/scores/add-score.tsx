@@ -66,22 +66,13 @@ export default function AddScore({
     // Fetch sessions when a course is selected
     useEffect(() => {
         const fetchSessions = async () => {
+            if (!formData.courseId) return;
+
             try {
-                if (!formData.courseId) return;
-
-                const courseIds = courses?.map((course) => course.id);
-
-                if (!courseIds) return;
-
-                const sessionsData = await Promise.all(
-                    courseIds.map((courseId) =>
-                        getAllSessionsByCourseId(courseId)
-                    )
+                const sessionsData = await getAllSessionsByCourseId(
+                    formData.courseId
                 );
-
-                const allSessions = sessionsData.flat();
-
-                setSessions(allSessions);
+                setSessions(sessionsData);
             } catch (error) {
                 console.error("Error fetching sessions", error);
                 setSessions([]);
@@ -177,6 +168,7 @@ export default function AddScore({
                     "Content-Type": "application/json",
                 },
             });
+            if (!response.ok) return "Failed to add new score";
             closePopup();
         } catch (error) {
             console.error("Error submitting score:", error);
