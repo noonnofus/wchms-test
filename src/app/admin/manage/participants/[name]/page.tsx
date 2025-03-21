@@ -136,6 +136,7 @@ export default function Profile() {
     const handleClosePopup = () => {
         setShowDeletePopup(false);
         setShowEditPopup(false);
+        setShowAddPopup(false);
     };
 
     const handleAddButtonClick = () => {
@@ -143,7 +144,7 @@ export default function Profile() {
     };
 
     return (
-        <main className="relative flex flex-col gap-10 w-full items-center h-full">
+        <main className="flex flex-col gap-10 w-full items-center h-full">
             {showAddPopup && participant && (
                 <div className="fixed inset-0 flex items-end md:items-center justify-center z-10 overflow-y-auto">
                     <div
@@ -151,6 +152,23 @@ export default function Profile() {
                         onClick={() => setShowEditPopup(false)}
                     ></div>
                     <div className="z-30 bg-white rounded-t-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
+                        <div className="relative w-full">
+                            <div
+                                className="flex justify-center items-center p-6 md:hidden "
+                                {...swipeHandlers}
+                            >
+                                {/* Swipe indicator */}
+                                <div className="absolute top-6 md:hidden">
+                                    <CloseSwipe />
+                                </div>
+                            </div>
+                            <button
+                                onClick={handleClosePopup}
+                                className="absolute top-3 right-4"
+                            >
+                                <CloseIcon />
+                            </button>
+                        </div>
                         <AddScore />
                     </div>
                 </div>
@@ -209,29 +227,28 @@ export default function Profile() {
             )}
 
             {/* Profile Content */}
-            <div className="flex flex-col items-center">
-                <h1 className="font-semibold text-2xl md:text-4xl text-center">
+            <div className="relative w-full text-center">
+                <h1 className="font-semibold text-2xl md:text-4xl">
                     <span className="capitalize">
                         {participant?.firstName} {participant?.lastName}
                     </span>
                     's Profile
                 </h1>
-                <p className="text-base md:text-xl font-semibold text-[#6C757D]">
-                    Participant
-                </p>
+                <div className="absolute right-0 top-1/2 -translate-y-1/2 flex gap-2">
+                    <button onClick={() => setShowDeletePopup(true)}>
+                        <DeleteIcon />
+                    </button>
+                    <button onClick={() => setShowEditPopup(true)}>
+                        <EditIcon />
+                    </button>
+                </div>
             </div>
+            <p className="text-base md:text-xl font-semibold text-[#6C757D]">
+                Participant
+            </p>
 
             <div className="flex w-24 h-24 md:w-40 md:h-40 text-2l md:text-3xl rounded-full bg-gray-200 items-center justify-center uppercase">
                 {`${participant?.firstName[0]}${participant?.lastName[0]}`}
-            </div>
-
-            <div className="flex gap-2 absolute -top-6 right-0">
-                <button onClick={() => setShowDeletePopup(true)}>
-                    <DeleteIcon />
-                </button>
-                <button onClick={() => setShowEditPopup(true)}>
-                    <EditIcon />
-                </button>
             </div>
 
             <div className="flex flex-col gap-4 text-lg">
