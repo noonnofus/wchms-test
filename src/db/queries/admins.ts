@@ -10,6 +10,7 @@ export async function getAllAdmins() {
                 id: users.id,
                 firstName: users.firstName,
                 lastName: users.lastName,
+                password: users.password,
                 email: users.email,
                 dateOfBirth: users.dateOfBirth,
                 gender: users.gender,
