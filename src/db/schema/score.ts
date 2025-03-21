@@ -1,4 +1,4 @@
-import { int, mysqlTable, varchar } from "drizzle-orm/mysql-core";
+import { int, mysqlTable } from "drizzle-orm/mysql-core";
 import { participants } from "./participants";
 import { users } from "./users";
 import { Sessions } from "./session";
@@ -16,3 +16,5 @@ export const Scores = mysqlTable("scores", {
         .notNull()
         .references(() => Sessions.id),
 });
+
+export type Score = typeof Scores.$inferSelect;

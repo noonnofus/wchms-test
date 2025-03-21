@@ -215,8 +215,8 @@ export default function AddScore({
                     <p className="text-red-500 text-sm">{errors.time}</p>
                 )}
                 <div className="w-full flex flex-row gap-4 items-center">
-                    <label className="flex flex-col w-1/2">
-                        <span className="text-lg">Minutes</span>
+                    <label htmlFor="minutes" className="flex flex-col w-1/2">
+                        <span>Minutes</span>
                         <Input
                             type="number"
                             name="minutes"
@@ -228,8 +228,8 @@ export default function AddScore({
                         />
                     </label>
                     <span className="mt-6 text-3xl">:</span>
-                    <label className="flex flex-col w-1/2">
-                        <span className="text-lg">Seconds</span>
+                    <label htmlFor="seconds" className="flex flex-col w-1/2">
+                        <span>Seconds</span>
                         <Input
                             type="number"
                             name="seconds"

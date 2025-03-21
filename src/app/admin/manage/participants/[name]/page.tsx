@@ -2,7 +2,10 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getUserCourses } from "@/db/queries/courses";
-import { getParticipantById } from "@/db/queries/participants";
+import {
+    getAllScoresByParticipantId,
+    getParticipantById,
+} from "@/db/queries/participants";
 import DeleteIcon from "@/components/icons/delete-icon";
 import EditIcon from "@/components/icons/edit-icon";
 import { Participant } from "@/db/schema/participants";
@@ -16,6 +19,7 @@ import AddScore from "@/components/scores/add-score";
 import CloseSwipe from "@/components/icons/close-swipe";
 import CloseIcon from "@/components/icons/close-icon";
 import { useSwipeable } from "react-swipeable";
+import { Score } from "@/db/schema/score";
 
 export default function Profile() {
     const [participant, setParticipant] = useState<Participant | null>(null);
@@ -25,7 +29,7 @@ export default function Profile() {
     const [isLoading, setIsLoading] = useState(true);
     const [participantId, setParticipantId] = useState<string | null>(null);
     const [showAddPopup, setShowAddPopup] = useState(false);
-    const [scoreId, setScoreId] = useState<number | null>(null);
+    const [scores, setScores] = useState<Score[] | null>(null);
     const router = useRouter();
 
     const fetchData = async (id: string) => {
@@ -40,6 +44,12 @@ export default function Profile() {
             });
 
             setCourses(filteredCourses);
+
+            const fetchedScores = await getAllScoresByParticipantId(
+                parseInt(id)
+            );
+            setScores(fetchedScores);
+            console.log(fetchedScores);
         } catch (error) {
             console.error("Error fetching participant data:", error);
         } finally {
@@ -298,6 +308,19 @@ export default function Profile() {
                         </ul>
                     </div>
                 )}
+                <Button>
+                    <Link
+                        href={`/admin/manage/participants/${participant.firstName}-${participant.lastName}/scores`}
+                        onClick={() =>
+                            sessionStorage.setItem(
+                                "participantId",
+                                participant.id.toString()
+                            )
+                        }
+                    >
+                        View Scores
+                    </Link>
+                </Button>
             </div>
             <AddButton handleAddButtonClick={handleAddButtonClick} />
         </main>
