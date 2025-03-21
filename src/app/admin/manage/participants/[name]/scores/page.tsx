@@ -29,6 +29,7 @@ export default function ParticipantScores() {
     const [scoreToDelete, setScoreToDelete] = useState<Score | null>(null);
     const [course, setCourse] = useState<Course | undefined>(undefined);
     const [refreshFlag, setRefreshFlag] = useState(0);
+    const [scoreToEdit, setScoreToEdit] = useState<Score | null>(null);
 
     const swipeHandlers = useSwipeable({
         onSwipedDown: () => {
@@ -140,6 +141,7 @@ export default function ParticipantScores() {
     };
 
     const handleEditScoreButtonClick = (score: Score) => {
+        setScoreToEdit(score);
         setShowEditPopup(true);
     };
 
@@ -206,7 +208,7 @@ export default function ParticipantScores() {
                 </div>
             )}
 
-            {showEditPopup && participant && scoreToDelete && (
+            {showEditPopup && participant && scoreToEdit && (
                 <div className="fixed inset-0 flex items-center justify-center z-10 overflow-y-auto">
                     <div
                         className="absolute inset-0 bg-black opacity-50"
@@ -233,7 +235,7 @@ export default function ParticipantScores() {
                             participantId={participant.id}
                             courses={courses}
                             closePopup={handleClosePopup}
-                            scoreId={scoreToDelete.id}
+                            score={scoreToEdit}
                         />
                     </div>
                 </div>

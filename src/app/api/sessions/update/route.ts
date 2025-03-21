@@ -108,7 +108,6 @@ export async function PUT(req: Request) {
             );
         }
 
-        console.log(body);
         await db
             .update(Sessions)
             .set({
