@@ -4,9 +4,8 @@ import { users } from "./users";
 import { Sessions } from "./session";
 
 export const Scores = mysqlTable("scores", {
-    id: int("id").primaryKey(),
+    id: int("id").primaryKey().autoincrement(),
     time: int("time").notNull(),
-    note: varchar("note", { length: 255 }),
     participantId: int("participant_id")
         .notNull()
         .references(() => participants.id),

@@ -71,6 +71,13 @@
       "when": 1742506439457,
       "tag": "0009_petite_pandemic",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "5",
+      "when": 1742528240292,
+      "tag": "0010_slow_ulik",
+      "breakpoints": true
     }
   ]
 }

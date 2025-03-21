@@ -169,10 +169,8 @@ export default function AddScore({
             time: totalSeconds,
         };
 
-        console.log(updatedFormData); // Log the updated form data
-
         try {
-            const response = await fetch("/api/participants/create", {
+            const response = await fetch("/api/participants/scores/create", {
                 method: "POST",
                 body: JSON.stringify(updatedFormData),
                 headers: {
@@ -344,15 +342,17 @@ export default function AddScore({
                     <Button
                         type="submit"
                         className={`${
-                            IsLoading ? "opacity-50 cursor-not-allowed" : ""
-                        }`}
+                            IsLoading
+                                ? "opacity-50 cursor-not-allowed"
+                                : "w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold md:text-xl py-2 md:py-4"
+                        } `}
                     >
-                        {IsLoading ? "Submitting..." : "Submit"}
+                        {IsLoading ? "Adding..." : "Add"}
                     </Button>
                     <Button
-                        type="button"
                         onClick={handleCancel}
-                        variant="secondary"
+                        variant="outline"
+                        className="w-full h-full rounded-full bg-transparent border-primary-green text-primary-green hover:bg-primary-green hover:text-white font-semibold md:text-xl py-2 md:py-4"
                     >
                         Cancel
                     </Button>
