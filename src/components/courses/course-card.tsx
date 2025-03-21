@@ -16,6 +16,7 @@ import { useEffect, useState } from "react";
 import { type CourseWithImage } from "@/app/admin/courses/page";
 import { type CourseListWithImage } from "@/app/courses/page";
 import DeleteIcon from "../icons/delete-icon";
+import { useTranslation } from "react-i18next";
 
 interface CourseCardProps {} // eslint-disable-line
 
@@ -35,6 +36,7 @@ interface AdminVariantProps extends CourseCardProps {
 export default function CourseCard(
     props: ClientVariantProps | AdminVariantProps
 ) {
+    const { t } = useTranslation();
     const router = useRouter();
     const { data: session } = useSession();
     const participantId = session?.user.id;
@@ -148,7 +150,7 @@ export default function CourseCard(
                                 className="w-full md:text-xl py-2 md:py-4 rounded-full bg-primary-green hover:bg-[#045B47] text-white font-semibold text-base"
                             >
                                 <Link href={`/courses/${props.course.id}`}>
-                                    View Course
+                                    {t("view course")}
                                 </Link>
                             </Button>
                         ) : requestExists ? (
@@ -159,7 +161,7 @@ export default function CourseCard(
                                     variant="outline"
                                 >
                                     <Link href={`/courses/${props.course.id}`}>
-                                        Details
+                                        {t("details")}
                                     </Link>
                                 </Button>
                                 <Button
@@ -172,8 +174,8 @@ export default function CourseCard(
                                     disabled={isRemoving}
                                 >
                                     {isRemoving
-                                        ? "Removing..."
-                                        : "Remove Request to Join Course"}
+                                        ? t("loading.removing")
+                                        : t("remove join request")}
                                 </Button>
                             </div>
                         ) : (
@@ -184,7 +186,7 @@ export default function CourseCard(
                                     variant="outline"
                                 >
                                     <Link href={`/courses/${props.course.id}`}>
-                                        Details
+                                        {t("details")}
                                     </Link>
                                 </Button>
                                 <Button
@@ -195,7 +197,9 @@ export default function CourseCard(
                                     }}
                                     disabled={isEnrolling}
                                 >
-                                    {isEnrolling ? "Enrolling..." : "Enroll"}
+                                    {isEnrolling
+                                        ? t("loading.enrolling")
+                                        : t("enroll")}
                                 </Button>
                             </div>
                         )}

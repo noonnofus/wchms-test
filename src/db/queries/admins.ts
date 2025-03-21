@@ -1,3 +1,4 @@
+"use server";
 import db from "@/db";
 import { eq } from "drizzle-orm";
 import { users } from "../schema/users";
@@ -21,6 +22,29 @@ export async function getAllAdmins() {
     } catch (error) {
         console.error("Error fetching admins", error);
         return [];
+    }
+}
+
+export async function getStaffById(staffId: number) {
+    "use server";
+    try {
+        const staff = await db
+            .select({
+                id: users.id,
+                firstName: users.firstName,
+                lastName: users.lastName,
+                email: users.email,
+                dateOfBirth: users.dateOfBirth,
+                gender: users.gender,
+                role: users.role,
+            })
+            .from(users)
+            .where(eq(users.id, staffId))
+            .limit(1);
+        return staff[0] || null;
+    } catch (error) {
+        console.error("Error fetching admin", error);
+        return null;
     }
 }
 

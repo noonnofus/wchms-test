@@ -8,10 +8,12 @@ import { LanguageDropdown } from "../language-dropdown";
 import NotificationDropdown from "../notification-dropdown";
 import { Notification } from "../notification-system";
 import { Button } from "../ui/button";
+import { useTranslation } from "react-i18next";
 
 export default function TopNav() {
     const path = usePathname();
     const router = useRouter();
+    const { t } = useTranslation();
     const [notifications, setNotifications] = useState<Notification[]>([]);
     const [socket, setSocket] = useState<WebSocket | null>(null);
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
@@ -180,7 +182,7 @@ export default function TopNav() {
                                         />
                                     </g>
                                 </svg>
-                                Back
+                                {t("back")}
                             </Button>
                         ) : (
                             <Button
@@ -191,7 +193,7 @@ export default function TopNav() {
                                 <Link
                                     href={`/logout?redirect=${path === "/admin/landing" ? `/admin` : "/"}`}
                                 >
-                                    Logout
+                                    {t("logout")}
                                 </Link>
                             </Button>
                         )

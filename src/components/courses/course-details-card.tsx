@@ -14,6 +14,7 @@ import { CourseFull } from "@/db/schema/course";
 import { getSignedUrlFromFileKey } from "@/lib/s3";
 import EditIcon from "../icons/edit-icon";
 import DeleteIcon from "../icons/delete-icon";
+import { useTranslation } from "react-i18next";
 
 interface CourseDetailsProps {
     course: CourseFull;
@@ -24,6 +25,7 @@ interface CourseDetailsProps {
 }
 
 export default function CourseDetailsCard(props: CourseDetailsProps) {
+    const { t } = useTranslation();
     const id = useParams().id;
     const courseId = Array.isArray(id) ? id[0] : id || "";
     const [imageUrl, setImageUrl] = useState<string | null>(null);
@@ -134,7 +136,7 @@ export default function CourseDetailsCard(props: CourseDetailsProps) {
                 {props.variant === "client" &&
                     (props.enrolled ? (
                         <Button className="bg-primary-green text-white rounded-full w-full font-semibold text-base hover:bg-[#045B47]">
-                            Join Session
+                            {t("launch zoom")}
                         </Button>
                     ) : requestExists ? (
                         <Button
@@ -147,8 +149,8 @@ export default function CourseDetailsCard(props: CourseDetailsProps) {
                             disabled={isRemoving}
                         >
                             {isRemoving
-                                ? "Removing..."
-                                : "Remove Request to Join Course"}
+                                ? t("loading.removing")
+                                : t("remove join request")}
                         </Button>
                     ) : (
                         <Button
@@ -159,12 +161,12 @@ export default function CourseDetailsCard(props: CourseDetailsProps) {
                             }}
                             disabled={isEnrolling}
                         >
-                            {isEnrolling ? "Enrolling..." : "Enroll"}
+                            {isEnrolling ? t("loading.enrolling") : t("enroll")}
                         </Button>
                     ))}
                 {props.variant == "admin" && (
                     <Button className="w-full md:text-xl py-2 md:py-4 rounded-full bg-primary-green text-white font-semibold text-base hover:bg-[#045B47]">
-                        Launch Zoom
+                        {t("launch zoom")}
                     </Button>
                 )}
                 <CardContent>

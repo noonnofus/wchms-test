@@ -38,6 +38,19 @@ export async function addSession(
     }
 }
 
+export async function getSessionsByStaffId(staffId: number) {
+    try {
+        const sessions = await db
+            .select()
+            .from(Sessions)
+            .where(eq(Sessions.instructorId, staffId));
+        return sessions;
+    } catch (error) {
+        console.error("Error fetching sessions:", error);
+        throw new Error("Error fetching sessions");
+    }
+}
+
 export async function getSessionById(sessionId: number) {
     try {
         const session = await db

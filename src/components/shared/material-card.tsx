@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import EditIcon from "../icons/edit-icon";
 import { CourseMaterialsWithFile } from "@/db/schema/courseMaterials";
 import DeleteIcon from "../icons/delete-icon";
+import { useTranslation } from "react-i18next";
 
 export default function MaterialCard({
     material,
@@ -13,6 +14,7 @@ export default function MaterialCard({
     handleEditButtonClick?: () => void;
     handleDeleteButtonClick?: () => void;
 }) {
+    const { t } = useTranslation();
     //TODO: allow files to be downloaded
     //TODO: Only show reading aloud and arithmetic materials
     return (
@@ -35,8 +37,11 @@ export default function MaterialCard({
                                 download={material.file.fileName} // Automatically downloads with the file name
                                 rel="noopener noreferrer"
                             >
-                                Download File (.
-                                {material.file?.fileName.split(".").pop()})
+                                {t("button.downloadFile", {
+                                    ext: material.file?.fileName
+                                        .split(".")
+                                        .pop(),
+                                })}
                             </a>
                         </Button>
                     ) : material.url ? (
@@ -49,7 +54,7 @@ export default function MaterialCard({
                                 target="_blank"
                                 rel="noopener noreferrer"
                             >
-                                View
+                                {t("view video")}
                             </a>
                         </Button>
                     ) : null}

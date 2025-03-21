@@ -22,6 +22,8 @@ import { useSwipeable } from "react-swipeable";
 import CloseSwipe from "@/components/icons/close-swipe";
 import EditIcon from "@/components/icons/edit-icon";
 import AddButton from "@/components/shared/add-button";
+import { useTranslation } from "react-i18next";
+import Link from "next/link";
 
 // export type UserNoPass = Omit<User, "password">;
 export default function ManageStaff() {
@@ -37,6 +39,7 @@ export default function ManageStaff() {
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
     const [roleSort, setRoleSort] = useState<"asc" | "desc">("asc");
     const [searchQuery, setSearchQuery] = useState("");
+    const { t } = useTranslation();
 
     const swipeHandlers = useSwipeable({
         onSwipedDown: () => {
@@ -145,7 +148,9 @@ export default function ManageStaff() {
 
     return (
         <div className="flex flex-col gap-6 w-full items-center h-full overflow-hidden">
-            <h1 className="font-semibold text-4xl text-center">Manage</h1>
+            <h1 className="font-semibold text-4xl text-center">
+                {t("manage")}
+            </h1>
             {showEditPopup && adminToEdit && (
                 <div className="fixed inset-0 flex items-end md:items-center justify-center z-10 overflow-y-auto">
                     <div
@@ -191,9 +196,12 @@ export default function ManageStaff() {
                     ></div>
                     <div className="z-30 bg-white rounded-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
                         <DeleteConfirmation
-                            title="Delete Staff"
-                            body={`Are you sure you want to delete staff member ${adminToDelete.firstName}? You cannot undo this action.`}
-                            actionLabel="DELETE"
+                            title={t("delete staff")}
+                            body={t("delete staff confirmation", {
+                                firstName: adminToDelete.firstName,
+                                lastName: adminToDelete.lastName,
+                            })}
+                            actionLabel={t("delete")}
                             handleSubmit={handleDelete}
                             closePopup={handleClosePopup}
                         />
@@ -237,10 +245,12 @@ export default function ManageStaff() {
             )}
             <div className="flex flex-col h-full gap-4 pb-32">
                 <div className="w-full">
-                    <h2 className="text-xl md:text-3xl font-semibold">Staff</h2>
+                    <h2 className="text-xl md:text-3xl font-semibold">
+                        {t("staff")}
+                    </h2>
                     <Input
                         type="text"
-                        placeholder="Search"
+                        placeholder={t("search")}
                         className="mt-2 md:mt-4 py-4 md:py-6 w-full"
                         onChange={handleSearchChange}
                     ></Input>
@@ -249,7 +259,7 @@ export default function ManageStaff() {
                     <TableHeader className="sticky top-0 bg-white w-full">
                         <TableRow className="flex gap-2 justify-between w-full text-base md:text-xl font-semibold">
                             <TableHead className="flex items-center w-[300px] min-w-[200px] text-left">
-                                Staff
+                                {t("staff")}
                                 <button
                                     onClick={handleSortChange}
                                     className="ml-2"
@@ -262,7 +272,7 @@ export default function ManageStaff() {
                                 </button>
                             </TableHead>
                             <TableHead className="flex items-center w-[150px] min-w-[120px] text-left">
-                                Role
+                                {t("role")}
                                 <button
                                     onClick={handleRoleSort}
                                     className="ml-2"
@@ -276,8 +286,8 @@ export default function ManageStaff() {
                             </TableHead>
                             <TableHead className="flex justify-center items-center w-[200px] min-w-[100px] text-center">
                                 <div className="flex gap-4 w-full">
-                                    <span className="w-1/2">Delete</span>
-                                    <span className="w-1/2">Edit</span>
+                                    <span className="w-1/2">{t("delete")}</span>
+                                    <span className="w-1/2">{t("edit")}</span>
                                 </div>
                             </TableHead>
                         </TableRow>
@@ -314,10 +324,20 @@ export default function ManageStaff() {
                                         <div className="hidden md:flex md:w-10 md:h-10 rounded-full bg-gray-200 items-center justify-center">
                                             {`${admin.firstName[0]}${admin.lastName[0]}`}
                                         </div>
-                                        {`${admin.firstName} ${admin.lastName}`}
+                                        <Link
+                                            href={`/admin/manage/staff/${admin.firstName}-${admin.lastName}`}
+                                            onClick={() =>
+                                                sessionStorage.setItem(
+                                                    "staffId",
+                                                    admin.id.toString()
+                                                )
+                                            }
+                                        >
+                                            {`${admin.firstName} ${admin.lastName}`}
+                                        </Link>
                                     </TableCell>
                                     <TableCell className="w-[150px] min-w-[120px] text-left text-base md:text-lg">
-                                        {admin.role}
+                                        {t(admin.role.toLowerCase())}
                                     </TableCell>
                                     <TableCell className="w-[200px] min-w-[100px] flex gap-4 justify-center items-center">
                                         <button

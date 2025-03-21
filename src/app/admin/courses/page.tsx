@@ -8,6 +8,7 @@ import { type Course } from "@/db/schema/course";
 import { useEffect, useState } from "react";
 import { useSwipeable } from "react-swipeable";
 import DeleteConfirmation from "@/components/shared/delete-confirmation";
+import { useTranslation } from "react-i18next";
 import AddButton from "@/components/shared/add-button";
 
 export type CourseWithImage = Course & {
@@ -16,6 +17,7 @@ export type CourseWithImage = Course & {
 };
 
 export default function Courses() {
+    const { t } = useTranslation();
     const [showAddPopup, setShowAddPopup] = useState(false);
     const [showEditPopup, setShowEditPopup] = useState(false);
     const [editCourseId, setEditCourseId] = useState(-1);
@@ -97,7 +99,9 @@ export default function Courses() {
 
     return (
         <div className="w-full h-full">
-            <h1 className="font-semibold text-4xl text-center mb-6">Courses</h1>
+            <h1 className="font-semibold text-4xl text-center mb-6">
+                {t("course", { count: 2 })}
+            </h1>
             {showAddPopup && (
                 <div className="fixed inset-0 flex items-end md:items-center justify-center z-20">
                     <div
@@ -171,9 +175,11 @@ export default function Courses() {
                     ></div>
                     <div className="z-30 bg-white rounded-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
                         <DeleteConfirmation
-                            title="Delete Course"
-                            body={`Are you sure you want to delete course "${courseToDelete.title}"? You cannot undo this action.`}
-                            actionLabel="DELETE"
+                            title={t("delete course")}
+                            body={t("delete course confirmation", {
+                                courseTitle: courseToDelete.title,
+                            })}
+                            actionLabel={t("delete")}
                             handleSubmit={handleDeleteCourse}
                             closePopup={handleClosePopup}
                         />
@@ -183,7 +189,7 @@ export default function Courses() {
             <AddButton handleAddButtonClick={handleAddButtonClick} />
             {isLoading ? (
                 <div className="flex justify-center items-center py-10">
-                    <p>Loading Courses...</p>
+                    <p>{t("loading.courses")}</p>
                 </div>
             ) : (
                 <div className="flex flex-col gap-4 pb-10 md:pb-12">
@@ -209,7 +215,7 @@ export default function Courses() {
                                 onClick={handleAddButtonClick}
                                 className="px-6 py-2 bg-primary-green text-white rounded-lg"
                             >
-                                Create New Course
+                                {t("create new course")}
                             </button>
                         </div>
                     )}
