@@ -11,6 +11,7 @@ export async function getAllAdmins() {
                 id: users.id,
                 firstName: users.firstName,
                 lastName: users.lastName,
+                password: users.password,
                 email: users.email,
                 dateOfBirth: users.dateOfBirth,
                 gender: users.gender,
@@ -43,6 +44,24 @@ export async function getStaffById(staffId: number) {
         return staff[0] || null;
     } catch (error) {
         console.error("Error fetching admin", error);
+        return null;
+    }
+}
+
+export async function existAdmin(email: string) {
+    try {
+        const existingUser = await db
+            .select()
+            .from(users)
+            .where(eq(users.email, email));
+
+        if (existingUser.length > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    } catch (error) {
+        console.error(error);
         return null;
     }
 }

@@ -10,7 +10,8 @@ import {
 } from "@/components/ui/select";
 import { Button } from "../ui/button";
 import { DatePicker } from "../ui/date-picker";
-import { type UserNoPass } from "@/app/admin/manage/staff/page";
+import { type User } from "@/db/schema/users";
+// import { type UserNoPass } from "@/app/admin/manage/staff/page";
 import { useTranslation } from "react-i18next";
 
 const genders = ["Male", "Female", "Other"];
@@ -22,7 +23,7 @@ export default function EditAdmin({
     onAdminUpdated,
 }: {
     closePopup: () => void;
-    adminData: UserNoPass;
+    adminData: User;
     onAdminUpdated: () => void;
 }) {
     const { t } = useTranslation();
@@ -103,7 +104,7 @@ export default function EditAdmin({
             valid = false;
         }
         if (
-            !password ||
+            password &&
             !/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(
                 password
             )
@@ -139,7 +140,7 @@ export default function EditAdmin({
                     email: email,
                     gender: selectedGender,
                     dateOfBirth: dateOfBirth,
-                    password: password,
+                    password: password !== null ? password : adminData.password,
                     role: role,
                 }),
             });
@@ -149,10 +150,10 @@ export default function EditAdmin({
             }
 
             onAdminUpdated();
-            console.log("Participant updated successfully");
+            console.log("Admin updated successfully");
             closePopup();
         } catch (error) {
-            console.error("Error updating participant:", error);
+            console.error("Error updating admin:", error);
         } finally {
             setLoading(false);
         }

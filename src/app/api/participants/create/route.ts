@@ -1,4 +1,4 @@
-import { addParticipant } from "@/db/queries/participants";
+import { addParticipant, existParticipant } from "@/db/queries/participants";
 
 export async function POST(req: Request) {
     try {
@@ -17,6 +17,17 @@ export async function POST(req: Request) {
             return new Response(
                 JSON.stringify({ message: "Invalid date format" }),
                 { status: 400 }
+            );
+        }
+
+        const existingUser = await existParticipant(email);
+
+        if (existingUser) {
+            return new Response(
+                JSON.stringify({
+                    message: "Participant with the email is already exists.",
+                }),
+                { status: 409 }
             );
         }
 

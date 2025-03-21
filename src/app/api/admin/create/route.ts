@@ -1,5 +1,5 @@
 import { authConfig } from "@/auth";
-import { addAdmin } from "@/db/queries/admins";
+import { addAdmin, existAdmin } from "@/db/queries/admins";
 import { validateAdmin } from "@/lib/validation";
 import { getServerSession } from "next-auth";
 
@@ -39,6 +39,17 @@ export async function POST(req: Request) {
             return new Response(
                 JSON.stringify({ message: "Invalid date format" }),
                 { status: 400 }
+            );
+        }
+
+        const existingUser = await existAdmin(email);
+
+        if (existingUser) {
+            return new Response(
+                JSON.stringify({
+                    message: "Admin/Staff with the email is already exists.",
+                }),
+                { status: 409 }
             );
         }
 
