@@ -52,14 +52,20 @@ export async function DELETE(req: Request) {
             await deleteFromS3(courseMaterial.upload_media.fileKey);
         }
 
-        await db
-            .delete(notifications)
-            .where(
-                and(
-                    eq(notifications.type, "course_material"),
-                    sql`JSON_EXTRACT(${notifications.metadata}, '$.materialId') = ${body.courseMaterialId}`
-                )
-            );
+        await db.delete(notifications).where(
+            and(
+                eq(notifications.type, "course_material"),
+                sql`
+                    CAST(
+                        JSON_UNQUOTE(
+                            JSON_EXTRACT(
+                                JSON_UNQUOTE(${notifications.metadata}),
+                                '$.materialId'
+                            )
+                        ) AS UNSIGNED
+                    ) = ${body.courseMaterialId}`
+            )
+        );
 
         // Delete the course material
         await db

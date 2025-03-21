@@ -6,7 +6,7 @@ import { uploadMedia } from "@/db/schema/mediaUpload";
 import { notifications } from "@/db/schema/notifications";
 import { deleteFromS3 } from "@/lib/s3";
 import { validateAdminOrStaff } from "@/lib/validation";
-import { and, eq, inArray, sql } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import { getServerSession } from "next-auth";
 
 export async function DELETE(req: Request) {
@@ -69,18 +69,52 @@ export async function DELETE(req: Request) {
                 })
             );
         }
-        await db
-            .delete(notifications)
-            .where(
-                and(
-                    inArray(notifications.type, [
-                        "course_material",
-                        "course_acceptance",
-                        "course_invite",
-                    ]),
-                    sql`JSON_EXTRACT(${notifications.metadata}, '$.courseId') = ${body.courseId}`
-                )
-            );
+        // for deleting all notification under course
+        await db.delete(notifications).where(
+            and(
+                eq(notifications.type, "course_material"),
+                sql`
+                    CAST(
+                        JSON_UNQUOTE(
+                            JSON_EXTRACT(
+                                JSON_UNQUOTE(${notifications.metadata}),
+                                '$.courseId'
+                            )
+                        ) AS UNSIGNED
+                    ) = ${body.courseId}`
+            )
+        );
+
+        await db.delete(notifications).where(
+            and(
+                eq(notifications.type, "course_acceptance"),
+                sql`
+                    CAST(
+                        JSON_UNQUOTE(
+                            JSON_EXTRACT(
+                                JSON_UNQUOTE(${notifications.metadata}),
+                                '$.courseId'
+                            )
+                        ) AS UNSIGNED
+                    ) = ${body.courseId}`
+            )
+        );
+
+        await db.delete(notifications).where(
+            and(
+                eq(notifications.type, "course_invite"),
+                sql`
+                    CAST(
+                        JSON_UNQUOTE(
+                            JSON_EXTRACT(
+                                JSON_UNQUOTE(${notifications.metadata}),
+                                '$.courseId'
+                            )
+                        ) AS UNSIGNED
+                    ) = ${body.courseId}`
+            )
+        );
+
         await db.delete(Courses).where(eq(Courses.id, body.courseId));
 
         return new Response(
