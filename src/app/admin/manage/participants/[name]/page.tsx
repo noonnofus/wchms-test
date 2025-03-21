@@ -11,6 +11,7 @@ import EditParticipant from "@/components/manage/edit-participant";
 import DeleteConfirmation from "@/components/shared/delete-confirmation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import AddButton from "@/components/shared/add-button";
 
 export default function Profile() {
     const [participant, setParticipant] = useState<Participant | null>(null);
@@ -119,6 +120,8 @@ export default function Profile() {
         );
     }
 
+    const handleAddScore = () => {};
+
     return (
         <main className="relative flex flex-col gap-10 w-full items-center h-full">
             {showEditPopup && participant && (
@@ -226,6 +229,7 @@ export default function Profile() {
                     </div>
                 )}
             </div>
+            <AddButton handleAddButtonClick={handleAddScore} />
         </main>
     );
 }
