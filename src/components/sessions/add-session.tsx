@@ -141,30 +141,30 @@ export default function AddSession(props: Props) {
         now.setSeconds(0, 0);
 
         if (!formData.instructorId) {
-            errorMessages.instructorId = "Instructor is required";
+            errorMessages.instructorId = t("error.missingInstructor");
             isValid = false;
         }
 
         if (!formData.date) {
-            errorMessages.date = "Date is required";
+            errorMessages.date = t("error.missingDate");
             isValid = false;
         } else {
             const sessionDate = new Date(formData.date);
             const today = new Date();
             today.setHours(0, 0, 0, 0);
             if (sessionDate < today) {
-                errorMessages.date = "Session date cannot be in the past";
+                errorMessages.date = t("error.invalidDatePast");
                 isValid = false;
             }
         }
 
         if (!formData.startTime) {
-            errorMessages.startTime = "Start time is required";
+            errorMessages.startTime = t("error.missingStartTime");
             isValid = false;
         }
 
         if (!formData.endTime) {
-            errorMessages.endTime = "End time is required";
+            errorMessages.endTime = t("error.missingEndTime");
             isValid = false;
         }
 
@@ -188,18 +188,18 @@ export default function AddSession(props: Props) {
                 sessionDate.toDateString() === now.toDateString() &&
                 startTime.getTime() < now.getTime()
             ) {
-                errorMessages.startTime = "Start time must be in the future";
+                errorMessages.startTime = t("error.invalidStartTime");
                 isValid = false;
             }
 
             if (endTime <= startTime) {
-                errorMessages.endTime = "End time must be after start time";
+                errorMessages.endTime = t("error.invalidEndTime");
                 isValid = false;
             }
         }
 
         if (!statuses.includes(formData.status)) {
-            errorMessages.status = "Invalid status";
+            errorMessages.status = t("error.invalidStatus");
             isValid = false;
         }
 
@@ -241,7 +241,7 @@ export default function AddSession(props: Props) {
 
         const submitData = prepareSubmitData();
         if (!submitData) {
-            setErrors((prev) => ({ ...prev, date: "Invalid date" }));
+            setErrors((prev) => ({ ...prev, date: t("error.invalidDate") }));
             return;
         }
 
@@ -285,7 +285,7 @@ export default function AddSession(props: Props) {
 
         const submitData = prepareSubmitData();
         if (!submitData) {
-            setErrors((prev) => ({ ...prev, date: "Invalid date" }));
+            setErrors((prev) => ({ ...prev, date: t("error.invalidDate") }));
             return;
         }
 
@@ -468,7 +468,7 @@ export default function AddSession(props: Props) {
                         <SelectContent>
                             {statuses.map((status) => (
                                 <SelectItem key={status} value={status}>
-                                    {status}
+                                    {t(`${status.toLowerCase()}`)}
                                 </SelectItem>
                             ))}
                         </SelectContent>

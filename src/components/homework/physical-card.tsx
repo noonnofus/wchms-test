@@ -43,7 +43,7 @@ export default function PhysicalCard({ videoUrl }: PhysicalProps) {
         <div className="flex justify-center items-center w-full md:px-4">
             <div className="flex flex-col justify-center items-center w-full max-w-6xl gap-4">
                 <h1 className="font-semibold text-4xl text-center">
-                    Physical Exercise
+                    {t("activity.physical")}
                 </h1>
                 <div className="flex flex-col items-center w-full">
                     <Card className="md:p-8 w-full max-w-6xl shadow-lg">

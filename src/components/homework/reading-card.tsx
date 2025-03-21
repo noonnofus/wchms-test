@@ -90,9 +90,7 @@ export default function ReadingCard({
         if (topic) {
             setShowTopicPopup(false);
         } else {
-            setError(
-                "You must either type the topic or select it from Recommendation."
-            );
+            setError(t("error.missingActivityTopic"));
         }
     };
 

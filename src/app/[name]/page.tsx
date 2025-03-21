@@ -35,7 +35,7 @@ export default function ParticipantConfirmation() {
 
     const handleSignIn = async () => {
         if (!lastName) {
-            setError("Please enter your last name.");
+            setError(t("error.missingLastName"));
             return;
         }
 
@@ -47,7 +47,7 @@ export default function ParticipantConfirmation() {
             redirect: false,
         });
         if (result?.error) {
-            setError("Invalid Last Name. Please try again.");
+            setError(t("error.invalidLastName"));
         } else {
             router.push("/landing");
         }

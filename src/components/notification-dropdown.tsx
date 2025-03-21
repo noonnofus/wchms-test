@@ -2,6 +2,7 @@ import { Bell } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { Notification } from "./notification-system";
+import { useTranslation } from "react-i18next";
 
 interface NotificationDropdownProps {
     notifications: Notification[];
@@ -16,6 +17,7 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
     isOpen,
     setIsOpen,
 }) => {
+    const { t } = useTranslation();
     const router = useRouter();
 
     const unreadCount = notifications.filter((n) => !n.isRead).length;
@@ -81,12 +83,14 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
             {isOpen && (
                 <div className="absolute right-0 mt-2 w-80 bg-white rounded-md shadow-lg z-10 max-h-96 overflow-y-auto">
                     <div className="p-4 border-b">
-                        <h3 className="text-lg font-medium">Notifications</h3>
+                        <h3 className="text-lg font-medium">
+                            {t("notifications")}
+                        </h3>
                     </div>
 
                     {notifications.length === 0 ? (
                         <div className="p-4 text-center text-gray-500">
-                            No notifications yet
+                            {t("no notifications")}
                         </div>
                     ) : (
                         <div>

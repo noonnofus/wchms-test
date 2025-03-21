@@ -44,7 +44,7 @@ export default function LoginPage() {
         });
 
         if (res?.error) {
-            setError("Invalid email or password");
+            setError(t("error.invalidEmailOrPassword"));
         } else {
             router.push("/admin/landing");
         }

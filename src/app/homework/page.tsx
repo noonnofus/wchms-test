@@ -118,7 +118,11 @@ export default function HomeworkPage() {
                                 onValueChange={handleDifficultySelect}
                             >
                                 <SelectTrigger className="flex-1">
-                                    <SelectValue placeholder="Select difficulty" />
+                                    <SelectValue
+                                        placeholder={t(
+                                            "placeholder.selectDifficulty"
+                                        )}
+                                    />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {difficulties.map((difficulty, index) => (
@@ -126,7 +130,7 @@ export default function HomeworkPage() {
                                             key={index}
                                             value={difficulty}
                                         >
-                                            {difficulty}
+                                            {t(`${difficulty.toLowerCase()}`)}
                                         </SelectItem>
                                     ))}
                                 </SelectContent>

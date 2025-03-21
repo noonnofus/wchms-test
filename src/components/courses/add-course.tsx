@@ -156,28 +156,35 @@ export default function AddCourse(props: props) {
         } = {};
 
         if (!formData.courseName) {
-            errorMessages.courseName = "Course name is required";
+            errorMessages.courseName = t("error.missingCourseName");
             isValid = false;
         } else if (formData.courseName.length > 255) {
-            errorMessages.courseName = `Course name cannot exceed 255 characters. Current count: ${formData.courseName.length}/255`;
+            errorMessages.courseName = t("error.invalidCourseNameLength", {
+                count: formData.courseName.length,
+            });
             isValid = false;
         }
 
         if (!formData.courseDescription) {
-            errorMessages.courseDescription = "Course description is required";
+            errorMessages.courseDescription = t(
+                "error.missingCourseDescription"
+            );
             isValid = false;
         } else if (formData.courseDescription.length > 255) {
-            errorMessages.courseDescription = `Course Description cannot exceed 255 characters. Current count: ${formData.courseDescription.length}/255`;
+            errorMessages.courseDescription = t(
+                "error.invalidCourseDescriptionLength",
+                { count: formData.courseName.length }
+            );
             isValid = false;
         }
 
         if (!formData.courseStartDate) {
-            errorMessages.courseStartDate = "Start date is required";
+            errorMessages.courseStartDate = t("error.missingStartDate");
             isValid = false;
         }
 
         if (!formData.courseEndDate) {
-            errorMessages.courseEndDate = "End date is required";
+            errorMessages.courseEndDate = t("error.missingEndDate");
             isValid = false;
         } else if (formData.courseStartDate && formData.courseEndDate) {
             // Check if end date is after start date
@@ -494,7 +501,7 @@ export default function AddCourse(props: props) {
                             <SelectContent>
                                 {types.map((type, index) => (
                                     <SelectItem key={index} value={type}>
-                                        {type}
+                                        {t(`${type.toLowerCase()}`)}
                                     </SelectItem>
                                 ))}
                             </SelectContent>
@@ -521,7 +528,7 @@ export default function AddCourse(props: props) {
                             <SelectContent>
                                 {statuses.map((status, index) => (
                                     <SelectItem key={index} value={status}>
-                                        {status}
+                                        {t(`${status.toLowerCase()}`)}
                                     </SelectItem>
                                 ))}
                             </SelectContent>

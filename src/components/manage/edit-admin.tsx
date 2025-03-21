@@ -83,23 +83,23 @@ export default function EditAdmin({
         let valid = true;
 
         if (!firstName.trim()) {
-            newErrors.firstName = "First name is required";
+            newErrors.firstName = t("error.missingFirstName");
             valid = false;
         }
         if (!lastName.trim()) {
-            newErrors.lastName = "Last name is required";
+            newErrors.lastName = t("error.missingLastName");
             valid = false;
         }
         if (!email?.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-            newErrors.email = "Valid email is required";
+            newErrors.email = t("error.invalidEmail");
             valid = false;
         }
         if (!selectedGender?.trim()) {
-            newErrors.gender = "Gender is required";
+            newErrors.gender = t("error.missingGender");
             valid = false;
         }
         if (!dateOfBirth) {
-            newErrors.dateOfBirth = "Date of birth is required";
+            newErrors.dateOfBirth = t("error.missingDateOfBirth");
             valid = false;
         }
         if (
@@ -108,12 +108,11 @@ export default function EditAdmin({
                 password
             )
         ) {
-            newErrors.password =
-                "Password must be at least 8 characters long and include at least one uppercase letter, one number, and one special character.";
+            newErrors.password = t("error.invalidPasswordFormat");
             valid = false;
         }
         if (!role) {
-            newErrors.role = "Role is required";
+            newErrors.role = t("error.missingRole");
             valid = false;
         }
         setErrors(newErrors);
@@ -258,7 +257,7 @@ export default function EditAdmin({
                             <SelectContent>
                                 {genders.map((gender, index) => (
                                     <SelectItem key={index} value={gender}>
-                                        {gender}
+                                        {t(`${gender.toLowerCase()}`)}
                                     </SelectItem>
                                 ))}
                             </SelectContent>
@@ -299,7 +298,7 @@ export default function EditAdmin({
                             <SelectContent>
                                 {roles.map((role, index) => (
                                     <SelectItem key={index} value={role}>
-                                        {role}
+                                        {t(`${role.toLowerCase()}`)}
                                     </SelectItem>
                                 ))}
                             </SelectContent>

@@ -47,23 +47,23 @@ export default function AddParticipant({
         let valid = true;
 
         if (!firstName.trim()) {
-            newErrors.firstName = "First name is required";
+            newErrors.firstName = t("error.missingFirstName");
             valid = false;
         }
         if (!lastName.trim()) {
-            newErrors.lastName = "Last name is required";
+            newErrors.lastName = t("error.missingLastName");
             valid = false;
         }
         if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-            newErrors.email = "Valid email is required";
+            newErrors.email = t("error.invalidEmail");
             valid = false;
         }
         if (!selectedGender) {
-            newErrors.gender = "Gender is required";
+            newErrors.gender = t("error.missingGender");
             valid = false;
         }
         if (!dateOfBirth) {
-            newErrors.dateOfBirth = "Date of birth is required";
+            newErrors.dateOfBirth = t("error.missingDateOfBirth");
             valid = false;
         }
         setErrors(newErrors);
@@ -214,7 +214,7 @@ export default function AddParticipant({
                                         value={gender}
                                         className="capitalize"
                                     >
-                                        {gender}
+                                        {t(`${gender.toLowerCase()}`)}
                                     </SelectItem>
                                 ))}
                             </SelectContent>

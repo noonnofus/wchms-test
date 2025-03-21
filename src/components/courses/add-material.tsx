@@ -61,18 +61,18 @@ export default function AddMaterial(props: {
     const validateForm = () => {
         const newErrors: Errors = {};
 
-        if (!title) newErrors.title = "Title is required.";
+        if (!title) newErrors.title = t("error.missingTitle");
         if (!selectedActivity)
-            newErrors.exerciseType = "Please select an activity.";
+            newErrors.exerciseType = t("error.missingActivity");
         if (!selectedDifficulty)
-            newErrors.exerciseDifficulty = "Please select a difficulty.";
+            newErrors.exerciseDifficulty = t("error.missingDifficulty");
         if (
             url &&
             !/^((https?|ftp|smtp):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/.test(
                 url
             )
         )
-            newErrors.exerciseUrl = "Please type valid URL.";
+            newErrors.exerciseUrl = t("error.invalidURL");
 
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
@@ -81,13 +81,13 @@ export default function AddMaterial(props: {
     const validateFormForAi = () => {
         const newErrors: Errors = {};
 
-        if (!title) newErrors.title = "Title is required.";
+        if (!title) newErrors.title = t("error.missingTitle");
         if (!selectedActivity)
-            newErrors.exerciseType = "Please select an activity.";
+            newErrors.exerciseType = t("error.missingActivity");
         if (!selectedDifficulty)
-            newErrors.exerciseDifficulty = "Please select a difficulty.";
+            newErrors.exerciseDifficulty = t("error.missingDifficulty");
         if (selectedActivity === "Reading Aloud" && !topic) {
-            newErrors.topic = "Please enter a topic.";
+            newErrors.topic = t("error.missingTopic");
         }
 
         setErrors(newErrors);
@@ -281,7 +281,9 @@ export default function AddMaterial(props: {
                                     <SelectTrigger>
                                         <SelectValue
                                             defaultValue={selectedActivity}
-                                            placeholder={selectedActivity}
+                                            placeholder={t(
+                                                `${selectedActivity.toLowerCase()}`
+                                            )}
                                         />
                                     </SelectTrigger>
                                     <SelectContent>
@@ -290,7 +292,7 @@ export default function AddMaterial(props: {
                                                 key={activity}
                                                 value={activity}
                                             >
-                                                {activity}
+                                                {t(`${activity.toLowerCase()}`)}
                                             </SelectItem>
                                         ))}
                                     </SelectContent>
@@ -309,7 +311,9 @@ export default function AddMaterial(props: {
                                     <SelectTrigger>
                                         <SelectValue
                                             defaultValue={selectedDifficulty}
-                                            placeholder={selectedDifficulty}
+                                            placeholder={t(
+                                                `${selectedDifficulty.toLowerCase()}`
+                                            )}
                                         />
                                     </SelectTrigger>
                                     <SelectContent>
@@ -318,7 +322,9 @@ export default function AddMaterial(props: {
                                                 key={difficulty}
                                                 value={difficulty}
                                             >
-                                                {difficulty}
+                                                {t(
+                                                    `${difficulty.toLowerCase()}`
+                                                )}
                                             </SelectItem>
                                         ))}
                                     </SelectContent>
@@ -416,7 +422,9 @@ export default function AddMaterial(props: {
                                     <SelectTrigger>
                                         <SelectValue
                                             defaultValue={selectedActivity}
-                                            placeholder={selectedActivity}
+                                            placeholder={t(
+                                                `${selectedActivity.toLowerCase()}`
+                                            )}
                                         />
                                     </SelectTrigger>
                                     <SelectContent>
@@ -431,7 +439,9 @@ export default function AddMaterial(props: {
                                                     key={activity}
                                                     value={activity}
                                                 >
-                                                    {activity}
+                                                    {t(
+                                                        `${activity.toLowerCase()}`
+                                                    )}
                                                 </SelectItem>
                                             ))}
                                     </SelectContent>
@@ -450,7 +460,9 @@ export default function AddMaterial(props: {
                                     <SelectTrigger>
                                         <SelectValue
                                             defaultValue={selectedDifficulty}
-                                            placeholder={selectedDifficulty}
+                                            placeholder={t(
+                                                `${selectedDifficulty.toLowerCase()}`
+                                            )}
                                         />
                                     </SelectTrigger>
                                     <SelectContent>
@@ -459,7 +471,9 @@ export default function AddMaterial(props: {
                                                 key={difficulty}
                                                 value={difficulty}
                                             >
-                                                {difficulty}
+                                                {t(
+                                                    `${difficulty.toLowerCase()}`
+                                                )}
                                             </SelectItem>
                                         ))}
                                     </SelectContent>

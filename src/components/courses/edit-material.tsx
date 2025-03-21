@@ -129,12 +129,16 @@ export default function EditMaterial({
                         </label>
                         <Select onValueChange={handleActivitySelect}>
                             <SelectTrigger>
-                                <SelectValue placeholder={selectedActivity} />
+                                <SelectValue
+                                    placeholder={t(
+                                        `${selectedActivity.toLowerCase()}`
+                                    )}
+                                />
                             </SelectTrigger>
                             <SelectContent>
                                 {activities.map((activity) => (
                                     <SelectItem key={activity} value={activity}>
-                                        {activity}
+                                        {t(`${activity.toLowerCase()}`)}
                                     </SelectItem>
                                 ))}
                             </SelectContent>
@@ -146,7 +150,11 @@ export default function EditMaterial({
                         </label>
                         <Select onValueChange={handleDifficultySelect}>
                             <SelectTrigger>
-                                <SelectValue placeholder={selectedDifficulty} />
+                                <SelectValue
+                                    placeholder={t(
+                                        `${selectedDifficulty.toLowerCase()}`
+                                    )}
+                                />
                             </SelectTrigger>
                             <SelectContent>
                                 {difficulties.map((difficulty) => (
@@ -154,7 +162,7 @@ export default function EditMaterial({
                                         key={difficulty}
                                         value={difficulty}
                                     >
-                                        {difficulty}
+                                        {t(`${difficulty.toLowerCase()}`)}
                                     </SelectItem>
                                 ))}
                             </SelectContent>
