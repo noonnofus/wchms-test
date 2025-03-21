@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+const i18nConfig = require("./next-i18next.config.ts");
 
 const nextConfig: NextConfig = {
     webpack: (config) => {
@@ -8,6 +9,10 @@ const nextConfig: NextConfig = {
 };
 
 module.exports = {
+    i18n: {
+        defaultLocale: "en_US",
+        locales: ["en_US", "ja_JP"],
+    },
     images: {
         remotePatterns: [
             {

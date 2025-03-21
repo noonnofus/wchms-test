@@ -22,8 +22,10 @@ import { Room } from "@/db/schema/room";
 import AddButton from "@/components/shared/add-button";
 import EditIcon from "@/components/icons/edit-icon";
 import { useSwipeable } from "react-swipeable";
+import { useTranslation } from "react-i18next";
 
 export default function RoomPage() {
+    const { t } = useTranslation();
     const [rooms, setRooms] = useState<Room[]>([]);
     const [roomToDelete, setRoomToDelete] = useState<Room | null>(null);
     const [roomToEdit, setRoomToEdit] = useState<Room | null>(null);
@@ -120,7 +122,9 @@ export default function RoomPage() {
 
     return (
         <div className="flex flex-col gap-10 w-full items-center h-full overflow-hidden">
-            <h1 className="font-semibold text-4xl text-center">Manage</h1>
+            <h1 className="font-semibold text-4xl text-center">
+                {t("manage")}
+            </h1>
             {showAddPopup && (
                 <div className="fixed inset-0 flex items-end md:items-center justify-center z-10 overflow-y-auto">
                     <div
@@ -200,9 +204,11 @@ export default function RoomPage() {
                     ></div>
                     <div className="z-30 bg-white rounded-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
                         <DeleteConfirmation
-                            title="Before you delete!"
-                            body={`Are you sure you want to delete room: ${roomToDelete.name}? You cannot undo this action.`}
-                            actionLabel="DELETE"
+                            title={t("delete room")}
+                            body={t("delete room confirmation", {
+                                roomName: roomToDelete.name,
+                            })}
+                            actionLabel={t("delete")}
                             handleSubmit={handleDelete}
                             closePopup={handleClosePopup}
                         />
@@ -212,11 +218,11 @@ export default function RoomPage() {
             <div className="flex flex-col h-full gap-4 pb-32">
                 <div className="w-full">
                     <h2 className="text-xl md:text-3xl font-semibold">
-                        Room List
+                        {t("room list")}
                     </h2>
                     <Input
                         type="text"
-                        placeholder="Search"
+                        placeholder={t("search")}
                         className="mt-2 md:mt-4 py-4 md:py-6 w-full"
                         onChange={handleSearchChange}
                     ></Input>
@@ -225,7 +231,7 @@ export default function RoomPage() {
                     <TableHeader className="sticky top-0 bg-white">
                         <TableRow className="flex w-full justify-between text-base md:text-xl font-semibold">
                             <TableHead className="flex-1 min-w-[200px] text-left">
-                                Name
+                                {t("roomName")}
                                 <button
                                     onClick={handleSortChange}
                                     className="ml-2"
@@ -238,16 +244,16 @@ export default function RoomPage() {
                                 </button>
                             </TableHead>
                             <TableHead className="flex-1 min-w-[120px] text-left">
-                                Capacity
+                                {t("capacity")}
                             </TableHead>
                             <TableHead className="flex-1 min-w-[200px] text-left">
-                                Type
+                                {t("type")}
                             </TableHead>
                             <TableHead className="flex-1 min-w-[80px] text-center">
-                                Delete
+                                {t("delete")}
                             </TableHead>
                             <TableHead className="flex-1 min-w-[80px] text-center">
-                                Edit
+                                {t("edit")}
                             </TableHead>
                         </TableRow>
                     </TableHeader>

@@ -1,9 +1,4 @@
-import {
-    Card,
-    CardHeader,
-    CardTitle,
-    CardContent,
-} from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import CongratulationPopUp from "./congratulation-popup";
 import ClosePopUp from "./close-popup";
 import ResultPopup from "./result-popup";
@@ -12,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useTranslation } from "react-i18next";
 
 interface ArithemeticProps {
     question: string | null;
@@ -30,8 +26,9 @@ export default function ArithemeticCard({
     currentIndex,
     correctCount,
     totalQuestions,
-    setCorrectCount
+    setCorrectCount,
 }: ArithemeticProps) {
+    const { t } = useTranslation();
     const [userAnswer, setUserAnswer] = useState("");
     const [showCongratPopup, setShowCongratPopup] = useState(false);
     const [showClosePopup, setShowClosePopup] = useState(false);
@@ -48,7 +45,7 @@ export default function ArithemeticCard({
             setUserAnswer("");
             setShowClosePopup(true);
         }
-    }
+    };
 
     const handleNext = () => {
         setShowCongratPopup(false);
@@ -58,13 +55,13 @@ export default function ArithemeticCard({
         } else {
             onNext();
         }
-    }
+    };
 
     const handleExit = () => {
         setShowCongratPopup(false);
         setShowClosePopup(false);
         router.push("/homework");
-    }
+    };
 
     return (
         <div className="flex flex-col gap-8 justify-center items-center">
@@ -77,7 +74,10 @@ export default function ArithemeticCard({
                         className="relative max-w-[1000px] w-full bg-white rounded-lg p-6 overflow-auto"
                         onClick={(e) => e.stopPropagation()}
                     >
-                        <CongratulationPopUp handleNext={handleNext} handleExit={handleExit} />
+                        <CongratulationPopUp
+                            handleNext={handleNext}
+                            handleExit={handleExit}
+                        />
                     </div>
                 </div>
             )}
@@ -90,7 +90,10 @@ export default function ArithemeticCard({
                         className="relative max-w-[1000px] w-full bg-white rounded-lg p-6 overflow-auto"
                         onClick={(e) => e.stopPropagation()}
                     >
-                        <ClosePopUp handleNext={handleNext} handleExit={handleExit} />
+                        <ClosePopUp
+                            handleNext={handleNext}
+                            handleExit={handleExit}
+                        />
                     </div>
                 </div>
             )}
@@ -103,15 +106,21 @@ export default function ArithemeticCard({
                         className="relative max-w-[1000px] w-full bg-white rounded-lg p-6 overflow-auto"
                         onClick={(e) => e.stopPropagation()}
                     >
-                        <ResultPopup correctCount={correctCount} totalQuestions={totalQuestions} handleExit={handleExit} />
+                        <ResultPopup
+                            correctCount={correctCount}
+                            totalQuestions={totalQuestions}
+                            handleExit={handleExit}
+                        />
                     </div>
                 </div>
             )}
             <div className="flex w-full px-6">
-                <span className="text-gray-500">{currentIndex + 1}/{totalQuestions}</span>
+                <span className="text-gray-500">
+                    {currentIndex + 1}/{totalQuestions}
+                </span>
             </div>
             <h1 className="font-semibold text-4xl text-center">
-                15 Arithemetic Questions
+                15 {t("activity.arithmetic questions")}
             </h1>
             {!question && !answer ? (
                 <Card className="p-8 w-96 shadow-lg">
@@ -131,7 +140,10 @@ export default function ArithemeticCard({
                 <Card className="p-8 w-96 shadow-lg">
                     <CardHeader className="space-y-2">
                         <CardTitle className="text-black text-2xl font-bold text-center">
-                            {question} = <span className="border px-3 py-1 rounded-md text-lg">?</span>
+                            {question} ={" "}
+                            <span className="border px-3 py-1 rounded-md text-lg">
+                                ?
+                            </span>
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="w-full flex flex-col items-center">
@@ -145,7 +157,7 @@ export default function ArithemeticCard({
                             <Input
                                 className="w-full p-3 text-center border-2 border-green-500 rounded-md"
                                 type="number"
-                                placeholder="Enter your answer"
+                                placeholder={t("placeholder.enterAnswer")}
                                 value={userAnswer}
                                 onChange={(e) => setUserAnswer(e.target.value)}
                                 required
@@ -154,13 +166,12 @@ export default function ArithemeticCard({
                                 className="w-full mt-4 rounded-xl bg-primary-green hover:bg-[#046e5b]"
                                 type="submit"
                             >
-                                Confirm
+                                {t("button.submit")}
                             </Button>
                         </form>
                     </CardContent>
                 </Card>
             )}
-
         </div>
     );
 }

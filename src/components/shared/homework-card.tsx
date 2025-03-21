@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useTranslation } from "react-i18next";
 
 interface HomeworkCardProps {
     title: string;
@@ -7,7 +8,12 @@ interface HomeworkCardProps {
     difficulty: string;
 }
 
-export default function HomeworkCard({ title, activity, difficulty }: HomeworkCardProps) {
+export default function HomeworkCard({
+    title,
+    activity,
+    difficulty,
+}: HomeworkCardProps) {
+    const { t } = useTranslation();
     return (
         <div className="flex flex-col max-w-[1000px] w-full items-center">
             <Card className="relative gap-6 md:gap-8 z-0 ">
@@ -24,7 +30,7 @@ export default function HomeworkCard({ title, activity, difficulty }: HomeworkCa
                         <a
                             href={`/homework/${activity}?difficulty=${difficulty}`}
                         >
-                            Start Activity
+                            {t("button.startActivity")}
                         </a>
                     </Button>
                 </CardContent>

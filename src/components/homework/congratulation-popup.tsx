@@ -1,12 +1,15 @@
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import { useTranslation } from "react-i18next";
 
 export default function CongratulationPopUp({
-    handleNext, handleExit
+    handleNext,
+    handleExit,
 }: {
     handleNext: () => void;
     handleExit: () => void;
 }) {
+    const { t } = useTranslation();
     return (
         <form
             className="flex flex-col gap-8"
@@ -23,9 +26,12 @@ export default function CongratulationPopUp({
                     alt="image of congratulating correct answer"
                 />
                 <div className="flex flex-col justify-center items-center">
-                    <h1 className="font-medium text-3xl text-center text-primary-green">Congratulations!</h1>
-                    <p className="text-primary-green">Great work on completing
-                        the exercise</p>
+                    <h1 className="font-medium text-3xl text-center text-primary-green">
+                        {t("congratulations")}
+                    </h1>
+                    <p className="text-primary-green">
+                        {t("congratulations.body")}
+                    </p>
                 </div>
             </div>
 
@@ -36,14 +42,14 @@ export default function CongratulationPopUp({
                     onClick={handleExit}
                     type="button" // Enter 눌러도 실행되지 않도록 설정
                 >
-                    Exit Exercise
+                    {t("button.exitExercise")}
                 </Button>
                 <Button
                     variant="outline"
                     className="w-full h-[45px] rounded-full bg-primary-green text-white hover:bg-[#045B47] hover:text-white font-semibold text-base md:text-xl py-4"
                     type="submit"
                 >
-                    Next Question
+                    {t("button.nextQuestion")}
                 </Button>
             </div>
         </form>

@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/select";
 import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
+import { useTranslation } from "react-i18next";
 
 const mediums = ["Online", "In-Person"];
 const statuses = ["Available", "Unavailable"];
@@ -21,6 +22,7 @@ export default function AddRoom({
     onRoomAdded: () => void;
     closePopup: () => void;
 }) {
+    const { t } = useTranslation();
     const [name, setName] = useState("");
     const [selectedMedium, setSelectedMedium] = useState("Online");
     const [url, setUrl] = useState("");
@@ -158,7 +160,7 @@ export default function AddRoom({
     return (
         <div className="flex flex-col gap-12 overflow-y-auto py-8 px-6 rounded-lg bg-white items-center justify-center">
             <h1 className="font-semibold text-3xl md:text-4xl text-center">
-                Add New Room
+                {t("add new room")}
             </h1>
             <form
                 className="flex flex-col gap-4 md:gap-6 w-full h-full md:text-2xl"
@@ -167,7 +169,7 @@ export default function AddRoom({
             >
                 <div className="flex w-full">
                     <div className="flex flex-col flex-1 gap-2">
-                        <label htmlFor="name">Name</label>
+                        <label htmlFor="name">{t("roomName")}</label>
                         {errors.name && (
                             <p className="text-red-500 text-sm">
                                 {errors.name}
@@ -176,7 +178,7 @@ export default function AddRoom({
                         <Input
                             id="name"
                             type="text"
-                            placeholder="Name"
+                            placeholder={t("roomName")}
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                         />
@@ -184,7 +186,7 @@ export default function AddRoom({
                 </div>
                 <div className="flex flex-row gap-2 w-full">
                     <div className="flex flex-col flex-1 gap-2">
-                        <label htmlFor="firstName">Type</label>
+                        <label htmlFor="firstName">{t("type")}</label>
                         {errors.medium && (
                             <p className="text-red-500 text-sm">
                                 {errors.medium}
@@ -226,7 +228,7 @@ export default function AddRoom({
                 </div>
                 <div className="flex flex-row gap-2 w-full">
                     <div className="flex flex-col flex-1 gap-2">
-                        <label htmlFor="lastName">Capacity</label>
+                        <label htmlFor="lastName">{t("capacity")}</label>
                         {errors.capacity && (
                             <p className="text-red-500 text-sm">
                                 {errors.capacity}
@@ -241,7 +243,7 @@ export default function AddRoom({
                         />
                     </div>
                     <div className="flex flex-col flex-1 gap-2">
-                        <label htmlFor="status">Status</label>
+                        <label htmlFor="status">{t("status")}</label>
                         {errors.status && (
                             <p className="text-red-500 text-sm">
                                 {errors.status}
@@ -270,11 +272,13 @@ export default function AddRoom({
                 </div>
                 <div className="flex flex-row w-full">
                     <div className="flex flex-col flex-1">
-                        <label htmlFor="courseDescription">Description</label>
+                        <label htmlFor="courseDescription">
+                            {t("room description")}
+                        </label>
                         <Textarea
                             id="description"
                             name="description"
-                            placeholder="Room Description"
+                            placeholder={t("room description")}
                             onChange={(e) => setDescription(e.target.value)}
                             value={description}
                         />
@@ -282,11 +286,13 @@ export default function AddRoom({
                 </div>
                 <div className="flex flex-row w-full">
                     <div className="flex flex-col flex-1">
-                        <label htmlFor="courseDescription">Internal Note</label>
+                        <label htmlFor="courseDescription">
+                            {t("internal note")}
+                        </label>
                         <Textarea
                             id="note"
                             name="note"
-                            placeholder="Internal Note"
+                            placeholder={t("internal note")}
                             onChange={(e) => setNote(e.target.value)}
                             value={note}
                         />
@@ -297,14 +303,14 @@ export default function AddRoom({
                         type="submit"
                         className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold md:text-xl py-2 md:py-4"
                     >
-                        {loading ? "Adding..." : "Add"}
+                        {loading ? t("adding") : t("add")}
                     </Button>
                     <Button
                         variant="outline"
                         className="w-full h-full rounded-full bg-transparent border-primary-green text-primary-green hover:bg-primary-green hover:text-white font-semibold md:text-xl py-2 md:py-4"
                         onClick={handleCancel}
                     >
-                        Cancel
+                        {t("button.cancel")}
                     </Button>
                 </div>
             </form>

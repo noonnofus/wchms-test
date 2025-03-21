@@ -2,6 +2,8 @@ import { Button } from "../ui/button";
 import { useEffect, useState } from "react";
 import { Participant } from "@/db/schema/participants";
 import { getUnenrolledParticipants } from "@/db/queries/courses";
+import { use } from "i18next";
+import { useTranslation } from "react-i18next";
 
 export default function AddParticipantToCourse({
     courseId,
@@ -12,6 +14,7 @@ export default function AddParticipantToCourse({
     handleClosePopup: () => void;
     onParticipantAdded: () => void;
 }) {
+    const { t } = useTranslation();
     const [errors, setErrors] = useState({
         courseParticipants: "",
     });
@@ -84,7 +87,7 @@ export default function AddParticipantToCourse({
     return (
         <div className="flex flex-col gap-12 w-full h-full py-8 px-6 rounded-lg bg-white items-center justify-center overf">
             <h1 className="font-semibold text-3xl md:text-4xl text-center">
-                Add Participant
+                {t("add participant")}
             </h1>
             <form
                 className="flex flex-col gap-4 md:gap-6 w-full h-full md:text-2xl"
@@ -95,7 +98,7 @@ export default function AddParticipantToCourse({
                         {courseId && (
                             <div className="flex flex-col flex-1 gap-2">
                                 <label htmlFor="courseParticipants">
-                                    Participants
+                                    {t("participant", { count: 2 })}
                                 </label>
                                 {errors.courseParticipants && (
                                     <p className="text-red-500 text-sm">
@@ -149,14 +152,14 @@ export default function AddParticipantToCourse({
                         participants?.length === 0
                     }
                 >
-                    {isLoading ? "Adding..." : "Add"}
+                    {isLoading ? t("adding") : t("add")}
                 </Button>
                 <Button
                     onClick={handleClosePopup}
                     variant="outline"
                     className="w-full h-full rounded-full bg-transparent border-primary-green text-primary-green hover:bg-primary-green hover:text-white font-semibold md:text-xl py-2 md:py-4"
                 >
-                    Cancel
+                    {t("button.cancel")}
                 </Button>
             </form>
         </div>

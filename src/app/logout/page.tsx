@@ -6,10 +6,12 @@ import { Card } from "@/components/ui/card";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
+import { useTranslation } from "react-i18next";
 
 function LogoutContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
+    const { t } = useTranslation();
 
     const handleLogout = async () => {
         await signOut({ callbackUrl: "/login", redirect: false });
@@ -19,14 +21,13 @@ function LogoutContent() {
     };
     return (
         <div className="flex flex-col items-center gap-8 h-full">
-            <h1 className="mt-4 text-[32px] font-semibold">Logout</h1>
+            <h1 className="mt-4 text-[32px] font-semibold">{t("logout")}</h1>
             <Card className="flex flex-col w-full gap-2 items-center text-center py-8 px-4 h-auto">
                 <p className="text-xl leading-4 font-semibold">
-                    Are you sure you want to
+                    {t("logout.confirmation")}
                 </p>
-                <p className="text-xl font-semibold">LOGOUT?</p>
                 <p className="text-xl font-semibold mt-8">
-                    You will need to LOGIN again to access your account.
+                    {t("logout.warning")}
                 </p>
             </Card>
             <div className="w-full flex flex-col gap-4">
@@ -35,7 +36,7 @@ function LogoutContent() {
                     onClick={handleLogout}
                     className="bg-destructive-red hover:bg-destructive-hover text-destructive-text rounded-full w-full font-semibold text-base min-h-[45px]"
                 >
-                    Logout
+                    {t("logout")}
                 </Button>
 
                 <Button
@@ -43,7 +44,7 @@ function LogoutContent() {
                     variant="outline"
                     className="border-primary-green hover:bg-primary-green text-primary-green rounded-full w-full font-semibold text-base hover:text-white min-h-[45px]"
                 >
-                    Cancel
+                    {t("button.cancel")}
                 </Button>
             </div>
         </div>

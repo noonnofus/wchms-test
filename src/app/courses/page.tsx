@@ -5,11 +5,13 @@ import { courseList, getAvailableCourses } from "@/db/queries/courses";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { getSignedUrlFromFileKey } from "@/lib/s3";
+import { useTranslation } from "react-i18next";
 export type CourseListWithImage = courseList & {
     imageUrl: string | null;
 };
 
 export default function Courses() {
+    const { t } = useTranslation();
     const [isLoading, setIsLoading] = useState(true);
     const [courses, setCourses] = useState<{
         enrolled: CourseListWithImage[];
@@ -62,21 +64,21 @@ export default function Courses() {
     return (
         <div className="">
             <TabsMenu
-                leftLabel="My Courses"
-                rightLabel="All Courses"
+                leftLabel={t("my courses")}
+                rightLabel={t("all courses")}
                 leftChildren={
                     <>
                         {isLoading ? (
                             <div className="flex justify-center items-center py-10">
-                                <p>Loading Course Details...</p>
+                                <p>{t("loading.courses")}</p>
                             </div>
                         ) : courses.enrolled.length === 0 ? (
                             <div className="flex flex-col justify-center items-center py-10">
                                 <p className="text-center text-xl font-semibold mb-4">
-                                    No courses enrolled in yet.
+                                    {t("no course enrolled")}
                                 </p>
                                 <p className="text-center text-xl mb-4">
-                                    Browse all courses to get started.
+                                    {t("browse courses")}
                                 </p>
                             </div>
                         ) : (
@@ -97,16 +99,15 @@ export default function Courses() {
                     <>
                         {isLoading ? (
                             <div className="flex justify-center items-center py-10">
-                                <p>Loading Course Materials...</p>
+                                <p>{t("loading.courses")}</p>
                             </div>
                         ) : courses.unenrolled.length === 0 ? (
                             <div className="flex flex-col justify-center items-center py-10">
                                 <p className="text-center text-xl font-semibold mb-4">
-                                    No courses available.
+                                    {t("no course available")}
                                 </p>
                                 <p className="text-center text-xl mb-4">
-                                    Please refresh the page or check back at a
-                                    later date.
+                                    {t("refresh or check back")}
                                 </p>
                             </div>
                         ) : (

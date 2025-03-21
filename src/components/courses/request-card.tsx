@@ -5,6 +5,7 @@ import { Button } from "../ui/button";
 import { useEffect, useState } from "react";
 import { getParticipantById } from "@/db/queries/participants";
 import { Participant } from "@/db/schema/participants";
+import { useTranslation } from "react-i18next";
 
 export default function RequestCard({
     request,
@@ -16,7 +17,7 @@ export default function RequestCard({
     onApprove: (request: CourseJoinRequest, participant: Participant) => void;
 }) {
     const [participant, setParticipant] = useState<Participant | null>(null);
-
+    const { t } = useTranslation();
     useEffect(() => {
         if (!request || !request.participantId) return;
         const fetchParticipant = async () => {
@@ -52,7 +53,7 @@ export default function RequestCard({
                         }}
                         className="w-full h-full font-semibold md:text-xl py-2 md:py-4 rounded-full bg-primary-green text-white"
                     >
-                        Approve
+                        {t("button.approve")}
                     </Button>
                     <Button
                         onClick={(e) => {
@@ -63,7 +64,7 @@ export default function RequestCard({
                         }}
                         className="w-full h-full font-semibold md:text-xl py-2 md:py-4 rounded-full bg-destructive-red border border-destructive-hover text-destructive-text hover:bg-destructive-hover hover:text-destructive-text"
                     >
-                        Reject
+                        {t("button.reject")}
                     </Button>
                 </div>
             </CardContent>

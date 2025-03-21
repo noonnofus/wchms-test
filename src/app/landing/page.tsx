@@ -4,9 +4,11 @@ import BookIcon from "@/components/icons/book-icon";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export default function Home() {
     const [isComponentLoaded, setIsComponentLoaded] = useState(false);
+    const { t } = useTranslation();
 
     const handleComponentLoaded = () => {
         setIsComponentLoaded(true);
@@ -25,7 +27,9 @@ export default function Home() {
                         <Link href="/courses">
                             <div className="flex flex-col items-center justify-center">
                                 <BookIcon className="min-w-12 min-h-12" />
-                                <p className="text-2xl md:text-3xl">Courses</p>
+                                <p className="text-2xl md:text-3xl">
+                                    {t("course", { count: 2 })}
+                                </p>
                             </div>
                         </Link>
                     </Button>
@@ -51,7 +55,9 @@ export default function Home() {
                                         strokeLinejoin="round"
                                     />
                                 </svg>
-                                <p className="text-2xl md:text-3xl">Homework</p>
+                                <p className="text-2xl md:text-3xl">
+                                    {t("homework")}
+                                </p>
                             </div>
                         </Link>
                     </Button>

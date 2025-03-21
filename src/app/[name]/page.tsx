@@ -6,8 +6,10 @@ import { signIn, useSession } from "next-auth/react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { useTranslation } from "react-i18next";
 
 export default function ParticipantConfirmation() {
+    const { t } = useTranslation();
     const router = useRouter();
     const { name } = useParams();
     const [lastName, setLastName] = useState("");
@@ -33,7 +35,7 @@ export default function ParticipantConfirmation() {
 
     const handleSignIn = async () => {
         if (!lastName) {
-            setError("Please enter your last name.");
+            setError(t("error.missingLastName"));
             return;
         }
 
@@ -45,7 +47,7 @@ export default function ParticipantConfirmation() {
             redirect: false,
         });
         if (result?.error) {
-            setError("Invalid Last Name. Please try again.");
+            setError(t("error.invalidLastName"));
         } else {
             router.push("/landing");
         }
@@ -60,15 +62,15 @@ export default function ParticipantConfirmation() {
     return (
         <div className="flex flex-col gap-20 w-full h-full items-center justify-center">
             <h1 className="font-semibold text-4xl capitalize">
-                Welcome back, {name}!
+                {t("welcome back", { firstName: name })}
             </h1>
             <div className="w-full flex flex-col gap-4 items-center">
                 <h2 className="font-semibold text-2xl text-center">
-                    To continue, please enter your last name:
+                    {t("login instructions")}
                 </h2>
                 <Input
                     type="text"
-                    placeholder="Last Name"
+                    placeholder={t("lastName")}
                     className="py-6"
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
@@ -81,14 +83,14 @@ export default function ParticipantConfirmation() {
                     onClick={handleSignIn}
                     className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold text-xl py-4"
                 >
-                    Enter Site
+                    {t("button.enterSite")}
                 </Button>
                 <Button
                     asChild
                     variant="outline"
                     className="w-full h-full rounded-full bg-transparent border-primary-green text-primary-green hover:bg-primary-green hover:text-white font-semibold text-xl py-4"
                 >
-                    <Link href="/">Back to Login</Link>
+                    <Link href="/">{t("button.backToLogin")}</Link>
                 </Button>
             </div>
         </div>

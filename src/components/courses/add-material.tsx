@@ -17,6 +17,7 @@ import PDFDocument from "./reading-material-pdf";
 import PDFMath from "./arithmetic-material-pdf";
 import { pdf } from "@react-pdf/renderer";
 import CourseMaterialUpload from "../ui/course-material-upload";
+import { useTranslation } from "react-i18next";
 
 const activities = ["Simple Arithmetic", "Reading Aloud", "Physical Exercise"];
 const difficulties = ["Basic", "Intermediate"];
@@ -33,6 +34,7 @@ export default function AddMaterial(props: {
     handleClosePopup: () => void;
     setSelectedCourse: Dispatch<SetStateAction<CourseFull | undefined>>;
 }) {
+    const { t } = useTranslation();
     const courseId = useParams().id as string;
     const [selectedActivity, setSelectedActivity] = useState<string>(
         activities[0]
@@ -59,18 +61,18 @@ export default function AddMaterial(props: {
     const validateForm = () => {
         const newErrors: Errors = {};
 
-        if (!title) newErrors.title = "Title is required.";
+        if (!title) newErrors.title = t("error.missingTitle");
         if (!selectedActivity)
-            newErrors.exerciseType = "Please select an activity.";
+            newErrors.exerciseType = t("error.missingActivity");
         if (!selectedDifficulty)
-            newErrors.exerciseDifficulty = "Please select a difficulty.";
+            newErrors.exerciseDifficulty = t("error.missingDifficulty");
         if (
             url &&
             !/^((https?|ftp|smtp):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/.test(
                 url
             )
         )
-            newErrors.exerciseUrl = "Please type valid URL.";
+            newErrors.exerciseUrl = t("error.invalidURL");
 
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
@@ -79,13 +81,13 @@ export default function AddMaterial(props: {
     const validateFormForAi = () => {
         const newErrors: Errors = {};
 
-        if (!title) newErrors.title = "Title is required.";
+        if (!title) newErrors.title = t("error.missingTitle");
         if (!selectedActivity)
-            newErrors.exerciseType = "Please select an activity.";
+            newErrors.exerciseType = t("error.missingActivity");
         if (!selectedDifficulty)
-            newErrors.exerciseDifficulty = "Please select a difficulty.";
+            newErrors.exerciseDifficulty = t("error.missingDifficulty");
         if (selectedActivity === "Reading Aloud" && !topic) {
-            newErrors.topic = "Please enter a topic.";
+            newErrors.topic = t("error.missingTopic");
         }
 
         setErrors(newErrors);
@@ -239,19 +241,19 @@ export default function AddMaterial(props: {
     return (
         <div className="flex flex-col gap-12 w-full h-full py-8 px-6 rounded-lg bg-white items-center justify-center">
             <h1 className="mt-4 font-semibold text-3xl md:text-4xl text-center">
-                Add New Course Material
+                {t("add new course material")}
             </h1>
             <TabsMenu
                 tabsListClassName="w-full flex justify-center border-b"
-                leftLabel="Manual"
-                rightLabel="With AI"
+                leftLabel={t("manual")}
+                rightLabel={t("withAI")}
                 leftChildren={
                     <form
                         className="flex flex-col gap-4 md:gap-6 w-full h-full md:text-2xl"
                         onSubmit={handleSubmit}
                     >
                         <div className="flex flex-col flex-1 gap-2">
-                            <label htmlFor="title">Title</label>
+                            <label htmlFor="title">{t("title")}</label>
                             {errors.title && (
                                 <p className="text-red-500 text-sm">
                                     {errors.title}
@@ -260,7 +262,7 @@ export default function AddMaterial(props: {
                             <Input
                                 id="title"
                                 type="text"
-                                placeholder="ex. Week 1: In-class math activity"
+                                placeholder={t("placeholder.exerciseTitle")}
                                 value={title}
                                 onChange={(e) => setTitle(e.target.value)}
                             />
@@ -268,7 +270,7 @@ export default function AddMaterial(props: {
                         <div className="flex flex-col md:flex-row gap-2 items-center w-full">
                             <div className="flex flex-col w-full">
                                 <label htmlFor="exerciseType">
-                                    Exercise Type
+                                    {t("exercise type")}
                                 </label>
                                 {errors.exerciseType && (
                                     <p className="text-red-500 text-sm">
@@ -279,7 +281,9 @@ export default function AddMaterial(props: {
                                     <SelectTrigger>
                                         <SelectValue
                                             defaultValue={selectedActivity}
-                                            placeholder={selectedActivity}
+                                            placeholder={t(
+                                                `${selectedActivity.toLowerCase()}`
+                                            )}
                                         />
                                     </SelectTrigger>
                                     <SelectContent>
@@ -288,7 +292,7 @@ export default function AddMaterial(props: {
                                                 key={activity}
                                                 value={activity}
                                             >
-                                                {activity}
+                                                {t(`${activity.toLowerCase()}`)}
                                             </SelectItem>
                                         ))}
                                     </SelectContent>
@@ -296,7 +300,7 @@ export default function AddMaterial(props: {
                             </div>
                             <div className="flex flex-col w-full">
                                 <label htmlFor="exerciseDifficulty">
-                                    Exercise Difficulty
+                                    {t("exercise difficulty")}
                                 </label>
                                 {errors.exerciseDifficulty && (
                                     <p className="text-red-500 text-sm">
@@ -307,7 +311,9 @@ export default function AddMaterial(props: {
                                     <SelectTrigger>
                                         <SelectValue
                                             defaultValue={selectedDifficulty}
-                                            placeholder={selectedDifficulty}
+                                            placeholder={t(
+                                                `${selectedDifficulty.toLowerCase()}`
+                                            )}
                                         />
                                     </SelectTrigger>
                                     <SelectContent>
@@ -316,7 +322,9 @@ export default function AddMaterial(props: {
                                                 key={difficulty}
                                                 value={difficulty}
                                             >
-                                                {difficulty}
+                                                {t(
+                                                    `${difficulty.toLowerCase()}`
+                                                )}
                                             </SelectItem>
                                         ))}
                                     </SelectContent>
@@ -333,7 +341,7 @@ export default function AddMaterial(props: {
                         )}
                         {selectedActivity === "Physical Exercise" && (
                             <div className="flex flex-col flex-1 gap-2">
-                                <label htmlFor="url">Video URL</label>
+                                <label htmlFor="url">{t("videoURL")}</label>
                                 {errors.exerciseUrl && (
                                     <p className="text-red-500 text-sm">
                                         {errors.exerciseUrl}
@@ -350,7 +358,7 @@ export default function AddMaterial(props: {
                         )}
                         <div className="flex flex-col flex-1 gap-2">
                             <label htmlFor="ExerciseInstructions">
-                                Exercise Instructions
+                                {t("exercise instructions")}
                             </label>
                             {errors.description && (
                                 <p className="text-red-500 text-sm">
@@ -359,7 +367,9 @@ export default function AddMaterial(props: {
                             )}
                             <Textarea
                                 id="ExerciseInstructions"
-                                placeholder="Exercise Instructions (Optional)"
+                                placeholder={t(
+                                    "placeholder.exerciseInstructions"
+                                )}
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
                             />
@@ -369,14 +379,14 @@ export default function AddMaterial(props: {
                                 onClick={handleSubmit}
                                 className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold text-xl py-2 md:py-4"
                             >
-                                Save
+                                {t("add")}
                             </Button>
                             <Button
                                 onClick={props.handleClosePopup}
                                 variant="outline"
                                 className="w-full h-full rounded-full bg-transparent border-primary-green text-primary-green hover:bg-primary-green hover:text-white font-semibold py-2 md:py-4"
                             >
-                                Cancel
+                                {t("button.cancel")}
                             </Button>
                         </div>
                     </form>
@@ -384,7 +394,7 @@ export default function AddMaterial(props: {
                 rightChildren={
                     <form className="flex flex-col gap-4 w-full h-full md:text-2xl">
                         <div className="flex flex-col flex-1 gap-2">
-                            <label htmlFor="title">Title</label>
+                            <label htmlFor="title">{t("title")}</label>
                             {errors.title && (
                                 <p className="text-red-500 text-sm">
                                     {errors.title}
@@ -394,14 +404,14 @@ export default function AddMaterial(props: {
                                 id="title"
                                 type="text"
                                 value={title}
-                                placeholder="ex. Week 1: In-class math activity"
+                                placeholder={t("placeholder.exerciseTitle")}
                                 onChange={(e) => setTitle(e.target.value)}
                             />
                         </div>
                         <div className="flex flex-col md:flex-row gap-2 items-center w-full">
                             <div className="flex flex-col w-full">
                                 <label htmlFor="exerciseType">
-                                    Exercise Type
+                                    {t("exercise type")}
                                 </label>
                                 {errors.exerciseType && (
                                     <p className="text-red-500 text-sm">
@@ -412,7 +422,9 @@ export default function AddMaterial(props: {
                                     <SelectTrigger>
                                         <SelectValue
                                             defaultValue={selectedActivity}
-                                            placeholder={selectedActivity}
+                                            placeholder={t(
+                                                `${selectedActivity.toLowerCase()}`
+                                            )}
                                         />
                                     </SelectTrigger>
                                     <SelectContent>
@@ -427,7 +439,9 @@ export default function AddMaterial(props: {
                                                     key={activity}
                                                     value={activity}
                                                 >
-                                                    {activity}
+                                                    {t(
+                                                        `${activity.toLowerCase()}`
+                                                    )}
                                                 </SelectItem>
                                             ))}
                                     </SelectContent>
@@ -435,7 +449,7 @@ export default function AddMaterial(props: {
                             </div>
                             <div className="flex flex-col w-full">
                                 <label htmlFor="exerciseDifficulty">
-                                    Exercise Difficulty
+                                    {t("exercise difficulty")}
                                 </label>
                                 {errors.exerciseDifficulty && (
                                     <p className="text-red-500 text-sm">
@@ -446,7 +460,9 @@ export default function AddMaterial(props: {
                                     <SelectTrigger>
                                         <SelectValue
                                             defaultValue={selectedDifficulty}
-                                            placeholder={selectedDifficulty}
+                                            placeholder={t(
+                                                `${selectedDifficulty.toLowerCase()}`
+                                            )}
                                         />
                                     </SelectTrigger>
                                     <SelectContent>
@@ -455,7 +471,9 @@ export default function AddMaterial(props: {
                                                 key={difficulty}
                                                 value={difficulty}
                                             >
-                                                {difficulty}
+                                                {t(
+                                                    `${difficulty.toLowerCase()}`
+                                                )}
                                             </SelectItem>
                                         ))}
                                     </SelectContent>
@@ -464,7 +482,7 @@ export default function AddMaterial(props: {
                         </div>
                         {selectedActivity === "Reading Aloud" && (
                             <div className="flex flex-col flex-1 gap-2">
-                                <label htmlFor="topic">Topic</label>
+                                <label htmlFor="topic">{t("topic")}</label>
                                 {errors.topic && (
                                     <p className="text-red-500 text-sm">
                                         {errors.topic}
@@ -472,7 +490,9 @@ export default function AddMaterial(props: {
                                 )}
                                 <Textarea
                                     id="topic"
-                                    placeholder="Topic for the reading exercise"
+                                    placeholder={t(
+                                        "placeholder.readingExerciseTopic"
+                                    )}
                                     value={topic}
                                     onChange={(e) => setTopic(e.target.value)}
                                 />
@@ -484,14 +504,14 @@ export default function AddMaterial(props: {
                                 onClick={handleAiBtnSubmit}
                                 disabled={loading}
                             >
-                                {loading ? "Generating..." : "Save"}
+                                {loading ? t("loading.generating") : t("add")}
                             </Button>
                             <Button
                                 onClick={props.handleClosePopup}
                                 variant="outline"
                                 className="w-full h-full rounded-full bg-transparent border-primary-green text-primary-green hover:bg-primary-green hover:text-white font-semibold py-2 md:py-4"
                             >
-                                Cancel
+                                {t("button.cancel")}
                             </Button>
                         </div>
                     </form>

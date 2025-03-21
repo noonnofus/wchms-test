@@ -23,9 +23,11 @@ import {
 import { Participant } from "@/db/schema/participants";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useSwipeable } from "react-swipeable";
 
 export default function AdminCourses() {
+    const { t } = useTranslation();
     const { id } = useParams();
     const [isLoading, setIsLoading] = useState(true);
     const router = useRouter();
@@ -121,7 +123,7 @@ export default function AdminCourses() {
     }, [id]);
 
     if (!selectedCourse) {
-        return <div>No course found</div>;
+        return <div>{t("no course found")}</div>;
     }
 
     const handleAddButtonClick = () => {
@@ -221,13 +223,13 @@ export default function AdminCourses() {
         <div className="w-full h-full">
             <TabsMenu
                 tabsListClassName="z-[1]"
-                leftLabel="Course Home"
-                rightLabel="Course Materials"
+                leftLabel={t("course home")}
+                rightLabel={t("course materials")}
                 leftChildren={
                     <>
                         {isLoading ? (
                             <div className="flex justify-center items-center py-10">
-                                <p>Loading Courses...</p>
+                                <p>{t("loading.courses")}</p>
                             </div>
                         ) : (
                             <div className="flex flex-col gap-6 md:gap-8">
@@ -245,7 +247,7 @@ export default function AdminCourses() {
                                         router.push(`/admin/session/${id}`)
                                     }
                                 >
-                                    All Sessions
+                                    {t("all sessions")}
                                 </Button>
                                 {requests ? (
                                     <RequestList
@@ -343,9 +345,11 @@ export default function AdminCourses() {
                                 ></div>
                                 <div className="z-30 bg-white rounded-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
                                     <DeleteConfirmation
-                                        title="Delete Course"
-                                        body={`Are you sure you want to delete course "${selectedCourse.title}"? You cannot undo this action.`}
-                                        actionLabel="DELETE"
+                                        title={t("delete course")}
+                                        body={t("delete course confirmation", {
+                                            courseTitle: courseToDelete.title,
+                                        })}
+                                        actionLabel={t("delete")}
                                         handleSubmit={handleDeleteCourse}
                                         closePopup={handleClosePopup}
                                     />
@@ -358,7 +362,7 @@ export default function AdminCourses() {
                     <div className="w-full mb-8">
                         {isLoading ? (
                             <div className="flex justify-center items-center py-10">
-                                <p>Loading Courses...</p>
+                                <p>{t("loading.courses")}</p>
                             </div>
                         ) : (
                             <div className="flex flex-col gap-4">
@@ -389,18 +393,16 @@ export default function AdminCourses() {
                                 ) : (
                                     <div className="flex flex-col justify-center items-center py-10 gap-6">
                                         <p className="text-center text-xl md:text-2xl font-semibold">
-                                            No materials available for this
-                                            course.
+                                            {t("no materials available")}
                                         </p>
                                         <p className="text-center md:text-xl">
-                                            Would you like to create new course
-                                            material?
+                                            {t("new materials prompt")}
                                         </p>
                                         <button
                                             onClick={handleAddButtonClick}
                                             className="px-6 py-2 bg-primary-green text-white rounded-lg"
                                         >
-                                            Create New Course Material
+                                            {t("create course materials")}
                                         </button>
                                     </div>
                                 )}
@@ -503,9 +505,17 @@ export default function AdminCourses() {
                                         ></div>
                                         <div className="z-30 bg-white rounded-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
                                             <DeleteConfirmation
-                                                title="Delete Course Material"
-                                                body={`Are you sure you want to delete course material "${materialToDelete.title}"? You cannot undo this action.`}
-                                                actionLabel="DELETE"
+                                                title={t(
+                                                    "delete course material"
+                                                )}
+                                                body={t(
+                                                    "delete course material confirmation",
+                                                    {
+                                                        materialTitle:
+                                                            materialToDelete.title,
+                                                    }
+                                                )}
+                                                actionLabel={t("delete")}
                                                 handleSubmit={
                                                     handleDeleteCourseMaterial
                                                 }
