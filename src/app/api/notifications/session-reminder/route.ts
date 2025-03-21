@@ -30,8 +30,6 @@ export async function POST(req: Request) {
             .insert(notifications)
             .values({
                 type: "session_reminder",
-                title,
-                message,
                 userId,
                 createdAt: new Date(),
                 metadata: JSON.stringify({
@@ -45,8 +43,6 @@ export async function POST(req: Request) {
         const notification: Notification = {
             id: notificationId.toString(),
             type: "session_reminder",
-            title,
-            message,
             userId,
             isRead: false,
             metadata: {

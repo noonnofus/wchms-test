@@ -153,13 +153,14 @@ export async function POST(req: Request) {
                     .insert(notifications)
                     .values({
                         type: "course_material",
-                        title: `New ${materialTypeName} Available`,
-                        message: `New course material "${title}" has been added to course: ${courseTitle}.`,
                         userId: user.userId,
                         createdAt: new Date(),
                         metadata: JSON.stringify({
                             courseId: parseInt(courseId),
                             materialId: newMaterial.id,
+                            courseName: courseTitle,
+                            materialName: title,
+                            materialType: materialTypeName,
                         }),
                         isRead: false,
                     })
@@ -169,13 +170,14 @@ export async function POST(req: Request) {
                 const notification: Notification = {
                     id: notificationId.toString(),
                     type: "course_material",
-                    title: `New ${materialTypeName} Available`,
-                    message: `"${title}" has been added to ${courseTitle}.`,
                     userId: user.userId,
                     isRead: false,
                     metadata: {
                         courseId: parseInt(courseId),
                         materialId: newMaterial.id,
+                        courseName: courseTitle,
+                        materialName: title,
+                        materialType: materialTypeName,
                     },
                 };
 

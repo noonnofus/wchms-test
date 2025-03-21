@@ -66,8 +66,6 @@ export async function PUT(
                 | "homework"
                 | "session_reminder"
                 | "course_acceptance",
-            title: notificationToUpdate.title,
-            message: notificationToUpdate.message,
             metadata:
                 typeof notificationToUpdate.metadata === "string"
                     ? JSON.parse(notificationToUpdate.metadata)

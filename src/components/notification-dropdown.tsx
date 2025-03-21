@@ -1,3 +1,4 @@
+import { getNotificationContent } from "@/lib/notification-service";
 import { Bell } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -19,21 +20,6 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
     const router = useRouter();
 
     const unreadCount = notifications.filter((n) => !n.isRead).length;
-
-    const getIcon = (type: string) => {
-        switch (type) {
-            case "course_material":
-                return "📚";
-            case "homework":
-                return "📝";
-            case "session_reminder":
-                return "⏰";
-            case "course_acceptance":
-                return "🎉";
-            default:
-                return "📣";
-        }
-    };
 
     const handleNotificationClick = (notification: Notification) => {
         if (!notification.isRead) {
@@ -90,29 +76,39 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
                         </div>
                     ) : (
                         <div>
-                            {notifications.map((notification) => (
-                                <div
-                                    key={notification.id}
-                                    className={`p-4 border-b cursor-pointer hover:bg-gray-50 ${!notification.isRead ? "bg-blue-50" : ""}`}
-                                    onClick={() =>
-                                        handleNotificationClick(notification)
-                                    }
-                                >
-                                    <div className="flex">
-                                        <span className="text-2xl mr-3">
-                                            {getIcon(notification.type)}
-                                        </span>
-                                        <div className="flex-1">
-                                            <h4 className="font-medium">
-                                                {notification.title}
-                                            </h4>
-                                            <p className="text-sm text-gray-600">
-                                                {notification.message}
-                                            </p>
+                            {notifications.map((notification) => {
+                                const { title, message, icon } =
+                                    getNotificationContent(
+                                        notification.type,
+                                        notification.metadata
+                                    );
+
+                                return (
+                                    <div
+                                        key={notification.id}
+                                        className={`p-4 border-b cursor-pointer hover:bg-gray-50 ${!notification.isRead ? "bg-blue-50" : ""}`}
+                                        onClick={() =>
+                                            handleNotificationClick(
+                                                notification
+                                            )
+                                        }
+                                    >
+                                        <div className="flex">
+                                            <span className="text-2xl mr-3">
+                                                {icon}
+                                            </span>
+                                            <div className="flex-1">
+                                                <h4 className="font-medium">
+                                                    {title}
+                                                </h4>
+                                                <p className="text-sm text-gray-600">
+                                                    {message}
+                                                </p>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            ))}
+                                );
+                            })}
                         </div>
                     )}
                 </div>
