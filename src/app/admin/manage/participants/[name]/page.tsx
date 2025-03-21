@@ -18,6 +18,7 @@ import CloseSwipe from "@/components/icons/close-swipe";
 import CloseIcon from "@/components/icons/close-icon";
 import { useSwipeable } from "react-swipeable";
 import { Score } from "@/db/schema/score";
+import ScoreList from "@/components/scores/scores-list";
 
 export default function Profile() {
     const [participant, setParticipant] = useState<Participant | null>(null);
@@ -147,7 +148,77 @@ export default function Profile() {
     };
 
     return (
-        <main className="flex flex-col gap-10 w-full items-center h-full">
+        <main className="flex flex-col gap-6 w-full items-center h-full mb-48">
+            {/* Profile Content */}
+            <div className="relative flex flex-col w-full h-full items-center gap-4">
+                <h1 className="font-semibold text-2xl md:text-4xl">
+                    <span className="capitalize">
+                        {participant?.firstName} {participant?.lastName}
+                    </span>
+                    's Profile
+                </h1>
+                <div className="absolute right-0 top-2 flex gap-2">
+                    <button onClick={() => setShowDeletePopup(true)}>
+                        <DeleteIcon />
+                    </button>
+                    <button onClick={() => setShowEditPopup(true)}>
+                        <EditIcon />
+                    </button>
+                </div>
+                <p className="text-base md:text-xl font-semibold text-[#6C757D]">
+                    Participant
+                </p>
+
+                <div className="flex w-24 h-24 md:w-40 md:h-40 text-2l md:text-3xl rounded-full bg-gray-200 items-center justify-center uppercase">
+                    {`${participant?.firstName[0]}${participant?.lastName[0]}`}
+                </div>
+            </div>
+
+            <div className="w-full flex flex-col gap-4 text-lg">
+                <div className="flex flex-row gap-2">
+                    <p className="text-lg font-semibold">Email:</p>
+                    <p>{participant?.email}</p>
+                </div>
+                <div className="flex flex-row gap-2">
+                    <p className="text-lg font-semibold">Age: </p>
+                    <p>{age}</p>
+                </div>
+                <div className="flex flex-row gap-2">
+                    <p className="text-lg font-semibold">Date of Birth:</p>
+                    <p>
+                        {participant?.dateOfBirth.toLocaleDateString("en-US", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                        })}
+                    </p>
+                </div>
+                <div className="flex flex-row gap-2">
+                    <p className="text-lg font-semibold">Gender:</p>
+                    <p>{participant?.gender}</p>
+                </div>
+                {courses?.length === 0 ? (
+                    <div className="flex flex-col w-full">
+                        <p className="text-lg font-semibold">Courses:</p>
+                        <p>
+                            Participant is not currently enrolled in any courses
+                        </p>
+                    </div>
+                ) : (
+                    <div className="flex flex-col w-full">
+                        <p className="text-lg font-semibold">Courses:</p>
+                        <ul className="w-full">
+                            {courses?.map((course, index) => (
+                                <li key={index} className="list-disc ml-8">
+                                    {course.title}
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
+            </div>
+            <ScoreList scores={scores} participant={participant} />
+
             {showEditPopup && participant && (
                 <div className="fixed inset-0 flex items-end md:items-center justify-center z-10 overflow-y-auto">
                     <div
@@ -200,88 +271,6 @@ export default function Profile() {
                     </div>
                 </div>
             )}
-
-            {/* Profile Content */}
-            <div className="relative w-full text-center">
-                <h1 className="font-semibold text-2xl md:text-4xl">
-                    <span className="capitalize">
-                        {participant?.firstName} {participant?.lastName}
-                    </span>
-                    's Profile
-                </h1>
-                <div className="absolute right-0 top-1/2 -translate-y-1/2 flex gap-2">
-                    <button onClick={() => setShowDeletePopup(true)}>
-                        <DeleteIcon />
-                    </button>
-                    <button onClick={() => setShowEditPopup(true)}>
-                        <EditIcon />
-                    </button>
-                </div>
-            </div>
-            <p className="text-base md:text-xl font-semibold text-[#6C757D]">
-                Participant
-            </p>
-
-            <div className="flex w-24 h-24 md:w-40 md:h-40 text-2l md:text-3xl rounded-full bg-gray-200 items-center justify-center uppercase">
-                {`${participant?.firstName[0]}${participant?.lastName[0]}`}
-            </div>
-
-            <div className="flex flex-col gap-4 text-lg">
-                <div className="flex flex-row gap-2">
-                    <p className="text-lg font-semibold">Email:</p>
-                    <p>{participant?.email}</p>
-                </div>
-                <div className="flex flex-row gap-2">
-                    <p className="text-lg font-semibold">Age: </p>
-                    <p>{age}</p>
-                </div>
-                <div className="flex flex-row gap-2">
-                    <p className="text-lg font-semibold">Date of Birth:</p>
-                    <p>
-                        {participant?.dateOfBirth.toLocaleDateString("en-US", {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                        })}
-                    </p>
-                </div>
-                <div className="flex flex-row gap-2">
-                    <p className="text-lg font-semibold">Gender:</p>
-                    <p>{participant?.gender}</p>
-                </div>
-                {courses?.length === 0 ? (
-                    <div className="flex flex-col w-full">
-                        <p className="text-lg font-semibold">Courses:</p>
-                        <p>
-                            Participant is not currently enrolled in any courses
-                        </p>
-                    </div>
-                ) : (
-                    <div className="flex flex-col w-full">
-                        <p className="text-lg font-semibold">Courses:</p>
-                        <ul className="w-full">
-                            {courses?.map((course, index) => (
-                                <li key={index} className="list-disc ml-8">
-                                    {course.title}
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-                )}
-                <Button>
-                    <Link
-                        href={`/admin/manage/participants/${participant.firstName}-${participant.lastName}/scores`}
-                        onClick={() =>
-                            sessionStorage.setItem(
-                                "participantId",
-                                participant.id.toString()
-                            )
-                        }
-                    >
-                        View Scores
-                    </Link>
-                </Button>
-            </div>
         </main>
     );
 }
