@@ -29,7 +29,7 @@ export function registerUserConnection(
 
 export function broadcastNotification(notification: Notification) {
     const userId = notification.userId;
-    const connections = userConnections.get(userId);
+    const connections = userId !== undefined ? userConnections.get(userId) : undefined;
 
     if (connections && connections.length > 0) {
         const message = JSON.stringify({

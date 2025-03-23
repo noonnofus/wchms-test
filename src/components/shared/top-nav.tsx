@@ -211,7 +211,7 @@ export default function TopNav() {
                 </div>
                 <div className="flex-1 flex items-center justify-end">
                     <LanguageDropdown />
-                    {isLoggedIn && isParticipantPage && (
+                    {isLoggedIn && (
                         <div className="ml-6">
                             <NotificationDropdown
                                 notifications={notifications}

@@ -94,12 +94,28 @@ export default function NextClass({ whenLoaded }: { whenLoaded: () => void }) {
         }
     };
 
-    const scheduleSessionReminder = (
+    const scheduleSessionReminder = async (
         userId: number,
         startTime: Date,
         title: string,
         sessionId: number | undefined
     ) => {
+        if (sessionId) {
+            try {
+                const response = await fetch(
+                    `/api/notifications/check-reminder?sessionId=${sessionId}`
+                );
+                const data = await response.json();
+
+                if (data.exists) {
+                    console.log("Reminder already scheduled for this session");
+                    notificationSentRef.current = true;
+                    return;
+                }
+            } catch (error) {
+                console.error("Error checking for existing reminder:", error);
+            }
+        }
         if (notificationTimerRef.current) {
             clearTimeout(notificationTimerRef.current);
             notificationTimerRef.current = null;
@@ -127,6 +143,18 @@ export default function NextClass({ whenLoaded }: { whenLoaded: () => void }) {
         sessionId: number | undefined
     ) => {
         try {
+            if (sessionId) {
+                const response = await fetch(
+                    `/api/notifications/check-reminder?sessionId=${sessionId}`
+                );
+                const data = await response.json();
+
+                if (data.exists) {
+                    console.log("Reminder already sent for this session");
+                    notificationSentRef.current = true;
+                    return;
+                }
+            }
             notificationSentRef.current = true;
 
             const response = await fetch(
