@@ -48,12 +48,11 @@ export async function POST(req: NextRequest) {
             .insert(notifications)
             .values({
                 type: "course_acceptance",
-                title: "Course Enrollment Approved",
-                message: `You have been approved into "${courseTitle}".`,
                 userId: userId,
                 createdAt: new Date(),
                 metadata: JSON.stringify({
                     courseId: courseId,
+                    courseName: courseTitle,
                 }),
                 isRead: false,
             })
@@ -63,12 +62,11 @@ export async function POST(req: NextRequest) {
         const notification: Notification = {
             id: notificationId.toString(),
             type: "course_acceptance",
-            title: "Course Enrollment Approved",
-            message: `You have been approved into "${courseTitle}".`,
             userId: userId,
             isRead: false,
             metadata: {
                 courseId: courseId,
+                courseName: courseTitle,
             },
         };
         broadcastNotification(notification);

@@ -59,13 +59,14 @@ export async function existParticipant(email: string) {
             .from(participants)
             .where(eq(participants.email, email));
 
-        if (existingUser) {
-            throw new Error(
-                "The participant with the email is already exists, Please try again with another email"
-            );
+        if (existingUser.length > 0) {
+            return true;
+        } else {
+            return false;
         }
     } catch (error) {
-        return { error: error };
+        console.error(error);
+        return null;
     }
 }
 

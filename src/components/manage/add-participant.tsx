@@ -28,6 +28,7 @@ export default function AddParticipant({
     const [selectedGender, setSelectedGender] = useState<string | null>(null);
     const [dateOfBirth, setDateOfBirth] = useState<Date | null>(null);
     const [loading, setLoading] = useState(false);
+    const [serverError, setServerError] = useState("");
     const [errors, setErrors] = useState({
         firstName: "",
         lastName: "",
@@ -116,11 +117,11 @@ export default function AddParticipant({
             });
 
             if (!response.ok) {
+                response.status === 409 && setServerError("Participant with this email already exists, please try again with other email.");
                 throw new Error("Failed to add participant");
             }
 
             onParticipantAdded();
-            console.log("Participant added successfully");
 
             setFirstName("");
             setLastName("");
@@ -233,6 +234,11 @@ export default function AddParticipant({
                         onChange={(date) => setDateOfBirth(date ?? null)}
                     />
                 </div>
+                {serverError && (
+                    <p className="text-red-500 text-center text-sm">
+                        {serverError}
+                    </p>
+                )}
                 <div className="w-full flex flex-row gap-2 mt-4">
                     <Button
                         type="submit"

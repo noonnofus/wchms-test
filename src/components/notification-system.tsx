@@ -1,4 +1,5 @@
 "use client";
+import { getNotificationContent } from "@/lib/notification-service";
 import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
 import { toast, ToastContainer, ToastOptions } from "react-toastify";
@@ -10,22 +11,26 @@ export interface Notification {
         | "course_material"
         | "homework"
         | "session_reminder"
-        | "course_acceptance";
-    title: string;
-    message: string;
-    userId: number;
+        | "course_acceptance"
+        | "admin_notification";
+    userId?: number;
     isRead: boolean;
     metadata?: {
         courseId?: number;
+        courseName?: string;
         materialId?: number;
+        materialName?: string;
+        materialType?: string;
         homeworkId?: number;
+        homeworkName?: string;
         sessionId?: number;
+        sessionDate?: string;
     };
 }
 
 const NotificationSystem: React.FC = () => {
     const [socket, setSocket] = useState<WebSocket | null>(null);
-    const [notifications, setNotifications] = useState<Notification[]>([]); // eslint-disable-line
+    const [notifications, setNotifications] = useState<Notification[]>([]);
     const { data: session } = useSession();
     const userId = session?.user?.id;
 
@@ -47,7 +52,7 @@ const NotificationSystem: React.FC = () => {
                         ws.send(JSON.stringify({ event: "ping" }));
                     }
                 }, 30000);
-                (ws as any).pingInterval = pingInterval; // eslint-disable-line
+                (ws as any).pingInterval = pingInterval;
             };
 
             ws.onmessage = (event) => {
@@ -60,7 +65,6 @@ const NotificationSystem: React.FC = () => {
 
                         if (notification.userId === Number(userId)) {
                             setNotifications((prev) => [notification, ...prev]);
-
                             displayToast(notification);
                         }
                     }
@@ -73,7 +77,7 @@ const NotificationSystem: React.FC = () => {
                 console.log(
                     "WebSocket disconnected. Attempting to reconnect..."
                 );
-                clearInterval((ws as any).pingInterval); // eslint-disable-line
+                clearInterval((ws as any).pingInterval);
 
                 setTimeout(connectWebSocket, 3000);
             };
@@ -104,9 +108,7 @@ const NotificationSystem: React.FC = () => {
 
         return () => {
             if (socket) {
-                // eslint-disable-line
-                clearInterval((socket as any).pingInterval); // eslint-disable-line
-
+                clearInterval((socket as any).pingInterval);
                 socket.close();
             }
         };
@@ -122,46 +124,12 @@ const NotificationSystem: React.FC = () => {
             draggable: true,
         };
 
-        switch (notification.type) {
-            case "course_material":
-                toast.info(`📚 ${notification.title}`, toastOptions);
-                break;
-            case "homework":
-                toast.info(`📝 ${notification.title}`, toastOptions);
-                break;
-            case "session_reminder":
-                toast.info(`⏰ ${notification.title}`, toastOptions);
-                break;
-            case "course_acceptance":
-                toast.success(`🎉 ${notification.title}`, toastOptions);
-                break;
-            default:
-                toast.info(notification.title, toastOptions);
-        }
+        const { title, icon } = getNotificationContent(
+            notification.type,
+            notification.metadata
+        );
+        toast.info(`${icon} ${title}`, toastOptions);
     };
-
-    // const markAsRead = async (notificationId: string) => {
-    //     try {
-    //         const response = await fetch(
-    //             `/api/notifications/${notificationId}/read`,
-    //             {
-    //                 method: "PUT",
-    //             }
-    //         );
-
-    //         if (response.ok) {
-    //             setNotifications((prev) =>
-    //                 prev.map((notif) =>
-    //                     notif.id === notificationId
-    //                         ? { ...notif, isRead: true }
-    //                         : notif
-    //                 )
-    //             );
-    //         }
-    //     } catch (error) {
-    //         console.error("Error marking notification as read:", error);
-    //     }
-    // };
 
     return (
         <>

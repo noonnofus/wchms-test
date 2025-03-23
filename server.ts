@@ -20,7 +20,8 @@ function registerUserConnection(userId: number, ws: WebSocket) {
     console.log(`User ${userId} registered with websocket connection`);
 }
 
-function broadcastNotification(notification: any) {// eslint-disable-line
+function broadcastNotification(notification: any) {
+    // eslint-disable-line
     const userId = notification.userId;
     const connections = userConnections.get(userId);
 
@@ -37,7 +38,8 @@ function broadcastNotification(notification: any) {// eslint-disable-line
         });
     }
 }
-function broadcastToAll(message: any) {// eslint-disable-line
+function broadcastToAll(message: any) {
+    // eslint-disable-line
     const messageStr = JSON.stringify(message);
 
     for (const connections of userConnections.values()) {
@@ -82,18 +84,27 @@ nextApp.prepare().then(() => {
                     return;
                 }
                 if (data.event === "course_material_created") {
-                    const { courseId, materialId, userIds } = data;
+                    const {
+                        courseId,
+                        materialId,
+                        materialName,
+                        materialType,
+                        courseTitle,
+                        userIds,
+                    } = data;
 
                     userIds.forEach((userId: number) => {
                         const notification = {
                             userId,
                             type: "course_material",
-                            title: "New Course Material Available",
-                            message: `A new material has been added to course ${courseId}.`,
                             metadata: {
                                 courseId,
                                 materialId,
+                                courseName: courseTitle,
+                                materialName: materialName,
+                                materialType: materialType,
                             },
+                            isRead: false,
                         };
 
                         broadcastNotification(notification);
@@ -150,6 +161,6 @@ nextApp.prepare().then(() => {
     server.listen(3000);
     console.log("Server listening on port 3000");
 
-    (global as any).broadcastNotification = broadcastNotification;// eslint-disable-line
-    (global as any).broadcastToAll = broadcastToAll;// eslint-disable-line
+    (global as any).broadcastNotification = broadcastNotification; // eslint-disable-line
+    (global as any).broadcastToAll = broadcastToAll; // eslint-disable-line
 });

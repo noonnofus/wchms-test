@@ -1,8 +1,9 @@
 import { authConfig } from "@/auth";
 import db from "@/db";
 import { notifications } from "@/db/schema/notifications";
+import { validateAdminOrStaff } from "@/lib/validation";
 import { broadcastNotification } from "@/lib/websockets";
-import { and, eq } from "drizzle-orm";
+import { and, eq, or } from "drizzle-orm";
 import { getServerSession } from "next-auth";
 import { NextRequest } from "next/server";
 
@@ -26,14 +27,21 @@ export async function PUT(
         }
 
         const userId = parseInt(session.user.id);
+        const isAdminOrStaff = validateAdminOrStaff(session);
 
         const notificationToUpdate = await db
             .select()
             .from(notifications)
             .where(
-                and(
-                    eq(notifications.id, notificationId),
-                    eq(notifications.userId, userId)
+                or(
+                    and(
+                        eq(notifications.id, notificationId),
+                        eq(notifications.userId, userId)
+                    ),
+                    and(
+                        eq(notifications.id, notificationId),
+                        eq(notifications.type, "admin_notification")
+                    )
                 )
             )
             .then((res) => res[0]);
@@ -50,24 +58,18 @@ export async function PUT(
         await db
             .update(notifications)
             .set({ isRead: true })
-            .where(
-                and(
-                    eq(notifications.id, notificationId),
-                    eq(notifications.userId, userId)
-                )
-            );
+            .where(eq(notifications.id, notificationId));
 
         broadcastNotification({
             id: notificationId,
-            userId: userId,
+            userId: notificationToUpdate.userId ?? undefined,
             isRead: true,
             type: notificationToUpdate.type as
                 | "course_material"
                 | "homework"
                 | "session_reminder"
-                | "course_acceptance",
-            title: notificationToUpdate.title,
-            message: notificationToUpdate.message,
+                | "course_acceptance"
+                | "admin_notification",
             metadata:
                 typeof notificationToUpdate.metadata === "string"
                     ? JSON.parse(notificationToUpdate.metadata)
