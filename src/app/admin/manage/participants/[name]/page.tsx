@@ -148,7 +148,7 @@ export default function Profile() {
     };
 
     return (
-        <main className="flex flex-col gap-6 w-full items-center h-full mb-48">
+        <main className="flex flex-col gap-6 w-full items-center h-full">
             {/* Profile Content */}
             <div className="relative flex flex-col w-full h-full items-center gap-4">
                 <h1 className="font-semibold text-2xl md:text-4xl">

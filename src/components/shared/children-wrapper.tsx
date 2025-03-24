@@ -13,7 +13,7 @@ export default function ChildrenWrapper({ children }: ChildrenWrapperProps) {
 
     return (
         <div
-            className={`flex-grow p-6 overflow-y-auto ${isAdmin ? "mb-16" : ""}`}
+            className={`flex-grow p-6 overflow-y-auto ${isAdmin ? "mb-16 md:mb-36" : ""}`}
         >
             {children}
         </div>
