@@ -48,7 +48,7 @@ export default function AddRoom({
     };
 
     const isValidUrl = (url: string) => {
-        const pattern = /^(?:[\w-]+\.)+[\w]{2,}(?:\/.*)?$/;
+        const pattern = /^(https?:\/\/)?(?:[\w-]+\.)+[\w]{2,}(?:\/.*)?(?:\?.*)?$/;
         return pattern.test(url);
     };
 
@@ -70,11 +70,11 @@ export default function AddRoom({
             newErrors.medium = "Type is required";
             valid = false;
         }
-        if (!url.trim()) {
+        if (selectedMedium !== "In-Person" && !url.trim()) {
             newErrors.url = "Url is required";
             valid = false;
         }
-        if (!isValidUrl(url)) {
+        if (selectedMedium !== "In-Person" && !isValidUrl(url)) {
             newErrors.url = "Invalid Url";
             valid = false;
         }
@@ -186,48 +186,6 @@ export default function AddRoom({
                 </div>
                 <div className="flex flex-row gap-2 w-full">
                     <div className="flex flex-col flex-1 gap-2">
-                        <label htmlFor="firstName">{t("type")}</label>
-                        {errors.medium && (
-                            <p className="text-red-500 text-sm">
-                                {errors.medium}
-                            </p>
-                        )}
-                        <Select
-                            value={selectedMedium}
-                            onValueChange={handleMediumChange}
-                        >
-                            <SelectTrigger>
-                                <SelectValue placeholder="Online" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {mediums.map((medium, index) => (
-                                    <SelectItem
-                                        key={index}
-                                        value={medium}
-                                        className="capitalize"
-                                    >
-                                        {medium}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                    </div>
-                    <div className="flex flex-col flex-1 gap-2">
-                        <label htmlFor="lastName">URL</label>
-                        {errors.url && (
-                            <p className="text-red-500 text-sm">{errors.url}</p>
-                        )}
-                        <Input
-                            id="url"
-                            type="text"
-                            placeholder="https://example.zoom.us/12345"
-                            value={url}
-                            onChange={(e) => setUrl(e.target.value)}
-                        />
-                    </div>
-                </div>
-                <div className="flex flex-row gap-2 w-full">
-                    <div className="flex flex-col flex-1 gap-2">
                         <label htmlFor="lastName">{t("capacity")}</label>
                         {errors.capacity && (
                             <p className="text-red-500 text-sm">
@@ -269,6 +227,52 @@ export default function AddRoom({
                             </SelectContent>
                         </Select>
                     </div>
+                </div>
+                <div className="flex flex-row gap-2 w-full">
+                    <div className="flex flex-col flex-1 gap-2">
+                        <label htmlFor="firstName">{t("type")}</label>
+                        {errors.medium && (
+                            <p className="text-red-500 text-sm">
+                                {errors.medium}
+                            </p>
+                        )}
+                        <Select
+                            value={selectedMedium}
+                            onValueChange={handleMediumChange}
+                        >
+                            <SelectTrigger>
+                                <SelectValue placeholder="Online" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {mediums.map((medium, index) => (
+                                    <SelectItem
+                                        key={index}
+                                        value={medium}
+                                        className="capitalize"
+                                    >
+                                        {medium}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    {selectedMedium !== "In-Person" ? (
+                        <div className="flex flex-col flex-1 gap-2">
+                            <label htmlFor="lastName">URL</label>
+                            {errors.url && (
+                                <p className="text-red-500 text-sm">{errors.url}</p>
+                            )}
+                            <Input
+                                id="url"
+                                type="text"
+                                placeholder="https://example.zoom.us/12345"
+                                value={url}
+                                onChange={(e) => setUrl(e.target.value)}
+                            />
+                        </div>
+                    ) : (
+                        <div className="flex flex-col flex-1 gap-2"></div>
+                    )}
                 </div>
                 <div className="flex flex-row w-full">
                     <div className="flex flex-col flex-1">
