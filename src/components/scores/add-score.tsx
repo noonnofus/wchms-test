@@ -165,7 +165,10 @@ export default function AddScore({
         }
 
         // Show error only if both minutes and seconds are not entered
-        if (!formData.minutes && !formData.seconds) {
+        if (
+            (formData.minutes === "" || formData.minutes === "0") &&
+            (formData.seconds === "" || formData.seconds === "0")
+        ) {
             errorMessages.time = "Time is required";
             isValid = false;
         }

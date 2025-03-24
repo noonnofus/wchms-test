@@ -141,7 +141,6 @@ export default function ParticipantScores() {
     };
 
     const handleEditScoreButtonClick = (score: Score) => {
-        console.log("hi", score);
         setScoreToEdit(score);
         setShowEditPopup(true);
     };
@@ -251,7 +250,11 @@ export default function ParticipantScores() {
                     <div className="z-30 bg-white rounded-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
                         <DeleteConfirmation
                             title="Delete Score"
-                            body={`Are you sure you want to delete the score ${scoreToDelete.time} for participant ${participant.firstName} from course ${course?.title}? This action cannot be undone.`}
+                            body={`Are you sure you want to delete the score ${
+                                scoreToDelete.time
+                                    ? `${Math.floor(scoreToDelete.time / 60)} mins and ${scoreToDelete.time % 60} secs`
+                                    : "N/A"
+                            } for participant ${participant.firstName} from course ${course?.title}? This action cannot be undone.`}
                             actionLabel="DELETE"
                             handleSubmit={handleDelete}
                             closePopup={handleClosePopup}
