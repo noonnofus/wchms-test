@@ -13,7 +13,6 @@ import { validateImage } from "@/lib/fileUploads";
 export async function POST(req: Request) {
     try {
         const session = await getServerSession(authConfig);
-        console.log("Session User ID:", session?.user?.id);
 
         //Only admins and staff can create courses
         if (!validateAdminOrStaff(session)) {

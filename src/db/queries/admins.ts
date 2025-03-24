@@ -25,6 +25,21 @@ export async function getAllAdmins() {
     }
 }
 
+export async function getStaffByIdWithPassword(staffId: number) {
+    "use server";
+    try {
+        const staff = await db
+            .select()
+            .from(users)
+            .where(eq(users.id, staffId))
+            .limit(1);
+        return staff[0] || null;
+    } catch (error) {
+        console.error("Error fetching admin", error);
+        return null;
+    }
+}
+
 export async function getStaffById(staffId: number) {
     "use server";
     try {

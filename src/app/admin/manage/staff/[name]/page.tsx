@@ -6,18 +6,18 @@ import EditIcon from "@/components/icons/edit-icon";
 import DeleteConfirmation from "@/components/shared/delete-confirmation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { getStaffById } from "@/db/queries/admins";
+import { getStaffByIdWithPassword } from "@/db/queries/admins";
 import CloseSwipe from "@/components/icons/close-swipe";
 import { useSwipeable } from "react-swipeable";
 import CloseIcon from "@/components/icons/close-icon";
 import EditAdmin from "@/components/manage/edit-admin";
-import { UserNoPass } from "../page";
 import { getSessionsByStaffId } from "@/db/queries/sessions";
 import { getCourseById } from "@/db/queries/courses";
 import { CourseFull } from "@/db/schema/course";
+import { User } from "@/db/schema/users";
 
 export default function Profile() {
-    const [staff, setStaff] = useState<UserNoPass | null>(null);
+    const [staff, setStaff] = useState<User | null>(null);
     const [courses, setCourses] = useState<CourseFull[] | null>(null);
     const [showDeletePopup, setShowDeletePopup] = useState(false);
     const [showEditPopup, setShowEditPopup] = useState(false);
@@ -29,7 +29,7 @@ export default function Profile() {
         try {
             if (!id) return;
 
-            const staffData = await getStaffById(parseInt(id));
+            const staffData = await getStaffByIdWithPassword(parseInt(id));
             setStaff(staffData);
             const staffSessions = await getSessionsByStaffId(parseInt(id));
             if (staffSessions && staffSessions.length !== 0) {

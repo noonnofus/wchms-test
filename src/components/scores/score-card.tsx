@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import { getCourseById } from "@/db/queries/courses";
 import { CourseFull } from "@/db/schema/course";
 import { getStaffById } from "@/db/queries/admins";
-import { UserNoPass } from "@/app/admin/manage/staff/page";
+import { UserNoPass } from "@/db/schema/users";
 
 export default function ScoreCard({
     score,
@@ -75,7 +75,7 @@ export default function ScoreCard({
     return (
         <div className="flex flex-col items-center w-full">
             <Card
-                className={`flex flex-col justify-between items-center gap-4 p-4 shadow-lg rounded-lg bg-white ${variant === "list" ? "w-56 h-48" : "w-full"}`}
+                className={`flex flex-col justify-between items-center gap-4 p-4 shadow-lg rounded-lg bg-white min-w-60`}
             >
                 <div
                     className={`w-full flex justify-between gap-4 text-gray-500 ${variant === "list" ? "flex-col" : "flex-row"}`}

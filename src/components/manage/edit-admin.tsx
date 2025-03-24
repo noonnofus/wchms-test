@@ -11,7 +11,6 @@ import {
 import { Button } from "../ui/button";
 import { DatePicker } from "../ui/date-picker";
 import { type User } from "@/db/schema/users";
-// import { type UserNoPass } from "@/app/admin/manage/staff/page";
 import { useTranslation } from "react-i18next";
 
 const genders = ["Male", "Female", "Other"];

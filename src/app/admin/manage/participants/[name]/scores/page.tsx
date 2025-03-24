@@ -141,6 +141,7 @@ export default function ParticipantScores() {
     };
 
     const handleEditScoreButtonClick = (score: Score) => {
+        console.log("hi", score);
         setScoreToEdit(score);
         setShowEditPopup(true);
     };
@@ -158,7 +159,7 @@ export default function ParticipantScores() {
             <h1 className="font-semibold text-3xl md:text-4xl text-start">
                 All Scores
             </h1>
-            <div className="md:w-[500px] flex flex-col items-center gap-4">
+            <div className="w-full flex flex-col items-center gap-4">
                 {scores && scores.length > 0 ? (
                     scores.map((score) => (
                         <ScoreCard

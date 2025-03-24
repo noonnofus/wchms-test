@@ -7,7 +7,6 @@ import {
     SelectTrigger,
     SelectValue,
 } from "../ui/select";
-import { UserNoPass } from "@/app/admin/manage/staff/page";
 import {
     getAllSessionsByCourseId,
     getSessionById,
@@ -16,6 +15,9 @@ import { Course } from "@/db/schema/course";
 import { Session } from "@/db/schema/session";
 import { Input } from "../ui/input";
 import { Score } from "@/db/schema/score";
+import { User } from "@/db/schema/users";
+
+export type UserNoPass = Omit<User, "password">;
 
 export default function AddScore({
     closePopup,
@@ -43,11 +45,11 @@ export default function AddScore({
 
     const [formData, setFormData] = useState({
         participantId: participantId,
-        scoreId: null as number | null,
+        scoreId: score?.id ?? null,
         instructorId: score?.instructorId ?? null,
-        minutes: "",
-        seconds: "",
-        sessionId: "",
+        minutes: score?.time ? Math.floor(score.time / 60).toString() : "0",
+        seconds: score?.time ? (score.time % 60).toString() : "0",
+        sessionId: score?.sessionId ? score.sessionId.toString() : "",
         courseId: undefined as number | undefined,
     });
 
@@ -67,7 +69,6 @@ export default function AddScore({
         fetchInstructors();
     }, []);
 
-    // Fetch sessions when a course is selected
     useEffect(() => {
         const fetchSessions = async () => {
             if (!formData.courseId) return;
@@ -118,7 +119,7 @@ export default function AddScore({
         } else if (formData.sessionId) {
             fetchSessionData(formData.sessionId);
         }
-    }, [score, formData.sessionId]);
+    }, [score]);
 
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -153,7 +154,7 @@ export default function AddScore({
             isValid = false;
         }
 
-        if (!formData.sessionId) {
+        if (formData.courseId && !formData.sessionId) {
             errorMessages.sessionId = "Session is required";
             isValid = false;
         }
@@ -381,7 +382,11 @@ export default function AddScore({
                             </p>
                         )}
                         <Select
-                            value={formData.sessionId.toString()}
+                            value={
+                                formData.sessionId
+                                    ? formData.sessionId.toString()
+                                    : ""
+                            }
                             onValueChange={(value) =>
                                 handleSelectChange("sessionId", value)
                             }

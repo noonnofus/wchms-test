@@ -33,7 +33,7 @@ export default function ScoreList({
                     </div>
                 </CardHeader>
                 <CardContent className="overflow-x-auto w-full">
-                    <div className="flex overflow-x-auto min-w-max space-x-4">
+                    <div className="flex overflow-x-auto space-x-4">
                         {scores.length > 0 ? (
                             scores.map((score, index) => (
                                 <ScoreCard
