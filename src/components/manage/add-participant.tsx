@@ -117,7 +117,10 @@ export default function AddParticipant({
             });
 
             if (!response.ok) {
-                response.status === 409 && setServerError("Participant with this email already exists, please try again with other email.");
+                if (response.status === 409)
+                    setServerError(
+                        "Participant with this email already exists, please try again with another email."
+                    );
                 throw new Error("Failed to add participant");
             }
 

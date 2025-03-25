@@ -85,7 +85,7 @@ export default function Profile() {
                     <span className="capitalize">
                         {participant?.firstName} {participant?.lastName}
                     </span>
-                    's Profile
+                    &#39;s Profile
                 </h1>
                 <p className="text-base md:text-xl font-semibold text-[#6C757D]">
                     Participant

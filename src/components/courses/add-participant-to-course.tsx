@@ -2,7 +2,6 @@ import { Button } from "../ui/button";
 import { useEffect, useState } from "react";
 import { Participant } from "@/db/schema/participants";
 import { getUnenrolledParticipants } from "@/db/queries/courses";
-import { use } from "i18next";
 import { useTranslation } from "react-i18next";
 
 export default function AddParticipantToCourse({

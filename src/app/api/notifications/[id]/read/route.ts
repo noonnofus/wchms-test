@@ -1,7 +1,6 @@
 import { authConfig } from "@/auth";
 import db from "@/db";
 import { notifications } from "@/db/schema/notifications";
-import { validateAdminOrStaff } from "@/lib/validation";
 import { broadcastNotification } from "@/lib/websockets";
 import { and, eq, or } from "drizzle-orm";
 import { getServerSession } from "next-auth";
@@ -27,7 +26,6 @@ export async function PUT(
         }
 
         const userId = parseInt(session.user.id);
-        const isAdminOrStaff = validateAdminOrStaff(session);
 
         const notificationToUpdate = await db
             .select()

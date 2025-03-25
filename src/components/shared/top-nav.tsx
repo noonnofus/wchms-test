@@ -19,12 +19,6 @@ export default function TopNav() {
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
     const [isOpen, setIsOpen] = useState(false);
 
-    const isParticipantPage =
-        !path.startsWith("/admin") &&
-        path !== "/" &&
-        path !== "/login" &&
-        path !== "/register";
-
     const initializeUserData = async () => {
         try {
             const session = await getSession();
