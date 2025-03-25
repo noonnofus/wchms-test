@@ -14,7 +14,7 @@ i18n.use(LanguageDetector)
             Japanese: { translation: ja_JP },
         },
         supportedLngs: ["English", "Japanese"],
-        fallbackLng: "Japanese",
+        fallbackLng: "English",
         detection: {
             order: ["cookie", "localStorage", "navigator"],
             caches: ["cookie", "localStorage"],
@@ -23,7 +23,7 @@ i18n.use(LanguageDetector)
             escapeValue: false,
         },
         returnObjects: true,
-        lng: "Japanese",
+        lng: "English",
     });
 
 export default i18n;
