@@ -13,13 +13,7 @@ export const Sessions = mysqlTable("sessions", {
     date: timestamp("date").notNull(),
     startTime: timestamp("start").notNull(),
     endTime: timestamp("end").notNull(),
-    // roomId: int("room_id").references(() => rooms.id, { onDelete: "set null" }),
-    status: mysqlEnum("status", [
-        "Draft",
-        "Available",
-        "Completed",
-        "Archived",
-    ]).notNull(),
+    status: mysqlEnum("status", ["Available", "Completed"]).notNull(),
 });
 
 export type Session = typeof Sessions.$inferSelect;
