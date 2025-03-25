@@ -60,8 +60,7 @@ export async function POST(req: Request) {
         const body = await req.json();
         const topic = body.topic;
         const level = body.level || "Basic";
-        console.log(level);
-        // const lang = (await getLanguageFromCookie()) || "English";
+        const lang = (await getLanguageFromCookie()) || "English";
 
         if (!topic) {
             return;
@@ -74,7 +73,7 @@ export async function POST(req: Request) {
                     role: "system",
                     content: `
                         You are an assistant for seniors doing reading aloud exercises to support preventing dementia. 
-                        Your job is to generate **one reading passage** based on the given topic, level. 
+                        Your job is to generate **one reading passage** based on the given topic, level and language. 
                         The passage should be relevant, easy to understand, and encourage discussion.
 
                         ### Instructions:
@@ -110,16 +109,14 @@ export async function POST(req: Request) {
                 },
                 {
                     role: "user",
-                    content: `Generate a ${level} level of reading aloud exercise question of the topic ${topic}`,
+                    content: `Generate a ${level} level of reading aloud exercise question of the topic ${topic} in ${lang}`,
                 },
             ],
             temperature: 1.0,
-            max_tokens: level === "Basic" ? 400 : 450,
         });
 
         const result = completion.choices[0].message;
 
-        console.log(result);
         return NextResponse.json({ result: result.content }, { status: 200 });
     } catch (error) {
         return NextResponse.json({ error: error }, { status: 500 });

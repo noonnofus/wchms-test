@@ -212,7 +212,7 @@ export default function ReadingCard({
                             {Array.isArray(readingQuestion) ? (
                                 <div>
                                     {readingQuestion.map((reading, i) => (
-                                        <span key={i}>{t(reading)} </span>
+                                        <span key={i}>{reading} </span>
                                     ))}
                                 </div>
                             ) : (
