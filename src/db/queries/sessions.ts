@@ -13,11 +13,10 @@ export async function addSession(
     date: string,
     startTime: string,
     endTime: string | null,
-    roomId: number | null,
-    status: "Draft" | "Available" | "Completed" | "Archived"
+    status: "Available" | "Completed"
 ) {
     try {
-        const validStatuses = ["Draft", "Available", "Completed", "Archived"];
+        const validStatuses = ["Available", "Completed"];
         if (!validStatuses.includes(status)) {
             throw new Error("Status dosnt exist");
         }
