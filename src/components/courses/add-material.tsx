@@ -213,8 +213,6 @@ export default function AddMaterial(props: {
                 body: parsedFormData,
             });
 
-            console.log(response);
-
             if (response.ok) {
                 const responseData = await response.json();
                 const newMaterial: CourseMaterialsWithFile = responseData.data;

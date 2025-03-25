@@ -181,7 +181,6 @@ export async function POST(req: Request) {
                     },
                 };
 
-                // Broadcast the notification
                 broadcastNotification(notification);
 
                 return notification;

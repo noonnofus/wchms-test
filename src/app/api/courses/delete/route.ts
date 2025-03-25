@@ -43,7 +43,6 @@ export async function DELETE(req: Request) {
             });
         }
         if (course.uploadId) {
-            console.log("deleting course image");
             const file = await db
                 .select()
                 .from(uploadMedia)
@@ -60,7 +59,6 @@ export async function DELETE(req: Request) {
                 eq(courseMaterials.uploadId, uploadMedia.id)
             );
         if (materials.length) {
-            console.log("deleting materials");
             await Promise.all(
                 materials.map(async (material) => {
                     if (material.upload_media?.fileKey) {

@@ -46,7 +46,6 @@ export default function Profile() {
                 parseInt(id)
             );
             setScores(fetchedScores);
-            console.log(fetchedScores);
         } catch (error) {
             console.error("Error fetching participant data:", error);
         } finally {

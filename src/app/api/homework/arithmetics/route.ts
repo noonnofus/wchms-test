@@ -45,7 +45,6 @@ export async function POST(req: Request) {
         });
 
         const result = completion.choices[0].message;
-        console.log("result from math: ", result);
         return NextResponse.json({ result: result.content }, { status: 200 });
     } catch (error) {
         return NextResponse.json({ error: error }, { status: 500 });

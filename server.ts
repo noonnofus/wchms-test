@@ -17,7 +17,6 @@ function registerUserConnection(userId: number, ws: WebSocket) {
         userConnections.set(userId, []);
     }
     userConnections.get(userId)?.push(ws);
-    console.log(`User ${userId} registered with websocket connection`);
 }
 
 function broadcastNotification(notification: any) {
@@ -68,7 +67,6 @@ nextApp.prepare().then(() => {
 
         ws.on("message", (message: Buffer, isBinary: boolean) => {
             const msgStr = message.toString();
-            console.log(`Message received: ${msgStr}`);
 
             try {
                 const data = JSON.parse(msgStr);

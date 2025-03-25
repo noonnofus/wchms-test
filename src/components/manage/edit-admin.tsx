@@ -149,7 +149,6 @@ export default function EditAdmin({
             }
 
             onAdminUpdated();
-            console.log("Admin updated successfully");
             closePopup();
         } catch (error) {
             console.error("Error updating admin:", error);
