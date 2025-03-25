@@ -325,7 +325,6 @@ export async function getLatestPhysicalMaterial() {
                 fileName: uploadMedia.fileName,
                 fileType: uploadMedia.fileType,
                 fileSize: uploadMedia.fileSize,
-                // fileKey: uploadMedia.fileKey,
             },
         })
         .from(courseMaterials)
@@ -376,8 +375,6 @@ export async function createCourseJoinRequest(
             },
         };
         broadcastNotification(notification);
-
-        console.log("Course join request created successfully.");
     } catch (error) {
         console.error("Error creating course join request", error);
         throw error;

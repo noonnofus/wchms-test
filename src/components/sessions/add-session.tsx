@@ -260,7 +260,6 @@ export default function AddSession(props: Props) {
                 const error = await res.json();
                 throw new Error(error.error || "Failed to create session");
             }
-            console.log("Session created successfully");
             props.handleClosePopup();
             router.refresh();
         } catch (error) {
@@ -305,7 +304,6 @@ export default function AddSession(props: Props) {
                 throw new Error(error.error || "Failed to update session");
             }
 
-            console.log("Session updated successfully");
             props.handleClosePopup();
             router.refresh();
         } catch (error) {

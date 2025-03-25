@@ -1,7 +1,6 @@
 import { authConfig } from "@/auth";
 import db from "@/db";
 import { notifications } from "@/db/schema/notifications";
-
 import { broadcastNotification } from "@/lib/websockets";
 import { and, eq, or } from "drizzle-orm";
 import { getServerSession } from "next-auth";

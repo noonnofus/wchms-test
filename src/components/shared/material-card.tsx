@@ -15,7 +15,6 @@ export default function MaterialCard({
     handleDeleteButtonClick?: () => void;
 }) {
     const { t } = useTranslation();
-    //TODO: allow files to be downloaded
     //TODO: Only show reading aloud and arithmetic materials
     return (
         <div className="flex flex-col items-center">

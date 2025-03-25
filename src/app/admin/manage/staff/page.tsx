@@ -69,7 +69,6 @@ export default function ManageStaff() {
     };
 
     const handleEditButtonClick = (admin: User) => {
-        console.log(admin);
         setAdminToEdit(admin);
         setShowEditPopup(true);
     };

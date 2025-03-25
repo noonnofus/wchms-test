@@ -248,7 +248,6 @@ export default function AddCourse(props: props) {
 
             if (res.ok) {
                 const data = await res.json();
-                console.log("Form submitted successfully");
                 sessionStorage.setItem(
                     "unaddedParticipants",
                     JSON.stringify(data.unaddedParticipants)
@@ -306,7 +305,6 @@ export default function AddCourse(props: props) {
         if (res.ok) {
             const data = await res.json();
             const courseId = data.courseId;
-            console.log("Course updated successfully");
 
             if (path.startsWith("/admin/courses/")) {
                 return (window.location.href = `/admin/courses/${courseId}`);

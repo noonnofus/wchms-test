@@ -124,7 +124,6 @@ export default function EditParticipant({
             }
 
             onParticipantUpdated();
-            console.log("Participant updated successfully");
             closePopup();
         } catch (error) {
             console.error("Error updating participant:", error);

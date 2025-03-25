@@ -70,13 +70,13 @@ export default function ReadingCard({
 
             try {
                 const data = await res.json();
-                console.log(data);
-
                 result = await JSON.parse(data.result);
             } catch (e) {
                 console.error(e);
                 result = null;
-                setError("Error while getting reading aloud passage. Please try again later.")
+                setError(
+                    "Error while getting reading aloud passage. Please try again later."
+                );
             }
 
             setReadingQuestion(result.reading);
@@ -149,9 +149,9 @@ export default function ReadingCard({
                                                             className="w-full w-[300px]"
                                                         >
                                                             <p className="overflow-hidden text-ellipsis w-full">
-                                                                {
-                                                                    t(recommendation.topic)
-                                                                }
+                                                                {t(
+                                                                    recommendation.topic
+                                                                )}
                                                             </p>
                                                         </SelectItem>
                                                     )

@@ -116,8 +116,6 @@ export default function SignUp() {
                 throw new Error("Failed to add participant");
             }
 
-            console.log("Participant added successfully");
-
             setFirstName("");
             setLastName("");
             setEmail("");
