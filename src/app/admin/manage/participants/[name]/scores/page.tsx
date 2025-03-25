@@ -154,7 +154,7 @@ export default function ParticipantScores() {
     }
 
     return (
-        <main className="flex flex-col gap-10 w-full items-center h-full">
+        <main className="flex flex-col gap-10 w-full items-center h-full overflow-y-scroll pb-16">
             <h1 className="font-semibold text-3xl md:text-4xl text-start">
                 All Scores
             </h1>

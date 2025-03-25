@@ -133,10 +133,18 @@ export default function AddScore({
 
     const handleSelectChange = (name: string, value: string) => {
         const numericValue = value ? parseInt(value) : undefined;
-        setFormData({
-            ...formData,
-            [name]: numericValue,
-        });
+        if (name === "courseId") {
+            setFormData((prev) => ({
+                ...prev,
+                courseId: numericValue,
+                sessionId: "",
+            }));
+        } else {
+            setFormData((prev) => ({
+                ...prev,
+                [name]: numericValue,
+            }));
+        }
     };
 
     const validateForm = () => {
