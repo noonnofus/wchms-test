@@ -29,6 +29,7 @@ export default function EditMaterial({
 }) {
     const { t } = useTranslation();
     const [title, setTitle] = useState<string>(material.title);
+    const [loading, setLoading] = useState(false);
     const [selectedActivity, setSelectedActivity] = useState<string>(
         material.type
     );
@@ -51,6 +52,8 @@ export default function EditMaterial({
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        setLoading(true);
 
         const data = {
             id: material.id,
@@ -86,10 +89,10 @@ export default function EditMaterial({
                         ...prevSelectedCourse,
                         materials: prevSelectedCourse.materials
                             ? prevSelectedCourse.materials.map((material) =>
-                                  material.id === updatedMaterial.id
-                                      ? { ...material, ...updatedMaterial }
-                                      : material
-                              )
+                                material.id === updatedMaterial.id
+                                    ? { ...material, ...updatedMaterial }
+                                    : material
+                            )
                             : [],
                     } as CourseFull;
                 } else {
@@ -98,8 +101,8 @@ export default function EditMaterial({
             });
             handleClosePopup();
         } else {
-            console.log(response);
             console.error("Failed to update material");
+            setLoading(false);
         }
     };
 
@@ -202,7 +205,10 @@ export default function EditMaterial({
                     />
                 </div>
                 <div className="w-full flex flex-row gap-2 mt-4">
-                    <Button className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold md:text-xl py-2 md:py-4">
+                    <Button
+                        className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold md:text-xl py-2 md:py-4"
+                        disabled={loading}
+                    >
                         {t("update")}
                     </Button>
                     <Button

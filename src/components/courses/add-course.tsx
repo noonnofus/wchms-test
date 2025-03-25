@@ -35,6 +35,7 @@ export default function AddCourse(props: props) {
     const path = usePathname();
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(true);
+    const [disableBtn, setDisableBtn] = useState(false);
     const [rooms, setRooms] = useState<Room[]>([]);
     const [formData, setFormData] = useState({
         courseId: null as number | null,
@@ -220,8 +221,10 @@ export default function AddCourse(props: props) {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setDisableBtn(true);
 
         if (!validateForm()) {
+            setDisableBtn(false);
             return;
         }
 
@@ -261,14 +264,18 @@ export default function AddCourse(props: props) {
                         ? error.message
                         : "Failed to process image",
             }));
+            setDisableBtn(false);
         } finally {
+            // setDisableBtn(false);
         }
     };
 
     const handleUpdate = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
+        setDisableBtn(true);
 
         if (!validateForm()) {
+            setDisableBtn(false);
             return;
         }
 
@@ -306,6 +313,7 @@ export default function AddCourse(props: props) {
             router.push(`/admin/courses/${courseId}`);
         } else {
             console.error("Form submission failed");
+            setDisableBtn(false);
         }
     };
 
@@ -421,12 +429,12 @@ export default function AddCourse(props: props) {
                                             isLoading
                                                 ? t("loading.rooms")
                                                 : formData.courseRoom
-                                                  ? rooms.find(
+                                                    ? rooms.find(
                                                         (room) =>
                                                             room.id.toString() ===
                                                             formData.courseRoom
                                                     )?.name
-                                                  : defaultRoomName
+                                                    : defaultRoomName
                                         }
                                     />
                                 </SelectTrigger>
@@ -559,6 +567,7 @@ export default function AddCourse(props: props) {
                         <Button
                             onClick={handleUpdate}
                             className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold md:text-xl py-2 md:py-4"
+                            disabled={disableBtn}
                         >
                             {t("update")}
                         </Button>
@@ -566,6 +575,7 @@ export default function AddCourse(props: props) {
                         <Button
                             onClick={() => handleSubmit}
                             className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold md:text-xl py-2 md:py-4"
+                            disabled={disableBtn}
                         >
                             {t("add")}
                         </Button>

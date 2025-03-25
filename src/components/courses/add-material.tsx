@@ -96,11 +96,12 @@ export default function AddMaterial(props: {
 
     const handleAiBtnSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setLoading(true);
+
         if (!validateFormForAi()) {
+            setLoading(false);
             return;
         }
-
-        setLoading(true);
 
         const activityConfig: Record<
             string,
@@ -180,8 +181,10 @@ export default function AddMaterial(props: {
         passUrl?: string
     ) => {
         e.preventDefault();
+        setLoading(true);
 
         if (!validateForm()) {
+            setLoading(false);
             return;
         }
         const data = {
@@ -210,6 +213,8 @@ export default function AddMaterial(props: {
                 body: parsedFormData,
             });
 
+            console.log(response);
+
             if (response.ok) {
                 const responseData = await response.json();
                 const newMaterial: CourseMaterialsWithFile = responseData.data;
@@ -235,6 +240,7 @@ export default function AddMaterial(props: {
             }
         } catch (error) {
             console.error("Error submitting form", error);
+            setLoading(false);
         }
     };
 
@@ -378,6 +384,7 @@ export default function AddMaterial(props: {
                             <Button
                                 onClick={handleSubmit}
                                 className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold text-xl py-2 md:py-4"
+                                disabled={loading}
                             >
                                 {t("add")}
                             </Button>

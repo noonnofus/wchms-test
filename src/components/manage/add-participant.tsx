@@ -243,6 +243,7 @@ export default function AddParticipant({
                     <Button
                         type="submit"
                         className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold md:text-xl py-2 md:py-4"
+                        disabled={loading}
                     >
                         {loading ? t("adding") : t("add")}
                     </Button>

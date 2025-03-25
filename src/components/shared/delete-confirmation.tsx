@@ -35,6 +35,7 @@ export default function DeleteConfirmation({
                     <Button
                         variant="outline"
                         className="w-full h-full rounded-full bg-destructive-red text-destructive-text hover:bg-destructive-hover hover:text-destructive-text font-semibold py-2 md:py-4 text-base md:text-xl"
+                    // disabled={loading}
                     >
                         {actionLabel}
                     </Button>

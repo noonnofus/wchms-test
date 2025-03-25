@@ -307,7 +307,10 @@ export default function EditAdmin({
                     <div className="flex flex-col flex-1 gap-2"></div>
                 </div>
                 <div className="w-full flex flex-row gap-2 mt-4">
-                    <Button className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold md:text-xl py-2 md:py-4">
+                    <Button
+                        className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold md:text-xl py-2 md:py-4"
+                        disabled={loading}
+                    >
                         {loading ? t("updating") : t("update")}
                     </Button>
                     <Button
