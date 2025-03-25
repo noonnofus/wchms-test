@@ -47,7 +47,6 @@ const NotificationSystem: React.FC = () => {
             const ws = new WebSocket(wsUrl);
 
             ws.onopen = () => {
-                console.log("WebSocket connected");
                 ws.send(JSON.stringify({ event: "identify", userId }));
 
                 const pingInterval = setInterval(() => {
@@ -76,11 +75,7 @@ const NotificationSystem: React.FC = () => {
             };
 
             ws.onclose = () => {
-                console.log(
-                    "WebSocket disconnected. Attempting to reconnect..."
-                );
                 clearInterval((ws as WS).pingInterval);
-
                 setTimeout(connectWebSocket, 3000);
             };
 
