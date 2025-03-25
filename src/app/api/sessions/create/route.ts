@@ -97,7 +97,6 @@ export async function POST(req: Request) {
             body.date,
             body.startTime,
             body.endTime || null,
-            body.roomId || null,
             body.status
         );
 

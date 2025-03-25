@@ -48,7 +48,8 @@ export default function AddRoom({
     };
 
     const isValidUrl = (url: string) => {
-        const pattern = /^(https?:\/\/)?(?:[\w-]+\.)+[\w]{2,}(?:\/.*)?(?:\?.*)?$/;
+        const pattern =
+            /^(https?:\/\/)?(?:[\w-]+\.)+[\w]{2,}(?:\/.*)?(?:\?.*)?$/;
         return pattern.test(url);
     };
 
@@ -140,8 +141,6 @@ export default function AddRoom({
             }
 
             onRoomAdded();
-            console.log("room added");
-
             setName("");
             setSelectedMedium("online");
             setUrl("");
@@ -260,7 +259,9 @@ export default function AddRoom({
                         <div className="flex flex-col flex-1 gap-2">
                             <label htmlFor="lastName">URL</label>
                             {errors.url && (
-                                <p className="text-red-500 text-sm">{errors.url}</p>
+                                <p className="text-red-500 text-sm">
+                                    {errors.url}
+                                </p>
                             )}
                             <Input
                                 id="url"

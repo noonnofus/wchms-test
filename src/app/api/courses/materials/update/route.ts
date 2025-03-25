@@ -70,7 +70,7 @@ export async function PUT(req: Request) {
                     { status: 400 }
                 );
             }
-            //
+
             const { success, fileName } = await uploadToS3(file, fileKey);
             if (!success) {
                 throw new Error("Failed to upload to S3.");
@@ -102,7 +102,6 @@ export async function PUT(req: Request) {
                 url = await getSignedUrlFromFileKey(fileName, true, file.name);
             }
         }
-        console.log(uploadId);
         const newData = {
             title,
             type: exerciseType,
@@ -139,8 +138,6 @@ export async function PUT(req: Request) {
             .leftJoin(uploadMedia, eq(courseMaterials.uploadId, uploadMedia.id))
             .where(eq(courseMaterials.id, id))
             .then((res) => res[0]);
-
-        console.log(updatedMaterial);
 
         return new Response(
             JSON.stringify({

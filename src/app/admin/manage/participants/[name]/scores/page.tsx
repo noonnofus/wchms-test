@@ -173,7 +173,7 @@ export default function ParticipantScores() {
                         />
                     ))
                 ) : (
-                    <p className="text-gray-500">No scores available.</p>
+                    <p className="text-gray-500">{t("no scores")}</p>
                 )}
             </div>
 

@@ -20,7 +20,6 @@ interface MathQuestions {
 
 // video URL for physical activity to test it.
 const url = "https://www.youtube.com/watch?v=0xfDmrcI7OI";
-console.log(url);
 
 export default function ActivityPage() {
     const [correctCount, setCorrectCount] = useState(0);
@@ -120,9 +119,7 @@ export default function ActivityPage() {
         const getVideoUrl = async () => {
             if (activity === "physical") {
                 const res = await getLatestPhysicalMaterial();
-                console.log(res);
                 const url = res[0].url;
-                console.log(url);
                 if (url !== null) {
                     setPhysicalUrl(url);
                 } else {

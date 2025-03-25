@@ -92,10 +92,8 @@ export async function addParticipant(
                 gender,
                 dateOfBirth,
             });
-            console.log("Participant added");
             return { message: "Participant added successfully" };
         } else {
-            console.log("Participant already exists");
             return { error: "Participant with this email already exists" };
         }
     } catch (error) {
@@ -113,8 +111,6 @@ export async function deleteParticipant(participantId: number) {
         if (!result) {
             return { error: "Participant not found or already deleted" };
         }
-
-        console.log(`Participant with ID ${participantId} deleted`);
         return { message: "Participant deleted successfully" };
     } catch (error) {
         console.error("Error deleting participant", error);

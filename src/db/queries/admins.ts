@@ -107,10 +107,8 @@ export async function addAdmin(
                 password: hashedPass,
                 role,
             });
-            console.log("Admin added");
             return { message: "Admin added successfully" };
         } else {
-            console.log("Admin already exists");
             return { error: "Admin with this email already exists" };
         }
     } catch (error) {

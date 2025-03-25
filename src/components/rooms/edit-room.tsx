@@ -124,7 +124,6 @@ export default function EditRoom({
             }
 
             onRoomUpdated();
-            console.log("Room updated successfully");
             closePopup();
         } catch (error) {
             console.error("Error updating room:", error);

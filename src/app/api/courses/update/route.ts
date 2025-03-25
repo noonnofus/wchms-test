@@ -173,7 +173,6 @@ export async function PUT(req: Request) {
             .from(Courses)
             .where(eq(Courses.id, courseId));
 
-        // Respond with the updated course id
         return new Response(JSON.stringify({ courseId: updatedCourse[0].id }), {
             status: 200,
         });

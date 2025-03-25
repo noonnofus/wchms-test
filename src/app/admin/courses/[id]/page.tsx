@@ -7,7 +7,6 @@ import ParticipantList from "@/components/courses/participant-list";
 import RequestList from "@/components/courses/request-list";
 import CloseIcon from "@/components/icons/close-icon";
 import CloseSwipe from "@/components/icons/close-swipe";
-import AddSession from "@/components/sessions/add-session";
 import AddButton from "@/components/shared/add-button";
 import DeleteConfirmation from "@/components/shared/delete-confirmation";
 import MaterialCard from "@/components/shared/material-card";
@@ -46,7 +45,6 @@ export default function AdminCourses() {
     const [materialToDelete, setMaterialToDelete] =
         useState<CourseMaterials | null>(null);
     const [courseToDelete, setCourseToDelete] = useState<Course | null>(null);
-    const [showAddSessionPopup, setShowAddSessionPopup] = useState(false);
     const [requests, setRequests] = useState<CourseJoinRequest[] | null>(null);
     const [participants, setParticipants] = useState<Participant[]>(
         selectedCourse?.participants || []
@@ -169,7 +167,6 @@ export default function AdminCourses() {
         setShowDeletePopup(false);
         setEditMaterialId("");
         setShowEditMaterialPopup(false);
-        setShowAddSessionPopup(false);
     };
     const handleEditButtonClick = (id: string) => {
         setEditMaterialId(id);
@@ -213,10 +210,6 @@ export default function AdminCourses() {
         } catch (error) {
             console.error("Error deleting course material:", error);
         }
-    };
-
-    const handleAddSessionButtonClick = () => {
-        setShowAddSessionPopup(true);
     };
 
     return (
@@ -264,48 +257,11 @@ export default function AdminCourses() {
                                         removeParticipantLocally
                                     }
                                 />
-                                <AddButton
-                                    handleAddButtonClick={
-                                        handleAddSessionButtonClick
-                                    }
-                                />
                             </div>
                         )}
-                        {showAddSessionPopup && (
-                            <div className="fixed inset-0 flex items-end md:items-center justify-center z-10 overflow-y-auto">
-                                <div
-                                    className="absolute inset-0 bg-black opacity-50"
-                                    onClick={handleClosePopup}
-                                ></div>
-                                <div className="z-30 bg-white rounded-t-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
-                                    <div className="relative w-full">
-                                        <div
-                                            className="flex justify-center items-center p-6 md:hidden "
-                                            {...swipeHandlers}
-                                        >
-                                            {/* Swipe indicator */}
-                                            <div className="absolute top-6 md:hidden">
-                                                <CloseSwipe />
-                                            </div>
-                                        </div>
-                                        <button
-                                            onClick={handleClosePopup}
-                                            className="absolute top-3 right-4"
-                                        >
-                                            <CloseIcon />
-                                        </button>
-                                    </div>
-                                    <div className="overflow-y-auto max-h-[calc(90vh-90px)]">
-                                        <AddSession
-                                            courseId={selectedCourse.id}
-                                            handleClosePopup={handleClosePopup}
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                        )}
+
                         {showEditCoursePopup && (
-                            <div className="fixed inset-0 flex items-end md:items-center justify-center z-10">
+                            <div className="fixed inset-0 flex items-end md:items-center justify-center z-20">
                                 <div
                                     className="absolute inset-0 bg-black opacity-50"
                                     onClick={handleClosePopup}
@@ -338,7 +294,7 @@ export default function AdminCourses() {
                             </div>
                         )}
                         {showDeletePopup && courseToDelete && (
-                            <div className="fixed inset-0 flex items-center justify-center z-10 overflow-y-auto">
+                            <div className="fixed inset-0 flex items-center justify-center z-20">
                                 <div
                                     className="absolute inset-0 bg-black opacity-50"
                                     onClick={handleClosePopup}
@@ -410,7 +366,7 @@ export default function AdminCourses() {
                                     handleAddButtonClick={handleAddButtonClick}
                                 />
                                 {showAddPopup && (
-                                    <div className="fixed inset-0 flex items-end md:items-center justify-center z-10">
+                                    <div className="fixed inset-0 flex items-end md:items-center justify-center z-20">
                                         <div
                                             className="absolute inset-0 bg-black opacity-50"
                                             onClick={handleClosePopup}
@@ -450,7 +406,7 @@ export default function AdminCourses() {
                                 )}
 
                                 {showEditMaterialPopup && (
-                                    <div className="fixed inset-0 flex items-end md:items-center justify-center z-10 overflow-y-auto">
+                                    <div className="fixed inset-0 flex items-end md:items-center justify-center z-20 overflow-y-auto">
                                         <div
                                             className="absolute inset-0 bg-black opacity-50"
                                             onClick={handleClosePopup}
@@ -498,7 +454,7 @@ export default function AdminCourses() {
                                     </div>
                                 )}
                                 {showDeletePopup && materialToDelete && (
-                                    <div className="fixed inset-0 flex items-center justify-center z-10 overflow-y-auto">
+                                    <div className="fixed inset-0 flex items-center justify-center z-20">
                                         <div
                                             className="absolute inset-0 bg-black opacity-50"
                                             onClick={handleClosePopup}

@@ -40,7 +40,6 @@ export default function HomeworkPage() {
                     }
                 } catch (error) {
                     console.error("Error fetching courses", error);
-                    // setSelectedCourse(undefined);
                 } finally {
                     setIsLoading(false);
                 }

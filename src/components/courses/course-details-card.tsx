@@ -77,7 +77,6 @@ export default function CourseDetailsCard(props: CourseDetailsProps) {
                 parseInt(courseId),
                 parseInt(participantId)
             );
-            console.log("Join request successfully sent");
             await fetchData();
         } catch (error) {
             console.error("Error enrolling in course:", error);
@@ -96,7 +95,6 @@ export default function CourseDetailsCard(props: CourseDetailsProps) {
                 parseInt(courseId),
                 parseInt(participantId)
             );
-            console.log("Join request successfully deleted");
             setRequestExists(false);
         } catch (error) {
             console.error("Error removing request:", error);

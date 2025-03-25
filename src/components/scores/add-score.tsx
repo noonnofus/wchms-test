@@ -160,17 +160,17 @@ export default function AddScore({
         } = {};
 
         if (!formData.instructorId) {
-            errorMessages.instructorId = "Instructor is required";
+            errorMessages.instructorId = t("error.missingInstructor");
             isValid = false;
         }
 
         if (formData.courseId && !formData.sessionId) {
-            errorMessages.sessionId = "Session is required";
+            errorMessages.sessionId = t("error.missingSession");
             isValid = false;
         }
 
         if (!formData.courseId) {
-            errorMessages.courseId = "Course is required";
+            errorMessages.courseId = t("error.missingCourse");
             isValid = false;
         }
 
@@ -179,7 +179,7 @@ export default function AddScore({
             (formData.minutes === "" || formData.minutes === "0") &&
             (formData.seconds === "" || formData.seconds === "0")
         ) {
-            errorMessages.time = "Time is required";
+            errorMessages.time = t("error.missingTime");
             isValid = false;
         }
 

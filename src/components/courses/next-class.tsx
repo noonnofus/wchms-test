@@ -108,7 +108,6 @@ export default function NextClass({ whenLoaded }: { whenLoaded: () => void }) {
                 const data = await response.json();
 
                 if (data.exists) {
-                    console.log("Reminder already scheduled for this session");
                     notificationSentRef.current = true;
                     return;
                 }
@@ -150,7 +149,6 @@ export default function NextClass({ whenLoaded }: { whenLoaded: () => void }) {
                 const data = await response.json();
 
                 if (data.exists) {
-                    console.log("Reminder already sent for this session");
                     notificationSentRef.current = true;
                     return;
                 }

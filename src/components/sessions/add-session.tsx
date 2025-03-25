@@ -14,7 +14,7 @@ import { Button } from "../ui/button";
 import { DatePicker } from "../ui/date-picker";
 import { useTranslation } from "react-i18next";
 
-export const statuses = ["Draft", "Available", "Completed", "Archived"];
+export const statuses = ["Available", "Completed"];
 
 interface Props {
     handleClosePopup: () => void;
@@ -97,7 +97,7 @@ export default function AddSession(props: Props) {
         date: null as Date | null,
         startTime: "",
         endTime: "",
-        status: "Draft" as "Draft" | "Available" | "Completed" | "Archived",
+        status: "Available" as "Available" | "Completed",
     });
 
     const [errors, setErrors] = useState<ErrorMessages>({
@@ -260,7 +260,6 @@ export default function AddSession(props: Props) {
                 const error = await res.json();
                 throw new Error(error.error || "Failed to create session");
             }
-            console.log("Session created successfully");
             props.handleClosePopup();
             router.refresh();
         } catch (error) {
@@ -305,7 +304,6 @@ export default function AddSession(props: Props) {
                 throw new Error(error.error || "Failed to update session");
             }
 
-            console.log("Session updated successfully");
             props.handleClosePopup();
             router.refresh();
         } catch (error) {

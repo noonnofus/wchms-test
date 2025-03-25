@@ -81,7 +81,6 @@ export default function EditMaterial({
 
         if (response.ok) {
             const responseData = await response.json();
-            console.log("Material updated successfully");
             const updatedMaterial: CourseMaterialsWithFile = responseData.data;
             setSelectedCourse((prevSelectedCourse: CourseFull | undefined) => {
                 if (prevSelectedCourse) {
@@ -89,10 +88,10 @@ export default function EditMaterial({
                         ...prevSelectedCourse,
                         materials: prevSelectedCourse.materials
                             ? prevSelectedCourse.materials.map((material) =>
-                                material.id === updatedMaterial.id
-                                    ? { ...material, ...updatedMaterial }
-                                    : material
-                            )
+                                  material.id === updatedMaterial.id
+                                      ? { ...material, ...updatedMaterial }
+                                      : material
+                              )
                             : [],
                     } as CourseFull;
                 } else {
