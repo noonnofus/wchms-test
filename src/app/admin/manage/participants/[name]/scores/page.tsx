@@ -177,7 +177,7 @@ export default function ParticipantScores() {
             </div>
 
             {showAddPopup && participant && (
-                <div className="fixed inset-0 flex items-end md:items-center justify-center z-10 overflow-y-auto">
+                <div className="fixed inset-0 flex items-end md:items-center justify-center z-20 overflow-y-auto">
                     <div
                         className="absolute inset-0 bg-black opacity-50"
                         onClick={() => setShowEditPopup(false)}
@@ -209,7 +209,7 @@ export default function ParticipantScores() {
             )}
 
             {showEditPopup && participant && scoreToEdit && (
-                <div className="fixed inset-0 flex items-center justify-center z-10 overflow-y-auto">
+                <div className="fixed inset-0 flex items-center justify-center z-20 overflow-y-auto">
                     <div
                         className="absolute inset-0 bg-black opacity-50"
                         onClick={handleClosePopup}
@@ -242,7 +242,7 @@ export default function ParticipantScores() {
             )}
 
             {showDeletePopup && participant && scoreToDelete && (
-                <div className="fixed inset-0 flex items-center justify-center z-10 overflow-y-auto">
+                <div className="fixed inset-0 flex items-center justify-center z-20 overflow-y-auto">
                     <div
                         className="absolute inset-0 bg-black opacity-50"
                         onClick={handleClosePopup}
