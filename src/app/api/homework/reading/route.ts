@@ -61,7 +61,7 @@ export async function POST(req: Request) {
         const topic = body.topic;
         const level = body.level || "Basic";
         console.log(level);
-        const lang = (await getLanguageFromCookie()) || "English";
+        // const lang = (await getLanguageFromCookie()) || "English";
 
         if (!topic) {
             return;
@@ -74,13 +74,13 @@ export async function POST(req: Request) {
                     role: "system",
                     content: `
                         You are an assistant for seniors doing reading aloud exercises to support preventing dementia. 
-                        Your job is to generate **one reading passage** based on the given topic, level and language. 
+                        Your job is to generate **one reading passage** based on the given topic, level. 
                         The passage should be relevant, easy to understand, and encourage discussion.
 
                         ### Instructions:
                         - **Generate exactly one passage.**
-                        - The **Basic** passage must be between **200 and 250 tokens**.
-                        - The **Intermediate** passage must be between **270 and 320 tokens**.
+                        - The **Basic** passage must be **at least 200 tokens and maximum 260 tokens**.
+                        - The **Intermediate** passage must **at least 270 tokens and maximum 320 tokens**.
                         - Ensure the passage does not go **below 200 tokens** for Basic level and **270 tokens below** for Intermediate level.
                         - Ensure the passage length stays within the specified range for each level.
                         - **If the passage is too short, extend it with:**
@@ -110,11 +110,11 @@ export async function POST(req: Request) {
                 },
                 {
                     role: "user",
-                    content: `Generate a ${level} level of reading aloud exercise question of the topic ${topic} in ${lang}`,
+                    content: `Generate a ${level} level of reading aloud exercise question of the topic ${topic}`,
                 },
             ],
             temperature: 1.0,
-            max_tokens: level === "Basic" ? 300 : 400,
+            max_tokens: level === "Basic" ? 400 : 450,
         });
 
         const result = completion.choices[0].message;
