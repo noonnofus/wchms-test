@@ -154,7 +154,7 @@ export default function ParticipantScores() {
     }
 
     return (
-        <main className="flex flex-col gap-10 w-full items-center h-full overflow-y-scroll pb-16">
+        <main className="flex flex-col gap-10 w-full items-center h-full mb-16 md:mb-32 lg:mb-52">
             <h1 className="font-semibold text-3xl md:text-4xl text-start">
                 All Scores
             </h1>
@@ -242,7 +242,7 @@ export default function ParticipantScores() {
             )}
 
             {showDeletePopup && participant && scoreToDelete && (
-                <div className="fixed inset-0 flex items-center justify-center z-20 overflow-y-auto">
+                <div className="fixed inset-0 flex items-center justify-center z-20">
                     <div
                         className="absolute inset-0 bg-black opacity-50"
                         onClick={handleClosePopup}
