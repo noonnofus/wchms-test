@@ -17,3 +17,5 @@ export const users = mysqlTable("users", {
     role: mysqlEnum("role", ["Admin", "Staff"]).default("Staff").notNull(),
 });
 export type User = typeof users.$inferSelect;
+
+export type UserNoPass = Omit<User, "password">;

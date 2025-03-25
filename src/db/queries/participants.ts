@@ -3,6 +3,7 @@ import db from "@/db";
 import { eq, sql } from "drizzle-orm";
 import { CourseParticipant, Courses } from "../schema/course";
 import { participants } from "../schema/participants";
+import { Scores } from "../schema/score";
 
 export async function getAllParticipants(withCourses = false) {
     "use server";
@@ -118,5 +119,19 @@ export async function deleteParticipant(participantId: number) {
     } catch (error) {
         console.error("Error deleting participant", error);
         return { error: "Failed to delete participant" };
+    }
+}
+
+export async function getAllScoresByParticipantId(participantId: number) {
+    "use server";
+    try {
+        const scores = await db
+            .select()
+            .from(Scores)
+            .where(eq(Scores.participantId, participantId));
+        return scores;
+    } catch (error) {
+        console.error("Error fetching participant's scores", error);
+        return [];
     }
 }

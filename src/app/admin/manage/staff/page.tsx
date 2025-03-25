@@ -25,7 +25,6 @@ import AddButton from "@/components/shared/add-button";
 import { useTranslation } from "react-i18next";
 import Link from "next/link";
 
-// export type UserNoPass = Omit<User, "password">;
 export default function ManageStaff() {
     const [admins, setAdmins] = useState<User[]>([]);
     const [error, setError] = useState(""); //eslint-disable-line
@@ -152,7 +151,7 @@ export default function ManageStaff() {
                 {t("manage")}
             </h1>
             {showEditPopup && adminToEdit && (
-                <div className="fixed inset-0 flex items-end md:items-center justify-center z-10 overflow-y-auto">
+                <div className="fixed inset-0 flex items-end md:items-center justify-center z-20 overflow-y-auto">
                     <div
                         className="absolute inset-0 bg-black opacity-50"
                         onClick={handleClosePopup}
@@ -189,7 +188,7 @@ export default function ManageStaff() {
             )}
             {/* Delete Confirmation Popup */}
             {showDeletePopup && adminToDelete && (
-                <div className="fixed inset-0 flex items-center justify-center z-10 overflow-y-auto">
+                <div className="fixed inset-0 flex items-center justify-center z-20 overflow-y-auto">
                     <div
                         className="absolute inset-0 bg-black opacity-50"
                         onClick={handleClosePopup}
@@ -209,7 +208,7 @@ export default function ManageStaff() {
                 </div>
             )}
             {showAddPopup && (
-                <div className="fixed inset-0 flex items-end md:items-center justify-center z-10 overflow-y-auto">
+                <div className="fixed inset-0 flex items-end md:items-center justify-center z-20 overflow-y-auto">
                     <div
                         className="absolute inset-0 bg-black opacity-50"
                         onClick={handleClosePopup}
@@ -295,70 +294,70 @@ export default function ManageStaff() {
                     <TableBody className="w-full">
                         {isLoading
                             ? [...Array(3)].map((_, index) => (
-                                <TableRow
-                                    className="w-full justify-between items-center"
-                                    key={index}
-                                >
-                                    <TableCell className="w-[300px] min-w-[200px] flex items-center gap-4 text-left text-base md:text-lg">
-                                        <Skeleton className="hidden md:flex md:w-10 md:h-10 rounded-full" />
-                                        <Skeleton className="h-4 w-24 rounded" />
-                                    </TableCell>
-                                    <TableCell className="w-[150px] min-w-[120px]">
-                                        <Skeleton className="h-4 w-40 rounded" />
-                                    </TableCell>
-                                    <TableCell className="w-[100px] min-w-[80px] flex justify-center items-center">
-                                        <Skeleton className="h-6 w-6 rounded" />
-                                    </TableCell>
-                                    <TableCell className="w-[200px] min-w-[80px] flex gap-4 justify-center items-center">
-                                        <Skeleton className="h-6 w-6 rounded" />
-                                        <Skeleton className="h-6 w-6 rounded" />
-                                    </TableCell>
-                                </TableRow>
-                            ))
+                                  <TableRow
+                                      className="w-full justify-between items-center"
+                                      key={index}
+                                  >
+                                      <TableCell className="w-[300px] min-w-[200px] flex items-center gap-4 text-left text-base md:text-lg">
+                                          <Skeleton className="hidden md:flex md:w-10 md:h-10 rounded-full" />
+                                          <Skeleton className="h-4 w-24 rounded" />
+                                      </TableCell>
+                                      <TableCell className="w-[150px] min-w-[120px]">
+                                          <Skeleton className="h-4 w-40 rounded" />
+                                      </TableCell>
+                                      <TableCell className="w-[100px] min-w-[80px] flex justify-center items-center">
+                                          <Skeleton className="h-6 w-6 rounded" />
+                                      </TableCell>
+                                      <TableCell className="w-[200px] min-w-[80px] flex gap-4 justify-center items-center">
+                                          <Skeleton className="h-6 w-6 rounded" />
+                                          <Skeleton className="h-6 w-6 rounded" />
+                                      </TableCell>
+                                  </TableRow>
+                              ))
                             : filteredAdmins.map((admin: User) => (
-                                <TableRow
-                                    className="flex gap-2 justify-between w-full items-center"
-                                    key={admin.id}
-                                >
-                                    <TableCell className="w-[300px] min-w-[200px] flex items-center gap-4 text-left text-base md:text-lg">
-                                        <div className="hidden md:flex md:w-10 md:h-10 rounded-full bg-gray-200 items-center justify-center">
-                                            {`${admin.firstName[0]}${admin.lastName[0]}`}
-                                        </div>
-                                        <Link
-                                            href={`/admin/manage/staff/${admin.firstName}-${admin.lastName}`}
-                                            onClick={() =>
-                                                sessionStorage.setItem(
-                                                    "staffId",
-                                                    admin.id.toString()
-                                                )
-                                            }
-                                        >
-                                            {`${admin.firstName} ${admin.lastName}`}
-                                        </Link>
-                                    </TableCell>
-                                    <TableCell className="w-[150px] min-w-[120px] text-left text-base md:text-lg">
-                                        {t(admin.role.toLowerCase())}
-                                    </TableCell>
-                                    <TableCell className="w-[200px] min-w-[100px] flex gap-4 justify-center items-center">
-                                        <button
-                                            onClick={() =>
-                                                handleDeleteButtonClick(admin)
-                                            }
-                                            className="w-1/2 flex justify-center"
-                                        >
-                                            <DeleteIcon />
-                                        </button>
-                                        <button
-                                            onClick={() =>
-                                                handleEditButtonClick(admin)
-                                            }
-                                            className="w-1/2 flex justify-center"
-                                        >
-                                            <EditIcon />
-                                        </button>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
+                                  <TableRow
+                                      className="flex gap-2 justify-between w-full items-center"
+                                      key={admin.id}
+                                  >
+                                      <TableCell className="w-[300px] min-w-[200px] flex items-center gap-4 text-left text-base md:text-lg">
+                                          <div className="hidden md:flex md:w-10 md:h-10 rounded-full bg-gray-200 items-center justify-center">
+                                              {`${admin.firstName[0]}${admin.lastName[0]}`}
+                                          </div>
+                                          <Link
+                                              href={`/admin/manage/staff/${admin.firstName}-${admin.lastName}`}
+                                              onClick={() =>
+                                                  sessionStorage.setItem(
+                                                      "staffId",
+                                                      admin.id.toString()
+                                                  )
+                                              }
+                                          >
+                                              {`${admin.firstName} ${admin.lastName}`}
+                                          </Link>
+                                      </TableCell>
+                                      <TableCell className="w-[150px] min-w-[120px] text-left text-base md:text-lg">
+                                          {t(admin.role.toLowerCase())}
+                                      </TableCell>
+                                      <TableCell className="w-[200px] min-w-[100px] flex gap-4 justify-center items-center">
+                                          <button
+                                              onClick={() =>
+                                                  handleDeleteButtonClick(admin)
+                                              }
+                                              className="w-1/2 flex justify-center"
+                                          >
+                                              <DeleteIcon />
+                                          </button>
+                                          <button
+                                              onClick={() =>
+                                                  handleEditButtonClick(admin)
+                                              }
+                                              className="w-1/2 flex justify-center"
+                                          >
+                                              <EditIcon />
+                                          </button>
+                                      </TableCell>
+                                  </TableRow>
+                              ))}
                     </TableBody>
                 </Table>
             </div>
