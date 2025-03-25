@@ -5,7 +5,7 @@ export async function POST(req: Request) {
         const body = await req.json();
         const { name, medium, url, capacity, status, description, note } = body;
 
-        if (!name || !medium || !url || !status) {
+        if (!name || !medium || (medium !== "In-Person" && !url) || !status) {
             return new Response(
                 JSON.stringify({ message: "Missing required fields" }),
                 { status: 400 }
