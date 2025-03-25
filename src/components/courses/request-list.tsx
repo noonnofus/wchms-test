@@ -207,7 +207,7 @@ export default function RequestOverviewCard({
                                             </div>
                                         )}
                                         {showDeletePopup && requestToDelete && (
-                                            <div className="fixed inset-0 flex items-center justify-center z-10 overflow-y-auto">
+                                            <div className="fixed inset-0 flex items-center justify-center z-20 overflow-y-auto">
                                                 <div
                                                     className="absolute inset-0 bg-black opacity-50"
                                                     onClick={handleClosePopup}

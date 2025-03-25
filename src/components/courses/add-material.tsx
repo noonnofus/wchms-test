@@ -389,7 +389,7 @@ export default function AddMaterial(props: {
                             <Button
                                 onClick={props.handleClosePopup}
                                 variant="outline"
-                                className="w-full h-full rounded-full bg-transparent border-primary-green text-primary-green hover:bg-primary-green hover:text-white font-semibold py-2 md:py-4"
+                                className="w-full h-full rounded-full bg-transparent border-primary-green text-primary-green hover:bg-primary-green hover:text-white font-semibold text-xl py-2 md:py-4"
                             >
                                 {t("button.cancel")}
                             </Button>
@@ -514,7 +514,7 @@ export default function AddMaterial(props: {
                             <Button
                                 onClick={props.handleClosePopup}
                                 variant="outline"
-                                className="w-full h-full rounded-full bg-transparent border-primary-green text-primary-green hover:bg-primary-green hover:text-white font-semibold py-2 md:py-4"
+                                className="w-full h-full rounded-full bg-transparent border-primary-green text-primary-green hover:bg-primary-green hover:text-white text-xl font-semibold py-2 md:py-4"
                             >
                                 {t("button.cancel")}
                             </Button>

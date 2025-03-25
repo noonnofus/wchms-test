@@ -82,80 +82,80 @@ export default function ParticipantList(props: {
                     <div className="flex overflow-x-auto min-w-max space-x-4">
                         {props.participants.length
                             ? props.participants.map((participant) => {
-                                return (
-                                    <div
-                                        className="flex flex-col w-40 md:w-52 h-auto border-2 border-primary-green rounded-lg p-2 md:p-4"
-                                        key={
-                                            participant.id +
-                                            participant.firstName
-                                        }
-                                    >
-                                        <p className="text-lg md:text-2xl font-semibold capitalize">{`${participant.firstName} ${participant.lastName[0]}.`}</p>
-                                        <div className="my-2 md:my-4 self-center w-14 h-14 md:w-20 md:h-20 rounded-full bg-gray-300 flex flex-col items-center justify-center">{`${participant.firstName[0]}${participant.lastName[0]}`}</div>
-                                        <Button
-                                            asChild
-                                            key={
-                                                participant.id +
-                                                participant.firstName +
-                                                "vp_button"
-                                            }
-                                            className=" bg-primary-green hover:bg-[#045B47] font-semibold text-sm md:text-base"
-                                        >
-                                            {props.courseId ? (
-                                                <Link
-                                                    href={`/admin/manage/participants/${participant.firstName}-${participant.lastName}`}
-                                                    onClick={() =>
-                                                        sessionStorage.setItem(
-                                                            "participantId",
-                                                            participant.id.toString()
-                                                        )
-                                                    }
-                                                >
-                                                    View Profile
-                                                </Link>
-                                            ) : (
-                                                <Link
-                                                    href={`/profile/${participant.firstName}-${participant.lastName}`}
-                                                    onClick={() =>
-                                                        sessionStorage.setItem(
-                                                            "participantId",
-                                                            participant.id.toString()
-                                                        )
-                                                    }
-                                                >
-                                                    View Profile
-                                                </Link>
-                                            )}
-                                        </Button>
+                                  return (
+                                      <div
+                                          className="flex flex-col w-40 md:w-52 h-auto border-2 border-primary-green rounded-lg p-2 md:p-4"
+                                          key={
+                                              participant.id +
+                                              participant.firstName
+                                          }
+                                      >
+                                          <p className="text-lg md:text-2xl font-semibold capitalize">{`${participant.firstName} ${participant.lastName[0]}.`}</p>
+                                          <div className="my-2 md:my-4 self-center w-14 h-14 md:w-20 md:h-20 rounded-full bg-gray-300 flex flex-col items-center justify-center">{`${participant.firstName[0]}${participant.lastName[0]}`}</div>
+                                          <Button
+                                              asChild
+                                              key={
+                                                  participant.id +
+                                                  participant.firstName +
+                                                  "vp_button"
+                                              }
+                                              className=" bg-primary-green hover:bg-[#045B47] font-semibold text-sm md:text-base"
+                                          >
+                                              {props.courseId ? (
+                                                  <Link
+                                                      href={`/admin/manage/participants/${participant.firstName}-${participant.lastName}`}
+                                                      onClick={() =>
+                                                          sessionStorage.setItem(
+                                                              "participantId",
+                                                              participant.id.toString()
+                                                          )
+                                                      }
+                                                  >
+                                                      View Profile
+                                                  </Link>
+                                              ) : (
+                                                  <Link
+                                                      href={`/profile/${participant.firstName}-${participant.lastName}`}
+                                                      onClick={() =>
+                                                          sessionStorage.setItem(
+                                                              "participantId",
+                                                              participant.id.toString()
+                                                          )
+                                                      }
+                                                  >
+                                                      View Profile
+                                                  </Link>
+                                              )}
+                                          </Button>
 
-                                        {props.courseId ? (
-                                            <Button
-                                                key={
-                                                    participant.id +
-                                                    participant.firstName +
-                                                    "remove_action"
-                                                }
-                                                onClick={() =>
-                                                    handleRemoveButtonClick(
-                                                        participant
-                                                    )
-                                                }
-                                                className="mt-2 bg-destructive-red text-destructive-text hover:bg-destructive-hover font-semibold text-xs md:text-base"
-                                            >
-                                                {t("remove from course")}
-                                            </Button>
-                                        ) : (
-                                            ""
-                                        )}
-                                    </div>
-                                );
-                            })
+                                          {props.courseId ? (
+                                              <Button
+                                                  key={
+                                                      participant.id +
+                                                      participant.firstName +
+                                                      "remove_action"
+                                                  }
+                                                  onClick={() =>
+                                                      handleRemoveButtonClick(
+                                                          participant
+                                                      )
+                                                  }
+                                                  className="mt-2 bg-destructive-red text-destructive-text hover:bg-destructive-hover font-semibold text-xs md:text-base"
+                                              >
+                                                  {t("remove from course")}
+                                              </Button>
+                                          ) : (
+                                              ""
+                                          )}
+                                      </div>
+                                  );
+                              })
                             : t("no participants registered")}
                     </div>
                 </CardContent>
             </Card>
             {showDeletePopup && participantToRemove && (
-                <div className="fixed inset-0 flex items-center justify-center z-10 overflow-y-auto">
+                <div className="fixed inset-0 flex items-center justify-center z-20 overflow-y-auto">
                     <div
                         className="absolute inset-0 bg-black opacity-50"
                         onClick={handleClosePopup}
