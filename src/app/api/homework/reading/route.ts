@@ -1,10 +1,12 @@
 import OpenAI from "openai";
 import { NextResponse } from "next/server";
+import { getLanguageFromCookie } from "@/lib/lang";
 
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
 });
 
+// Reading Aloud Topic Generator
 export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
     const level = searchParams.get("level");
@@ -52,13 +54,15 @@ export async function GET(req: Request) {
     }
 }
 
+// Reading Aloud Passage Generator
 export async function POST(req: Request) {
     try {
         const body = await req.json();
         const topic = body.topic;
-        const level = body.level || "basic";
+        const level = body.level || "Basic";
+        const lang = (await getLanguageFromCookie()) || "English";
 
-        if (!topic || !level) {
+        if (!topic) {
             return;
         }
 
@@ -69,43 +73,50 @@ export async function POST(req: Request) {
                     role: "system",
                     content: `
                         You are an assistant for seniors doing reading aloud exercises to support preventing dementia. 
-                        Your job is to generate **one reading passage** based on the given topic and level. 
+                        Your job is to generate **one reading passage** based on the given topic, level and language. 
                         The passage should be relevant, easy to understand, and encourage discussion.
 
                         ### Instructions:
                         - **Generate exactly one passage.**
-                        - The **Basic** passage must be between **170 and 230 tokens.**
-                        - The **Intermediate** passage must be between **230 and 290 tokens.**
-                        - Ensure the passage **length is consistent** and does not go **below 170 tokens**.
-                        - If the response is too short, **extend it with additional details, examples, or explanations.**
+                        - The **Basic** passage must be **at least 200 tokens and maximum 260 tokens**.
+                        - The **Intermediate** passage must **at least 270 tokens and maximum 320 tokens**.
+                        - Ensure the passage does not go **below 200 tokens** for Basic level and **270 tokens below** for Intermediate level.
+                        - Ensure the passage length stays within the specified range for each level.
+                        - **If the passage is too short, extend it with:**
+                            - Additional background information or historical context.
+                            - More descriptive details or examples.
+                            - A short concluding remark summarizing the main point.
                         - The passage should be engaging and suitable for casual discussion.
-                        - The response **must be in JSON format**.
-
+                        - The response **must be in JSON format and must be fully enclosed with proper brackets ({} and []).**
+                        - **Ensure the final sentence is fully formed and ends with a period.**
+                        - **If the last sentence is cut off, regenerate or truncate it so that it remains a complete thought.**
+                        - **The passage must always be a valid JSON string that can be parsed without errors.**
+                        - **Validate that all opening brackets {[ have corresponding closing brackets }].**
+                        - **Do not output incomplete JSON objects.**
                         ### Example Output:
                         {
-                            "reading": [
-                                "Saitama Prefecture has been proud of Japan's highest Hina dolls for more than 50 consecutive years since 1962.
-                                In the Edo period, the 3rd Shogun Iemitsu conducted a major renovation of Nikko Toshogu Shrine, which has excellent skills from all over the country
-                                The craftsmen were gathered together. Iwatsuki (now Saitama City) flourished as an inn town at that time
-                                In Iwatsuki Ward, craftsmen will live there.
-                                Hina dolls became popular in the Edo period, and at the end of the Edo period, dolls became exclusive products of the lord of the Iwatsuki domain."
-                                It has become such an important industry that it is still handed down as the best town in Japan to make dolls."
-                                Yes. It is a doll made through hundreds of processes, but even now, skilled puppeteers still have the heart
-                                I'm working on it manually."
+                            \"reading\": [
+                                \"Coffee is one of the most popular beverages in the world.\",
+                                \"It is grown in countries such as Colombia, Brazil, and Ethiopia.\",
+                                \"There are two main types of coffee beans: Arabica and Robusta.\",
+                                \"Arabica beans are smooth and aromatic, while Robusta beans are strong and contain more caffeine.\",
+                                \"Many people enjoy drinking coffee in various forms, such as filter coffee, espresso, or cappuccino.\",
+                                \"In some cultures, coffee drinking is a daily ritual that brings people together.\",
+                                \"Historically, coffeehouses have been places for discussion and social interaction.\"
                             ]
                         }
-                        `,
+                    `,
                 },
                 {
                     role: "user",
-                    content: `Generate a ${level} level of reading aloud exercise question of the topic ${topic}`,
+                    content: `Generate a ${level} level of reading aloud exercise question of the topic ${topic} in ${lang}`,
                 },
             ],
-            temperature: 1.2,
-            max_tokens: 1500,
+            temperature: 1.0,
         });
 
         const result = completion.choices[0].message;
+
         return NextResponse.json({ result: result.content }, { status: 200 });
     } catch (error) {
         return NextResponse.json({ error: error }, { status: 500 });

@@ -70,10 +70,13 @@ export default function ReadingCard({
 
             try {
                 const data = await res.json();
+                console.log(data);
+
                 result = await JSON.parse(data.result);
             } catch (e) {
                 console.error(e);
                 result = null;
+                setError("Error while getting reading aloud passage. Please try again later.")
             }
 
             setReadingQuestion(result.reading);
@@ -147,7 +150,7 @@ export default function ReadingCard({
                                                         >
                                                             <p className="overflow-hidden text-ellipsis w-full">
                                                                 {
-                                                                    recommendation.topic
+                                                                    t(recommendation.topic)
                                                                 }
                                                             </p>
                                                         </SelectItem>
@@ -163,7 +166,7 @@ export default function ReadingCard({
 
                             {error && (
                                 <p className="text-red-500 text-center">
-                                    {error}
+                                    {t(error)}
                                 </p>
                             )}
 
@@ -209,7 +212,7 @@ export default function ReadingCard({
                             {Array.isArray(readingQuestion) ? (
                                 <div>
                                     {readingQuestion.map((reading, i) => (
-                                        <span key={i}>{reading}</span>
+                                        <span key={i}>{reading} </span>
                                     ))}
                                 </div>
                             ) : (
