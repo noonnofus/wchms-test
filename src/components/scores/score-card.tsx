@@ -10,6 +10,7 @@ import { getCourseById } from "@/db/queries/courses";
 import { CourseFull } from "@/db/schema/course";
 import { getStaffById } from "@/db/queries/admins";
 import { UserNoPass } from "@/db/schema/users";
+import { useTranslation } from "react-i18next";
 
 export default function ScoreCard({
     score,
@@ -24,6 +25,7 @@ export default function ScoreCard({
     isAdmin?: boolean;
     variant?: "list";
 }) {
+    const { t } = useTranslation();
     const [session, setSession] = useState<Session | null>(null);
     const [course, setCourse] = useState<CourseFull | null | undefined>(
         undefined
@@ -33,18 +35,7 @@ export default function ScoreCard({
         const minutes = Math.floor(score.time / 60);
         const seconds = Math.floor(score.time % 60);
 
-        const minuteText = minutes === 1 ? "min" : "mins";
-        const secondText = seconds === 1 ? "sec" : "secs";
-
-        if (seconds === 0) {
-            return `${minutes} ${minuteText}`;
-        }
-
-        if (minutes === 0) {
-            return `${seconds} ${secondText}`;
-        }
-
-        return `${minutes} ${minuteText} and ${seconds.toString().padStart(2, "0")} ${secondText}`;
+        return `${t("score.timeMin", { minutes, count: minutes })} ${t("score.timeSec", { seconds, count: seconds })}`;
     };
 
     useEffect(() => {
@@ -83,10 +74,12 @@ export default function ScoreCard({
                     <div className="flex gap-2">
                         <Book />
                         <span className="font-semibold">
-                            Course: {course?.title}
+                            {t("course")}: {course?.title}
                         </span>
                     </div>
-                    <span>Recorded By: {instructor?.firstName}</span>
+                    <span>
+                        {t("instructor")}: {instructor?.firstName}
+                    </span>
                 </div>
                 <div className="w-full flex flex-row gap-4 justify-between items-end h-24">
                     <div className="flex items-center gap-4 text-gray-700">

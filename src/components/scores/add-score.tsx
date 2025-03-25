@@ -16,6 +16,7 @@ import { Session } from "@/db/schema/session";
 import { Input } from "../ui/input";
 import { Score } from "@/db/schema/score";
 import { User } from "@/db/schema/users";
+import { useTranslation } from "react-i18next";
 
 export type UserNoPass = Omit<User, "password">;
 
@@ -30,6 +31,7 @@ export default function AddScore({
     score?: Score;
     courses: Course[] | null;
 }) {
+    const { t } = useTranslation();
     const [instructors, setInstructors] = useState<UserNoPass[]>([]);
     const [sessions, setSessions] = useState<Session[] | null>([]);
     const [errors, setErrors] = useState({
@@ -158,17 +160,17 @@ export default function AddScore({
         } = {};
 
         if (!formData.instructorId) {
-            errorMessages.instructorId = "Instructor is required";
+            errorMessages.instructorId = t("error.missingInstructor");
             isValid = false;
         }
 
         if (formData.courseId && !formData.sessionId) {
-            errorMessages.sessionId = "Session is required";
+            errorMessages.sessionId = t("error.missingSession");
             isValid = false;
         }
 
         if (!formData.courseId) {
-            errorMessages.courseId = "Course is required";
+            errorMessages.courseId = t("error.missingCourse");
             isValid = false;
         }
 
@@ -177,7 +179,7 @@ export default function AddScore({
             (formData.minutes === "" || formData.minutes === "0") &&
             (formData.seconds === "" || formData.seconds === "0")
         ) {
-            errorMessages.time = "Time is required";
+            errorMessages.time = t("error.missingTime");
             isValid = false;
         }
 
@@ -283,7 +285,7 @@ export default function AddScore({
     return (
         <div className="flex flex-col gap-12 overflow-y-auto py-8 px-6 rounded-lg bg-white items-center justify-center">
             <h1 className="font-semibold text-3xl md:text-4xl text-center">
-                {score ? "Edit Board Game Score" : "Add Board Game Score"}
+                {score ? t("edit board game score") : t("add board game score")}
             </h1>
             <form
                 className="flex flex-col gap-4 md:gap-6 w-full h-full md:text-2xl"
@@ -296,7 +298,7 @@ export default function AddScore({
                 )}
                 <div className="w-full flex flex-row gap-4 items-center">
                     <label htmlFor="minutes" className="flex flex-col w-1/2">
-                        <span>Minutes</span>
+                        <span>{t("time.minute", { count: 2 })}</span>
                         <Input
                             type="number"
                             name="minutes"
@@ -309,7 +311,7 @@ export default function AddScore({
                     </label>
                     <span className="mt-6 text-3xl">:</span>
                     <label htmlFor="seconds" className="flex flex-col w-1/2">
-                        <span>Seconds</span>
+                        <span>{t("time.second", { count: 2 })}</span>
                         <Input
                             type="number"
                             name="seconds"
@@ -324,7 +326,7 @@ export default function AddScore({
                 </div>
 
                 <div className="flex flex-col flex-1 gap-2">
-                    <label htmlFor="instructorId">Instructor</label>
+                    <label htmlFor="instructorId">{t("instructor")}</label>
                     {errors.instructorId && (
                         <p className="text-red-500 text-sm">
                             {errors.instructorId}
@@ -337,7 +339,9 @@ export default function AddScore({
                         }
                     >
                         <SelectTrigger>
-                            <SelectValue placeholder="Select Instructor" />
+                            <SelectValue
+                                placeholder={t("placeholder.selectInstructor")}
+                            />
                         </SelectTrigger>
                         <SelectContent>
                             {instructors.map((instructor) => (
@@ -352,7 +356,7 @@ export default function AddScore({
                     </Select>
                 </div>
                 <div className="flex flex-col flex-1 gap-2">
-                    <label htmlFor="courseId">Course</label>
+                    <label htmlFor="courseId">{t("course")}</label>
                     {errors.courseId && (
                         <p className="text-red-500 text-sm">
                             {errors.courseId}
@@ -369,7 +373,9 @@ export default function AddScore({
                         }
                     >
                         <SelectTrigger>
-                            <SelectValue placeholder="Select Course" />
+                            <SelectValue
+                                placeholder={t("placeholder.selectCourse")}
+                            />
                         </SelectTrigger>
                         <SelectContent>
                             {courses?.map((course) => (
@@ -386,7 +392,7 @@ export default function AddScore({
 
                 {courses && sessions && (
                     <div className="flex flex-col flex-1 gap-2">
-                        <label htmlFor="sessionId">Session</label>
+                        <label htmlFor="sessionId">{t("session")}</label>
                         {errors.sessionId && (
                             <p className="text-red-500 text-sm">
                                 {errors.sessionId}
@@ -403,7 +409,9 @@ export default function AddScore({
                             }
                         >
                             <SelectTrigger>
-                                <SelectValue placeholder="Select Session" />
+                                <SelectValue
+                                    placeholder={t("placeholder.selectSession")}
+                                />
                             </SelectTrigger>
                             <SelectContent>
                                 {sessions?.map((session) => (
@@ -433,7 +441,7 @@ export default function AddScore({
                             disabled={isLoading}
                             className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold md:text-xl py-2 md:py-4"
                         >
-                            {isLoading ? "Updating..." : "Update"}
+                            {isLoading ? t("updating") : t("update")}
                         </Button>
                     ) : (
                         <Button
@@ -441,7 +449,7 @@ export default function AddScore({
                             disabled={isLoading}
                             className="w-full h-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold md:text-xl py-2 md:py-4"
                         >
-                            {isLoading ? "Adding..." : "Add"}
+                            {isLoading ? t("adding") : t("add")}
                         </Button>
                     )}
                     <Button
@@ -450,7 +458,7 @@ export default function AddScore({
                         variant="outline"
                         className="w-full h-full rounded-full bg-transparent border-primary-green text-primary-green hover:bg-primary-green hover:text-white font-semibold md:text-xl py-2 md:py-4"
                     >
-                        Cancel
+                        {t("button.cancel")}
                     </Button>
                 </div>
             </form>

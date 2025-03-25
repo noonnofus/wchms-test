@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Participant } from "@/db/schema/participants";
 import { Score } from "@/db/schema/score";
 import ScoreCard from "./score-card";
+import { useTranslation } from "react-i18next";
 
 export default function ScoreList({
     scores,
@@ -12,8 +13,9 @@ export default function ScoreList({
     scores: Score[] | null;
     participant: Participant;
 }) {
+    const { t } = useTranslation();
     if (!scores || !participant) {
-        return <p>Loading scores...</p>;
+        return <p>{t("loading.scores")}</p>;
     }
     return (
         <div className="flex flex-col items-center w-full">
@@ -21,13 +23,13 @@ export default function ScoreList({
                 <CardHeader className="w-full py-4 md:py-6">
                     <div className="flex justify-between items-center">
                         <CardTitle className="text-left text-2xl md:text-[32px]">
-                            Board Game Scores
+                            {t("board game scores")}
                         </CardTitle>
                         <Link
                             href={`/admin/manage/participants/${participant.firstName}-${participant.lastName}/scores`}
                         >
                             <p className="text-primary-green text-sm md:text-xl font-semibold">
-                                View All
+                                {t("view all")}
                             </p>
                         </Link>
                     </div>
@@ -43,7 +45,7 @@ export default function ScoreList({
                                 />
                             ))
                         ) : (
-                            <p>No scores available</p>
+                            <p>{t("no scores")}</p>
                         )}
                     </div>
                 </CardContent>

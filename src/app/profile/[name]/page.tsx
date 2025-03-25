@@ -4,8 +4,10 @@ import { getParticipantById } from "@/db/queries/participants";
 import { Participant } from "@/db/schema/participants";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { useTranslation } from "react-i18next";
 
 export default function Profile() {
+    const { t } = useTranslation();
     const [participant, setParticipant] = useState<Participant | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [participantId, setParticipantId] = useState<string | null>(null);
@@ -38,12 +40,12 @@ export default function Profile() {
     if (!participantId) {
         return (
             <div className="flex flex-col gap-4 items-center">
-                <p className="font-semibold text-xl">No profile found</p>
+                <p className="font-semibold text-xl">{t("no profile")}</p>
                 <Button
                     variant="outline"
                     className="w-full h-[45px] rounded-full bg-primary-green text-white hover:bg-[#045B47] hover:text-white font-semibold text-base md:text-xl py-4"
                 >
-                    <Link href={"/"}>Back to Home</Link>
+                    <Link href={"/"}>{t("button.backToHome")}</Link>
                 </Button>
             </div>
         );
@@ -72,7 +74,7 @@ export default function Profile() {
     if (isLoading) {
         return (
             <div className="flex justify-center items-center py-10">
-                <p>Loading profile...</p>
+                <p>{t("loading.profile")}</p>
             </div>
         );
     }
@@ -83,12 +85,14 @@ export default function Profile() {
             <div className="flex flex-col items-center">
                 <h1 className="font-semibold text-2xl md:text-4xl text-center">
                     <span className="capitalize">
-                        {participant?.firstName} {participant?.lastName}
+                        {t("users profile", {
+                            firstName: participant.firstName,
+                            lastName: participant.lastName,
+                        })}
                     </span>
-                    &#39;s Profile
                 </h1>
                 <p className="text-base md:text-xl font-semibold text-[#6C757D]">
-                    Participant
+                    {t("participant")}
                 </p>
             </div>
 
@@ -98,18 +102,18 @@ export default function Profile() {
 
             <div className="flex flex-col gap-4 text-lg">
                 <div className="flex flex-row gap-2">
-                    <p className="text-lg font-semibold">Name: </p>
+                    <p className="text-lg font-semibold">{t("name")}: </p>
                     <p>
                         {participant.firstName} {participant.lastName}
                     </p>
                 </div>
                 <div className="flex flex-row gap-2">
-                    <p className="text-lg font-semibold">Age: </p>
-                    <p>{age}</p>
+                    <p className="text-lg font-semibold">{t("age")}:</p>
+                    <p>{t("ageDisplay", { age })}</p>
                 </div>
                 <div className="flex flex-row gap-2">
-                    <p className="text-lg font-semibold">Gender:</p>
-                    <p>{participant?.gender}</p>
+                    <p className="text-lg font-semibold">{t("gender")}:</p>
+                    <p>{t(`${participant?.gender?.toLowerCase()}`)}</p>
                 </div>
             </div>
         </main>

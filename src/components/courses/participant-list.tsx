@@ -111,7 +111,7 @@ export default function ParticipantList(props: {
                                                           )
                                                       }
                                                   >
-                                                      View Profile
+                                                      {t("view profile")}
                                                   </Link>
                                               ) : (
                                                   <Link
@@ -123,7 +123,7 @@ export default function ParticipantList(props: {
                                                           )
                                                       }
                                                   >
-                                                      View Profile
+                                                      {t("view profile")}
                                                   </Link>
                                               )}
                                           </Button>
