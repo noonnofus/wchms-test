@@ -60,6 +60,7 @@ export async function PUT(req: Request) {
             );
         }
     } catch (error) {
+        console.error(error);
         throw new NextResponse(
             JSON.stringify({ error: "Internal Server Error" }),
             { status: 500 }

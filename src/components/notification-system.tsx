@@ -28,9 +28,12 @@ export interface Notification {
     };
 }
 
+export interface WS extends WebSocket {
+    pingInterval: NodeJS.Timeout;
+}
+
 const NotificationSystem: React.FC = () => {
     const [socket, setSocket] = useState<WebSocket | null>(null);
-    const [notifications, setNotifications] = useState<Notification[]>([]);
     const { data: session } = useSession();
     const userId = session?.user?.id;
 
@@ -52,7 +55,7 @@ const NotificationSystem: React.FC = () => {
                         ws.send(JSON.stringify({ event: "ping" }));
                     }
                 }, 30000);
-                (ws as any).pingInterval = pingInterval;
+                (ws as WS).pingInterval = pingInterval;
             };
 
             ws.onmessage = (event) => {
@@ -64,7 +67,6 @@ const NotificationSystem: React.FC = () => {
                         const notification = data.notification as Notification;
 
                         if (notification.userId === Number(userId)) {
-                            setNotifications((prev) => [notification, ...prev]);
                             displayToast(notification);
                         }
                     }
@@ -77,7 +79,7 @@ const NotificationSystem: React.FC = () => {
                 console.log(
                     "WebSocket disconnected. Attempting to reconnect..."
                 );
-                clearInterval((ws as any).pingInterval);
+                clearInterval((ws as WS).pingInterval);
 
                 setTimeout(connectWebSocket, 3000);
             };
@@ -92,23 +94,9 @@ const NotificationSystem: React.FC = () => {
 
         connectWebSocket();
 
-        const fetchNotifications = async () => {
-            try {
-                const response = await fetch("/api/notifications");
-                if (response.ok) {
-                    const data = await response.json();
-                    setNotifications(data.notifications);
-                }
-            } catch (error) {
-                console.error("Error fetching notifications:", error);
-            }
-        };
-
-        fetchNotifications();
-
         return () => {
             if (socket) {
-                clearInterval((socket as any).pingInterval);
+                clearInterval((socket as WS).pingInterval);
                 socket.close();
             }
         };

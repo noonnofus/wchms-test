@@ -24,9 +24,6 @@ export async function POST(req: Request) {
             );
         }
 
-        const title = "Class Starting Soon";
-        const message = `Your session will start in 10 minutes for ${courseTitle}.`;
-
         const courseId = sessionId
             ? Number(sessionId.toString().split("-")[0])
             : undefined;

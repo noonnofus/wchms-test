@@ -30,6 +30,14 @@ type Instructor = {
     role: "Admin" | "Staff";
 };
 
+interface ErrorMessages {
+    instructorId?: string;
+    date?: string;
+    startTime?: string;
+    endTime?: string;
+    status?: string;
+}
+
 export default function AddSession(props: Props) {
     const { t } = useTranslation();
     const router = useRouter();
@@ -92,7 +100,7 @@ export default function AddSession(props: Props) {
         status: "Draft" as "Draft" | "Available" | "Completed" | "Archived",
     });
 
-    const [errors, setErrors] = useState({
+    const [errors, setErrors] = useState<ErrorMessages>({
         instructorId: "",
         date: "",
         startTime: "",
@@ -130,13 +138,7 @@ export default function AddSession(props: Props) {
 
     const validateForm = () => {
         let isValid = true;
-        const errorMessages: {
-            instructorId?: string;
-            date?: string;
-            startTime?: string;
-            endTime?: string;
-            status?: string;
-        } = {};
+        const errorMessages: ErrorMessages = {};
         const now = new Date();
         now.setSeconds(0, 0);
 
@@ -203,7 +205,6 @@ export default function AddSession(props: Props) {
             isValid = false;
         }
 
-        //@ts-expect-error type issue
         setErrors(errorMessages);
         return isValid;
     };

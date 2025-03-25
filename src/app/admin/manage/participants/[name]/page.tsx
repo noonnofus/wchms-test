@@ -37,8 +37,7 @@ export default function Profile() {
 
             const fetchedCourses = await getUserCourses(parseInt(id));
             const filteredCourses = fetchedCourses.map((course) => {
-                const { course_participants, ...courseData } = course;
-                return courseData.courses;
+                return course.courses;
             });
 
             setCourses(filteredCourses);
@@ -155,7 +154,7 @@ export default function Profile() {
                     <span className="capitalize">
                         {participant?.firstName} {participant?.lastName}
                     </span>
-                    's Profile
+                    &#39;s Profile
                 </h1>
                 <div className="absolute right-0 top-2 flex gap-2">
                     <button onClick={() => setShowDeletePopup(true)}>

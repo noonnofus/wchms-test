@@ -147,7 +147,10 @@ export default function AddAdmin({
             });
 
             if (!response.ok) {
-                response.status === 409 && setServerError("Admin/Staff with this email already exists, please try again with other email.");
+                if (response.status === 409)
+                    setServerError(
+                        "Admin/Staff with this email already exists, please try again with another email."
+                    );
                 throw new Error("Failed to add admin");
             }
 

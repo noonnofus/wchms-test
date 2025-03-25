@@ -1,6 +1,6 @@
 import db from "@/db";
 import { users } from "@/db/schema/users";
-import { and, eq, inArray } from "drizzle-orm";
+import { inArray } from "drizzle-orm";
 
 export async function GET() {
     try {

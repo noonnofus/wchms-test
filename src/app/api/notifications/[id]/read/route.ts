@@ -1,19 +1,22 @@
 import { authConfig } from "@/auth";
 import db from "@/db";
 import { notifications } from "@/db/schema/notifications";
-import { validateAdminOrStaff } from "@/lib/validation";
+
 import { broadcastNotification } from "@/lib/websockets";
 import { and, eq, or } from "drizzle-orm";
 import { getServerSession } from "next-auth";
 import { NextRequest } from "next/server";
 
-// this function just marks the notification as read, it doesn't return anything
-//for some reason destructuring and typing params here prevents building, this needs to typed and fixed
+interface Params {
+    slug: string;
+}
+
 export async function PUT(
     req: NextRequest,
-    { params }: any //eslint-disable-line
+    { params }: { params: Promise<Params> }
 ) {
-    const notificationId = String(params.id);
+    const resolvedParams = await params;
+    const notificationId = String(resolvedParams.slug);
 
     try {
         const session = await getServerSession(authConfig);
@@ -27,7 +30,6 @@ export async function PUT(
         }
 
         const userId = parseInt(session.user.id);
-        const isAdminOrStaff = validateAdminOrStaff(session);
 
         const notificationToUpdate = await db
             .select()

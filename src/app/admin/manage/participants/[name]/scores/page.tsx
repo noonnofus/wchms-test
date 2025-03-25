@@ -25,7 +25,7 @@ export default function ParticipantScores() {
     const [isLoading, setIsLoading] = useState(true);
     const [participantId, setParticipantId] = useState<string | null>(null);
     const [showAddPopup, setShowAddPopup] = useState(false);
-    const [scores, setScores] = useState<Score[] | null>(null);
+    const [scores, setScores] = useState<Score[]>();
     const [scoreToDelete, setScoreToDelete] = useState<Score | null>(null);
     const [course, setCourse] = useState<Course | undefined>(undefined);
     const [refreshFlag, setRefreshFlag] = useState(0);
@@ -55,8 +55,7 @@ export default function ParticipantScores() {
                     parseInt(participantId)
                 );
                 const filteredCourses = fetchedCourses.map((course) => {
-                    const { course_participants, ...courseData } = course;
-                    return courseData.courses;
+                    return course.courses;
                 });
 
                 setCourses(filteredCourses);
@@ -131,7 +130,7 @@ export default function ParticipantScores() {
             if (!response.ok) throw new Error("Failed to delete score");
 
             setScores((prev) =>
-                prev.filter((score) => score.id !== scoreToDelete.id)
+                prev?.filter((score) => score.id !== scoreToDelete.id)
             );
             setScoreToDelete(null);
             setShowDeletePopup(false);
