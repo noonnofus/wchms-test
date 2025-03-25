@@ -31,6 +31,16 @@ interface props {
     courseId?: number;
 }
 
+interface ErrorMessages {
+    courseName?: string;
+    courseDescription?: string;
+    courseImage?: string;
+    courseStartDate?: string;
+    courseEndDate?: string;
+    courseParticipants?: string;
+    courseRoom?: string;
+}
+
 export default function AddCourse(props: props) {
     const path = usePathname();
     const router = useRouter();
@@ -54,7 +64,7 @@ export default function AddCourse(props: props) {
         fileUrl: null as string | null,
     });
 
-    const [errors, setErrors] = useState({
+    const [errors, setErrors] = useState<ErrorMessages>({
         courseName: "",
         courseImage: "",
         courseDescription: "",
@@ -147,14 +157,7 @@ export default function AddCourse(props: props) {
 
     const validateForm = () => {
         let isValid = true;
-        const errorMessages: {
-            courseName?: string;
-            courseDescription?: string;
-            courseStartDate?: string;
-            courseEndDate?: string;
-            courseParticipants?: string;
-            courseRoom?: string;
-        } = {};
+        const errorMessages: ErrorMessages = {};
 
         if (!formData.courseName) {
             errorMessages.courseName = t("error.missingCourseName");
@@ -214,7 +217,6 @@ export default function AddCourse(props: props) {
             isValid = false;
         }
 
-        //@ts-expect-error type issue
         setErrors(errorMessages);
         return isValid;
     };
@@ -429,12 +431,12 @@ export default function AddCourse(props: props) {
                                             isLoading
                                                 ? t("loading.rooms")
                                                 : formData.courseRoom
-                                                    ? rooms.find(
+                                                  ? rooms.find(
                                                         (room) =>
                                                             room.id.toString() ===
                                                             formData.courseRoom
                                                     )?.name
-                                                    : defaultRoomName
+                                                  : defaultRoomName
                                         }
                                     />
                                 </SelectTrigger>
