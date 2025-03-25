@@ -151,7 +151,7 @@ export default function ManageStaff() {
                 {t("manage")}
             </h1>
             {showEditPopup && adminToEdit && (
-                <div className="fixed inset-0 flex items-end md:items-center justify-center z-10 overflow-y-auto">
+                <div className="fixed inset-0 flex items-end md:items-center justify-center z-20 overflow-y-auto">
                     <div
                         className="absolute inset-0 bg-black opacity-50"
                         onClick={handleClosePopup}
@@ -188,7 +188,7 @@ export default function ManageStaff() {
             )}
             {/* Delete Confirmation Popup */}
             {showDeletePopup && adminToDelete && (
-                <div className="fixed inset-0 flex items-center justify-center z-10 overflow-y-auto">
+                <div className="fixed inset-0 flex items-center justify-center z-20 overflow-y-auto">
                     <div
                         className="absolute inset-0 bg-black opacity-50"
                         onClick={handleClosePopup}
@@ -208,7 +208,7 @@ export default function ManageStaff() {
                 </div>
             )}
             {showAddPopup && (
-                <div className="fixed inset-0 flex items-end md:items-center justify-center z-10 overflow-y-auto">
+                <div className="fixed inset-0 flex items-end md:items-center justify-center z-20 overflow-y-auto">
                     <div
                         className="absolute inset-0 bg-black opacity-50"
                         onClick={handleClosePopup}
