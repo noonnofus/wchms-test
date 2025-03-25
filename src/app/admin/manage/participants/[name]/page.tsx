@@ -19,6 +19,7 @@ import CloseIcon from "@/components/icons/close-icon";
 import { useSwipeable } from "react-swipeable";
 import { Score } from "@/db/schema/score";
 import ScoreList from "@/components/scores/scores-list";
+import { useTranslation } from "react-i18next";
 
 export default function Profile() {
     const [participant, setParticipant] = useState<Participant | null>(null);
@@ -29,6 +30,7 @@ export default function Profile() {
     const [participantId, setParticipantId] = useState<string | null>(null);
     const [scores, setScores] = useState<Score[] | null>(null);
     const router = useRouter();
+    const { t } = useTranslation();
 
     const fetchData = async (id: string) => {
         try {
@@ -74,7 +76,7 @@ export default function Profile() {
         trackMouse: true,
     });
 
-    if (!participantId) {
+    if (!participantId && !isLoading) {
         return (
             <div className="flex flex-col gap-4 items-center">
                 <p className="font-semibold text-xl">No profile found</p>
@@ -136,7 +138,7 @@ export default function Profile() {
     if (isLoading) {
         return (
             <div className="flex justify-center items-center py-10">
-                <p>Loading profile...</p>
+                <p>{t("loading.profile")}</p>
             </div>
         );
     }
@@ -152,9 +154,11 @@ export default function Profile() {
             <div className="relative flex flex-col w-full h-full items-center gap-4">
                 <h1 className="font-semibold text-2xl md:text-4xl">
                     <span className="capitalize">
-                        {participant?.firstName} {participant?.lastName}
+                        {t("users profile", {
+                            firstName: participant.firstName,
+                            lastName: participant.lastName,
+                        })}
                     </span>
-                    &#39;s Profile
                 </h1>
                 <div className="absolute right-0 top-2 flex gap-2">
                     <button onClick={() => setShowDeletePopup(true)}>
@@ -165,7 +169,7 @@ export default function Profile() {
                     </button>
                 </div>
                 <p className="text-base md:text-xl font-semibold text-[#6C757D]">
-                    Participant
+                    {t("participant")}
                 </p>
 
                 <div className="flex w-24 h-24 md:w-40 md:h-40 text-2l md:text-3xl rounded-full bg-gray-200 items-center justify-center uppercase">
@@ -175,15 +179,19 @@ export default function Profile() {
 
             <div className="w-full flex flex-col gap-4 text-lg">
                 <div className="flex flex-row gap-2">
-                    <p className="text-lg font-semibold">Email:</p>
+                    <p className="text-lg font-semibold">
+                        {t("email address")}:
+                    </p>
                     <p>{participant?.email}</p>
                 </div>
                 <div className="flex flex-row gap-2">
-                    <p className="text-lg font-semibold">Age: </p>
-                    <p>{age}</p>
+                    <p className="text-lg font-semibold">{t("age")}:</p>
+                    <p>{t("ageDisplay", { age })}</p>
                 </div>
                 <div className="flex flex-row gap-2">
-                    <p className="text-lg font-semibold">Date of Birth:</p>
+                    <p className="text-lg font-semibold">
+                        {t("date of birth")}:
+                    </p>
                     <p>
                         {participant?.dateOfBirth.toLocaleDateString("en-US", {
                             year: "numeric",
@@ -193,19 +201,19 @@ export default function Profile() {
                     </p>
                 </div>
                 <div className="flex flex-row gap-2">
-                    <p className="text-lg font-semibold">Gender:</p>
-                    <p>{participant?.gender}</p>
+                    <p className="text-lg font-semibold">{t("gender")}:</p>
+                    <p>{t(`${participant?.gender?.toLowerCase()}`)}</p>
                 </div>
                 {courses?.length === 0 ? (
                     <div className="flex flex-col w-full">
                         <p className="text-lg font-semibold">Courses:</p>
-                        <p>
-                            Participant is not currently enrolled in any courses
-                        </p>
+                        <p>{t("no course enrolled")}</p>
                     </div>
                 ) : (
                     <div className="flex flex-col w-full">
-                        <p className="text-lg font-semibold">Courses:</p>
+                        <p className="text-lg font-semibold">
+                            {t("course", { count: 2 })}
+                        </p>
                         <ul className="w-full">
                             {courses?.map((course, index) => (
                                 <li key={index} className="list-disc ml-8">
@@ -261,9 +269,12 @@ export default function Profile() {
                     ></div>
                     <div className="z-30 bg-white rounded-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
                         <DeleteConfirmation
-                            title="Delete Participant"
-                            body={`Are you sure you want to delete participant ${participant.firstName}? You cannot undo this action.`}
-                            actionLabel="DELETE"
+                            title={t("delete participant")}
+                            body={t("delete participant confirmation", {
+                                firstName: participant.firstName,
+                                lastName: participant.lastName,
+                            })}
+                            actionLabel={t("delete")}
                             handleSubmit={handleDelete}
                             closePopup={() => setShowDeletePopup(false)}
                         />

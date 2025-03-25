@@ -15,9 +15,11 @@ import { Course } from "@/db/schema/course";
 import { Participant } from "@/db/schema/participants";
 import { Score } from "@/db/schema/score";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useSwipeable } from "react-swipeable";
 
 export default function ParticipantScores() {
+    const { t } = useTranslation();
     const [participant, setParticipant] = useState<Participant | null>(null);
     const [courses, setCourses] = useState<Course[] | null>(null);
     const [showDeletePopup, setShowDeletePopup] = useState(false);
@@ -147,7 +149,7 @@ export default function ParticipantScores() {
     if (isLoading) {
         return (
             <div className="flex justify-center items-center py-10">
-                <p>Loading scores...</p>
+                <p>{t("loading.scores")}</p>
             </div>
         );
     }
@@ -155,7 +157,7 @@ export default function ParticipantScores() {
     return (
         <main className="flex flex-col gap-10 w-full items-center h-full mb-16 md:mb-32 lg:mb-52">
             <h1 className="font-semibold text-3xl md:text-4xl text-start">
-                All Scores
+                {t("all scores")}
             </h1>
             <div className="w-full flex flex-col items-center gap-4">
                 {scores && scores.length > 0 ? (
@@ -248,13 +250,31 @@ export default function ParticipantScores() {
                     ></div>
                     <div className="z-30 bg-white rounded-lg md:rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
                         <DeleteConfirmation
-                            title="Delete Score"
-                            body={`Are you sure you want to delete the score ${
-                                scoreToDelete.time
-                                    ? `${Math.floor(scoreToDelete.time / 60)} mins and ${scoreToDelete.time % 60} secs`
-                                    : "N/A"
-                            } for participant ${participant.firstName} from course ${course?.title}? This action cannot be undone.`}
-                            actionLabel="DELETE"
+                            title={t("delete score")}
+                            body={t("delete score confirmation", {
+                                score: {
+                                    timeMin: t("score.timeMin", {
+                                        minutes: Math.floor(
+                                            scoreToDelete.time / 60
+                                        ),
+                                        count: Math.floor(
+                                            scoreToDelete.time / 60
+                                        ),
+                                    }),
+                                    timeSec: t("score.timeSec", {
+                                        seconds: Math.floor(
+                                            scoreToDelete.time % 60
+                                        ),
+                                        count: Math.floor(
+                                            scoreToDelete.time % 60
+                                        ),
+                                    }),
+                                },
+                                firstName: participant.firstName,
+                                lastName: participant.lastName,
+                                courseName: course?.title,
+                            })}
+                            actionLabel={t("delete")}
                             handleSubmit={handleDelete}
                             closePopup={handleClosePopup}
                         />

@@ -52,8 +52,9 @@ function LogoutContent() {
 }
 
 export default function Logout() {
+    const { t } = useTranslation();
     return (
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<div>{t("loading")}</div>}>
             <LogoutContent />
         </Suspense>
     );
