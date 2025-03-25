@@ -70,6 +70,8 @@ export default function ReadingCard({
 
             try {
                 const data = await res.json();
+                console.log(data);
+
                 result = await JSON.parse(data.result);
             } catch (e) {
                 console.error(e);
@@ -209,7 +211,7 @@ export default function ReadingCard({
                             {Array.isArray(readingQuestion) ? (
                                 <div>
                                     {readingQuestion.map((reading, i) => (
-                                        <span key={i}>{reading}</span>
+                                        <span key={i}>{reading} </span>
                                     ))}
                                 </div>
                             ) : (
