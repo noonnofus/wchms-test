@@ -15,20 +15,16 @@ import { getAllSessionsByCourseId } from "@/db/queries/sessions";
 import { useTranslation } from "react-i18next";
 import { useSwipeable } from "react-swipeable";
 
-export default function SessionOverviewCard({
-
-}: {
-    }) {
+export default function SessionOverviewCard({}: {}) {
     const { t } = useTranslation();
     const { id } = useParams();
-    const [courseSessions, setCourseSessions] =
-        useState<Session[]>();
+    const [courseSessions, setCourseSessions] = useState<Session[]>();
     const [showDeletePopup, setShowDeletePopup] = useState(false);
     const [showEditPopup, setShowEditPopup] = useState(false);
-    const [sessionToDelete, setSessionToDelete] =
-        useState<Session | null>(null);
-    const [sessionToEdit, setSessionToEdit] =
-        useState<Session | null>(null);
+    const [sessionToDelete, setSessionToDelete] = useState<Session | null>(
+        null
+    );
+    const [sessionToEdit, setSessionToEdit] = useState<Session | null>(null);
 
     useEffect(() => {
         const fetchSessions = async () => {
@@ -67,7 +63,10 @@ export default function SessionOverviewCard({
 
             const data = await response.json();
 
-            if (!response.ok) throw new Error(data.error || "Failed to delete course session.");
+            if (!response.ok)
+                throw new Error(
+                    data.error || "Failed to delete course session."
+                );
             setCourseSessions((prev) =>
                 prev?.filter((r) => r.id !== sessionToDelete.id)
             );
@@ -85,7 +84,6 @@ export default function SessionOverviewCard({
         setSessionToDelete(null);
         setSessionToEdit(null);
     };
-
 
     const swipeHandlers = useSwipeable({
         onSwipedDown: () => {
@@ -129,14 +127,13 @@ export default function SessionOverviewCard({
                 </CardHeader>
                 <CardContent className="overflow-x-auto w-full h-full">
                     <div className="flex overflow-x-auto min-w-max space-x-4">
-                        {courseSessions ? (
+                        {courseSessions && courseSessions.length ? (
                             courseSessions.map((session) => {
                                 return (
                                     <div
                                         className="flex flex-col gap-4 w-40 md:w-52 h-auto border-2 border-primary-green rounded-lg p-2 md:p-4"
                                         key={session.id}
                                     >
-
                                         <p className="text-lg md:text-xl font-semibold">
                                             {`${formatDate(session.date.toISOString())}`}
                                             <p className="text-lg md:text-sm font-semibold">
@@ -149,7 +146,7 @@ export default function SessionOverviewCard({
                                                 <Button
                                                     onClick={() =>
                                                         handleEditSessionClick(
-                                                            session,
+                                                            session
                                                         )
                                                     }
                                                     className="w-full rounded-full bg-primary-green hover:bg-[#045B47] font-semibold text-sm md:text-base"
@@ -177,10 +174,10 @@ export default function SessionOverviewCard({
                                                 <div className="z-30 bg-white rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
                                                     <DeleteConfirmation
                                                         title={t(
-                                                            "Delete Course Session"
+                                                            "delete session"
                                                         )}
                                                         body={t(
-                                                            "Are you sure you want to delete the course session? This action cannot be undone.",
+                                                            "delete session confirmation"
                                                         )}
                                                         actionLabel={t(
                                                             "delete"
@@ -213,7 +210,9 @@ export default function SessionOverviewCard({
                                                             </div>
                                                         </div>
                                                         <button
-                                                            onClick={handleClosePopup}
+                                                            onClick={
+                                                                handleClosePopup
+                                                            }
                                                             className="absolute top-3 right-4"
                                                         >
                                                             <CloseIcon />
@@ -221,19 +220,25 @@ export default function SessionOverviewCard({
                                                     </div>
                                                     <div className="overflow-y-auto max-h-[calc(90vh-90px)]">
                                                         <AddSession
-                                                            courseId={sessionToEdit.courseId}
-                                                            sessionId={sessionToEdit.id}
-                                                            handleClosePopup={handleClosePopup}
+                                                            courseId={
+                                                                sessionToEdit.courseId
+                                                            }
+                                                            sessionId={
+                                                                sessionToEdit.id
+                                                            }
+                                                            handleClosePopup={
+                                                                handleClosePopup
+                                                            }
                                                         />
                                                     </div>
                                                 </div>
                                             </div>
                                         )}
                                     </div>
-                                )
+                                );
                             })
                         ) : (
-                            <p>{t("No session available")}</p>
+                            <p>{t("no sessions")}</p>
                         )}
                     </div>
                 </CardContent>
