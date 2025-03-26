@@ -116,12 +116,12 @@ export default function SessionOverviewCard() {
                 <CardHeader className="w-full py-4 md:py-6">
                     <div className="flex justify-between items-center">
                         <CardTitle className="text-left text-2xl md:text-[32px]">
-                            {/* @ts-ignore */}
+                            {/* @ts-expect-error */}
                             {t("all sessions")}
                         </CardTitle>
                         <Link href={`/admin/session/${id}`}>
                             <p className="text-primary-green text-sm md:text-xl font-semibold">
-                                {/* @ts-ignore */}
+                                {/* @ts-expect-error */}
                                 {t("view all")}
                             </p>
                         </Link>
@@ -176,15 +176,15 @@ export default function SessionOverviewCard() {
                                                 <div className="z-30 bg-white rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
                                                     <DeleteConfirmation
                                                         title={t(
-                                                            // @ts-ignore
+                                                            // @ts-expect-error
                                                             "delete session"
                                                         )}
                                                         body={t(
-                                                            // @ts-ignore
+                                                            // @ts-expect-error
                                                             "delete session confirmation"
                                                         )}
                                                         actionLabel={t(
-                                                            // @ts-ignore
+                                                            // @ts-expect-error
                                                             "delete"
                                                         )}
                                                         handleSubmit={
@@ -243,7 +243,7 @@ export default function SessionOverviewCard() {
                                 );
                             })
                         ) : (
-                            // @ts-ignore
+                            // @ts-expect-error
                             <p>{t("no sessions")}</p>
                         )}
                     </div>
