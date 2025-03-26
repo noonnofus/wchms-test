@@ -98,6 +98,7 @@ export async function addAdmin(
 
         if (existingAdmin.length === 0) {
             const hashedPass = await hashPassword(password);
+            // @ts-ignore
             await db.insert(users).values({
                 firstName,
                 lastName,

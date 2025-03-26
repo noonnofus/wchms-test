@@ -15,7 +15,7 @@ import { getAllSessionsByCourseId } from "@/db/queries/sessions";
 import { useTranslation } from "react-i18next";
 import { useSwipeable } from "react-swipeable";
 
-export default function SessionOverviewCard({}: {}) {
+export default function SessionOverviewCard() {
     const { t } = useTranslation();
     const { id } = useParams();
     const [courseSessions, setCourseSessions] = useState<Session[]>();
@@ -116,10 +116,12 @@ export default function SessionOverviewCard({}: {}) {
                 <CardHeader className="w-full py-4 md:py-6">
                     <div className="flex justify-between items-center">
                         <CardTitle className="text-left text-2xl md:text-[32px]">
+                            {/* @ts-ignore */}
                             {t("all sessions")}
                         </CardTitle>
                         <Link href={`/admin/session/${id}`}>
                             <p className="text-primary-green text-sm md:text-xl font-semibold">
+                                {/* @ts-ignore */}
                                 {t("view all")}
                             </p>
                         </Link>
@@ -174,12 +176,15 @@ export default function SessionOverviewCard({}: {}) {
                                                 <div className="z-30 bg-white rounded-lg w-full md:mx-8 max-h-[90vh] overflow-hidden">
                                                     <DeleteConfirmation
                                                         title={t(
+                                                            // @ts-ignore
                                                             "delete session"
                                                         )}
                                                         body={t(
+                                                            // @ts-ignore
                                                             "delete session confirmation"
                                                         )}
                                                         actionLabel={t(
+                                                            // @ts-ignore
                                                             "delete"
                                                         )}
                                                         handleSubmit={
@@ -238,6 +243,7 @@ export default function SessionOverviewCard({}: {}) {
                                 );
                             })
                         ) : (
+                            // @ts-ignore
                             <p>{t("no sessions")}</p>
                         )}
                     </div>

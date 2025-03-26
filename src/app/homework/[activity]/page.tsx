@@ -18,9 +18,6 @@ interface MathQuestions {
     answer: string;
 }
 
-// video URL for physical activity to test it.
-const url = "https://www.youtube.com/watch?v=0xfDmrcI7OI";
-
 export default function ActivityPage() {
     const [correctCount, setCorrectCount] = useState(0);
     const [recommendations, setRecommendations] = useState<
