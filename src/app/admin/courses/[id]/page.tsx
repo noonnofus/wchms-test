@@ -5,6 +5,7 @@ import CourseDetailsCard from "@/components/courses/course-details-card";
 import EditMaterial from "@/components/courses/edit-material";
 import ParticipantList from "@/components/courses/participant-list";
 import RequestList from "@/components/courses/request-list";
+import SessionList from "@/components/courses/session-list";
 import CloseIcon from "@/components/icons/close-icon";
 import CloseSwipe from "@/components/icons/close-swipe";
 import AddButton from "@/components/shared/add-button";
@@ -234,14 +235,7 @@ export default function AdminCourses() {
                                         handleDeleteCourseButtonClick
                                     }
                                 />
-                                <Button
-                                    className="bg-primary-green text-white rounded-full w-full font-semibold text-base hover:bg-[#045B47]"
-                                    onClick={() =>
-                                        router.push(`/admin/session/${id}`)
-                                    }
-                                >
-                                    {t("all sessions")}
-                                </Button>
+                                <SessionList />
                                 {requests ? (
                                     <RequestList
                                         requests={requests}
